@@ -65,11 +65,11 @@ std::string_view GameConfig::GetPatch(const std::string& name) const {
 	return std::get<std::string>(*it);
 }
 
-intmax_t GameConfig::GetOffset(const std::string& name) const {
+int GameConfig::GetOffset(const std::string& name) const {
 	auto it = m_umOffsets.find(name);
 	if (it == m_umOffsets.end())
 		return -1;
-	return std::get<intmax_t>(*it);
+	return std::get<int>(*it);
 }
 
 std::string_view GameConfig::GetLibrary(const std::string& name) const {

@@ -12,7 +12,7 @@ extern "C"
 PLUGIN_API cs2sdk::GameConfig* GameConfig_Create(const char* file) {
 	auto pGameConfig = new cs2sdk::GameConfig("csgo", cs2sdk::utils::GamedataDirectory() + file);
 	if (!pGameConfig->Initialize()) {
-		Log_Error(LOG_GENERAL, "Could not read \"%s\".", pGameConfig->GetPath().c_str());
+		Log_Error(LOG_GENERAL, "Could not read '\"'%s\".", pGameConfig->GetPath().c_str());
 		delete pGameConfig;
 		return nullptr;
 	}
@@ -45,7 +45,7 @@ PLUGIN_API const char* GameConfig_GetPatch(cs2sdk::GameConfig* pGameConfig, cons
 }
 
 extern "C"
-PLUGIN_API intmax_t GameConfig_GetOffset(cs2sdk::GameConfig* pGameConfig, const char* name) {
+PLUGIN_API int GameConfig_GetOffset(cs2sdk::GameConfig* pGameConfig, const char* name) {
 	return pGameConfig->GetOffset(name);
 }
 

@@ -20,7 +20,7 @@ namespace cs2sdk {
 		std::string_view GetSignature(const std::string& name) const;
 		std::string_view GetSymbol(const std::string& name) const;
 		std::string_view GetPatch(const std::string& name) const;
-		intmax_t GetOffset(const std::string& name) const;
+		int GetOffset(const std::string& name) const;
 		//void* GetAddress(const std::string& name, void* engine, void* server, char* error, int maxlen) const; // TODO: implement
 		ModuleRef GetModule(const std::string& name) const;
 		bool IsSymbol(const std::string& name) const;
@@ -32,7 +32,7 @@ namespace cs2sdk {
 		std::string m_szGameDir;
 		std::string m_szPath;
 		KeyValues m_pKeyValues;
-		std::unordered_map<std::string, intmax_t> m_umOffsets;
+		std::unordered_map<std::string, int> m_umOffsets;
 		std::unordered_map<std::string, std::string> m_umSignatures;
 		//std::unordered_map<std::string, void*> m_umAddresses;
 		std::unordered_map<std::string, std::string> m_umLibraries;

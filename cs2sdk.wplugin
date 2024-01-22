@@ -124,7 +124,7 @@
 		  }
 		],
 		"retType": {
-		  "type": "int64"
+		  "type": "int32"
 		}
 	  },
 	  {
