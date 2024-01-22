@@ -34,8 +34,6 @@ set(SOURCESDK_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/hl2sdk-cs2)
 set(SOURCESDK ${SOURCESDK_DIR}/${BRANCH})
 set(SOURCESDK_LIB ${SOURCESDK}/lib)
 
-add_definitions(-DMETA_IS_SOURCE2)
-
 include_directories(
         ${SOURCESDK}
         ${SOURCESDK}/thirdparty/protobuf-3.21.8/src
