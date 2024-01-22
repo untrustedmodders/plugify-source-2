@@ -2,6 +2,8 @@
 
 #include <wizard/cpp_plugin.h>
 #include <plugin_export.h>
+#include <export/keyvalues.h>
+#include <export/gameconfig.h>
 
 namespace cs2sdk {
 	class Source2SDK : public wizard::IPluginEntry {

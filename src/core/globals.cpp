@@ -1,6 +1,7 @@
 #include "globals.h"
 #include "module.h"
-#include "game_config.h"
+#include "utils.h"
+#include "gameconfig.h"
 #include "interfaces/cs2_interfaces.h"
 
 namespace cs2sdk {
@@ -19,11 +20,7 @@ namespace cs2sdk {
 
 		GameConfig* gameConfig = nullptr;
 
-		std::thread::id gameThreadId;
-
 		void Initialize() {
-			gameThreadId = std::this_thread::get_id();
-
 			modules::engine = new modules::Module(CS2SDK_ROOT_BINARY, "engine2");
 			modules::tier0 = new modules::Module(CS2SDK_ROOT_BINARY, "tier0");
 			modules::server = new modules::Module(CS2SDK_GAME_BINARY, "server");
@@ -36,15 +33,12 @@ namespace cs2sdk {
 			engine = (IVEngineServer*)modules::engine->FindInterface(INTERFACEVERSION_VENGINESERVER);
 			fileSystem = (IFileSystem*)modules::filesystem->FindInterface(FILESYSTEM_INTERFACE_VERSION);
 
-			std::cout << "ENGINE " <<  engine << std::endl;
-			std::cout << "ENGINE " <<  fileSystem << std::endl;
+			gameConfig = new GameConfig("csgo", utils::GamedataDirectory() + "cs2sdk.games.txt");
 
-			/*std::string gamedataPath(utils::GamedataDirectory() + "/cs2sdk.games.txt");
-			gameConfig = new GameConfig("csgo", gamedataPath);
-
-			if (!globals::gameConfig->Initialize()) {
-				ErrorIfNot("Could not read \"%s\". Error: {}", gamedataPath);
-			}*/
+			if (!gameConfig->Initialize()) {
+				Log_Error(LOG_GENERAL, "Could not read \"%s\".", gameConfig->GetPath().c_str());
+				delete gameConfig;
+			}
 		}
 
 		void Terminate() {

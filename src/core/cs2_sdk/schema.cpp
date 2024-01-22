@@ -20,7 +20,6 @@
 #include "schema.h"
 
 #include "interfaces/cs2_interfaces.h"
-#include <core/plugin.h>
 
 #include "tier1/utlmap.h"
 

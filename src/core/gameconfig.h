@@ -13,7 +13,7 @@ namespace cs2sdk {
 		GameConfig(std::string game, std::string path);
 		~GameConfig();
 
-		bool Initialize(IFileSystem* filesystem);
+		bool Initialize();
 
 		const std::string& GetPath() const;
 		std::string_view GetLibrary(const std::string& name) const;
@@ -31,10 +31,10 @@ namespace cs2sdk {
 	private:
 		std::string m_szGameDir;
 		std::string m_szPath;
-		KeyValues* m_pKeyValues;
+		KeyValues m_pKeyValues;
 		std::unordered_map<std::string, intmax_t> m_umOffsets;
 		std::unordered_map<std::string, std::string> m_umSignatures;
-		std::unordered_map<std::string, void*> m_umAddresses;
+		//std::unordered_map<std::string, void*> m_umAddresses;
 		std::unordered_map<std::string, std::string> m_umLibraries;
 		std::unordered_map<std::string, std::string> m_umPatches;
 	};

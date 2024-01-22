@@ -1,20 +1,20 @@
-#include "game_config.h"
+#include "gameconfig.h"
 #include "module.h"
 
 using namespace cs2sdk;
 
-GameConfig::GameConfig(std::string game, std::string path) : m_szGameDir{std::move(game)}, m_szPath{std::move(path)} {
+GameConfig::GameConfig(std::string game, std::string path) : m_szGameDir{std::move(game)}, m_szPath{std::move(path)}, m_pKeyValues{"Games"} {
 }
 
 GameConfig::~GameConfig() = default;
 
-bool GameConfig::Initialize(IFileSystem* filesystem) {
-	if (!m_pKeyValues->LoadFromFile(filesystem, m_szPath.c_str(), nullptr)) {
+bool GameConfig::Initialize() {
+	if (!m_pKeyValues.LoadFromFile(globals::fileSystem, m_szPath.c_str(), nullptr)) {
 		//snprintf(conf_error, conf_error_size, "Failed to load gamedata file");
 		return false;
 	}
 
-	const KeyValues* game = m_pKeyValues->FindKey(m_szGameDir.c_str());
+	const KeyValues* game = m_pKeyValues.FindKey(m_szGameDir.c_str());
 	if (game) {
 		const char* platform = CS2SDK_PLATFORM;
 
@@ -167,7 +167,7 @@ std::vector<byte> GameConfig::HexToByte(std::string_view hexString) {
 		return {};
 	}
 
-	std::vector<byte> byteArray(byteCount);
+	std::vector<byte> byteArray(byteCount + 1);
 
 	for (size_t i = 0; i < hexString.size(); i += 4) {
 		auto hexSubstring = hexString.substr(i + 2, 2); // Skip "\\x" and take the next two characters.
@@ -177,6 +177,8 @@ std::vector<byte> GameConfig::HexToByte(std::string_view hexString) {
 			return {}; // Return an error code.
 		}
 	}
+
+	byteArray[byteCount] = '\0'; // Add a null-terminating character.
 
 	return byteArray;
 }

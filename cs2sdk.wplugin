@@ -1,0 +1,148 @@
+{
+	"fileVersion": 1,
+	"version": 1,
+	"versionName": "1.0",
+	"friendlyName": "CS2-SDK",
+	"description": "",
+	"createdBy": "untrustedmodders",
+	"createdByURL": "https://github.com/untrustedmodders/",
+	"docsURL": "https://github.com/untrustedmodders/cs2-sdk-plugin",
+	"downloadURL": "",
+	"updateURL": "",
+	"assemblyPath": "bin/cs2sdk",
+	"supportedPlatforms": [],
+	"languageModule": {
+		"name": "cpp"
+	},
+	"dependencies": [],
+	"exportedMethods": [
+	  {
+		"name": "GameConfig_Delete",
+		"funcName": "GameConfig_Delete",
+		"paramTypes": [
+		  {
+			"type": "ptr64",
+			"name": "gameConfig"
+		  }
+		],
+		"retType": {
+		  "type": "void"
+		}
+	  },
+	  {
+		"name": "GameConfig_Create",
+		"funcName": "GameConfig_Create",
+		"paramTypes": [
+		  {
+			"type": "string",
+			"name": "file"
+		  }
+		],
+		"retType": {
+		  "type": "ptr64"
+		}
+	  },
+	  {
+		"name": "GameConfig_GetLibrary",
+		"funcName": "GameConfig_GetLibrary",
+		"paramTypes": [
+		  {
+			"type": "ptr64",
+			"name": "gameConfig"
+		  },
+		  {
+			"type": "string",
+			"name": "name"
+		  }
+		],
+		"retType": {
+		  "type": "string"
+		}
+	  },
+	  {
+		"name": "GameConfig_GetSignature",
+		"funcName": "GameConfig_GetSignature",
+		"paramTypes": [
+		  {
+			"type": "ptr64",
+			"name": "gameConfig"
+		  },
+		  {
+			"type": "string",
+			"name": "name"
+		  }
+		],
+		"retType": {
+		  "type": "string"
+		}
+	  },
+	  {
+		"name": "GameConfig_GetSymbol",
+		"funcName": "GameConfig_GetSymbol",
+		"paramTypes": [
+		  {
+			"type": "ptr64",
+			"name": "gameConfig"
+		  },
+		  {
+			"type": "string",
+			"name": "name"
+		  }
+		],
+		"retType": {
+		  "type": "string"
+		}
+	  },
+	  {
+		"name": "GameConfig_GetPatch",
+		"funcName": "GameConfig_GetPatch",
+		"paramTypes": [
+		  {
+			"type": "ptr64",
+			"name": "gameConfig"
+		  },
+		  {
+			"type": "string",
+			"name": "name"
+		  }
+		],
+		"retType": {
+		  "type": "string"
+		}
+	  },
+	  {
+		"name": "GameConfig_GetOffset",
+		"funcName": "GameConfig_GetOffset",
+		"paramTypes": [
+		  {
+			"type": "ptr64",
+			"name": "gameConfig"
+		  },
+		  {
+			"type": "string",
+			"name": "name"
+		  }
+		],
+		"retType": {
+		  "type": "int64"
+		}
+	  },
+	  {
+		"name": "GameConfig_ResolveSignature",
+		"funcName": "GameConfig_ResolveSignature",
+		"paramTypes": [
+		  {
+			"type": "ptr64",
+			"name": "gameConfig"
+		  },
+		  {
+			"type": "string",
+			"name": "name"
+		  }
+		],
+		"retType": {
+		  "type": "ptr64"
+		}
+	  }
+	]
+}

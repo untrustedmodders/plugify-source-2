@@ -16,7 +16,11 @@ namespace cs2sdk {
 			return T{};
 		}
 
-		return reinterpret_cast<T>(pVTable[uIndex]);
+		if constexpr (std::is_same_v<T, void>) {
+			return;
+		} else {
+			return reinterpret_cast<T>(pVTable[uIndex]);
+		}
 	}
 
 	template <typename T, typename... Args>
