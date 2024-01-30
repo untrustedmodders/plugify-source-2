@@ -62,6 +62,7 @@ if(LINUX)
     include("cmake/linux.cmake")
     target_compile_definitions(${PROJECT_NAME} PRIVATE
             CS2SDK_PLATFORM="linux"
+            CS2SDK_BINARY="linuxsteamrt64"
             CS2SDK_ROOT_BINARY="/bin/linuxsteamrt64/"
             CS2SDK_GAME_BINARY="/csgo/bin/linuxsteamrt64/"
             )
@@ -69,6 +70,7 @@ elseif(WIN32)
     include("cmake/windows.cmake")
     target_compile_definitions(${PROJECT_NAME} PRIVATE
             CS2SDK_PLATFORM="windows"
+            CS2SDK_BINARY="win64"
             CS2SDK_ROOT_BINARY="/bin/win64/"
             CS2SDK_GAME_BINARY="/csgo/bin/win64/"
             )
@@ -96,5 +98,20 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 add_custom_command(
         TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy 
-        ${CMAKE_SOURCE_DIR}/cs2-sdk.wplugin ${CMAKE_BINARY_DIR}/addons/wizard/plugins/cs2sdk
+        ${CMAKE_SOURCE_DIR}/cs2sdk.wplugin ${CMAKE_BINARY_DIR}/addons/wizard/plugins/cs2sdk
+)
+
+# Temp
+
+add_custom_command(
+        TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E remove_directory
+        D:/steamcmd/cs2-ds/game/csgo/addons/wizard/plugins/cs2sdk
+)
+
+add_custom_command(
+        TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_BINARY_DIR}/addons/wizard/plugins/cs2sdk
+        D:/steamcmd/cs2-ds/game/csgo/addons/wizard/plugins/cs2sdk
 )

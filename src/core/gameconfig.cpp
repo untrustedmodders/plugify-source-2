@@ -3,13 +3,13 @@
 
 using namespace cs2sdk;
 
-GameConfig::GameConfig(std::string game, std::string path) : m_szGameDir{std::move(game)}, m_szPath{std::move(path)}, m_pKeyValues{"Games"} {
+CGameConfig::CGameConfig(std::string game, std::string path) : m_szGameDir{std::move(game)}, m_szPath{std::move(path)}, m_pKeyValues{"Games"} {
 }
 
-GameConfig::~GameConfig() = default;
+CGameConfig::~CGameConfig() = default;
 
-bool GameConfig::Initialize() {
-	if (!m_pKeyValues.LoadFromFile(globals::fileSystem, m_szPath.c_str(), nullptr)) {
+bool CGameConfig::Initialize() {
+	if (!m_pKeyValues.LoadFromFile(g_pFullFileSystem, m_szPath.c_str(), nullptr)) {
 		//snprintf(conf_error, conf_error_size, "Failed to load gamedata file");
 		return false;
 	}
@@ -47,39 +47,39 @@ bool GameConfig::Initialize() {
 	return true;
 }
 
-const std::string& GameConfig::GetPath() const {
+const std::string& CGameConfig::GetPath() const {
 	return m_szPath;
 }
 
-std::string_view GameConfig::GetSignature(const std::string& name) const {
+std::string_view CGameConfig::GetSignature(const std::string& name) const {
 	auto it = m_umSignatures.find(name);
 	if (it == m_umSignatures.end())
 		return {};
 	return std::get<std::string>(*it);
 }
 
-std::string_view GameConfig::GetPatch(const std::string& name) const {
+std::string_view CGameConfig::GetPatch(const std::string& name) const {
 	auto it = m_umPatches.find(name);
 	if (it == m_umPatches.end())
 		return {};
 	return std::get<std::string>(*it);
 }
 
-int GameConfig::GetOffset(const std::string& name) const {
+int CGameConfig::GetOffset(const std::string& name) const {
 	auto it = m_umOffsets.find(name);
 	if (it == m_umOffsets.end())
 		return -1;
 	return std::get<int>(*it);
 }
 
-std::string_view GameConfig::GetLibrary(const std::string& name) const {
+std::string_view CGameConfig::GetLibrary(const std::string& name) const {
 	auto it = m_umLibraries.find(name);
 	if (it == m_umLibraries.end())
 		return {};
 	return std::get<std::string>(*it);
 }
 
-ModuleRef GameConfig::GetModule(const std::string& name) const {
+ModuleRef CGameConfig::GetModule(const std::string& name) const {
 	const std::string_view library = GetLibrary(name);
 	if (library.empty())
 		return {};
@@ -98,7 +98,7 @@ ModuleRef GameConfig::GetModule(const std::string& name) const {
 	return {};
 }
 
-bool GameConfig::IsSymbol(const std::string& name) const {
+bool CGameConfig::IsSymbol(const std::string& name) const {
 	const std::string_view sigOrSymbol = GetSignature(name);
 	if (sigOrSymbol.empty()) {
 		Error("Missing signature or symbol: %s\n", name.c_str());
@@ -107,7 +107,7 @@ bool GameConfig::IsSymbol(const std::string& name) const {
 	return sigOrSymbol[0] == '@';
 }
 
-std::string_view GameConfig::GetSymbol(const std::string& name) const {
+std::string_view CGameConfig::GetSymbol(const std::string& name) const {
 	const std::string_view symbol = GetSignature(name);
 
 	if (symbol.size() <= 1) {
@@ -118,7 +118,7 @@ std::string_view GameConfig::GetSymbol(const std::string& name) const {
 	return symbol.substr(1);
 }
 
-void* GameConfig::ResolveSignature(const std::string& name) const {
+void* CGameConfig::ResolveSignature(const std::string& name) const {
 	auto moduleRef = GetModule(name);
 	if (!moduleRef.has_value()) {
 		Error("Invalid module: %s\n", name.c_str());
@@ -141,7 +141,7 @@ void* GameConfig::ResolveSignature(const std::string& name) const {
 			Error("Failed to find signature for %s\n", name.c_str());
 			return nullptr;
 		}
-		auto sig = GameConfig::HexToByte(signature);
+		auto sig = CGameConfig::HexToByte(signature);
 		if (sig.empty()) {
 			Error("Invalid hex string\n");
 			return nullptr;
@@ -157,7 +157,7 @@ void* GameConfig::ResolveSignature(const std::string& name) const {
 	return address;
 }
 
-std::vector<byte> GameConfig::HexToByte(std::string_view hexString) {
+std::vector<byte> CGameConfig::HexToByte(std::string_view hexString) {
 	if (hexString.empty())
 		return {};
 

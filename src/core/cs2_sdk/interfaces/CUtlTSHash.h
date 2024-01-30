@@ -3,6 +3,7 @@
 #include <array>
 #include <cstdint>
 #include <vector>
+
 using UtlTsHashHandleT = std::uint64_t;
 
 class CUtlMemoryPool {

@@ -19,7 +19,8 @@
 
 #include "schema.h"
 
-#include "interfaces/cs2_interfaces.h"
+#include "interfaces/cgameresourceserviceserver.h"
+#include "interfaces/cschemasystem.h"
 
 #include "tier1/utlmap.h"
 
@@ -42,7 +43,7 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t* tableMap,
                                      const char* className,
                                      uint32_t classKey) {
     CSchemaSystemTypeScope* pType =
-	cs2sdk::interfaces::pSchemaSystem->FindTypeScopeForModule(BINARY_MODULE_PREFIX "server" BINARY_MODULE_SUFFIX);
+	pSchemaSystem->FindTypeScopeForModule(BINARY_MODULE_PREFIX "server" BINARY_MODULE_SUFFIX);
 
     if (!pType) return false;
 
@@ -75,7 +76,7 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t* tableMap,
 
 int16_t schema::FindChainOffset(const char* className) {
     CSchemaSystemTypeScope* pType =
-	cs2sdk::interfaces::pSchemaSystem->FindTypeScopeForModule(BINARY_MODULE_PREFIX "server" BINARY_MODULE_SUFFIX);
+	pSchemaSystem->FindTypeScopeForModule(BINARY_MODULE_PREFIX "server" BINARY_MODULE_SUFFIX);
 
     if (!pType) return false;
 
@@ -101,18 +102,18 @@ SchemaKey schema::GetOffset(const char* className,
                             const char* memberName,
                             uint32_t memberKey) {
     static SchemaTableMap_t schemaTableMap(0, 0, DefLessFunc(uint32_t));
-    int16_t tableMapIndex = schemaTableMap.Find(classKey);
+    uint16_t tableMapIndex = schemaTableMap.Find(classKey);
     if (!schemaTableMap.IsValidIndex(tableMapIndex)) {
         if (InitSchemaFieldsForClass(&schemaTableMap, className, classKey))
             return GetOffset(className, classKey, memberName, memberKey);
 
-        return {0, 0};
+        return {0, false};
     }
 
     SchemaKeyValueMap_t* tableMap = schemaTableMap[tableMapIndex];
-    int16_t memberIndex = tableMap->Find(memberKey);
+	uint16_t memberIndex = tableMap->Find(memberKey);
     if (!tableMap->IsValidIndex(memberIndex)) {
-        return {0, 0};
+        return {0, false};
     }
 
     return tableMap->Element(memberIndex);

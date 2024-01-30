@@ -36,7 +36,7 @@ extern "C"
 PLUGIN_API KeyValues* KeyValues_FromFile(const char* szFile, bool bUsesEscapeSequences = false) {
 	KeyValues* pKeyValues = new KeyValues("");
 	pKeyValues->UsesEscapeSequences(bUsesEscapeSequences);
-	if (!pKeyValues->LoadFromFile(cs2sdk::globals::fileSystem, szFile, nullptr)) {
+	if (!pKeyValues->LoadFromFile(g_pFullFileSystem, szFile, nullptr)) {
 		delete pKeyValues;
 		Log_Error(LOG_GENERAL, "Failed to load from file.");
 		return nullptr;
@@ -48,7 +48,7 @@ PLUGIN_API KeyValues* KeyValues_FromFile(const char* szFile, bool bUsesEscapeSeq
 extern "C"
 PLUGIN_API KeyValues* KeyValues_FromBuffer(const char* buffer) {
 	KeyValues* pKeyValues = new KeyValues("");
-	if (!pKeyValues->LoadFromBuffer("", buffer, cs2sdk::globals::fileSystem)) {
+	if (!pKeyValues->LoadFromBuffer("", buffer, g_pFullFileSystem)) {
 		delete pKeyValues;
 		Log_Error(LOG_GENERAL, "Failed to load from buffer.");
 		return nullptr;
@@ -58,12 +58,12 @@ PLUGIN_API KeyValues* KeyValues_FromBuffer(const char* buffer) {
 
 extern "C"
 PLUGIN_API bool KeyValues_FromBufferInPlace(KeyValues* pKeyValues, const char* buffer) {
-	return pKeyValues->LoadFromBuffer(pKeyValues->GetName(), buffer, cs2sdk::globals::fileSystem);
+	return pKeyValues->LoadFromBuffer(pKeyValues->GetName(), buffer, g_pFullFileSystem);
 }
 
 extern "C"
 PLUGIN_API bool KeyValues_SaveToFile(KeyValues* pKeyValues, const char* szFile) {
-	return pKeyValues->SaveToFile(cs2sdk::globals::fileSystem, szFile);
+	return pKeyValues->SaveToFile(g_pFullFileSystem, szFile);
 }
 
 extern "C"

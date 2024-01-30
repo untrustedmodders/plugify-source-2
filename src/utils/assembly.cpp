@@ -10,7 +10,7 @@
 #elif CS2SDK_PLATFORM_APPLE
 #include <dlfcn.h>
 #else
-#error "Platform is not supported!"
+
 #endif
 
 namespace cs2sdk {
@@ -88,19 +88,22 @@ namespace cs2sdk {
 		}
 		return 0;
 	}
-#endif
-	// TODO: Add Mac
+#elif CS2SDK_PLATFORM_WINDOWS
+	bool UTF8StringToWideString(std::wstring& dest, std::string_view str) {
+		int wlen = MultiByteToWideChar(CP_UTF8, 0, str.data(), static_cast<int>(str.length()), nullptr, 0);
+		if (wlen < 0)
+			return false;
 
-    std::unique_ptr<Assembly> Assembly::LoadFromPath(const std::string& assemblyPath) {
-#if CS2SDK_PLATFORM_WINDOWS
-        void* handle = static_cast<void*>(LoadLibraryA(assemblyPath.c_str()));
-#elif CS2SDK_PLATFORM_LINUX || CS2SDK_PLATFORM_APPLE
-        void* handle = dlopen(assemblyPath.c_str(), RTLD_LAZY);
-#else
-		void* handle = nullptr;
+		dest.resize(static_cast<size_t>(wlen));
+		if (wlen > 0 && MultiByteToWideChar(CP_UTF8, 0, str.data(), static_cast<int>(str.length()), dest.data(), wlen) < 0)
+			return false;
+
+		return true;
+	}
 #endif
 
-        if (handle) {
+	std::unique_ptr<CAssembly> CAssembly::Create(void* handle, bool owner) {
+		if (handle) {
 			void* base = nullptr;
 			size_t size = 0;
 #ifdef CS2SDK_PLATFORM_WINDOWS
@@ -113,39 +116,69 @@ namespace cs2sdk {
 			GetModuleInformation(handle, &base, &size);
 #endif
 			if (base && size)
-				return std::unique_ptr<Assembly>(new Assembly(handle, base, size));
-        }
+				return std::unique_ptr<CAssembly>(new CAssembly(handle, base, size, owner));
+		}
+
 #if CS2SDK_PLATFORM_WINDOWS
-        uint32_t errorCode = GetLastError();
-        if (errorCode != 0) {
-            LPSTR messageBuffer = nullptr;
-            size_t size = FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                NULL, errorCode, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&messageBuffer, 0, NULL);
+		uint32_t errorCode = GetLastError();
+		if (errorCode != 0) {
+			LPSTR messageBuffer = nullptr;
+			size_t size = FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+										 NULL, errorCode, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&messageBuffer, 0, NULL);
 			lastError = std::string(messageBuffer, size);
-            LocalFree(messageBuffer);
-        }
+			LocalFree(messageBuffer);
+		}
 #elif CS2SDK_PLATFORM_LINUX || CS2SDK_PLATFORM_APPLE
-        lastError = dlerror();
+		lastError = dlerror();
 #endif
-        return nullptr;
+		return nullptr;
+	}
+
+	std::unique_ptr<CAssembly> CAssembly::FindModule(const std::string& assemblyPath) {
+#if CS2SDK_PLATFORM_WINDOWS
+		std::wstring path;
+		UTF8StringToWideString(path, assemblyPath);
+		std::replace(path.begin(), path.end(), L'/', L'\\');
+		void* handle = static_cast<void*>(GetModuleHandleW(path.c_str()));
+#elif CS2SDK_PLATFORM_LINUX || CS2SDK_PLATFORM_APPLE
+		void* handle = dlopen(assemblyPath.c_str(), RTLD_NOLOAD);
+#else
+		void* handle = nullptr;
+#endif
+		return Create(handle, false);
+	}
+
+    std::unique_ptr<CAssembly> CAssembly::LoadFromPath(const std::string& assemblyPath) {
+#if CS2SDK_PLATFORM_WINDOWS
+		std::wstring path;
+		UTF8StringToWideString(path, assemblyPath);
+		std::replace(path.begin(), path.end(), L'/', L'\\');
+        void* handle = static_cast<void*>(LoadLibraryW(path.c_str()));
+#elif CS2SDK_PLATFORM_LINUX || CS2SDK_PLATFORM_APPLE
+        void* handle = dlopen(assemblyPath.c_str(), RTLD_LAZY);
+#else
+		void* handle = nullptr;
+#endif
+		return Create(handle, true);
     }
 
-    std::string Assembly::GetError() {
+    std::string CAssembly::GetError() {
         return lastError;
     }
 
-    Assembly::Assembly(void* handle, void* base, size_t size) : m_handle{handle}, m_base{base}, m_size{size} {
+    CAssembly::CAssembly(void* handle, void* base, size_t size, bool owner) : m_handle{handle}, m_base{base}, m_size{size}, m_owner{owner} {
     }
 
-    Assembly::~Assembly() {
+    CAssembly::~CAssembly() {
 #if CS2SDK_PLATFORM_WINDOWS
-        FreeLibrary(static_cast<HMODULE>(m_handle));
+		if (m_owner)
+			FreeLibrary(static_cast<HMODULE>(m_handle));
 #elif CS2SDK_PLATFORM_LINUX || CS2SDK_PLATFORM_APPLE
-        dlclose(m_handle);
+		dlclose(m_handle);
 #endif
     }
 
-    void* Assembly::GetFunction(const char* functionName) const {
+    void* CAssembly::GetFunction(const char* functionName) const {
 #if CS2SDK_PLATFORM_WINDOWS
         return reinterpret_cast<void*>(GetProcAddress(static_cast<HMODULE>(m_handle), functionName));
 #elif CS2SDK_PLATFORM_LINUX || CS2SDK_PLATFORM_APPLE
@@ -154,4 +187,27 @@ namespace cs2sdk {
 		return nullptr;
 #endif
     }
+
+	void* CAssembly::FindSignature(std::span<uint8_t> signature) const {
+		if (signature.empty())
+			return nullptr;
+
+		size_t iSigLength = signature.size() - 1; // not count null char
+
+		uint8_t* pMemory;
+		void* pReturnAddr = nullptr;
+
+		pMemory = (uint8_t*) m_base;
+
+		for (size_t i = 0; i < m_size; ++i) {
+			size_t matches = 0;
+			while (*(pMemory + i + matches) == signature[matches] || signature[matches] == '\x2A') {
+				matches++;
+				if (matches == iSigLength)
+					pReturnAddr = (void*)(pMemory + i);
+			}
+		}
+
+		return pReturnAddr;
+	}
 }

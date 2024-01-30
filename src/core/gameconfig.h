@@ -4,14 +4,14 @@
 
 namespace cs2sdk {
 	namespace modules {
-		class Module;
+		class CModule;
 	}
-	using ModuleRef = std::optional<std::reference_wrapper<modules::Module>>;
+	using ModuleRef = std::optional<std::reference_wrapper<modules::CModule>>;
 
-	class GameConfig {
+	class CGameConfig {
 	public:
-		GameConfig(std::string game, std::string path);
-		~GameConfig();
+		CGameConfig(std::string game, std::string path);
+		~CGameConfig();
 
 		bool Initialize();
 

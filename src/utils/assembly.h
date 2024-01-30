@@ -1,12 +1,13 @@
 #pragma once
 
 namespace cs2sdk {
-    class Assembly {
+    class CAssembly {
     public:
-        static std::unique_ptr<Assembly> LoadFromPath(const std::string& assemblyPath);
+        static std::unique_ptr<CAssembly> FindModule(const std::string& assemblyPath);
+        static std::unique_ptr<CAssembly> LoadFromPath(const std::string& assemblyPath);
         static std::string GetError();
 
-        ~Assembly();
+        ~CAssembly();
 
         void* GetFunction(const char* functionName) const;
         template<class _Fn> requires(std::is_pointer_v<_Fn> && std::is_function_v<std::remove_pointer_t<_Fn>>)
@@ -14,9 +15,7 @@ namespace cs2sdk {
             return reinterpret_cast<_Fn>(GetFunction(functionName));
         }
 
-		void* GetHandle() const {
-			return m_handle;
-		}
+		void* FindSignature(std::span<uint8_t> signature) const;
 
 		void* GetBase() const {
 			return m_base;
@@ -27,11 +26,14 @@ namespace cs2sdk {
 		}
 
     private:
-        explicit Assembly(void* handle, void* base, size_t size);
+        explicit CAssembly(void* handle, void* base, size_t size, bool owner);
+
+		static std::unique_ptr<CAssembly> Create(void* handle, bool owner);
 
     private:
         void* m_handle{ nullptr };
 		void* m_base{ nullptr };
 		size_t m_size{};
+		[[maybe_unused]] bool m_owner{};
     };
 }

@@ -20,14 +20,14 @@
 #pragma once
 
 #include <cstdint>
+#include <core/gameconfig.h>
 
 class CGameEntitySystem;
 
 class CGameResourceService
 {
   public:
-    CGameEntitySystem* GetGameEntitySystem()
-    {
-        return nullptr;//*reinterpret_cast<CGameEntitySystem**>((uintptr_t)(this) + cs2sdk::globals::gameConfig->GetOffset("GameEntitySystem"));
+    CGameEntitySystem* GetGameEntitySystem() {
+        return *reinterpret_cast<CGameEntitySystem**>((uintptr_t)(this) + cs2sdk::globals::gameConfig->GetOffset("GameEntitySystem"));
     }
 };

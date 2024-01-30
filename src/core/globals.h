@@ -10,34 +10,44 @@
 
 #include <eiface.h>
 #include <iserver.h>
+#include <igameeventsystem.h>
+#include <igameevents.h>
+#include <entitysystem.h>
 
-class IFileSystem;
+#include <ISmmPlugin.h>
 
 namespace cs2sdk {
-	class GameConfig;
+	class CGameConfig;
 
 	namespace globals {
-		extern IVEngineServer* engine;
-		extern IFileSystem* fileSystem;
-
-		extern GameConfig* gameConfig;
-
+		extern IMetamodListener* metamodListener;
+		extern CGameConfig* gameConfig;
 		extern std::thread::id gameThreadId;
 
 		void Initialize();
 		void Terminate();
 
-		CGlobalVars* getGlobalVars();
+		CGlobalVars* GetGameGlobals();
 	}
 
 	namespace modules {
-		class Module;
+		class CModule;
 
-		extern Module* engine;
-		extern Module* tier0;
-		extern Module* server;
-		extern Module* schemasystem;
-		extern Module* filesystem;
-		extern Module* vscript;
+		extern CModule* engine;
+		extern CModule* tier0;
+		extern CModule* server;
+		extern CModule* schemasystem;
+		extern CModule* filesystem;
+		extern CModule* vscript;
 	}
 }
+
+class CGameResourceService;
+class CSchemaSystem;
+
+extern IGameEventSystem* g_gameEventSystem;
+extern CGlobalVars* gpGlobals;
+extern IVEngineServer2* g_pEngineServer2;
+extern CGameResourceService* pGameResourceServiceServer;
+extern CSchemaSystem* pSchemaSystem;
+extern CGameEntitySystem* g_pEntitySystem;

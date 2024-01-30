@@ -14,7 +14,11 @@
 	"languageModule": {
 		"name": "cpp"
 	},
-	"dependencies": [],
+	"dependencies": [
+	  {
+		"name": "dynohook"
+	  }
+	],
 	"exportedMethods": [
 	  {
 		"name": "GameConfig_Delete",

@@ -30,9 +30,12 @@ endif()
 set(CMAKE_STATIC_LIBRARY_PREFIX "")
 
 set(SOURCESDK_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/hl2sdk-cs2)
+set(METAMOD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/metamod-source)
 
 set(SOURCESDK ${SOURCESDK_DIR}/${BRANCH})
 set(SOURCESDK_LIB ${SOURCESDK}/lib)
+
+add_definitions(-DMETA_IS_SOURCE2)
 
 include_directories(
         ${SOURCESDK}
@@ -48,4 +51,6 @@ include_directories(
         ${SOURCESDK}/public/entity2
         ${SOURCESDK}/public/game/server
         ${SOURCESDK}/public/entity2
+        ${METAMOD_DIR}/core
+        ${METAMOD_DIR}/core/sourcehook
 )

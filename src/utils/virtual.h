@@ -16,11 +16,7 @@ namespace cs2sdk {
 			return T{};
 		}
 
-		if constexpr (std::is_same_v<T, void>) {
-			return;
-		} else {
-			return reinterpret_cast<T>(pVTable[uIndex]);
-		}
+		return reinterpret_cast<T>(pVTable[uIndex]);
 	}
 
 	template <typename T, typename... Args>
@@ -31,9 +27,17 @@ namespace cs2sdk {
 		auto pFunc = GetVMethod<T(*)(void*, Args...)>(uIndex, pClass);
 #endif
 		if (!pFunc) {
-			return T{};
+			if constexpr (std::is_same_v<T, void>) {
+				return;
+			} else {
+				return T{};
+			}
 		}
 
-		return pFunc(pClass, args...);
+		if constexpr (std::is_same_v<T, void>) {
+			pFunc(pClass, args...);
+		} else {
+			return pFunc(pClass, args...);
+		}
 	}
 }
