@@ -147,6 +147,37 @@
 		"retType": {
 		  "type": "ptr64"
 		}
+	  },
+
+	  {
+		"name": "OnLevelInit_Register",
+		"funcName": "OnLevelInit_Register",
+		"paramTypes": [
+		  {
+			"type": "function",
+			"name": "callback",
+			"prototype": {
+			  "name": "OnLevelInitCallback",
+			  "funcName": "OnLevelInitCallback",
+			  "paramTypes": [
+				{
+				  "type": "string",
+				  "name": "mapName"
+				},
+				{
+				  "type": "string",
+				  "name": "mapEntities"
+				}
+			  ],
+			  "retType": {
+				"type": "void"
+			  }
+			}
+		  }
+		],
+		"retType": {
+		  "type": "void"
+		}
 	  }
 	]
 }

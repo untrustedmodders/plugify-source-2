@@ -86,13 +86,13 @@ namespace cs2sdk {
 		Get##name##ListenerManager().Unregister(func); \
 	}
 
-DEFINE_MANAGER_ACCESSOR(OnClientActive, void, CPlayerSlot, bool, const char*, uint64)
-DEFINE_MANAGER_ACCESSOR(OnClientConnect, bool, CPlayerSlot, const char*, uint64, const char*, bool, const char*)
-DEFINE_MANAGER_ACCESSOR(OnClientConnected, void, CPlayerSlot, const char*, uint64, const char*, const char*, bool)
-DEFINE_MANAGER_ACCESSOR(OnClientFullyConnect, void, CPlayerSlot)
-DEFINE_MANAGER_ACCESSOR(OnClientDisconnect, void, CPlayerSlot, int, const char*, uint64, const char*)
-DEFINE_MANAGER_ACCESSOR(OnClientPutInServer, void, CPlayerSlot, char const*, int, uint64)
-DEFINE_MANAGER_ACCESSOR(OnClientSettingsChanged, void, CPlayerSlot)
+DEFINE_MANAGER_ACCESSOR(OnClientActive, void, int, bool, const char*, uint64)
+DEFINE_MANAGER_ACCESSOR(OnClientConnect, bool, int, const char*, uint64, const char*, bool, const char*)
+DEFINE_MANAGER_ACCESSOR(OnClientConnected, void, int, const char*, uint64, const char*, const char*, bool)
+DEFINE_MANAGER_ACCESSOR(OnClientFullyConnect, void, int)
+DEFINE_MANAGER_ACCESSOR(OnClientDisconnect, void, int, int, const char*, uint64, const char*)
+DEFINE_MANAGER_ACCESSOR(OnClientPutInServer, void, int, char const*, int, uint64)
+DEFINE_MANAGER_ACCESSOR(OnClientSettingsChanged, void, int)
 DEFINE_MANAGER_ACCESSOR(OnLevelInit, void, const char*, const char*)
 DEFINE_MANAGER_ACCESSOR(OnLevelShutdown, void)
 /*DEFINE_MANAGER_ACCESSOR(OnNetworkidValidated)

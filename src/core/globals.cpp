@@ -3,6 +3,7 @@
 #include "module.h"
 #include "utils.h"
 #include "gameconfig.h"
+#include "fwd.h"
 
 #include "interfaces/cgameresourceserviceserver.h"
 #include "interfaces/cschemasystem.h"

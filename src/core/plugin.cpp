@@ -1,4 +1,5 @@
 #include "plugin.h"
+#include "fwd.h"
 
 #include "interfaces/cgameresourceserviceserver.h"
 #include "interfaces/cschemasystem.h"
@@ -110,7 +111,7 @@ dyno::ReturnAction Source2SDK::Hook_ClientActive(dyno::CallbackType type, dyno::
 	auto pszName = dyno::GetArgument<const char*>(hook, 3);
 	auto xuid = dyno::GetArgument<uint64>(hook, 4);
 	Message("Hook_ClientActive(%d, %d, \"%s\", %lli)\n", slot, bLoadGame, pszName, xuid);
-	GetOnClientActiveListenerManager().Notify(slot, bLoadGame, pszName, xuid);
+	GetOnClientActiveListenerManager().Notify(slot.Get(), bLoadGame, pszName, xuid);
 	return dyno::ReturnAction::Ignored;
 }
 dyno::ReturnAction Source2SDK::Hook_ClientDisconnect(dyno::CallbackType type, dyno::IHook& hook) {
@@ -121,7 +122,7 @@ dyno::ReturnAction Source2SDK::Hook_ClientDisconnect(dyno::CallbackType type, dy
 	auto xuid = dyno::GetArgument<uint64>(hook, 4);
 	auto pszNetworkID = dyno::GetArgument<const char*>(hook, 5);
 	Message("Hook_ClientDisconnect(%d, %d, \"%s\", %lli, \"%s\")\n", slot, reason, pszName, xuid, pszNetworkID);
-	GetOnClientDisconnectListenerManager().Notify(slot, reason, pszName, xuid, pszNetworkID);
+	GetOnClientDisconnectListenerManager().Notify(slot.Get(), reason, pszName, xuid, pszNetworkID);
 	return dyno::ReturnAction::Ignored;
 }
 dyno::ReturnAction Source2SDK::Hook_ClientPutInServer(dyno::CallbackType type, dyno::IHook& hook) {
@@ -131,14 +132,14 @@ dyno::ReturnAction Source2SDK::Hook_ClientPutInServer(dyno::CallbackType type, d
 	auto conType = dyno::GetArgument<int>(hook, 3);
 	auto xuid = dyno::GetArgument<uint64>(hook, 4);
 	Message("Hook_ClientPutInServer(%d, \"%s\", %d, %d, %lli)\n", slot, pszName, conType, xuid);
-	GetOnClientPutInServerListenerManager().Notify(slot, pszName, conType, xuid);
+	GetOnClientPutInServerListenerManager().Notify(slot.Get(), pszName, conType, xuid);
 	return dyno::ReturnAction::Ignored;
 }
 dyno::ReturnAction Source2SDK::Hook_ClientSettingsChanged(dyno::CallbackType type, dyno::IHook& hook) {
 	//CPlayerSlot slot
 	auto slot = (CPlayerSlot)dyno::GetArgument<int>(hook, 1);
 	Message("Hook_ClientSettingsChanged(%d)\n", slot);
-	GetOnClientSettingsChangedListenerManager().Notify(slot);
+	GetOnClientSettingsChangedListenerManager().Notify(slot.Get());
 	return dyno::ReturnAction::Ignored;
 }
 dyno::ReturnAction Source2SDK::Hook_OnClientConnected(dyno::CallbackType type, dyno::IHook& hook) {
@@ -150,14 +151,14 @@ dyno::ReturnAction Source2SDK::Hook_OnClientConnected(dyno::CallbackType type, d
 	auto pszAddress = dyno::GetArgument<const char*>(hook, 5);
 	auto bFakePlayer = dyno::GetArgument<bool>(hook, 6);
 	Message("Hook_OnClientConnected(%d, \"%s\", %lli, \"%s\", \"%s\", %d)\n", slot, pszName, xuid, pszNetworkID, pszAddress, bFakePlayer);
-	GetOnClientConnectedListenerManager().Notify(slot, pszName, xuid, pszNetworkID, pszAddress, bFakePlayer);
+	GetOnClientConnectedListenerManager().Notify(slot.Get(), pszName, xuid, pszNetworkID, pszAddress, bFakePlayer);
 	return dyno::ReturnAction::Ignored;
 }
 dyno::ReturnAction Source2SDK::Hook_ClientFullyConnect(dyno::CallbackType type, dyno::IHook& hook) {
 	//CPlayerSlot slot
 	auto slot = (CPlayerSlot)dyno::GetArgument<int>(hook, 1);
 	Message("Hook_ClientFullyConnect(%d)\n", slot);
-	GetOnClientFullyConnectListenerManager().Notify(slot);
+	GetOnClientFullyConnectListenerManager().Notify(slot.Get());
 	return dyno::ReturnAction::Ignored;
 }
 
@@ -170,7 +171,7 @@ dyno::ReturnAction Source2SDK::Hook_ClientConnect(dyno::CallbackType type, dyno:
 	bool unk1 = dyno::GetArgument<bool>(hook, 5);
 	auto pRejectReason = dyno::GetArgument<CBufferString*>(hook, 6);
 	Message("Hook_ClientConnect(%d, \"%s\", %lli, \"%s\", %d, \"%s\")\n", slot, pszName, xuid, pszNetworkID, unk1, pRejectReason->ToGrowable()->Get());
-	GetOnClientConnectListenerManager().Notify(slot, pszName, xuid, pszNetworkID, unk1, pRejectReason->ToGrowable()->Get());
+	GetOnClientConnectListenerManager().Notify(slot.Get(), pszName, xuid, pszNetworkID, unk1, pRejectReason->ToGrowable()->Get());
 	return dyno::ReturnAction::Ignored;
 }
 /*dyno::ReturnAction Source2SDK::Hook_ClientCommand(dyno::CallbackType type, dyno::IHook& hook) {

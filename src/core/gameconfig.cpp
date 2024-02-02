@@ -1,5 +1,6 @@
 #include "gameconfig.h"
 #include "module.h"
+#include "fwd.h"
 
 using namespace cs2sdk;
 
