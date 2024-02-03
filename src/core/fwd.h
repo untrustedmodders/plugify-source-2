@@ -9,7 +9,7 @@
 #include <eiface.h>
 #include <iserver.h>
 #include <igameeventsystem.h>
-#include <igameevents.h>
 #include <entitysystem.h>
+#include <igameevents.h>
 
 #include <ISmmPlugin.h>

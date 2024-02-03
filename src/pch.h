@@ -7,5 +7,6 @@
 #include <charconv>
 #include <memory>
 #include <algorithm>
+#include <stack>
 
 #include "core/globals.h"

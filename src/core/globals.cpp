@@ -9,6 +9,7 @@
 #include "interfaces/cschemasystem.h"
 
 IGameEventSystem* g_gameEventSystem = nullptr;
+IGameEventManager2* g_gameEventManager = nullptr;
 CGlobalVars* gpGlobals = nullptr;
 IVEngineServer2* g_pEngineServer2 = nullptr;
 CGameResourceService* pGameResourceServiceServer = nullptr;
@@ -66,6 +67,8 @@ namespace cs2sdk {
 			using IMetamodListenerFn = IMetamodListener* (*)();
 			auto func = wizard->GetFunction<IMetamodListenerFn>("Wizard_ImmListener");
 			metamodListener = func();
+
+			g_gameEventManager = (IGameEventManager2*)(CALL_VIRTUAL(uintptr_t, 91, g_pSource2Server) - 8);
 
 			// load more if needed
 		}

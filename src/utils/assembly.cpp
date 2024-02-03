@@ -2,7 +2,7 @@
 
 #if CS2SDK_PLATFORM_WINDOWS
 #include <windows.h>
-#include <Psapi.h>
+#include <psapi.h>
 #elif CS2SDK_PLATFORM_LINUX
 #include <dlfcn.h>
 #include <elf.h>
@@ -10,7 +10,7 @@
 #elif CS2SDK_PLATFORM_APPLE
 #include <dlfcn.h>
 #else
-
+#error "Platform not supported"
 #endif
 
 namespace cs2sdk {

@@ -1,12 +1,11 @@
 #pragma once
 
-#include <thread>
-
 namespace SourceMM {
 	class IMetamodListener;
 }
 
 class IGameEventSystem;
+class IGameEventManager2;
 class CGlobalVars;
 class IVEngineServer2;
 class CGameResourceService;
@@ -14,6 +13,7 @@ class CSchemaSystem;
 class CGameEntitySystem;
 
 extern IGameEventSystem* g_gameEventSystem;
+extern IGameEventManager2* g_gameEventManager;
 extern CGlobalVars* gpGlobals;
 extern IVEngineServer2* g_pEngineServer2;
 extern CGameResourceService* pGameResourceServiceServer;
@@ -26,7 +26,6 @@ namespace cs2sdk {
 	namespace globals {
 		extern SourceMM::IMetamodListener* metamodListener;
 		extern CGameConfig* gameConfig;
-		extern std::thread::id gameThreadId;
 
 		void Initialize();
 		void Terminate();
