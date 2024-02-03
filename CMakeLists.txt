@@ -78,9 +78,9 @@ endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
 		PREFIX ""
-		ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/addons/wizard/plugins/cs2sdk/bin"
-		LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/addons/wizard/plugins/cs2sdk/bin"
-		RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/addons/wizard/plugins/cs2sdk/bin"
+		ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/addons/plugify/plugins/cs2sdk/bin"
+		LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/addons/plugify/plugins/cs2sdk/bin"
+		RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/addons/plugify/plugins/cs2sdk/bin"
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "cs2sdk")
@@ -98,7 +98,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 add_custom_command(
         TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy 
-        ${CMAKE_SOURCE_DIR}/cs2sdk.wplugin ${CMAKE_BINARY_DIR}/addons/wizard/plugins/cs2sdk
+        ${CMAKE_SOURCE_DIR}/cs2sdk.wplugin ${CMAKE_BINARY_DIR}/addons/plugify/plugins/cs2sdk
 )
 
 # Temp
@@ -106,12 +106,12 @@ add_custom_command(
 add_custom_command(
         TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E remove_directory
-        D:/steamcmd/cs2-ds/game/csgo/addons/wizard/plugins/cs2sdk
+        D:/steamcmd/cs2-ds/game/csgo/addons/plugify/plugins/cs2sdk
 )
 
 add_custom_command(
         TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_BINARY_DIR}/addons/wizard/plugins/cs2sdk
-        D:/steamcmd/cs2-ds/game/csgo/addons/wizard/plugins/cs2sdk
+        ${CMAKE_BINARY_DIR}/addons/plugify/plugins/cs2sdk
+        D:/steamcmd/cs2-ds/game/csgo/addons/plugify/plugins/cs2sdk
 )
