@@ -1,11 +1,11 @@
 #pragma once
 
-#include <wizard/cpp_plugin.h>
+#include <plugify/cpp_plugin.h>
 #include <dynohook/dynohook.h>
 #include <plugin_export.h>
 
 namespace cs2sdk {
-	class Source2SDK : public wizard::IPluginEntry {
+	class Source2SDK : public plugify::IPluginEntry {
 	public:
 		void OnPluginStart() override;
 		void OnPluginEnd() override;

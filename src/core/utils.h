@@ -14,10 +14,10 @@ namespace cs2sdk::utils {
 		return gameDirectory;
 	}
 
-	inline std::string GetRootDirectory() { return GameDirectory() + "/addons/wizard/"; }
-	inline std::string GetBinDirectory() { return GameDirectory() + "/addons/wizard/bin/" CS2SDK_BINARY "/" ; }
-	inline std::string ConfigsDirectory() { return GameDirectory() + "/addons/wizard/configs/"; }
-	inline std::string GamedataDirectory() { return GameDirectory() + "/addons/wizard/gamedata/"; }
+	inline std::string GetRootDirectory() { return GameDirectory() + "/addons/plugify/"; }
+	inline std::string GetBinDirectory() { return GameDirectory() + "/addons/plugify/bin/" CS2SDK_BINARY "/" ; }
+	inline std::string ConfigsDirectory() { return GameDirectory() + "/addons/plugify/configs/"; }
+	inline std::string GamedataDirectory() { return GameDirectory() + "/addons/plugify/gamedata/"; }
 
 	inline std::string Demangle(const char* name) {
 #if CS2SDK_PLATFORM_LINUX || CS2SDK_PLATFORM_APPLE

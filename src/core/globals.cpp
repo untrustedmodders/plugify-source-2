@@ -62,10 +62,10 @@ namespace cs2sdk {
 				delete gameConfig;
 			}
 
-			auto wizard = CAssembly::FindModule(utils::GetBinDirectory() + BINARY_MODULE_PREFIX "wizard" BINARY_MODULE_SUFFIX);
+			auto plugify = CAssembly::FindModule(utils::GetBinDirectory() + BINARY_MODULE_PREFIX "plugify" BINARY_MODULE_SUFFIX);
 
 			using IMetamodListenerFn = IMetamodListener* (*)();
-			auto func = wizard->GetFunction<IMetamodListenerFn>("Wizard_ImmListener");
+			auto func = plugify->GetFunction<IMetamodListenerFn>("Plugify_ImmListener");
 			metamodListener = func();
 
 			g_gameEventManager = (IGameEventManager2*)(CALL_VIRTUAL(uintptr_t, 91, g_pSource2Server) - 8);

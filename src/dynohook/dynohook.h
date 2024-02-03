@@ -1,6 +1,6 @@
 #pragma once
 
-#include <wizard/cpp_plugin.h>
+#include <plugify/cpp_plugin.h>
 
 namespace dyno {
 	class IHook;
@@ -212,22 +212,22 @@ namespace dyno {
 			// detour
 			if (!m_class) {
 				using UnhookDetourFn = bool (*)(void*);
-				static auto func = reinterpret_cast<UnhookDetourFn>(wizard::GetMethod("dynohook.Dyno_UnhookDetour"));
+				static auto func = reinterpret_cast<UnhookDetourFn>(plugify::GetMethod("dynohook.Dyno_UnhookDetour"));
 				func(m_func);
 			} else if (m_func) {
 				using UnhookVirtualByFuncFn = bool (*)(void*, void*);
-				static auto func = reinterpret_cast<UnhookVirtualByFuncFn>(wizard::GetMethod("dynohook.Dyno_UnhookVirtualByFunc"));
+				static auto func = reinterpret_cast<UnhookVirtualByFuncFn>(plugify::GetMethod("dynohook.Dyno_UnhookVirtualByFunc"));
 				func(m_class, m_func);
 			} else {
 				using UnhookVirtualFn = bool (*)(void*, int);
-				static auto func = reinterpret_cast<UnhookVirtualFn>(wizard::GetMethod("dynohook.Dyno_UnhookVirtual"));
+				static auto func = reinterpret_cast<UnhookVirtualFn>(plugify::GetMethod("dynohook.Dyno_UnhookVirtual"));
 				func(m_class, m_index);
 			}
 		}
 
 		static std::unique_ptr<CHook> CreateDetourHook(void* pFunc, std::span<DataObject> arguments, DataObject returnType) {
 			using HookDetourFn = IHook* (*)(void*, DataObject*, int, DataObject);
-			static auto func = reinterpret_cast<HookDetourFn>(wizard::GetMethod("dynohook.Dyno_HookDetour"));
+			static auto func = reinterpret_cast<HookDetourFn>(plugify::GetMethod("dynohook.Dyno_HookDetour"));
 			IHook* pHook = func(pFunc, arguments.data(), static_cast<int>(arguments.size()), returnType);
 			if (pHook == nullptr)
 				return nullptr;
@@ -236,7 +236,7 @@ namespace dyno {
 
 		static std::unique_ptr<CHook> CreateVirtualHook(void* pClass, int index, std::span<DataObject> arguments, DataObject returnType) {
 			using HookVirtualFn = IHook* (*)(void*, int, DataObject*, int, DataObject);
-			static auto func = reinterpret_cast<HookVirtualFn>(wizard::GetMethod("dynohook.Dyno_HookVirtual"));
+			static auto func = reinterpret_cast<HookVirtualFn>(plugify::GetMethod("dynohook.Dyno_HookVirtual"));
 			IHook* pHook = func(pClass, index, arguments.data(), static_cast<int>(arguments.size()), returnType);
 			if (pHook == nullptr)
 				return nullptr;
@@ -245,7 +245,7 @@ namespace dyno {
 
 		static std::unique_ptr<CHook> CreateHookVirtualByFunc(void* pClass, void* pFunc, std::span<DataObject> arguments, DataObject returnType) {
 			using HookVirtualByFuncFn = IHook* (*)(void*, void*, DataObject*, int, DataObject);
-			static auto func = reinterpret_cast<HookVirtualByFuncFn>(wizard::GetMethod("dynohook.Dyno_HookVirtualByFunc"));
+			static auto func = reinterpret_cast<HookVirtualByFuncFn>(plugify::GetMethod("dynohook.Dyno_HookVirtualByFunc"));
 			IHook* pHook = func(pClass, pFunc, arguments.data(), static_cast<int>(arguments.size()), returnType);
 			if (pHook == nullptr)
 				return nullptr;
@@ -254,25 +254,25 @@ namespace dyno {
 
 		bool AddCallback(CallbackType type, CallbackHandler handler) const {
 			using AddCallbackFn = bool (*)(IHook*, bool, CallbackHandler);
-			static auto func = reinterpret_cast<AddCallbackFn>(wizard::GetMethod("dynohook.Dyno_AddCallback"));
+			static auto func = reinterpret_cast<AddCallbackFn>(plugify::GetMethod("dynohook.Dyno_AddCallback"));
 			return func(m_hook, static_cast<bool>(type), handler);
 		}
 
 		bool RemoveCallback(CallbackType type, CallbackHandler handler) const {
 			using RemoveCallbackFn = bool (*)(IHook*, bool, CallbackHandler);
-			static auto func = reinterpret_cast<RemoveCallbackFn>(wizard::GetMethod("dynohook.Dyno_RemoveCallback"));
+			static auto func = reinterpret_cast<RemoveCallbackFn>(plugify::GetMethod("dynohook.Dyno_RemoveCallback"));
 			return func(m_hook, static_cast<bool>(type), handler);
 		}
 
 		bool IsCallbackRegistered(bool type, CallbackHandler handler) const {
 			using IsCallbackRegisteredFn = bool (*)(IHook*, bool, CallbackHandler);
-			static auto func = reinterpret_cast<IsCallbackRegisteredFn>(wizard::GetMethod("dynohook.Dyno_IsCallbackRegistered"));
+			static auto func = reinterpret_cast<IsCallbackRegisteredFn>(plugify::GetMethod("dynohook.Dyno_IsCallbackRegistered"));
 			return func(m_hook, type, handler);
 		}
 
 		bool AreCallbacksRegistered() const {
 			using AreCallbacksRegisteredFn = bool (*)(IHook*);
-			static auto func = reinterpret_cast<AreCallbacksRegisteredFn>(wizard::GetMethod("dynohook.Dyno_AreCallbacksRegistered"));
+			static auto func = reinterpret_cast<AreCallbacksRegisteredFn>(plugify::GetMethod("dynohook.Dyno_AreCallbacksRegistered"));
 			return func(m_hook);
 		}
 
@@ -287,33 +287,33 @@ namespace dyno {
 	inline T GetArgument(IHook& hook, size_t index) {
 		using GetArgumentFn = T (*)(IHook*, size_t);
 		static GetArgumentFn func;
-		if constexpr (std::is_same_v<T, bool>) func = reinterpret_cast<GetArgumentFn>(wizard::GetMethod("dynohook.Dyno_GetArgumentBool"));
-		else if constexpr (std::is_same_v<T, int8_t>) func = reinterpret_cast<GetArgumentFn>(wizard::GetMethod("dynohook.Dyno_GetArgumentInt8"));
-		else if constexpr (std::is_same_v<T, uint8_t>) func = reinterpret_cast<GetArgumentFn>(wizard::GetMethod("dynohook.Dyno_GetArgumentUInt8"));
-		else if constexpr (std::is_same_v<T, int16_t>) func = reinterpret_cast<GetArgumentFn>(wizard::GetMethod("dynohook.Dyno_GetArgumentInt16"));
-		else if constexpr (std::is_same_v<T, uint16_t>) func = reinterpret_cast<GetArgumentFn>(wizard::GetMethod("dynohook.Dyno_GetArgumentUInt16"));
-		else if constexpr (std::is_same_v<T, int32_t>) func = reinterpret_cast<GetArgumentFn>(wizard::GetMethod("dynohook.Dyno_GetArgumentInt32"));
-		else if constexpr (std::is_same_v<T, uint32_t>) func = reinterpret_cast<GetArgumentFn>(wizard::GetMethod("dynohook.Dyno_GetArgumentUInt32"));
-		else if constexpr (std::is_same_v<T, int64_t>) func = reinterpret_cast<GetArgumentFn>(wizard::GetMethod("dynohook.Dyno_GetArgumentInt64"));
-		else if constexpr (std::is_same_v<T, uint64_t>) func = reinterpret_cast<GetArgumentFn>(wizard::GetMethod("dynohook.Dyno_GetArgumentUInt64"));
-		else if constexpr (std::is_same_v<T, float>) func = reinterpret_cast<GetArgumentFn>(wizard::GetMethod("dynohook.Dyno_GetArgumentFloat"));
-		else if constexpr (std::is_same_v<T, double>) func = reinterpret_cast<GetArgumentFn>(wizard::GetMethod("dynohook.Dyno_GetArgumentDouble"));
-		else if constexpr (std::is_pointer<T>::value) func = reinterpret_cast<GetArgumentFn>(wizard::GetMethod("dynohook.Dyno_GetArgumentPointer"));
-		else if constexpr (std::is_same_v<T, const char*>) func = reinterpret_cast<GetArgumentFn>(wizard::GetMethod("dynohook.Dyno_GetArgumentString"));
-		else if constexpr (std::is_same_v<T, const wchar_t*> || std::is_reference_v<T>) func = reinterpret_cast<GetArgumentFn>(wizard::GetMethod("dynohook.Dyno_GetArgumentWString"));
+		if constexpr (std::is_same_v<T, bool>) func = reinterpret_cast<GetArgumentFn>(plugify::GetMethod("dynohook.Dyno_GetArgumentBool"));
+		else if constexpr (std::is_same_v<T, int8_t>) func = reinterpret_cast<GetArgumentFn>(plugify::GetMethod("dynohook.Dyno_GetArgumentInt8"));
+		else if constexpr (std::is_same_v<T, uint8_t>) func = reinterpret_cast<GetArgumentFn>(plugify::GetMethod("dynohook.Dyno_GetArgumentUInt8"));
+		else if constexpr (std::is_same_v<T, int16_t>) func = reinterpret_cast<GetArgumentFn>(plugify::GetMethod("dynohook.Dyno_GetArgumentInt16"));
+		else if constexpr (std::is_same_v<T, uint16_t>) func = reinterpret_cast<GetArgumentFn>(plugify::GetMethod("dynohook.Dyno_GetArgumentUInt16"));
+		else if constexpr (std::is_same_v<T, int32_t>) func = reinterpret_cast<GetArgumentFn>(plugify::GetMethod("dynohook.Dyno_GetArgumentInt32"));
+		else if constexpr (std::is_same_v<T, uint32_t>) func = reinterpret_cast<GetArgumentFn>(plugify::GetMethod("dynohook.Dyno_GetArgumentUInt32"));
+		else if constexpr (std::is_same_v<T, int64_t>) func = reinterpret_cast<GetArgumentFn>(plugify::GetMethod("dynohook.Dyno_GetArgumentInt64"));
+		else if constexpr (std::is_same_v<T, uint64_t>) func = reinterpret_cast<GetArgumentFn>(plugify::GetMethod("dynohook.Dyno_GetArgumentUInt64"));
+		else if constexpr (std::is_same_v<T, float>) func = reinterpret_cast<GetArgumentFn>(plugify::GetMethod("dynohook.Dyno_GetArgumentFloat"));
+		else if constexpr (std::is_same_v<T, double>) func = reinterpret_cast<GetArgumentFn>(plugify::GetMethod("dynohook.Dyno_GetArgumentDouble"));
+		else if constexpr (std::is_pointer<T>::value) func = reinterpret_cast<GetArgumentFn>(plugify::GetMethod("dynohook.Dyno_GetArgumentPointer"));
+		else if constexpr (std::is_same_v<T, const char*>) func = reinterpret_cast<GetArgumentFn>(plugify::GetMethod("dynohook.Dyno_GetArgumentString"));
+		else if constexpr (std::is_same_v<T, const wchar_t*> || std::is_reference_v<T>) func = reinterpret_cast<GetArgumentFn>(plugify::GetMethod("dynohook.Dyno_GetArgumentWString"));
 		else {
 			if (sizeof(T) > sizeof(int64_t)) {
 				static_assert("Unsupported type");
 			} else if constexpr (sizeof(T) > sizeof(int32_t)) {
-				func = reinterpret_cast<GetArgumentFn>(wizard::GetMethod("dynohook.Dyno_GetArgumentInt64"));
+				func = reinterpret_cast<GetArgumentFn>(plugify::GetMethod("dynohook.Dyno_GetArgumentInt64"));
 			} else if constexpr (sizeof(T) > sizeof(int16_t)) {
-				func = reinterpret_cast<GetArgumentFn>(wizard::GetMethod("dynohook.Dyno_GetArgumentInt32"));
+				func = reinterpret_cast<GetArgumentFn>(plugify::GetMethod("dynohook.Dyno_GetArgumentInt32"));
 			} else if constexpr (sizeof(T) > sizeof(int8_t)) {
-				func = reinterpret_cast<GetArgumentFn>(wizard::GetMethod("dynohook.Dyno_GetArgumentInt16"));
+				func = reinterpret_cast<GetArgumentFn>(plugify::GetMethod("dynohook.Dyno_GetArgumentInt16"));
 			} else if constexpr (sizeof(T) > sizeof(bool)) {
-				func = reinterpret_cast<GetArgumentFn>(wizard::GetMethod("dynohook.Dyno_GetArgumentInt8"));
+				func = reinterpret_cast<GetArgumentFn>(plugify::GetMethod("dynohook.Dyno_GetArgumentInt8"));
 			} else {
-				func = reinterpret_cast<GetArgumentFn>(wizard::GetMethod("dynohook.Dyno_GetArgumentBool"));
+				func = reinterpret_cast<GetArgumentFn>(plugify::GetMethod("dynohook.Dyno_GetArgumentBool"));
 			}
 		}
 		return func(&hook, index);
@@ -323,33 +323,33 @@ namespace dyno {
 	inline void SetArgument(IHook& hook, size_t index, T value) {
 		using SetArgumentFn = void (*)(IHook*, size_t, T);
 		static SetArgumentFn func;
-		if constexpr (std::is_same_v<T, bool>) func = reinterpret_cast<SetArgumentFn>(wizard::GetMethod("dynohook.Dyno_SetArgumentBool"));
-		else if constexpr (std::is_same_v<T, int8_t>) func = reinterpret_cast<SetArgumentFn>(wizard::GetMethod("dynohook.Dyno_SetArgumentInt8"));
-		else if constexpr (std::is_same_v<T, uint8_t>) func = reinterpret_cast<SetArgumentFn>(wizard::GetMethod("dynohook.Dyno_SetArgumentUInt8"));
-		else if constexpr (std::is_same_v<T, int16_t>) func = reinterpret_cast<SetArgumentFn>(wizard::GetMethod("dynohook.Dyno_SetArgumentInt16"));
-		else if constexpr (std::is_same_v<T, uint16_t>) func = reinterpret_cast<SetArgumentFn>(wizard::GetMethod("dynohook.Dyno_SetArgumentUInt16"));
-		else if constexpr (std::is_same_v<T, int32_t>) func = reinterpret_cast<SetArgumentFn>(wizard::GetMethod("dynohook.Dyno_SetArgumentInt32"));
-		else if constexpr (std::is_same_v<T, uint32_t>) func = reinterpret_cast<SetArgumentFn>(wizard::GetMethod("dynohook.Dyno_SetArgumentUInt32"));
-		else if constexpr (std::is_same_v<T, int64_t>) func = reinterpret_cast<SetArgumentFn>(wizard::GetMethod("dynohook.Dyno_SetArgumentInt64"));
-		else if constexpr (std::is_same_v<T, uint64_t>) func = reinterpret_cast<SetArgumentFn>(wizard::GetMethod("dynohook.Dyno_SetArgumentUInt64"));
-		else if constexpr (std::is_same_v<T, float>) func = reinterpret_cast<SetArgumentFn>(wizard::GetMethod("dynohook.Dyno_SetArgumentFloat"));
-		else if constexpr (std::is_same_v<T, double>) func = reinterpret_cast<SetArgumentFn>(wizard::GetMethod("dynohook.Dyno_SetArgumentDouble"));
-		else if constexpr (std::is_pointer<T>::value) func = reinterpret_cast<SetArgumentFn>(wizard::GetMethod("dynohook.Dyno_SetArgumentPointer"));
-		else if constexpr (std::is_same_v<T, const char*>) func = reinterpret_cast<SetArgumentFn>(wizard::GetMethod("dynohook.Dyno_SetArgumentString"));
-		else if constexpr (std::is_same_v<T, const wchar_t*> || std::is_reference_v<T>) func = reinterpret_cast<SetArgumentFn>(wizard::GetMethod("dynohook.Dyno_SetArgumentWString"));
+		if constexpr (std::is_same_v<T, bool>) func = reinterpret_cast<SetArgumentFn>(plugify::GetMethod("dynohook.Dyno_SetArgumentBool"));
+		else if constexpr (std::is_same_v<T, int8_t>) func = reinterpret_cast<SetArgumentFn>(plugify::GetMethod("dynohook.Dyno_SetArgumentInt8"));
+		else if constexpr (std::is_same_v<T, uint8_t>) func = reinterpret_cast<SetArgumentFn>(plugify::GetMethod("dynohook.Dyno_SetArgumentUInt8"));
+		else if constexpr (std::is_same_v<T, int16_t>) func = reinterpret_cast<SetArgumentFn>(plugify::GetMethod("dynohook.Dyno_SetArgumentInt16"));
+		else if constexpr (std::is_same_v<T, uint16_t>) func = reinterpret_cast<SetArgumentFn>(plugify::GetMethod("dynohook.Dyno_SetArgumentUInt16"));
+		else if constexpr (std::is_same_v<T, int32_t>) func = reinterpret_cast<SetArgumentFn>(plugify::GetMethod("dynohook.Dyno_SetArgumentInt32"));
+		else if constexpr (std::is_same_v<T, uint32_t>) func = reinterpret_cast<SetArgumentFn>(plugify::GetMethod("dynohook.Dyno_SetArgumentUInt32"));
+		else if constexpr (std::is_same_v<T, int64_t>) func = reinterpret_cast<SetArgumentFn>(plugify::GetMethod("dynohook.Dyno_SetArgumentInt64"));
+		else if constexpr (std::is_same_v<T, uint64_t>) func = reinterpret_cast<SetArgumentFn>(plugify::GetMethod("dynohook.Dyno_SetArgumentUInt64"));
+		else if constexpr (std::is_same_v<T, float>) func = reinterpret_cast<SetArgumentFn>(plugify::GetMethod("dynohook.Dyno_SetArgumentFloat"));
+		else if constexpr (std::is_same_v<T, double>) func = reinterpret_cast<SetArgumentFn>(plugify::GetMethod("dynohook.Dyno_SetArgumentDouble"));
+		else if constexpr (std::is_pointer<T>::value) func = reinterpret_cast<SetArgumentFn>(plugify::GetMethod("dynohook.Dyno_SetArgumentPointer"));
+		else if constexpr (std::is_same_v<T, const char*>) func = reinterpret_cast<SetArgumentFn>(plugify::GetMethod("dynohook.Dyno_SetArgumentString"));
+		else if constexpr (std::is_same_v<T, const wchar_t*> || std::is_reference_v<T>) func = reinterpret_cast<SetArgumentFn>(plugify::GetMethod("dynohook.Dyno_SetArgumentWString"));
 		else {
 			if (sizeof(T) > sizeof(int64_t)) {
 				static_assert("Unsupported type");
 			} else if constexpr (sizeof(T) > sizeof(int32_t)) {
-				func = reinterpret_cast<SetArgumentFn>(wizard::GetMethod("dynohook.Dyno_SetArgumentInt64"));
+				func = reinterpret_cast<SetArgumentFn>(plugify::GetMethod("dynohook.Dyno_SetArgumentInt64"));
 			} else if constexpr (sizeof(T) > sizeof(int16_t)) {
-				func = reinterpret_cast<SetArgumentFn>(wizard::GetMethod("dynohook.Dyno_SetArgumentInt32"));
+				func = reinterpret_cast<SetArgumentFn>(plugify::GetMethod("dynohook.Dyno_SetArgumentInt32"));
 			} else if constexpr (sizeof(T) > sizeof(int8_t)) {
-				func = reinterpret_cast<SetArgumentFn>(wizard::GetMethod("dynohook.Dyno_SetArgumentInt16"));
+				func = reinterpret_cast<SetArgumentFn>(plugify::GetMethod("dynohook.Dyno_SetArgumentInt16"));
 			} else if constexpr (sizeof(T) > sizeof(bool)) {
-				func = reinterpret_cast<SetArgumentFn>(wizard::GetMethod("dynohook.Dyno_SetArgumentInt8"));
+				func = reinterpret_cast<SetArgumentFn>(plugify::GetMethod("dynohook.Dyno_SetArgumentInt8"));
 			} else {
-				func = reinterpret_cast<SetArgumentFn>(wizard::GetMethod("dynohook.Dyno_SetArgumentBool"));
+				func = reinterpret_cast<SetArgumentFn>(plugify::GetMethod("dynohook.Dyno_SetArgumentBool"));
 			}
 		}
 		func(&hook, index, value);
@@ -359,33 +359,33 @@ namespace dyno {
 	inline T GetReturn(IHook& hook) {
 		using GetReturnFn = T (*)(IHook*);
 		static GetReturnFn func;
-		if constexpr (std::is_same_v<T, bool>) func = reinterpret_cast<GetReturnFn>(wizard::GetMethod("dynohook.Dyno_GetReturnBool"));
-		else if constexpr (std::is_same_v<T, int8_t>) func = reinterpret_cast<GetReturnFn>(wizard::GetMethod("dynohook.Dyno_GetReturnInt8"));
-		else if constexpr (std::is_same_v<T, uint8_t>) func = reinterpret_cast<GetReturnFn>(wizard::GetMethod("dynohook.Dyno_GetReturnUInt8"));
-		else if constexpr (std::is_same_v<T, int16_t>) func = reinterpret_cast<GetReturnFn>(wizard::GetMethod("dynohook.Dyno_GetReturnInt16"));
-		else if constexpr (std::is_same_v<T, uint16_t>) func = reinterpret_cast<GetReturnFn>(wizard::GetMethod("dynohook.Dyno_GetReturnUInt16"));
-		else if constexpr (std::is_same_v<T, int32_t>) func = reinterpret_cast<GetReturnFn>(wizard::GetMethod("dynohook.Dyno_GetReturnInt32"));
-		else if constexpr (std::is_same_v<T, uint32_t>) func = reinterpret_cast<GetReturnFn>(wizard::GetMethod("dynohook.Dyno_GetReturnUInt32"));
-		else if constexpr (std::is_same_v<T, int64_t>) func = reinterpret_cast<GetReturnFn>(wizard::GetMethod("dynohook.Dyno_GetReturnInt64"));
-		else if constexpr (std::is_same_v<T, uint64_t>) func = reinterpret_cast<GetReturnFn>(wizard::GetMethod("dynohook.Dyno_GetReturnUInt64"));
-		else if constexpr (std::is_same_v<T, float>) func = reinterpret_cast<GetReturnFn>(wizard::GetMethod("dynohook.Dyno_GetReturnFloat"));
-		else if constexpr (std::is_same_v<T, double>) func = reinterpret_cast<GetReturnFn>(wizard::GetMethod("dynohook.Dyno_GetReturnDouble"));
-		else if constexpr (std::is_same_v<T, const char*>) func = reinterpret_cast<GetReturnFn>(wizard::GetMethod("dynohook.Dyno_GetReturnString"));
-		else if constexpr (std::is_same_v<T, const wchar_t*>) func = reinterpret_cast<GetReturnFn>(wizard::GetMethod("dynohook.Dyno_GetReturnWString"));
-		else if constexpr (std::is_pointer<T>::value || std::is_reference_v<T>) func = reinterpret_cast<GetReturnFn>(wizard::GetMethod("dynohook.Dyno_GetReturnPointer"));
+		if constexpr (std::is_same_v<T, bool>) func = reinterpret_cast<GetReturnFn>(plugify::GetMethod("dynohook.Dyno_GetReturnBool"));
+		else if constexpr (std::is_same_v<T, int8_t>) func = reinterpret_cast<GetReturnFn>(plugify::GetMethod("dynohook.Dyno_GetReturnInt8"));
+		else if constexpr (std::is_same_v<T, uint8_t>) func = reinterpret_cast<GetReturnFn>(plugify::GetMethod("dynohook.Dyno_GetReturnUInt8"));
+		else if constexpr (std::is_same_v<T, int16_t>) func = reinterpret_cast<GetReturnFn>(plugify::GetMethod("dynohook.Dyno_GetReturnInt16"));
+		else if constexpr (std::is_same_v<T, uint16_t>) func = reinterpret_cast<GetReturnFn>(plugify::GetMethod("dynohook.Dyno_GetReturnUInt16"));
+		else if constexpr (std::is_same_v<T, int32_t>) func = reinterpret_cast<GetReturnFn>(plugify::GetMethod("dynohook.Dyno_GetReturnInt32"));
+		else if constexpr (std::is_same_v<T, uint32_t>) func = reinterpret_cast<GetReturnFn>(plugify::GetMethod("dynohook.Dyno_GetReturnUInt32"));
+		else if constexpr (std::is_same_v<T, int64_t>) func = reinterpret_cast<GetReturnFn>(plugify::GetMethod("dynohook.Dyno_GetReturnInt64"));
+		else if constexpr (std::is_same_v<T, uint64_t>) func = reinterpret_cast<GetReturnFn>(plugify::GetMethod("dynohook.Dyno_GetReturnUInt64"));
+		else if constexpr (std::is_same_v<T, float>) func = reinterpret_cast<GetReturnFn>(plugify::GetMethod("dynohook.Dyno_GetReturnFloat"));
+		else if constexpr (std::is_same_v<T, double>) func = reinterpret_cast<GetReturnFn>(plugify::GetMethod("dynohook.Dyno_GetReturnDouble"));
+		else if constexpr (std::is_same_v<T, const char*>) func = reinterpret_cast<GetReturnFn>(plugify::GetMethod("dynohook.Dyno_GetReturnString"));
+		else if constexpr (std::is_same_v<T, const wchar_t*>) func = reinterpret_cast<GetReturnFn>(plugify::GetMethod("dynohook.Dyno_GetReturnWString"));
+		else if constexpr (std::is_pointer<T>::value || std::is_reference_v<T>) func = reinterpret_cast<GetReturnFn>(plugify::GetMethod("dynohook.Dyno_GetReturnPointer"));
 		else {
 			if (sizeof(T) > sizeof(int64_t)) {
 				static_assert("Unsupported type");
 			} else if constexpr (sizeof(T) > sizeof(int32_t)) {
-				func = reinterpret_cast<GetReturnFn>(wizard::GetMethod("dynohook.Dyno_GetReturnInt64"));
+				func = reinterpret_cast<GetReturnFn>(plugify::GetMethod("dynohook.Dyno_GetReturnInt64"));
 			} else if constexpr (sizeof(T) > sizeof(int16_t)) {
-				func = reinterpret_cast<GetReturnFn>(wizard::GetMethod("dynohook.Dyno_GetReturnInt32"));
+				func = reinterpret_cast<GetReturnFn>(plugify::GetMethod("dynohook.Dyno_GetReturnInt32"));
 			} else if constexpr (sizeof(T) > sizeof(int8_t)) {
-				func = reinterpret_cast<GetReturnFn>(wizard::GetMethod("dynohook.Dyno_GetReturnInt16"));
+				func = reinterpret_cast<GetReturnFn>(plugify::GetMethod("dynohook.Dyno_GetReturnInt16"));
 			} else if constexpr (sizeof(T) > sizeof(bool)) {
-				func = reinterpret_cast<GetReturnFn>(wizard::GetMethod("dynohook.Dyno_GetReturnInt8"));
+				func = reinterpret_cast<GetReturnFn>(plugify::GetMethod("dynohook.Dyno_GetReturnInt8"));
 			} else {
-				func = reinterpret_cast<GetReturnFn>(wizard::GetMethod("dynohook.Dyno_GetReturnBool"));
+				func = reinterpret_cast<GetReturnFn>(plugify::GetMethod("dynohook.Dyno_GetReturnBool"));
 			}
 		}
 		return func(&hook);
@@ -395,33 +395,33 @@ namespace dyno {
 	inline void SetReturn(IHook& hook, T value) {
 		using SetReturnFn = void (*)(IHook*, T);
 		static SetReturnFn func;
-		if constexpr (std::is_same_v<T, bool>) func = reinterpret_cast<SetReturnFn>(wizard::GetMethod("dynohook.Dyno_SetReturnBool"));
-		else if constexpr (std::is_same_v<T, int8_t>) func = reinterpret_cast<SetReturnFn>(wizard::GetMethod("dynohook.Dyno_SetReturnInt8"));
-		else if constexpr (std::is_same_v<T, uint8_t>) func = reinterpret_cast<SetReturnFn>(wizard::GetMethod("dynohook.Dyno_SetReturnUInt8"));
-		else if constexpr (std::is_same_v<T, int16_t>) func = reinterpret_cast<SetReturnFn>(wizard::GetMethod("dynohook.Dyno_SetReturnInt16"));
-		else if constexpr (std::is_same_v<T, uint16_t>) func = reinterpret_cast<SetReturnFn>(wizard::GetMethod("dynohook.Dyno_SetReturnUInt16"));
-		else if constexpr (std::is_same_v<T, int32_t>) func = reinterpret_cast<SetReturnFn>(wizard::GetMethod("dynohook.Dyno_SetReturnInt32"));
-		else if constexpr (std::is_same_v<T, uint32_t>) func = reinterpret_cast<SetReturnFn>(wizard::GetMethod("dynohook.Dyno_SetReturnUInt32"));
-		else if constexpr (std::is_same_v<T, int64_t>) func = reinterpret_cast<SetReturnFn>(wizard::GetMethod("dynohook.Dyno_SetReturnInt64"));
-		else if constexpr (std::is_same_v<T, uint64_t>) func = reinterpret_cast<SetReturnFn>(wizard::GetMethod("dynohook.Dyno_SetReturnUInt64"));
-		else if constexpr (std::is_same_v<T, float>) func = reinterpret_cast<SetReturnFn>(wizard::GetMethod("dynohook.Dyno_SetReturnFloat"));
-		else if constexpr (std::is_same_v<T, double>) func = reinterpret_cast<SetReturnFn>(wizard::GetMethod("dynohook.Dyno_SetReturnDouble"));
-		else if constexpr (std::is_same_v<T, const char*>) func = reinterpret_cast<SetReturnFn>(wizard::GetMethod("dynohook.Dyno_SetReturnString"));
-		else if constexpr (std::is_same_v<T, const wchar_t*>) func = reinterpret_cast<SetReturnFn>(wizard::GetMethod("dynohook.Dyno_SetReturnWString"));
-		else if constexpr (std::is_pointer<T>::value || std::is_reference_v<T>) func = reinterpret_cast<SetReturnFn>(wizard::GetMethod("dynohook.Dyno_SetReturnPointer"));
+		if constexpr (std::is_same_v<T, bool>) func = reinterpret_cast<SetReturnFn>(plugify::GetMethod("dynohook.Dyno_SetReturnBool"));
+		else if constexpr (std::is_same_v<T, int8_t>) func = reinterpret_cast<SetReturnFn>(plugify::GetMethod("dynohook.Dyno_SetReturnInt8"));
+		else if constexpr (std::is_same_v<T, uint8_t>) func = reinterpret_cast<SetReturnFn>(plugify::GetMethod("dynohook.Dyno_SetReturnUInt8"));
+		else if constexpr (std::is_same_v<T, int16_t>) func = reinterpret_cast<SetReturnFn>(plugify::GetMethod("dynohook.Dyno_SetReturnInt16"));
+		else if constexpr (std::is_same_v<T, uint16_t>) func = reinterpret_cast<SetReturnFn>(plugify::GetMethod("dynohook.Dyno_SetReturnUInt16"));
+		else if constexpr (std::is_same_v<T, int32_t>) func = reinterpret_cast<SetReturnFn>(plugify::GetMethod("dynohook.Dyno_SetReturnInt32"));
+		else if constexpr (std::is_same_v<T, uint32_t>) func = reinterpret_cast<SetReturnFn>(plugify::GetMethod("dynohook.Dyno_SetReturnUInt32"));
+		else if constexpr (std::is_same_v<T, int64_t>) func = reinterpret_cast<SetReturnFn>(plugify::GetMethod("dynohook.Dyno_SetReturnInt64"));
+		else if constexpr (std::is_same_v<T, uint64_t>) func = reinterpret_cast<SetReturnFn>(plugify::GetMethod("dynohook.Dyno_SetReturnUInt64"));
+		else if constexpr (std::is_same_v<T, float>) func = reinterpret_cast<SetReturnFn>(plugify::GetMethod("dynohook.Dyno_SetReturnFloat"));
+		else if constexpr (std::is_same_v<T, double>) func = reinterpret_cast<SetReturnFn>(plugify::GetMethod("dynohook.Dyno_SetReturnDouble"));
+		else if constexpr (std::is_same_v<T, const char*>) func = reinterpret_cast<SetReturnFn>(plugify::GetMethod("dynohook.Dyno_SetReturnString"));
+		else if constexpr (std::is_same_v<T, const wchar_t*>) func = reinterpret_cast<SetReturnFn>(plugify::GetMethod("dynohook.Dyno_SetReturnWString"));
+		else if constexpr (std::is_pointer<T>::value || std::is_reference_v<T>) func = reinterpret_cast<SetReturnFn>(plugify::GetMethod("dynohook.Dyno_SetReturnPointer"));
 		else {
 			if (sizeof(T) > sizeof(int64_t)) {
 				static_assert("Unsupported type");
 			} else if constexpr (sizeof(T) > sizeof(int32_t)) {
-				func = reinterpret_cast<SetReturnFn>(wizard::GetMethod("dynohook.Dyno_SetReturnInt64"));
+				func = reinterpret_cast<SetReturnFn>(plugify::GetMethod("dynohook.Dyno_SetReturnInt64"));
 			} else if constexpr (sizeof(T) > sizeof(int16_t)) {
-				func = reinterpret_cast<SetReturnFn>(wizard::GetMethod("dynohook.Dyno_SetReturnInt32"));
+				func = reinterpret_cast<SetReturnFn>(plugify::GetMethod("dynohook.Dyno_SetReturnInt32"));
 			} else if constexpr (sizeof(T) > sizeof(int8_t)) {
-				func = reinterpret_cast<SetReturnFn>(wizard::GetMethod("dynohook.Dyno_SetReturnInt16"));
+				func = reinterpret_cast<SetReturnFn>(plugify::GetMethod("dynohook.Dyno_SetReturnInt16"));
 			} else if constexpr (sizeof(T) > sizeof(bool)) {
-				func = reinterpret_cast<SetReturnFn>(wizard::GetMethod("dynohook.Dyno_SetReturnInt8"));
+				func = reinterpret_cast<SetReturnFn>(plugify::GetMethod("dynohook.Dyno_SetReturnInt8"));
 			} else {
-				func = reinterpret_cast<SetReturnFn>(wizard::GetMethod("dynohook.Dyno_SetReturnBool"));
+				func = reinterpret_cast<SetReturnFn>(plugify::GetMethod("dynohook.Dyno_SetReturnBool"));
 			}
 		}
 		func(&hook, value);
