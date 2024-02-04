@@ -1,0 +1,19 @@
+{
+   "content": {
+      "cs2-sdk-plugin": {
+         "name": "cs2-sdk-plugin",
+         "type": "plugin",
+         "author": "untrustedmodders",
+         "description": "Adds support for C++ plugins",
+         "versions": [
+            {
+               "version": 1,
+			   "checksum": "",
+               "download": "https://github.com/untrustedmodders/cs2-sdk-plugin/releases/download/v1.0/cs2-sdk-plugin.zip",
+               "platforms": [
+               ]
+            }
+         ]
+      }
+   }
+}
