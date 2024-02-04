@@ -98,7 +98,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 add_custom_command(
         TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy 
-        ${CMAKE_SOURCE_DIR}/cs2sdk.wplugin ${CMAKE_BINARY_DIR}/addons/plugify/plugins/cs2sdk
+        ${CMAKE_SOURCE_DIR}/cs2sdk.pplugin ${CMAKE_BINARY_DIR}/addons/plugify/plugins/cs2sdk
 )
 
 # Temp

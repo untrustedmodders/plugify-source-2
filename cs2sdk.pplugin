@@ -9,7 +9,7 @@
 	"docsURL": "https://github.com/untrustedmodders/cs2-sdk-plugin",
 	"downloadURL": "",
 	"updateURL": "",
-	"assemblyPath": "bin/cs2sdk",
+	"entryPoint": "bin/cs2sdk",
 	"supportedPlatforms": [],
 	"languageModule": {
 		"name": "cpp"
