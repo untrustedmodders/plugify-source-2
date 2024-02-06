@@ -2,7 +2,7 @@
 
 #include <utils/assembly.h>
 
-namespace cs2sdk::modules {
+namespace modules {
 	class CModule {
 	public:
 		CModule(const char* path, const char* module);

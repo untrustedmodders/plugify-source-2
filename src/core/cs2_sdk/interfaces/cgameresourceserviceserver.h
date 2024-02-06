@@ -28,6 +28,6 @@ class CGameResourceService
 {
   public:
     CGameEntitySystem* GetGameEntitySystem() {
-        return *reinterpret_cast<CGameEntitySystem**>((uintptr_t)(this) + cs2sdk::globals::gameConfig->GetOffset("GameEntitySystem"));
+        return *reinterpret_cast<CGameEntitySystem**>((uintptr_t)(this) + globals::g_GameConfig->GetOffset("GameEntitySystem"));
     }
 };

@@ -1,17 +1,18 @@
 #include "eventmanager.h"
-#include "globals.h"
 #include "fwd.h"
-
-using namespace cs2sdk;
 
 CEventManager::~CEventManager() {
 	while (!m_FreeEvents.empty()) {
 		delete m_FreeEvents.top();
 		m_FreeEvents.pop();
 	}
+
+	if (!m_EventHooks.empty()) {
+		g_gameEventManager->RemoveListener(this);
+	}
 }
 
-EventHookError CEventManager::HookEvent(const char* name, FnEventListenerCallback pCallback, EventHookMode mode) {
+EventHookError CEventManager::HookEvent(const char* name, FnEventListenerCallback callback, EventHookMode mode) {
 	if (!g_gameEventManager->FindListener(this, name)) {
 		if (!g_gameEventManager->AddListener(this, name, true)) {
 			return EventHookError::InvalidEvent;
@@ -23,11 +24,11 @@ EventHookError CEventManager::HookEvent(const char* name, FnEventListenerCallbac
 		EventHook pHook{name};
 
 		if (mode == EventHookMode::Pre) {
-			pHook.pPreHook = std::make_unique<CListenerManager<FnEventListenerCallback>>();
-			pHook.pPreHook->Register(pCallback);
+			pHook.preHook = std::make_unique<CListenerManager<FnEventListenerCallback>>();
+			pHook.preHook->Register(callback);
 		} else {
-			pHook.pPostHook = std::make_unique<CListenerManager<FnEventListenerCallback>>();
-			pHook.pPostHook->Register(pCallback);
+			pHook.postHook = std::make_unique<CListenerManager<FnEventListenerCallback>>();
+			pHook.postHook->Register(callback);
 			pHook.postCopy = (mode == EventHookMode::Post);
 		}
 
@@ -40,21 +41,21 @@ EventHookError CEventManager::HookEvent(const char* name, FnEventListenerCallbac
 
 	auto& pHook = std::get<EventHook>(*it);
 	if (mode == EventHookMode::Pre) {
-		if (!pHook.pPreHook) {
-			pHook.pPreHook = std::make_unique<CListenerManager<FnEventListenerCallback>>();
+		if (pHook.preHook == nullptr) {
+			pHook.preHook = std::make_unique<CListenerManager<FnEventListenerCallback>>();
 		}
 
-		pHook.pPreHook->Register(pCallback);
+		pHook.preHook->Register(callback);
 	} else {
-		if (!pHook.pPostHook) {
-			pHook.pPostHook = std::make_unique<CListenerManager<FnEventListenerCallback>>();
+		if (pHook.postHook == nullptr) {
+			pHook.postHook = std::make_unique<CListenerManager<FnEventListenerCallback>>();
 		}
 
 		if (!pHook.postCopy) {
 			pHook.postCopy = (mode == EventHookMode::Post);
 		}
 
-		pHook.pPostHook->Register(pCallback);
+		pHook.postHook->Register(callback);
 	}
 
 	pHook.refCount++;
@@ -62,26 +63,26 @@ EventHookError CEventManager::HookEvent(const char* name, FnEventListenerCallbac
 	return EventHookError::Okay;
 }
 
-EventHookError CEventManager::UnhookEvent(const char* name, FnEventListenerCallback pCallback, EventHookMode mode) {
+EventHookError CEventManager::UnhookEvent(const char* name, FnEventListenerCallback callback, EventHookMode mode) {
 	auto it = m_EventHooks.find(name);
 	if (it == m_EventHooks.end()) {
 		return EventHookError::NotActive;
 	}
 
-	Hook* pCallbackHook;
+	HookCallback* pCallbackHook;
 	auto& pHook = std::get<EventHook>(*it);
 	if (mode == EventHookMode::Pre) {
-		pCallbackHook = &pHook.pPreHook;
+		pCallbackHook = &pHook.preHook;
 	} else {
-		pCallbackHook = &pHook.pPostHook;
+		pCallbackHook = &pHook.postHook;
 	}
 
-	if (*pCallbackHook == nullptr || !(*pCallbackHook)->Unregister(pCallback)) {
+	if (*pCallbackHook == nullptr || !(*pCallbackHook)->Unregister(callback)) {
 		return EventHookError::InvalidCallback;
 	}
 
 	if (--pHook.refCount == 0) {
-		m_EventHooks.erase(name);
+		m_EventHooks.erase(it);
 	}
 
 	return EventHookError::Okay;
@@ -117,13 +118,13 @@ EventInfo* CEventManager::CreateEvent(const char* name, bool force) {
 	return nullptr;
 }
 
-void CEventManager::FireEventToClient(EventInfo *pInfo, IClient *pClient) {
+void CEventManager::FireEventToClient(EventInfo* pInfo, IClient* pClient) {
 	auto pGameClient = (IGameEventListener2 *)((intptr_t)pClient - sizeof(void *));
 
 	pGameClient->FireGameEvent(pInfo->pEvent);
 }
 
-void CEventManager::CancelCreatedEvent(EventInfo *pInfo) {
+void CEventManager::CancelCreatedEvent(EventInfo* pInfo) {
 	g_gameEventManager->FreeEvent(pInfo->pEvent);
 
 	m_FreeEvents.push(pInfo);
@@ -147,10 +148,10 @@ dyno::ReturnAction CEventManager::Hook_OnFireEvent(dyno::IHook& hook) {
 
 		ResultType res;
 
-		if (pHook.pPreHook) {
+		if (pHook.preHook != nullptr) {
 			EventInfo info{pEvent, bDontBroadcast};
 
-			auto& mgr = *pHook.pPreHook.get();
+			auto& mgr = *pHook.preHook.get();
 			for (int i = 0; i < mgr.GetCount(); ++i) {
 				res = Max(mgr(i, name, &info, bDontBroadcast), res);
 			}
@@ -188,22 +189,23 @@ dyno::ReturnAction CEventManager::Hook_OnFireEvent_Post(dyno::IHook& hook) {
 	EventHook* pHook = m_EventStack.top();
 
 	if (pHook != nullptr) {
-		if (pHook->pPostHook) {
+		if (pHook->postHook != nullptr) {
 			if (pHook->postCopy) {
 				EventInfo info{m_EventCopies.top(), bDontBroadcast};
 
-				pHook->pPostHook->Notify(pHook->name.c_str(), &info, bDontBroadcast);
+				pHook->postHook->Notify(pHook->name.c_str(), &info, bDontBroadcast);
 
 				g_gameEventManager->FreeEvent(info.pEvent);
+
 				m_EventCopies.pop();
 			} else {
-				pHook->pPostHook->Notify(pHook->name.c_str(), nullptr, bDontBroadcast);
+				pHook->postHook->Notify(pHook->name.c_str(), nullptr, bDontBroadcast);
 			}
 		}
 
 		if (--pHook->refCount == 0) {
-			assert(pHook->pPostHook == nullptr);
-			assert(pHook->pPreHook == nullptr);
+			assert(pHook->postHook == nullptr);
+			assert(pHook->preHook == nullptr);
 			m_EventHooks.erase(pHook->name);
 			delete pHook;
 		}
@@ -214,6 +216,4 @@ dyno::ReturnAction CEventManager::Hook_OnFireEvent_Post(dyno::IHook& hook) {
 	return dyno::ReturnAction::Ignored;
 }
 
-namespace cs2sdk {
-	CEventManager g_EventManager;
-}
+CEventManager g_EventManager;

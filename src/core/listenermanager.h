@@ -4,75 +4,78 @@
 #include <plugin_export.h>
 #include <utlvector.h>
 
-namespace cs2sdk {
-	template <class = void>
-	class CListenerManager;
+enum class ResultType : uint8_t {
+	Continue = 0,
+	Changed = 1,
+	Handled = 3,
+	Stop = 4,
+};
 
-	template<class Ret, class... Args>
-	class CListenerManager<Ret(*)(Args...)> {
-	public:
-		using Func = Ret(*)(Args...);
+template <class = void>
+class CListenerManager;
 
-		template<typename Callable>
-		bool Register(Callable&& callable) requires std::invocable<Callable, Args...> {
-			// Is the callable already in the vector?
-			if(IsRegistered(callable)) {
-				Error("Callback already registered.");
-				return false;
-			} else {
-				m_vecCallables.AddToTail(callable);
-				return true;
+template<class Ret, class... Args>
+class CListenerManager<Ret(*)(Args...)> {
+public:
+	using Func = Ret(*)(Args...);
+
+	template<typename Callable>
+	bool Register(Callable&& callable) requires std::invocable<Callable, Args...> {
+		// Is the callable already in the vector?
+		if (IsRegistered(callable)) {
+			Log_Error(LOG_GENERAL, "Callback already registered.");
+			return false;
+		} else {
+			m_Callables.emplace_back(callable);
+			return true;
+		}
+	}
+
+	template<typename Callable>
+	bool Unregister(Callable&& callable) requires std::invocable<Callable, Args...> {
+		int index = Find(callable);
+		if (index == -1) {
+			Log_Error(LOG_GENERAL, "Callback not registered.");
+			return false;
+		} else {
+			m_Callables.erase(m_Callables.begin() + index);
+			return true;
+		}
+	}
+
+	template <typename Callable>
+	bool IsRegistered(Callable&& callable) {
+		return Find(callable) != -1;
+	}
+
+	template <typename Callable>
+	int Find(Callable&& callable) {
+		for (int i = 0; i < m_Callables.size(); ++i) {
+			if (callable == m_Callables[i]) {
+				return i;
 			}
 		}
+		return -1;
+	}
 
-		template<typename Callable>
-		bool Unregister(Callable&& callable) requires std::invocable<Callable, Args...> {
-			int index = Find(callable);
-			if (index == -1) {
-				Error("Callback not registered.");
-				return false;
-			} else {
-				m_vecCallables.Remove(index);
-				return true;
-			}
+	void Notify(Args... args) const {
+		for (int i = 0; i < m_Callables.size(); ++i) {
+			m_Callables[i](std::forward<Args>(args)...);
 		}
+	}
 
-		template <typename Callable>
-		bool IsRegistered(Callable&& callable) {
-			return Find(callable) != -1;
-		}
+	Ret operator()(size_t index, Args... args) const {
+		return m_Callables[index](std::forward<Args>(args)...);
+	}
 
-		template <typename Callable>
-		int Find(Callable&& callable) {
-			for (int i = 0; i < m_vecCallables.Count(); ++i) {
-				if (callable == m_vecCallables[i]) {
-					return i;
-				}
-			}
-			return -1;
-		}
+	void Clear() {
+		m_Callables.clear();
+	}
 
-		void Notify(Args... args) const {
-			for (int i = 0; i < m_vecCallables.Count(); ++i) {
-				m_vecCallables[i](std::forward<Args>(args)...);
-			}
-		}
+	int GetCount() {
+		return m_Callables.size();
+	}
 
-		Ret operator()(size_t index, Args... args) const {
-			return m_vecCallables[index](std::forward<Args>(args)...);
-		}
-
-		void Clear() {
-			if (GetCount()) {
-				m_vecCallables.RemoveAll();
-			}
-		}
-
-		int GetCount() {
-			return m_vecCallables.Count();
-		}
-
-	private:
-		CUtlVector<Func> m_vecCallables;
-	};
-}
+private:
+	std::vector<Func> m_Callables;
+};

@@ -12,6 +12,11 @@ class CGameResourceService;
 class CSchemaSystem;
 class CGameEntitySystem;
 
+class CEntityInstance;
+class CBasePlayerController;
+class CCSPlayerController;
+class CBaseEntity;
+
 extern IGameEventSystem* g_gameEventSystem;
 extern IGameEventManager2* g_gameEventManager;
 extern CGlobalVars* gpGlobals;
@@ -20,27 +25,35 @@ extern CGameResourceService* pGameResourceServiceServer;
 extern CSchemaSystem* pSchemaSystem;
 extern CGameEntitySystem* g_pEntitySystem;
 
-namespace cs2sdk {
-	class CGameConfig;
+class CGameConfig;
 
-	namespace globals {
-		extern SourceMM::IMetamodListener* metamodListener;
-		extern CGameConfig* gameConfig;
+namespace globals {
+	extern SourceMM::IMetamodListener* g_MetamodListener;
+	extern CGameConfig* g_GameConfig;
 
-		void Initialize();
-		void Terminate();
+	void Initialize();
+	void Terminate();
 
-		CGlobalVars* GetGameGlobals();
-	}
+	CGlobalVars* GetGameGlobals();
+}
 
-	namespace modules {
-		class CModule;
+namespace modules {
+	class CModule;
 
-		extern CModule* engine;
-		extern CModule* tier0;
-		extern CModule* server;
-		extern CModule* schemasystem;
-		extern CModule* filesystem;
-		extern CModule* vscript;
-	}
+	extern CModule* engine;
+	extern CModule* tier0;
+	extern CModule* server;
+	extern CModule* schemasystem;
+	extern CModule* filesystem;
+	extern CModule* vscript;
+}
+
+namespace addresses {
+	inline void (* NetworkStateChanged)(int64_t chainEntity, int64_t offset, int64_t a3);
+	inline void (* StateChanged)(void* networkTransmitComponent, CEntityInstance* ent, int64_t offset, int16_t a4, int16_t a5);
+	inline void (* UTIL_ClientPrintAll)(int msg_dest, const char* msg_name, const char* param1, const char* param2, const char* param3, const char* param4);
+	inline void (* ClientPrint)(CBasePlayerController* player, int msg_dest, const char* msg_name, const char* param1, const char* param2, const char* param3, const char* param4);
+	inline void (* SetGroundEntity)(CBaseEntity* ent, CBaseEntity* ground);
+	inline void (* CCSPlayerController_SwitchTeam)(CCSPlayerController* pController, uint32_t team);
+	inline void (* UTIL_Remove)(CEntityInstance*);
 }

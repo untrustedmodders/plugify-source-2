@@ -2,7 +2,7 @@
 
 #include <public/eiface.h>
 
-namespace cs2sdk::utils {
+namespace utils {
 	static std::string gameDirectory;
 
 	inline std::string GameDirectory() {

@@ -21,8 +21,8 @@
 	],
 	"exportedMethods": [
 	  {
-		"name": "GameConfig_Delete",
-		"funcName": "GameConfig_Delete",
+		"name": "GameConfig_Close",
+		"funcName": "GameConfig_Close",
 		"paramTypes": [
 		  {
 			"type": "ptr64",
@@ -34,8 +34,8 @@
 		}
 	  },
 	  {
-		"name": "GameConfig_Create",
-		"funcName": "GameConfig_Create",
+		"name": "GameConfig_Load",
+		"funcName": "GameConfig_Load",
 		"paramTypes": [
 		  {
 			"type": "string",
@@ -131,6 +131,23 @@
 		  "type": "int32"
 		}
 	  },
+      {
+        "name": "GameConfig_GetAddress",
+        "funcName": "GameConfig_GetAddress",
+        "paramTypes": [
+          {
+            "type": "ptr64",
+            "name": "gameConfig"
+          },
+          {
+            "type": "string",
+            "name": "name"
+          }
+        ],
+        "retType": {
+          "type": "ptr64"
+        }
+      },
 	  {
 		"name": "GameConfig_ResolveSignature",
 		"funcName": "GameConfig_ResolveSignature",
