@@ -1,3 +1,7 @@
+// Plugify
+// Copyright (C) 2023-2024 untrustedmodders
+// https://github.com/untrustedmodders/plugify
+
 #pragma once
 
 #include <string>

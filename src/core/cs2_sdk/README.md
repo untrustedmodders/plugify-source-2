@@ -1,1 +1,0 @@
-Credit for these files goes to [CS2Fixes](https://github.com/Source2ZE/CS2Fixes), licensed under GPLv3 and modified for use in CS2SDK Plugin

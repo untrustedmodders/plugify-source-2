@@ -11,16 +11,15 @@ include("cmake/shared.cmake")
 
 file(GLOB_RECURSE SOURCE_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "src/*.cpp")
 
-SET(SOURCE_FILES
-    ${SOURCE_FILES}
-    external/hl2sdk-cs2/tier1/convar.cpp
+set(SOURCE_FILES ${SOURCE_FILES}
+        ${CMAKE_CURRENT_SOURCE_DIR}/external/hl2sdk-cs2/tier1/convar.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/external/dynlibutils/module.cpp
 )
 
 if (LINUX)
     # memoverride.cpp is not usable on CMake Windows, because CMake default link libraries always link ucrt.lib
-    set(SOURCE_FILES
-        ${SOURCE_FILES}
-        external/hl2sdk-cs2/public/tier0/memoverride.cpp
+    set(SOURCE_FILES ${SOURCE_FILES}
+            ${CMAKE_CURRENT_SOURCE_DIR}/external/hl2sdk-cs2/public/tier0/memoverride.cpp
     )
 endif()
 
@@ -52,6 +51,7 @@ target_include_directories(
         PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/cs2_sdk
+        ${CMAKE_CURRENT_SOURCE_DIR}/external/dynlibutils
 )
 
 include(GenerateExportHeader)
@@ -60,20 +60,8 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_BINARY_DIR}/exports)
 
 if(LINUX)
     include("cmake/linux.cmake")
-    target_compile_definitions(${PROJECT_NAME} PRIVATE
-            CS2SDK_PLATFORM="linux"
-            CS2SDK_BINARY="linuxsteamrt64"
-            CS2SDK_ROOT_BINARY="/bin/linuxsteamrt64/"
-            CS2SDK_GAME_BINARY="/csgo/bin/linuxsteamrt64/"
-            )
 elseif(WIN32)
     include("cmake/windows.cmake")
-    target_compile_definitions(${PROJECT_NAME} PRIVATE
-            CS2SDK_PLATFORM="windows"
-            CS2SDK_BINARY="win64"
-            CS2SDK_ROOT_BINARY="/bin/win64/"
-            CS2SDK_GAME_BINARY="/csgo/bin/win64/"
-            )
 endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES

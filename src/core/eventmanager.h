@@ -7,16 +7,18 @@
 
 class IClient;
 
-struct EventInfo {
-	IGameEvent* pEvent{ nullptr };
+struct EventInfo
+{
+	IGameEvent *pEvent{ nullptr };
 	bool bDontBroadcast{};
 };
 
-typedef ResultType (*FnEventListenerCallback)(const char* name, EventInfo* pEvent, bool bDontBroadcast);
+typedef ResultType (*FnEventListenerCallback)(const char *name, EventInfo *pEvent, bool bDontBroadcast);
 
 using HookCallback = std::unique_ptr<CListenerManager<FnEventListenerCallback>>;
 
-struct EventHook {
+struct EventHook
+{
 	std::string name;
 	HookCallback preHook;
 	HookCallback postHook;
@@ -24,36 +26,39 @@ struct EventHook {
 	bool postCopy{};
 };
 
-enum class EventHookMode : bool {
+enum class EventHookMode : bool
+{
 	Pre,
 	Post,
 };
 
-enum class EventHookError : uint8_t {
+enum class EventHookError : uint8_t
+{
 	Okay = 0,
 	InvalidEvent,
 	NotActive,
 	InvalidCallback,
 };
 
-class CEventManager : public IGameEventListener2 {
+class CEventManager : public IGameEventListener2
+{
 public:
 	CEventManager() = default;
 	~CEventManager() override;
 
-	EventHookError HookEvent(const char* name, FnEventListenerCallback callback, EventHookMode mode = EventHookMode::Post);
-	EventHookError UnhookEvent(const char* name, FnEventListenerCallback callback, EventHookMode mode = EventHookMode::Post);
+	EventHookError HookEvent(const std::string &name, FnEventListenerCallback callback, EventHookMode mode = EventHookMode::Post);
+	EventHookError UnhookEvent(const std::string &name, FnEventListenerCallback callback, EventHookMode mode = EventHookMode::Post);
 
-	EventInfo* CreateEvent(const char* name, bool force = false);
-	void FireEvent(EventInfo* pInfo, bool bDontBroadcast);
-	void FireEventToClient(EventInfo* pInfo, IClient* pClient);
-	void CancelCreatedEvent(EventInfo* pInfo);
+	EventInfo *CreateEvent(const std::string &name, bool force = false);
+	void FireEvent(EventInfo *pInfo, bool bDontBroadcast);
+	void FireEventToClient(EventInfo *pInfo, IClient *pClient);
+	void CancelCreatedEvent(EventInfo *pInfo);
 
-	dyno::ReturnAction Hook_OnFireEvent(dyno::IHook& hook);
-	dyno::ReturnAction Hook_OnFireEvent_Post(dyno::IHook& hook);
+	dyno::ReturnAction Hook_OnFireEvent(dyno::IHook &hook);
+	dyno::ReturnAction Hook_OnFireEvent_Post(dyno::IHook &hook);
 
 private:
-	void FireGameEvent(IGameEvent* event) override;
+	void FireGameEvent(IGameEvent *event) override;
 
 private:
 	std::unordered_map<std::string, EventHook> m_EventHooks;

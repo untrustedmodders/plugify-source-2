@@ -2,34 +2,37 @@
 
 #include "KeyValues.h"
 
-namespace modules {
-	class CModule;
-}
-using ModuleRef = std::optional<std::reference_wrapper<modules::CModule>>;
+#include "module.h"
+#include "memaddr.h"
 
-class CGameConfig {
+using CMemory = DynLibUtils::CMemory;
+using ModuleRef = std::optional<std::reference_wrapper<DynLibUtils::CModule>>;
+
+class CGameConfig
+{
 public:
 	CGameConfig(std::string game, std::string path);
-	CGameConfig(CGameConfig&& other) = default;
+	CGameConfig(CGameConfig &&other) = default;
 	~CGameConfig();
 
 	bool Initialize(std::span<char> error);
 
-	const std::string& GetPath() const;
-	std::string_view GetLibrary(const std::string& name) const;
-	std::string_view GetSignature(const std::string& name) const;
-	std::string_view GetSymbol(const std::string& name) const;
-	std::string_view GetPatch(const std::string& name) const;
-	int GetOffset(const std::string& name) const;
-	void* GetAddress(const std::string& name) const;
-	ModuleRef GetModule(const std::string& name) const;
-	bool IsSymbol(const std::string& name) const;
-	void* ResolveSignature(const std::string& name) const;
+	const std::string &GetPath() const;
+	std::string_view GetLibrary(const std::string &name) const;
+	std::string_view GetSignature(const std::string &name) const;
+	std::string_view GetSymbol(const std::string &name) const;
+	std::string_view GetPatch(const std::string &name) const;
+	int GetOffset(const std::string &name) const;
+	void *GetAddress(const std::string &name) const;
+	ModuleRef GetModule(const std::string &name) const;
+	bool IsSymbol(const std::string &name) const;
+	CMemory ResolveSignature(const std::string &name) const;
 
 	static std::vector<uint8_t> HexToByte(std::string_view hexString);
 
 private:
-	struct AddressConf {
+	struct AddressConf
+	{
 		std::string signature;
 		std::vector<int> read;
 		bool lastIsOffset;
@@ -46,13 +49,14 @@ private:
 	std::unordered_map<std::string, std::string> m_umPatches;
 };
 
-class CGameConfigManager {
+class CGameConfigManager
+{
 public:
 	CGameConfigManager() = default;
 	~CGameConfigManager() = default;
 
-	CGameConfig* LoadGameConfigFile(const char* file);
-	void CloseGameConfigFile(CGameConfig* pGameConfig);
+	CGameConfig *LoadGameConfigFile(std::string file);
+	void CloseGameConfigFile(CGameConfig *pGameConfig);
 
 private:
 	std::unordered_map<std::string, CGameConfig> m_Configs;

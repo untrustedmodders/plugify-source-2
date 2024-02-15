@@ -1,7 +1,7 @@
 #pragma once
 
 #include <tier1/KeyValues.h>
-
+/*
 extern "C"
 PLUGIN_API void KeyValues_DeleteKeyValues(KeyValues* pKeyValues) {
 	delete pKeyValues;
@@ -132,7 +132,7 @@ PLUGIN_API const wchar_t* KeyValues_GetWString(KeyValues* pKeyValues, const char
 }
 
 extern "C"
-PLUGIN_API void* KeyValues_GetPtr(KeyValues* pKeyValues, const char* szKeyName = NULL, void* defaultValue = (void*) 0) {
+PLUGIN_API void* KeyValues_GetPtr(KeyValues* pKeyValues, const char* szKeyName = NULL, void* defaultValue = nullptr) {
 	return pKeyValues->GetPtr(szKeyName, defaultValue);
 }
 
@@ -149,4 +149,4 @@ PLUGIN_API bool KeyValues_GetBool(KeyValues* pKeyValues, const char* szKeyName =
 extern "C"
 PLUGIN_API bool KeyValues_IsEmpty(KeyValues* pKeyValues, const char* szKeyName = NULL) {
 	return pKeyValues->IsEmpty(szKeyName);
-}
+}*/

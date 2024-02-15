@@ -13,3 +13,10 @@ set(CS2SDK_LINK_LIBRARIES
         ${SOURCESDK_LIB}/public/win64/interfaces.lib
         #${SOURCESDK_LIB}/public/win64/mathlib.lib
 )
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+        CS2SDK_PLATFORM="windows"
+        CS2SDK_BINARY="win64"
+        CS2SDK_ROOT_BINARY="/bin/win64/"
+        CS2SDK_GAME_BINARY="/csgo/bin/win64/"
+)

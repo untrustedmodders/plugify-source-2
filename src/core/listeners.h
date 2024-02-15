@@ -2,29 +2,30 @@
 
 #include "listenermanager.h"
 
-#define DEFINE_MANAGER_ACCESSOR(name, ret, ...) \
-    typedef ret (*Fn##name)(__VA_ARGS__); \
-    auto& Get##name##ListenerManager() { \
-		static CListenerManager<Fn##name> s_##name; \
-		return s_##name; \
-	} \
-	extern "C" \
-	PLUGIN_API void name##_Register(Fn##name func) { \
-		Get##name##ListenerManager().Register(func); \
-	} \
-	extern "C" \
-	PLUGIN_API void name##_Unregister(Fn##name func) { \
-		Get##name##ListenerManager().Unregister(func); \
+#define DEFINE_MANAGER_ACCESSOR(name, ret, ...)                 \
+	typedef ret (*Fn##name)(__VA_ARGS__);                       \
+	auto &Get##name##ListenerManager()                          \
+	{                                                           \
+		static CListenerManager<Fn##name> s_##name;             \
+		return s_##name;                                        \
+	}                                                           \
+	extern "C" PLUGIN_API void name##_Register(Fn##name func)   \
+	{                                                           \
+		Get##name##ListenerManager().Register(func);            \
+	}                                                           \
+	extern "C" PLUGIN_API void name##_Unregister(Fn##name func) \
+	{                                                           \
+		Get##name##ListenerManager().Unregister(func);          \
 	}
 
-DEFINE_MANAGER_ACCESSOR(OnClientActive, void, int, bool, const char*, uint64)
-DEFINE_MANAGER_ACCESSOR(OnClientConnect, bool, int, const char*, uint64, const char*, bool, const char*)
-DEFINE_MANAGER_ACCESSOR(OnClientConnected, void, int, const char*, uint64, const char*, const char*, bool)
+DEFINE_MANAGER_ACCESSOR(OnClientActive, void, int, bool, const std::string &, uint64)
+DEFINE_MANAGER_ACCESSOR(OnClientConnect, bool, int, const std::string &, uint64, const std::string &, bool, const std::string &)
+DEFINE_MANAGER_ACCESSOR(OnClientConnected, void, int, const std::string &, uint64, const std::string &, const std::string &, bool)
 DEFINE_MANAGER_ACCESSOR(OnClientFullyConnect, void, int)
-DEFINE_MANAGER_ACCESSOR(OnClientDisconnect, void, int, int, const char*, uint64, const char*)
-DEFINE_MANAGER_ACCESSOR(OnClientPutInServer, void, int, char const*, int, uint64)
+DEFINE_MANAGER_ACCESSOR(OnClientDisconnect, void, int, int, const std::string &, uint64, const std::string &)
+DEFINE_MANAGER_ACCESSOR(OnClientPutInServer, void, int, char const *, int, uint64)
 DEFINE_MANAGER_ACCESSOR(OnClientSettingsChanged, void, int)
-DEFINE_MANAGER_ACCESSOR(OnLevelInit, void, const char*, const char*)
+DEFINE_MANAGER_ACCESSOR(OnLevelInit, void, const std::string &, const std::string &)
 DEFINE_MANAGER_ACCESSOR(OnLevelShutdown, void)
 /*DEFINE_MANAGER_ACCESSOR(OnNetworkidValidated)
 DEFINE_MANAGER_ACCESSOR(OnEdictAllocated)

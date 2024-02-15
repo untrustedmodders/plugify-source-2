@@ -4,22 +4,27 @@
 
 #include <dynohook/dynohook.h>
 
-class CHookManager {
+class CHookManager
+{
 public:
-	template<typename F, typename C, typename... T>
-	void AddHookMemFunc(F func, void* ptr, C callback, T... types) {
+	template <typename F, typename C, typename... T>
+	void AddHookMemFunc(F func, void *ptr, C callback, T... types)
+	{
 		using trait = dyno::details::function_traits<F>;
 		auto args = trait::args();
 		auto ret = trait::ret();
-		auto ihook = dyno::CHook::CreateHookVirtualByFunc(ptr, (void*&) func, args, ret);
-		if (ihook == nullptr) {
+		auto ihook = dyno::CHook::CreateHookVirtualByFunc(ptr, (void *&)func, std::vector(args.begin(), args.end()), ret);
+		if (ihook == nullptr)
+		{
 			Log_Error(LOG_GENERAL, "Could not hook \"'%s\".", utils::Demangle(typeid(func).name()).c_str());
 		}
-		auto& hook = m_Hooks.emplace_back(std::move(ihook));
-		([&]() { hook->AddCallback(types, callback); }(), ...);
+		auto &hook = m_Hooks.emplace_back(std::move(ihook));
+		([&]()
+		 { hook->AddCallback(types, callback); }(), ...);
 	}
 
-	void UnhookAll() {
+	void UnhookAll()
+	{
 		m_Hooks.clear();
 	}
 

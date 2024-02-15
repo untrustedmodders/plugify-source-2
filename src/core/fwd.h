@@ -7,9 +7,9 @@
 #undef private
 
 #include <eiface.h>
-#include <iserver.h>
-#include <igameeventsystem.h>
 #include <entitysystem.h>
 #include <igameevents.h>
+#include <igameeventsystem.h>
+#include <iserver.h>
 
 #include <ISmmPlugin.h>

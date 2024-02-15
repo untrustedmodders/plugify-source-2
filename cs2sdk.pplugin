@@ -47,6 +47,19 @@
 		}
 	  },
 	  {
+		"name": "GameConfig_GetPath",
+		"funcName": "GameConfig_GetPath",
+		"paramTypes": [
+		  {
+			"type": "ptr64",
+			"name": "gameConfig"
+		  }
+		],
+		"retType": {
+		  "type": "string"
+		}
+	  },
+	  {
 		"name": "GameConfig_GetLibrary",
 		"funcName": "GameConfig_GetLibrary",
 		"paramTypes": [
