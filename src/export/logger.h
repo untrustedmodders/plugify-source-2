@@ -1,6 +1,6 @@
 #pragma once
 
-extern "C" PLUGIN_API LoggingChannelID_t Logger_RegisterLoggingChannel(const std::string &name, int iFlags = 0, LoggingVerbosity_t verbosity = LV_DEFAULT, const Color &aDefault = UNSPECIFIED_LOGGING_COLOR)
+extern "C" PLUGIN_API LoggingChannelID_t Logger_RegisterLoggingChannel(const std::string &name, int iFlags = 0, LoggingVerbosity_t verbosity = LV_DEFAULT, const Color &aDefault = UNSPECIFIED_Logger_COLOR)
 {
 	return LoggingSystem_RegisterLoggingChannel(name.c_str(), &CLogger::RegisterTags, iFlags, verbosity, aDefault);
 }
@@ -65,25 +65,25 @@ extern "C" PLUGIN_API void Logger_SetChannelFlags(LoggingChannelID_t channelID, 
 	LoggingSystem_SetChannelFlags(channelID, eFlags);
 }
 
-extern "C" PLUGIN_API LoggingResponse_t Logging_LogDirect(LoggingChannelID_t channelID, LoggingSeverity_t severity, const std::string &message)
+extern "C" PLUGIN_API LoggingResponse_t Logger_LogDirect(LoggingChannelID_t channelID, LoggingSeverity_t severity, const std::string &message)
 {
 	return LoggingSystem_LogDirect(channelID, severity, message.c_str());
 }
 
-extern "C" PLUGIN_API LoggingResponse_t Logging_LogDirectColored(LoggingChannelID_t channelID, LoggingSeverity_t severity, int color, const std::string &message)
+extern "C" PLUGIN_API LoggingResponse_t Logger_LogDirectColored(LoggingChannelID_t channelID, LoggingSeverity_t severity, int color, const std::string &message)
 {
 	Color spewColor;
 	spewColor.SetRawColor(color);
 	return LoggingSystem_LogDirect(channelID, severity, spewColor, message.c_str());
 }
 
-extern "C" PLUGIN_API LoggingResponse_t Logging_LogDirectFull(LoggingChannelID_t channelID, LoggingSeverity_t severity, const std::string& file, int line, const std::string& function, const std::string &message)
+extern "C" PLUGIN_API LoggingResponse_t Logger_LogDirectFull(LoggingChannelID_t channelID, LoggingSeverity_t severity, const std::string& file, int line, const std::string& function, const std::string &message)
 {
 	LeafCodeInfo_t codeInfo{ file.c_str(), line, function.c_str() };
 	return LoggingSystem_LogDirect(channelID, severity, codeInfo, message.c_str());
 }
 
-extern "C" PLUGIN_API LoggingResponse_t Logging_LogDirectFullColored(LoggingChannelID_t channelID, LoggingSeverity_t severity, const std::string& file, int line, const std::string& function, int color, const std::string &message)
+extern "C" PLUGIN_API LoggingResponse_t Logger_LogDirectFullColored(LoggingChannelID_t channelID, LoggingSeverity_t severity, const std::string& file, int line, const std::string& function, int color, const std::string &message)
 {
 	LeafCodeInfo_t codeInfo{ file.c_str(), line, function.c_str() };
 	Color spewColor;
