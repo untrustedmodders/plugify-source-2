@@ -1,8 +1,8 @@
 #pragma once
 
 #include <concepts>
+#include <optional>
 #include <plugin_export.h>
-#include <utlvector.h>
 
 enum class ResultType : uint8_t
 {
@@ -42,44 +42,49 @@ public:
 	bool Unregister(Callable &&callable)
 		requires std::invocable<Callable, Args...>
 	{
-		int index = Find(callable);
-		if (index == -1)
+		auto index = Find(callable);
+		if (!index.has_value())
 		{
 			Log_Error(LOG_GENERAL, "Callback not registered.");
 			return false;
 		}
 		else
 		{
-			m_Callables.erase(m_Callables.begin() + index);
+			m_Callables.erase(m_Callables.begin() + *index);
 			return true;
 		}
 	}
 
 	template <typename Callable>
-	bool IsRegistered(Callable &&callable)
+	std::optional<size_t> Find(Callable &&callable)
 	{
-		return Find(callable) != -1;
-	}
-
-	template <typename Callable>
-	int Find(Callable &&callable)
-	{
-		for (int i = 0; i < m_Callables.size(); ++i)
+		for (size_t i = 0; i < m_Callables.size(); ++i)
 		{
 			if (callable == m_Callables[i])
 			{
 				return i;
 			}
 		}
-		return -1;
+		return {};
+	}
+
+	template <typename Callable>
+	bool IsRegistered(Callable &&callable)
+	{
+		return Find(callable).has_value();
 	}
 
 	void Notify(Args... args) const
 	{
-		for (int i = 0; i < m_Callables.size(); ++i)
+		for (size_t i = 0; i < m_Callables.size(); ++i)
 		{
 			m_Callables[i](std::forward<Args>(args)...);
 		}
+	}
+
+	Ret Call(size_t index, Args... args) const
+	{
+		return m_Callables[index](std::forward<Args>(args)...);
 	}
 
 	Ret operator()(size_t index, Args... args) const
@@ -92,7 +97,7 @@ public:
 		m_Callables.clear();
 	}
 
-	int GetCount()
+	size_t GetCount()
 	{
 		return m_Callables.size();
 	}

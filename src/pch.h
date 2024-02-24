@@ -11,3 +11,4 @@
 #include <stack>
 
 #include "core/globals.h"
+#include "core/logger.h"

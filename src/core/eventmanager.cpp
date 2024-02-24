@@ -32,12 +32,12 @@ EventHookError CEventManager::HookEvent(const std::string &name, FnEventListener
 
 		if (mode == EventHookMode::Pre)
 		{
-			pHook.preHook = std::make_unique<CListenerManager<FnEventListenerCallback>>();
+			pHook.preHook = std::make_unique<HookCallback>();
 			pHook.preHook->Register(callback);
 		}
 		else
 		{
-			pHook.postHook = std::make_unique<CListenerManager<FnEventListenerCallback>>();
+			pHook.postHook = std::make_unique<HookCallback>();
 			pHook.postHook->Register(callback);
 			pHook.postCopy = (mode == EventHookMode::Post);
 		}
@@ -54,7 +54,7 @@ EventHookError CEventManager::HookEvent(const std::string &name, FnEventListener
 	{
 		if (pHook.preHook == nullptr)
 		{
-			pHook.preHook = std::make_unique<CListenerManager<FnEventListenerCallback>>();
+			pHook.preHook = std::make_unique<HookCallback>();
 		}
 
 		pHook.preHook->Register(callback);
@@ -63,7 +63,7 @@ EventHookError CEventManager::HookEvent(const std::string &name, FnEventListener
 	{
 		if (pHook.postHook == nullptr)
 		{
-			pHook.postHook = std::make_unique<CListenerManager<FnEventListenerCallback>>();
+			pHook.postHook = std::make_unique<HookCallback>();
 		}
 
 		if (!pHook.postCopy)
@@ -87,7 +87,7 @@ EventHookError CEventManager::UnhookEvent(const std::string &name, FnEventListen
 		return EventHookError::NotActive;
 	}
 
-	HookCallback *pCallbackHook;
+	std::unique_ptr<HookCallback> *pCallbackHook;
 	auto &pHook = std::get<EventHook>(*it);
 	if (mode == EventHookMode::Pre)
 	{
@@ -171,7 +171,7 @@ dyno::ReturnAction CEventManager::Hook_OnFireEvent(dyno::IHook &hook)
 		return dyno::ReturnAction::Ignored;
 
 	bool broadcast = bDontBroadcast;
-	const char *name = pEvent->GetName();
+	std::string name(pEvent->GetName());
 
 	auto it = m_EventHooks.find(name);
 	if (it != m_EventHooks.end())
@@ -186,10 +186,9 @@ dyno::ReturnAction CEventManager::Hook_OnFireEvent(dyno::IHook &hook)
 		{
 			EventInfo info{ pEvent, bDontBroadcast };
 
-			auto &mgr = *pHook.preHook.get();
-			for (int i = 0; i < mgr.GetCount(); ++i)
+			for (size_t i = 0; i < pHook.preHook->GetCount(); ++i)
 			{
-				res = Max(mgr(i, name, &info, bDontBroadcast), res);
+				res = Max(pHook.preHook->Call(i, name, &info, bDontBroadcast), res);
 			}
 
 			broadcast = info.bDontBroadcast;
@@ -238,7 +237,7 @@ dyno::ReturnAction CEventManager::Hook_OnFireEvent_Post(dyno::IHook &hook)
 			{
 				EventInfo info{ m_EventCopies.top(), bDontBroadcast };
 
-				pHook->postHook->Notify(pHook->name.c_str(), &info, bDontBroadcast);
+				pHook->postHook->Notify(pHook->name, &info, bDontBroadcast);
 
 				g_gameEventManager->FreeEvent(info.pEvent);
 
@@ -246,7 +245,7 @@ dyno::ReturnAction CEventManager::Hook_OnFireEvent_Post(dyno::IHook &hook)
 			}
 			else
 			{
-				pHook->postHook->Notify(pHook->name.c_str(), nullptr, bDontBroadcast);
+				pHook->postHook->Notify(pHook->name, nullptr, bDontBroadcast);
 			}
 		}
 

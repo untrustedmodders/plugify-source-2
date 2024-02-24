@@ -8,7 +8,7 @@
 #include <export/console.h>
 #include <export/events.h>
 #include <export/gameconfig.h>
-#include <export/keyvalues.h>
+#include <export/logger.h>
 
 #if _DEBUG
 void Message(const char *msg, ...)

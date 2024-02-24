@@ -13,15 +13,15 @@ struct EventInfo
 	bool bDontBroadcast{};
 };
 
-typedef ResultType (*FnEventListenerCallback)(const char *name, EventInfo *pEvent, bool bDontBroadcast);
+typedef ResultType (*FnEventListenerCallback)(const std::string& name, EventInfo *pEvent, bool bDontBroadcast);
 
-using HookCallback = std::unique_ptr<CListenerManager<FnEventListenerCallback>>;
+using HookCallback = CListenerManager<FnEventListenerCallback>;
 
 struct EventHook
 {
 	std::string name;
-	HookCallback preHook;
-	HookCallback postHook;
+	std::unique_ptr<HookCallback> preHook;
+	std::unique_ptr<HookCallback> postHook;
 	uint32_t refCount{};
 	bool postCopy{};
 };
