@@ -7,7 +7,7 @@
 class ConCommand;
 class CCommand;
 
-typedef ResultType (*FnCommandListenerCallback)(const std::vector<std::string> &args, int playerSlot);
+typedef ResultType (*FnCommandListenerCallback)(const std::vector<std::string>& args, int playerSlot);
 
 struct CommandInfo : public ICommandCallback
 {
@@ -19,14 +19,14 @@ struct CommandInfo : public ICommandCallback
 
 	explicit CommandInfo(std::string name, std::string description = {}, int64 flags = 0);
 
-	void CommandCallback(const CCommandContext &context, const CCommand &command) override;
+	void CommandCallback(const CCommandContext& context, const CCommand& command) override;
 };
 
 class CCommandManager
 {
 public:
-	void AddCommand(FnCommandListenerCallback callback, const std::string &name, const std::string &description = {}, int64 flags = 0);
-	bool DeleteCommand(FnCommandListenerCallback callback, const std::string &name);
+	void AddCommand(FnCommandListenerCallback callback, const std::string& name, const std::string& description = {}, int64 flags = 0);
+	bool DeleteCommand(FnCommandListenerCallback callback, const std::string& name);
 
 private:
 	std::unordered_map<std::string, CommandInfo> m_Commands;

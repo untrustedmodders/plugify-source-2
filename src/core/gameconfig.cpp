@@ -16,12 +16,12 @@ bool CGameConfig::Initialize(std::span<char> error)
 		return false;
 	}
 
-	const KeyValues *game = m_pKeyValues->FindKey(m_szGameDir.c_str());
+	const KeyValues* game = m_pKeyValues->FindKey(m_szGameDir.c_str());
 	if (game)
 	{
-		const char *platform = CS2SDK_PLATFORM;
+		const char* platform = CS2SDK_PLATFORM;
 
-		const KeyValues *offsets = game->FindKey("Offsets");
+		const KeyValues* offsets = game->FindKey("Offsets");
 		if (offsets)
 		{
 			FOR_EACH_SUBKEY(offsets, it)
@@ -30,7 +30,7 @@ bool CGameConfig::Initialize(std::span<char> error)
 			}
 		}
 
-		const KeyValues *signatures = game->FindKey("Signatures");
+		const KeyValues* signatures = game->FindKey("Signatures");
 		if (signatures)
 		{
 			FOR_EACH_SUBKEY(signatures, it)
@@ -40,7 +40,7 @@ bool CGameConfig::Initialize(std::span<char> error)
 			}
 		}
 
-		const KeyValues *patches = game->FindKey("Patches");
+		const KeyValues* patches = game->FindKey("Patches");
 		if (patches)
 		{
 			FOR_EACH_SUBKEY(patches, it)
@@ -49,18 +49,18 @@ bool CGameConfig::Initialize(std::span<char> error)
 			}
 		}
 
-		const KeyValues *addresses = game->FindKey("Addresses");
+		const KeyValues* addresses = game->FindKey("Addresses");
 		if (addresses)
 		{
 			FOR_EACH_SUBKEY(addresses, it)
 			{
-				const KeyValues *reads = it->FindKey(platform);
+				const KeyValues* reads = it->FindKey(platform);
 				std::vector<int> read;
 				read.resize(reads->Count());
 				bool lastIsOffset = false;
 				FOR_EACH_SUBKEY(reads, it2)
 				{
-					const char *key = it->GetName();
+					const char* key = it->GetName();
 					if (!strcmp(key, "read") || !strcmp(key, "offset"))
 					{
 						if (lastIsOffset)
@@ -75,7 +75,7 @@ bool CGameConfig::Initialize(std::span<char> error)
 						}
 					}
 				}
-				m_umAddresses[it->GetName()] = AddressConf{ it->GetString("signature"), std::move(read), lastIsOffset };
+				m_umAddresses[it->GetName()] = AddressConf{it->GetString("signature"), std::move(read), lastIsOffset};
 			}
 		}
 	}
@@ -88,12 +88,12 @@ bool CGameConfig::Initialize(std::span<char> error)
 	return true;
 }
 
-const std::string &CGameConfig::GetPath() const
+const std::string& CGameConfig::GetPath() const
 {
 	return m_szPath;
 }
 
-std::string_view CGameConfig::GetSignature(const std::string &name) const
+std::string_view CGameConfig::GetSignature(const std::string& name) const
 {
 	auto it = m_umSignatures.find(name);
 	if (it == m_umSignatures.end())
@@ -101,7 +101,7 @@ std::string_view CGameConfig::GetSignature(const std::string &name) const
 	return std::get<std::string>(*it);
 }
 
-std::string_view CGameConfig::GetPatch(const std::string &name) const
+std::string_view CGameConfig::GetPatch(const std::string& name) const
 {
 	auto it = m_umPatches.find(name);
 	if (it == m_umPatches.end())
@@ -109,7 +109,7 @@ std::string_view CGameConfig::GetPatch(const std::string &name) const
 	return std::get<std::string>(*it);
 }
 
-int CGameConfig::GetOffset(const std::string &name) const
+int CGameConfig::GetOffset(const std::string& name) const
 {
 	auto it = m_umOffsets.find(name);
 	if (it == m_umOffsets.end())
@@ -117,7 +117,7 @@ int CGameConfig::GetOffset(const std::string &name) const
 	return std::get<int>(*it);
 }
 
-std::string_view CGameConfig::GetLibrary(const std::string &name) const
+std::string_view CGameConfig::GetLibrary(const std::string& name) const
 {
 	auto it = m_umLibraries.find(name);
 	if (it == m_umLibraries.end())
@@ -126,15 +126,15 @@ std::string_view CGameConfig::GetLibrary(const std::string &name) const
 }
 
 // memory addresses below 0x10000 are automatically considered invalid for dereferencing
-#define VALID_MINIMUM_MEMORY_ADDRESS ((void *)0x10000)
+#define VALID_MINIMUM_MEMORY_ADDRESS ((void*)0x10000)
 
-void *CGameConfig::GetAddress(const std::string &name) const
+void* CGameConfig::GetAddress(const std::string& name) const
 {
 	auto it = m_umAddresses.find(name);
 	if (it == m_umAddresses.end())
 		return nullptr;
 
-	const auto &addrConf = std::get<AddressConf>(*it);
+	const auto& addrConf = std::get<AddressConf>(*it);
 
 	CMemory addr = ResolveSignature(addrConf.signature);
 	if (!addr)
@@ -163,7 +163,7 @@ void *CGameConfig::GetAddress(const std::string &name) const
 	return addr;
 }
 
-ModuleRef CGameConfig::GetModule(const std::string &name) const
+ModuleRef CGameConfig::GetModule(const std::string& name) const
 {
 	const std::string_view library = GetLibrary(name);
 	if (library.empty())
@@ -183,7 +183,7 @@ ModuleRef CGameConfig::GetModule(const std::string &name) const
 	return {};
 }
 
-bool CGameConfig::IsSymbol(const std::string &name) const
+bool CGameConfig::IsSymbol(const std::string& name) const
 {
 	const std::string_view sigOrSymbol = GetSignature(name);
 	if (sigOrSymbol.empty())
@@ -194,7 +194,7 @@ bool CGameConfig::IsSymbol(const std::string &name) const
 	return sigOrSymbol[0] == '@';
 }
 
-std::string_view CGameConfig::GetSymbol(const std::string &name) const
+std::string_view CGameConfig::GetSymbol(const std::string& name) const
 {
 	const std::string_view symbol = GetSignature(name);
 
@@ -207,7 +207,7 @@ std::string_view CGameConfig::GetSymbol(const std::string &name) const
 	return symbol.substr(1);
 }
 
-CMemory CGameConfig::ResolveSignature(const std::string &name) const
+CMemory CGameConfig::ResolveSignature(const std::string& name) const
 {
 	auto moduleRef = GetModule(name);
 	if (!moduleRef.has_value())
@@ -216,7 +216,7 @@ CMemory CGameConfig::ResolveSignature(const std::string &name) const
 		return {};
 	}
 
-	auto &module = moduleRef->get();
+	auto& module = moduleRef->get();
 	CMemory address;
 
 	if (IsSymbol(name))
@@ -240,7 +240,8 @@ CMemory CGameConfig::ResolveSignature(const std::string &name) const
 		}
 
 		auto sig = CGameConfig::HexToByte(signature);
-		if (sig.empty()) {
+		if (sig.empty())
+		{
 			g_Logger.Error("Invalid hex string\n");
 			return {};
 		}
@@ -256,22 +257,26 @@ CMemory CGameConfig::ResolveSignature(const std::string &name) const
 	return address;
 }
 
-std::vector<uint8_t> CGameConfig::HexToByte(std::string_view hexString) {
+std::vector<uint8_t> CGameConfig::HexToByte(std::string_view hexString)
+{
 	if (hexString.empty())
 		return {};
 
 	size_t byteCount = hexString.size() / 4; // Each "\\x" represents one byte.
-	if (hexString.size() % 4 != 0 || byteCount == 0) {
+	if (hexString.size() % 4 != 0 || byteCount == 0)
+	{
 		g_Logger.Error("Invalid hex string format or byte count.\n");
 		return {};
 	}
 
 	std::vector<uint8_t> byteArray(byteCount + 1);
 
-	for (size_t i = 0; i < hexString.size(); i += 4) {
+	for (size_t i = 0; i < hexString.size(); i += 4)
+	{
 		auto hexSubstring = hexString.substr(i + 2, 2); // Skip "\\x" and take the next two characters.
 		auto [p, ec] = std::from_chars(hexSubstring.data(), hexSubstring.data() + hexSubstring.size(), byteArray[i / 4], 16);
-		if (ec != std::errc() || p != hexSubstring.data() + hexSubstring.size()) {
+		if (ec != std::errc() || p != hexSubstring.data() + hexSubstring.size())
+		{
 			g_Logger.ErrorFormat("Failed to parse hex string at position %uul. %s\n", i, make_error_code(ec).message().c_str());
 			return {}; // Return an error code.
 		}
@@ -282,7 +287,7 @@ std::vector<uint8_t> CGameConfig::HexToByte(std::string_view hexString) {
 	return byteArray;
 }
 
-CGameConfig *CGameConfigManager::LoadGameConfigFile(std::string path)
+CGameConfig* CGameConfigManager::LoadGameConfigFile(std::string path)
 {
 	path = utils::GamedataDirectory() + path;
 
@@ -304,7 +309,7 @@ CGameConfig *CGameConfigManager::LoadGameConfigFile(std::string path)
 	return &std::get<CGameConfig>(*_);
 }
 
-void CGameConfigManager::CloseGameConfigFile(CGameConfig *pGameConfig)
+void CGameConfigManager::CloseGameConfigFile(CGameConfig* pGameConfig)
 {
 	if (pGameConfig)
 	{

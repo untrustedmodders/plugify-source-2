@@ -1,10 +1,10 @@
 #include "commandmanager.h"
 
-void CommandInfo::CommandCallback(const CCommandContext &context, const CCommand &args)
+void CommandInfo::CommandCallback(const CCommandContext& context, const CCommand& args)
 {
 	int size = args.ArgC();
 	std::vector<std::string> arguments;
-	arguments.reserve((size_t) size);
+	arguments.reserve((size_t)size);
 	for (int i = 0; i < size; ++i)
 	{
 		arguments.emplace_back(args.Arg(i));
@@ -13,7 +13,7 @@ void CommandInfo::CommandCallback(const CCommandContext &context, const CCommand
 	listener.Notify(arguments, context.GetPlayerSlot().Get());
 }
 
-void CCommandManager::AddCommand(FnCommandListenerCallback callback, const std::string &name, const std::string &description, int64 flags)
+void CCommandManager::AddCommand(FnCommandListenerCallback callback, const std::string& name, const std::string& description, int64 flags)
 {
 	auto it = m_Commands.find(name);
 	if (it != m_Commands.end())
@@ -26,7 +26,7 @@ void CCommandManager::AddCommand(FnCommandListenerCallback callback, const std::
 	std::get<CommandInfo>(*_).listener.Register(callback);
 }
 
-bool CCommandManager::DeleteCommand(FnCommandListenerCallback callback, const std::string &name)
+bool CCommandManager::DeleteCommand(FnCommandListenerCallback callback, const std::string& name)
 {
 	auto it = m_Commands.find(name);
 	if (it == m_Commands.end())
@@ -34,7 +34,7 @@ bool CCommandManager::DeleteCommand(FnCommandListenerCallback callback, const st
 		return false;
 	}
 
-	auto &command = std::get<CommandInfo>(*it);
+	auto& command = std::get<CommandInfo>(*it);
 
 	if (!command.listener.Unregister(callback))
 	{

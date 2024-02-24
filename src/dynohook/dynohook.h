@@ -203,7 +203,7 @@ namespace dyno
 	};
 
 	class IHook;
-	typedef ReturnAction (*CallbackHandler)(CallbackType, IHook &);
+	typedef ReturnAction (*CallbackHandler)(CallbackType, IHook&);
 
 	struct DataObject
 	{
@@ -219,7 +219,7 @@ namespace dyno
 	class CHook
 	{
 	private:
-		CHook(IHook *pHook, void *pFunc, void *pClass, int index) : m_hook(pHook), m_func(pFunc), m_class(pClass), m_index(index)
+		CHook(IHook* pHook, void* pFunc, void* pClass, int index) : m_hook(pHook), m_func(pFunc), m_class(pClass), m_index(index)
 		{
 		}
 
@@ -229,49 +229,49 @@ namespace dyno
 			// detour
 			if (!m_class)
 			{
-				using UnhookDetourFn = bool (*)(void *);
+				using UnhookDetourFn = bool (*)(void*);
 				static auto func = reinterpret_cast<UnhookDetourFn>(plugify::GetMethod("dynohook.UnhookDetour"));
 				func(m_func);
 			}
 			else if (m_func)
 			{
-				using UnhookVirtualByFuncFn = bool (*)(void *, void *);
+				using UnhookVirtualByFuncFn = bool (*)(void*, void*);
 				static auto func = reinterpret_cast<UnhookVirtualByFuncFn>(plugify::GetMethod("dynohook.UnhookVirtualByFunc"));
 				func(m_class, m_func);
 			}
 			else
 			{
-				using UnhookVirtualFn = bool (*)(void *, int);
+				using UnhookVirtualFn = bool (*)(void*, int);
 				static auto func = reinterpret_cast<UnhookVirtualFn>(plugify::GetMethod("dynohook.UnhookVirtual"));
 				func(m_class, m_index);
 			}
 		}
 
-		static std::unique_ptr<CHook> CreateDetourHook(void *pFunc, const std::vector<DataObject> &arguments, DataObject returnType)
+		static std::unique_ptr<CHook> CreateDetourHook(void* pFunc, const std::vector<DataObject>& arguments, DataObject returnType)
 		{
-			using HookDetourFn = IHook *(*)(void *, const std::vector<DataObject> &, DataObject);
+			using HookDetourFn = IHook* (*)(void*, const std::vector<DataObject>&, DataObject);
 			static auto func = reinterpret_cast<HookDetourFn>(plugify::GetMethod("dynohook.HookDetour"));
-			IHook *pHook = func(pFunc, arguments, returnType);
+			IHook* pHook = func(pFunc, arguments, returnType);
 			if (pHook == nullptr)
 				return nullptr;
 			return std::unique_ptr<CHook>(new CHook(pHook, pFunc, nullptr, -1));
 		}
 
-		static std::unique_ptr<CHook> CreateVirtualHook(void *pClass, int index, const std::vector<DataObject> &arguments, DataObject returnType)
+		static std::unique_ptr<CHook> CreateVirtualHook(void* pClass, int index, const std::vector<DataObject>& arguments, DataObject returnType)
 		{
-			using HookVirtualFn = IHook *(*)(void *, int, const std::vector<DataObject> &, DataObject);
+			using HookVirtualFn = IHook* (*)(void*, int, const std::vector<DataObject>&, DataObject);
 			static auto func = reinterpret_cast<HookVirtualFn>(plugify::GetMethod("dynohook.HookVirtual"));
-			IHook *pHook = func(pClass, index, arguments, returnType);
+			IHook* pHook = func(pClass, index, arguments, returnType);
 			if (pHook == nullptr)
 				return nullptr;
 			return std::unique_ptr<CHook>(new CHook(pHook, nullptr, pClass, index));
 		}
 
-		static std::unique_ptr<CHook> CreateHookVirtualByFunc(void *pClass, void *pFunc, const std::vector<DataObject> &arguments, DataObject returnType)
+		static std::unique_ptr<CHook> CreateHookVirtualByFunc(void* pClass, void* pFunc, const std::vector<DataObject>& arguments, DataObject returnType)
 		{
-			using HookVirtualByFuncFn = IHook *(*)(void *, void *, const std::vector<DataObject> &, DataObject);
+			using HookVirtualByFuncFn = IHook* (*)(void*, void*, const std::vector<DataObject>&, DataObject);
 			static auto func = reinterpret_cast<HookVirtualByFuncFn>(plugify::GetMethod("dynohook.HookVirtualByFunc"));
-			IHook *pHook = func(pClass, pFunc, arguments, returnType);
+			IHook* pHook = func(pClass, pFunc, arguments, returnType);
 			if (pHook == nullptr)
 				return nullptr;
 			return std::unique_ptr<CHook>(new CHook(pHook, pFunc, pClass, -1));
@@ -279,43 +279,43 @@ namespace dyno
 
 		bool AddCallback(CallbackType type, CallbackHandler handler) const
 		{
-			using AddCallbackFn = bool (*)(IHook *, bool, CallbackHandler);
+			using AddCallbackFn = bool (*)(IHook*, bool, CallbackHandler);
 			static auto func = reinterpret_cast<AddCallbackFn>(plugify::GetMethod("dynohook.AddCallback"));
 			return func(m_hook, static_cast<bool>(type), handler);
 		}
 
 		bool RemoveCallback(CallbackType type, CallbackHandler handler) const
 		{
-			using RemoveCallbackFn = bool (*)(IHook *, bool, CallbackHandler);
+			using RemoveCallbackFn = bool (*)(IHook*, bool, CallbackHandler);
 			static auto func = reinterpret_cast<RemoveCallbackFn>(plugify::GetMethod("dynohook.RemoveCallback"));
 			return func(m_hook, static_cast<bool>(type), handler);
 		}
 
 		bool IsCallbackRegistered(bool type, CallbackHandler handler) const
 		{
-			using IsCallbackRegisteredFn = bool (*)(IHook *, bool, CallbackHandler);
+			using IsCallbackRegisteredFn = bool (*)(IHook*, bool, CallbackHandler);
 			static auto func = reinterpret_cast<IsCallbackRegisteredFn>(plugify::GetMethod("dynohook.IsCallbackRegistered"));
 			return func(m_hook, type, handler);
 		}
 
 		bool AreCallbacksRegistered() const
 		{
-			using AreCallbacksRegisteredFn = bool (*)(IHook *);
+			using AreCallbacksRegisteredFn = bool (*)(IHook*);
 			static auto func = reinterpret_cast<AreCallbacksRegisteredFn>(plugify::GetMethod("dynohook.AreCallbacksRegistered"));
 			return func(m_hook);
 		}
 
 	private:
-		IHook *m_hook;
-		void *m_func;
-		void *m_class;
+		IHook* m_hook;
+		void* m_func;
+		void* m_class;
 		int m_index;
 	};
 
 	template <class T>
-	inline T GetArgument(IHook &hook, size_t index)
+	inline T GetArgument(IHook& hook, size_t index)
 	{
-		using GetArgumentFn = T (*)(IHook *, size_t);
+		using GetArgumentFn = T (*)(IHook*, size_t);
 		static GetArgumentFn func;
 		if constexpr (std::is_same_v<T, bool>)
 			func = reinterpret_cast<GetArgumentFn>(plugify::GetMethod("dynohook.GetArgumentBool"));
@@ -341,9 +341,9 @@ namespace dyno
 			func = reinterpret_cast<GetArgumentFn>(plugify::GetMethod("dynohook.GetArgumentDouble"));
 		else if constexpr (std::is_pointer<T>::value)
 			func = reinterpret_cast<GetArgumentFn>(plugify::GetMethod("dynohook.GetArgumentPointer"));
-		else if constexpr (std::is_same_v<T, const char *>)
+		else if constexpr (std::is_same_v<T, const char*>)
 			func = reinterpret_cast<GetArgumentFn>(plugify::GetMethod("dynohook.GetArgumentString"));
-		else if constexpr (std::is_same_v<T, const wchar_t *> || std::is_reference_v<T>)
+		else if constexpr (std::is_same_v<T, const wchar_t*> || std::is_reference_v<T>)
 			func = reinterpret_cast<GetArgumentFn>(plugify::GetMethod("dynohook.GetArgumentWString"));
 		else
 		{
@@ -376,9 +376,9 @@ namespace dyno
 	}
 
 	template <class T>
-	inline void SetArgument(IHook &hook, size_t index, T value)
+	inline void SetArgument(IHook& hook, size_t index, T value)
 	{
-		using SetArgumentFn = void (*)(IHook *, size_t, T);
+		using SetArgumentFn = void (*)(IHook*, size_t, T);
 		static SetArgumentFn func;
 		if constexpr (std::is_same_v<T, bool>)
 			func = reinterpret_cast<SetArgumentFn>(plugify::GetMethod("dynohook.SetArgumentBool"));
@@ -404,9 +404,9 @@ namespace dyno
 			func = reinterpret_cast<SetArgumentFn>(plugify::GetMethod("dynohook.SetArgumentDouble"));
 		else if constexpr (std::is_pointer<T>::value)
 			func = reinterpret_cast<SetArgumentFn>(plugify::GetMethod("dynohook.SetArgumentPointer"));
-		else if constexpr (std::is_same_v<T, const char *>)
+		else if constexpr (std::is_same_v<T, const char*>)
 			func = reinterpret_cast<SetArgumentFn>(plugify::GetMethod("dynohook.SetArgumentString"));
-		else if constexpr (std::is_same_v<T, const wchar_t *> || std::is_reference_v<T>)
+		else if constexpr (std::is_same_v<T, const wchar_t*> || std::is_reference_v<T>)
 			func = reinterpret_cast<SetArgumentFn>(plugify::GetMethod("dynohook.SetArgumentWString"));
 		else
 		{
@@ -439,9 +439,9 @@ namespace dyno
 	}
 
 	template <class T>
-	inline T GetReturn(IHook &hook)
+	inline T GetReturn(IHook& hook)
 	{
-		using GetReturnFn = T (*)(IHook *);
+		using GetReturnFn = T (*)(IHook*);
 		static GetReturnFn func;
 		if constexpr (std::is_same_v<T, bool>)
 			func = reinterpret_cast<GetReturnFn>(plugify::GetMethod("dynohook.GetReturnBool"));
@@ -465,9 +465,9 @@ namespace dyno
 			func = reinterpret_cast<GetReturnFn>(plugify::GetMethod("dynohook.GetReturnFloat"));
 		else if constexpr (std::is_same_v<T, double>)
 			func = reinterpret_cast<GetReturnFn>(plugify::GetMethod("dynohook.GetReturnDouble"));
-		else if constexpr (std::is_same_v<T, const char *>)
+		else if constexpr (std::is_same_v<T, const char*>)
 			func = reinterpret_cast<GetReturnFn>(plugify::GetMethod("dynohook.GetReturnString"));
-		else if constexpr (std::is_same_v<T, const wchar_t *>)
+		else if constexpr (std::is_same_v<T, const wchar_t*>)
 			func = reinterpret_cast<GetReturnFn>(plugify::GetMethod("dynohook.GetReturnWString"));
 		else if constexpr (std::is_pointer<T>::value || std::is_reference_v<T>)
 			func = reinterpret_cast<GetReturnFn>(plugify::GetMethod("dynohook.GetReturnPointer"));
@@ -502,9 +502,9 @@ namespace dyno
 	}
 
 	template <class T>
-	inline void SetReturn(IHook &hook, T value)
+	inline void SetReturn(IHook& hook, T value)
 	{
-		using SetReturnFn = void (*)(IHook *, T);
+		using SetReturnFn = void (*)(IHook*, T);
 		static SetReturnFn func;
 		if constexpr (std::is_same_v<T, bool>)
 			func = reinterpret_cast<SetReturnFn>(plugify::GetMethod("dynohook.SetReturnBool"));
@@ -528,9 +528,9 @@ namespace dyno
 			func = reinterpret_cast<SetReturnFn>(plugify::GetMethod("dynohook.SetReturnFloat"));
 		else if constexpr (std::is_same_v<T, double>)
 			func = reinterpret_cast<SetReturnFn>(plugify::GetMethod("dynohook.SetReturnDouble"));
-		else if constexpr (std::is_same_v<T, const char *>)
+		else if constexpr (std::is_same_v<T, const char*>)
 			func = reinterpret_cast<SetReturnFn>(plugify::GetMethod("dynohook.SetReturnString"));
-		else if constexpr (std::is_same_v<T, const wchar_t *>)
+		else if constexpr (std::is_same_v<T, const wchar_t*>)
 			func = reinterpret_cast<SetReturnFn>(plugify::GetMethod("dynohook.SetReturnWString"));
 		else if constexpr (std::is_pointer<T>::value || std::is_reference_v<T>)
 			func = reinterpret_cast<SetReturnFn>(plugify::GetMethod("dynohook.SetReturnPointer"));
@@ -593,9 +593,9 @@ namespace dyno
 				return DataType::Float;
 			else if constexpr (std::is_same_v<T, double>)
 				return DataType::Double;
-			else if constexpr (std::is_same_v<T, const char *>)
+			else if constexpr (std::is_same_v<T, const char*>)
 				return DataType::String;
-			else if constexpr (std::is_same_v<T, const wchar_t *>)
+			else if constexpr (std::is_same_v<T, const wchar_t*>)
 				return DataType::WString;
 			else if constexpr (std::is_pointer<T>::value || std::is_reference_v<T>)
 				return DataType::Pointer;
@@ -638,7 +638,7 @@ namespace dyno
 
 			static std::array<DataObject, arity> args()
 			{
-				return { GetType<Args>()... };
+				return {GetType<Args>()...};
 			}
 
 			static DataObject ret()
@@ -654,7 +654,7 @@ namespace dyno
 
 			static std::array<DataObject, arity + 1> args()
 			{
-				std::array<DataObject, arity> originalArgs = { GetType<Args>()... };
+				std::array<DataObject, arity> originalArgs = {GetType<Args>()...};
 				std::array<DataObject, arity + 1> result;
 				result[0] = DataType::Pointer;
 				std::copy(originalArgs.begin(), originalArgs.end(), result.begin() + 1);
@@ -674,7 +674,7 @@ namespace dyno
 
 			static std::array<DataObject, arity> args()
 			{
-				return { GetType<Args>()... };
+				return {GetType<Args>()...};
 			}
 
 			static DataObject ret()

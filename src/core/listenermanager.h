@@ -22,7 +22,7 @@ public:
 	using Func = Ret (*)(Args...);
 
 	template <typename Callable>
-	bool Register(Callable &&callable)
+	bool Register(Callable&& callable)
 		requires std::invocable<Callable, Args...>
 	{
 		// Is the callable already in the vector?
@@ -39,7 +39,7 @@ public:
 	}
 
 	template <typename Callable>
-	bool Unregister(Callable &&callable)
+	bool Unregister(Callable&& callable)
 		requires std::invocable<Callable, Args...>
 	{
 		auto index = Find(callable);
@@ -56,7 +56,7 @@ public:
 	}
 
 	template <typename Callable>
-	std::optional<size_t> Find(Callable &&callable)
+	std::optional<size_t> Find(Callable&& callable)
 	{
 		for (size_t i = 0; i < m_Callables.size(); ++i)
 		{
@@ -69,7 +69,7 @@ public:
 	}
 
 	template <typename Callable>
-	bool IsRegistered(Callable &&callable)
+	bool IsRegistered(Callable&& callable)
 	{
 		return Find(callable).has_value();
 	}

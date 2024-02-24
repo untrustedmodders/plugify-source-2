@@ -9,11 +9,11 @@ class IClient;
 
 struct EventInfo
 {
-	IGameEvent *pEvent{ nullptr };
+	IGameEvent* pEvent{nullptr};
 	bool bDontBroadcast{};
 };
 
-typedef ResultType (*FnEventListenerCallback)(const std::string& name, EventInfo *pEvent, bool bDontBroadcast);
+typedef ResultType (*FnEventListenerCallback)(const std::string& name, EventInfo* pEvent, bool bDontBroadcast);
 
 using HookCallback = CListenerManager<FnEventListenerCallback>;
 
@@ -46,25 +46,25 @@ public:
 	CEventManager() = default;
 	~CEventManager() override;
 
-	EventHookError HookEvent(const std::string &name, FnEventListenerCallback callback, EventHookMode mode = EventHookMode::Post);
-	EventHookError UnhookEvent(const std::string &name, FnEventListenerCallback callback, EventHookMode mode = EventHookMode::Post);
+	EventHookError HookEvent(const std::string& name, FnEventListenerCallback callback, EventHookMode mode = EventHookMode::Post);
+	EventHookError UnhookEvent(const std::string& name, FnEventListenerCallback callback, EventHookMode mode = EventHookMode::Post);
 
-	EventInfo *CreateEvent(const std::string &name, bool force = false);
-	void FireEvent(EventInfo *pInfo, bool bDontBroadcast);
-	void FireEventToClient(EventInfo *pInfo, IClient *pClient);
-	void CancelCreatedEvent(EventInfo *pInfo);
+	EventInfo* CreateEvent(const std::string& name, bool force = false);
+	void FireEvent(EventInfo* pInfo, bool bDontBroadcast);
+	void FireEventToClient(EventInfo* pInfo, IClient* pClient);
+	void CancelCreatedEvent(EventInfo* pInfo);
 
-	dyno::ReturnAction Hook_OnFireEvent(dyno::IHook &hook);
-	dyno::ReturnAction Hook_OnFireEvent_Post(dyno::IHook &hook);
+	dyno::ReturnAction Hook_OnFireEvent(dyno::IHook& hook);
+	dyno::ReturnAction Hook_OnFireEvent_Post(dyno::IHook& hook);
 
 private:
-	void FireGameEvent(IGameEvent *event) override;
+	void FireGameEvent(IGameEvent* event) override;
 
 private:
 	std::unordered_map<std::string, EventHook> m_EventHooks;
-	std::stack<EventInfo *> m_FreeEvents;
-	std::stack<EventHook *> m_EventStack;
-	std::stack<IGameEvent *> m_EventCopies;
+	std::stack<EventInfo*> m_FreeEvents;
+	std::stack<EventHook*> m_EventStack;
+	std::stack<IGameEvent*> m_EventCopies;
 };
 
 extern CEventManager g_EventManager;

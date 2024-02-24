@@ -77,6 +77,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "cs2sdk")
 target_link_libraries(${PROJECT_NAME} PRIVATE ${CS2SDK_LINK_LIBRARIES})
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE
+        CS2SDK_LOGGING_PREFIX="cs2-sdk"
         CS2SDK_PLATFORM_WINDOWS=$<BOOL:${WIN32}>
         CS2SDK_PLATFORM_APPLE=$<BOOL:${APPLE}>
         CS2SDK_PLATFORM_LINUX=$<BOOL:${UNIX}>

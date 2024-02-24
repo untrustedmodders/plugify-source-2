@@ -1,14 +1,14 @@
 #pragma once
 
-#include <span>
-#include <string>
-#include <optional>
-#include <unordered_map>
-#include <unordered_set>
+#include <algorithm>
 #include <charconv>
 #include <memory>
-#include <algorithm>
+#include <optional>
+#include <span>
 #include <stack>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
 
 #include "core/globals.h"
 #include "core/logger.h"

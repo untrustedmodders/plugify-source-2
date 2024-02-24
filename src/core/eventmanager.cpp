@@ -15,7 +15,7 @@ CEventManager::~CEventManager()
 	}
 }
 
-EventHookError CEventManager::HookEvent(const std::string &name, FnEventListenerCallback callback, EventHookMode mode)
+EventHookError CEventManager::HookEvent(const std::string& name, FnEventListenerCallback callback, EventHookMode mode)
 {
 	if (!g_gameEventManager->FindListener(this, name.c_str()))
 	{
@@ -28,7 +28,7 @@ EventHookError CEventManager::HookEvent(const std::string &name, FnEventListener
 	auto it = m_EventHooks.find(name);
 	if (it == m_EventHooks.end())
 	{
-		EventHook pHook{ name };
+		EventHook pHook{name};
 
 		if (mode == EventHookMode::Pre)
 		{
@@ -49,7 +49,7 @@ EventHookError CEventManager::HookEvent(const std::string &name, FnEventListener
 		return EventHookError::Okay;
 	}
 
-	auto &pHook = std::get<EventHook>(*it);
+	auto& pHook = std::get<EventHook>(*it);
 	if (mode == EventHookMode::Pre)
 	{
 		if (pHook.preHook == nullptr)
@@ -79,7 +79,7 @@ EventHookError CEventManager::HookEvent(const std::string &name, FnEventListener
 	return EventHookError::Okay;
 }
 
-EventHookError CEventManager::UnhookEvent(const std::string &name, FnEventListenerCallback callback, EventHookMode mode)
+EventHookError CEventManager::UnhookEvent(const std::string& name, FnEventListenerCallback callback, EventHookMode mode)
 {
 	auto it = m_EventHooks.find(name);
 	if (it == m_EventHooks.end())
@@ -87,8 +87,8 @@ EventHookError CEventManager::UnhookEvent(const std::string &name, FnEventListen
 		return EventHookError::NotActive;
 	}
 
-	std::unique_ptr<HookCallback> *pCallbackHook;
-	auto &pHook = std::get<EventHook>(*it);
+	std::unique_ptr<HookCallback>* pCallbackHook;
+	auto& pHook = std::get<EventHook>(*it);
 	if (mode == EventHookMode::Pre)
 	{
 		pCallbackHook = &pHook.preHook;
@@ -111,21 +111,21 @@ EventHookError CEventManager::UnhookEvent(const std::string &name, FnEventListen
 	return EventHookError::Okay;
 }
 
-void CEventManager::FireGameEvent(IGameEvent *event)
+void CEventManager::FireGameEvent(IGameEvent* event)
 {
 }
 
-void CEventManager::FireEvent(EventInfo *pInfo, bool bDontBroadcast)
+void CEventManager::FireEvent(EventInfo* pInfo, bool bDontBroadcast)
 {
 	g_gameEventManager->FireEvent(pInfo->pEvent, bDontBroadcast);
 
 	m_FreeEvents.push(pInfo);
 }
 
-EventInfo *CEventManager::CreateEvent(const std::string &name, bool force)
+EventInfo* CEventManager::CreateEvent(const std::string& name, bool force)
 {
-	EventInfo *pInfo;
-	IGameEvent *pEvent = g_gameEventManager->CreateEvent(name.c_str(), force);
+	EventInfo* pInfo;
+	IGameEvent* pEvent = g_gameEventManager->CreateEvent(name.c_str(), force);
 
 	if (pEvent)
 	{
@@ -148,23 +148,23 @@ EventInfo *CEventManager::CreateEvent(const std::string &name, bool force)
 	return nullptr;
 }
 
-void CEventManager::FireEventToClient(EventInfo *pInfo, IClient *pClient)
+void CEventManager::FireEventToClient(EventInfo* pInfo, IClient* pClient)
 {
-	auto pGameClient = (IGameEventListener2 *)((intptr_t)pClient - sizeof(void *));
+	auto pGameClient = (IGameEventListener2*)((intptr_t)pClient - sizeof(void*));
 
 	pGameClient->FireGameEvent(pInfo->pEvent);
 }
 
-void CEventManager::CancelCreatedEvent(EventInfo *pInfo)
+void CEventManager::CancelCreatedEvent(EventInfo* pInfo)
 {
 	g_gameEventManager->FreeEvent(pInfo->pEvent);
 
 	m_FreeEvents.push(pInfo);
 }
 
-dyno::ReturnAction CEventManager::Hook_OnFireEvent(dyno::IHook &hook)
+dyno::ReturnAction CEventManager::Hook_OnFireEvent(dyno::IHook& hook)
 {
-	auto pEvent = dyno::GetArgument<IGameEvent *>(hook, 1);
+	auto pEvent = dyno::GetArgument<IGameEvent*>(hook, 1);
 	auto bDontBroadcast = dyno::GetArgument<bool>(hook, 2);
 
 	if (!pEvent)
@@ -176,7 +176,7 @@ dyno::ReturnAction CEventManager::Hook_OnFireEvent(dyno::IHook &hook)
 	auto it = m_EventHooks.find(name);
 	if (it != m_EventHooks.end())
 	{
-		auto &pHook = std::get<EventHook>(*it);
+		auto& pHook = std::get<EventHook>(*it);
 		pHook.refCount++;
 		m_EventStack.push(&pHook);
 
@@ -184,7 +184,7 @@ dyno::ReturnAction CEventManager::Hook_OnFireEvent(dyno::IHook &hook)
 
 		if (pHook.preHook != nullptr)
 		{
-			EventInfo info{ pEvent, bDontBroadcast };
+			EventInfo info{pEvent, bDontBroadcast};
 
 			for (size_t i = 0; i < pHook.preHook->GetCount(); ++i)
 			{
@@ -219,15 +219,15 @@ dyno::ReturnAction CEventManager::Hook_OnFireEvent(dyno::IHook &hook)
 	return dyno::ReturnAction::Ignored;
 }
 
-dyno::ReturnAction CEventManager::Hook_OnFireEvent_Post(dyno::IHook &hook)
+dyno::ReturnAction CEventManager::Hook_OnFireEvent_Post(dyno::IHook& hook)
 {
-	auto pEvent = dyno::GetArgument<IGameEvent *>(hook, 1);
+	auto pEvent = dyno::GetArgument<IGameEvent*>(hook, 1);
 	auto bDontBroadcast = dyno::GetArgument<bool>(hook, 2);
 
 	if (!pEvent)
 		return dyno::ReturnAction::Ignored;
 
-	EventHook *pHook = m_EventStack.top();
+	EventHook* pHook = m_EventStack.top();
 
 	if (pHook != nullptr)
 	{
@@ -235,7 +235,7 @@ dyno::ReturnAction CEventManager::Hook_OnFireEvent_Post(dyno::IHook &hook)
 		{
 			if (pHook->postCopy)
 			{
-				EventInfo info{ m_EventCopies.top(), bDontBroadcast };
+				EventInfo info{m_EventCopies.top(), bDontBroadcast};
 
 				pHook->postHook->Notify(pHook->name, &info, bDontBroadcast);
 

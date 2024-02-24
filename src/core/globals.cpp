@@ -3,49 +3,52 @@
 #include "fwd.h"
 #include "gameconfig.h"
 #include "module.h"
-#include "virtual.h"
 #include "utils.h"
+#include "virtual.h"
 
-IGameEventSystem *g_gameEventSystem = nullptr;
-IGameEventManager2 *g_gameEventManager = nullptr;
-CGlobalVars *gpGlobals = nullptr;
-IVEngineServer2 *g_pEngineServer2 = nullptr;
-CGameResourceService *pGameResourceServiceServer = nullptr;
-CSchemaSystem *pSchemaSystem = nullptr;
-CGameEntitySystem *g_pEntitySystem = nullptr;
+IGameEventSystem* g_gameEventSystem = nullptr;
+IGameEventManager2* g_gameEventManager = nullptr;
+CGlobalVars* gpGlobals = nullptr;
+IVEngineServer2* g_pEngineServer2 = nullptr;
+CGameResourceService* pGameResourceServiceServer = nullptr;
+CSchemaSystem* pSchemaSystem = nullptr;
+CGameEntitySystem* g_pEntitySystem = nullptr;
 
 #define RESOLVE_SIG(gameConfig, name, variable) \
-	variable = (decltype(variable)) (void*) gameConfig->ResolveSignature(name)
+	variable = (decltype(variable))(void*)gameConfig->ResolveSignature(name)
 
 namespace modules
 {
-	DynLibUtils::CModule *engine = nullptr;
-	DynLibUtils::CModule *tier0 = nullptr;
-	DynLibUtils::CModule *server = nullptr;
-	DynLibUtils::CModule *schemasystem = nullptr;
-	DynLibUtils::CModule *filesystem = nullptr;
-	DynLibUtils::CModule *vscript = nullptr;
+	DynLibUtils::CModule* engine = nullptr;
+	DynLibUtils::CModule* tier0 = nullptr;
+	DynLibUtils::CModule* server = nullptr;
+	DynLibUtils::CModule* schemasystem = nullptr;
+	DynLibUtils::CModule* filesystem = nullptr;
+	DynLibUtils::CModule* vscript = nullptr;
 } // namespace modules
 
-template<class T>
-T* FindInterface(const DynLibUtils::CModule* module, const char* name) {
+template <class T>
+T* FindInterface(const DynLibUtils::CModule* module, const char* name)
+{
 	auto fn = module->GetFunctionByName("CreateInterface");
-	if (!fn) {
+	if (!fn)
+	{
 		g_Logger.ErrorFormat("Could not find CreateInterface in %s at \"%s\"\n", module->GetModuleName(), module->GetModulePath());
 	}
-	
+
 	void* pInterface = fn.CCast<CreateInterfaceFn>()(name, nullptr);
-	if (!pInterface) {
+	if (!pInterface)
+	{
 		g_Logger.ErrorFormat("Could not find interface: %s in %s at \"%s\"\n", name, module->GetModuleName(), module->GetModulePath());
 	}
 
-	return (T*) pInterface;
+	return (T*)pInterface;
 }
 
 namespace globals
 {
-	IMetamodListener *g_MetamodListener = nullptr;
-	CGameConfig *g_GameConfig = nullptr;
+	IMetamodListener* g_MetamodListener = nullptr;
+	CGameConfig* g_GameConfig = nullptr;
 
 	void Initialize()
 	{
@@ -77,7 +80,7 @@ namespace globals
 
 		DynLibUtils::CModule plugify("plugify");
 
-		using IMetamodListenerFn = IMetamodListener *(*)();
+		using IMetamodListenerFn = IMetamodListener* (*)();
 		auto Plugify_ImmListener = plugify.GetFunctionByName("Plugify_ImmListener");
 		g_MetamodListener = Plugify_ImmListener.CCast<IMetamodListenerFn>()();
 
@@ -103,9 +106,9 @@ namespace globals
 		delete modules::vscript;
 	}
 
-	CGlobalVars *GetGameGlobals()
+	CGlobalVars* GetGameGlobals()
 	{
-		INetworkGameServer *server = g_pNetworkServerService->GetIGameServer();
+		INetworkGameServer* server = g_pNetworkServerService->GetIGameServer();
 
 		if (!server)
 			return nullptr;

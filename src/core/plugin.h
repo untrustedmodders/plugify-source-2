@@ -10,19 +10,19 @@ public:
 	void OnPluginStart() override;
 	void OnPluginEnd() override;
 
-	static dyno::ReturnAction Hook_StartupServer(dyno::CallbackType type, dyno::IHook &hook);
-	static dyno::ReturnAction Hook_FireEvent(dyno::CallbackType type, dyno::IHook &hook);
-	static dyno::ReturnAction Hook_PostEvent(dyno::CallbackType type, dyno::IHook &hook);
-	static dyno::ReturnAction Hook_OnLevelInit(dyno::CallbackType type, dyno::IHook &hook);
-	static dyno::ReturnAction Hook_OnLevelShutdown(dyno::CallbackType type, dyno::IHook &hook);
-	static dyno::ReturnAction Hook_GameFrame(dyno::CallbackType type, dyno::IHook &hook);
-	static dyno::ReturnAction Hook_ClientActive(dyno::CallbackType type, dyno::IHook &hook);
-	static dyno::ReturnAction Hook_ClientDisconnect(dyno::CallbackType type, dyno::IHook &hook);
-	static dyno::ReturnAction Hook_ClientPutInServer(dyno::CallbackType type, dyno::IHook &hook);
-	static dyno::ReturnAction Hook_ClientSettingsChanged(dyno::CallbackType type, dyno::IHook &hook);
-	static dyno::ReturnAction Hook_OnClientConnected(dyno::CallbackType type, dyno::IHook &hook);
-	static dyno::ReturnAction Hook_ClientFullyConnect(dyno::CallbackType type, dyno::IHook &hook);
-	static dyno::ReturnAction Hook_ClientConnect(dyno::CallbackType type, dyno::IHook &hook);
+	static dyno::ReturnAction Hook_StartupServer(dyno::CallbackType type, dyno::IHook& hook);
+	static dyno::ReturnAction Hook_FireEvent(dyno::CallbackType type, dyno::IHook& hook);
+	static dyno::ReturnAction Hook_PostEvent(dyno::CallbackType type, dyno::IHook& hook);
+	static dyno::ReturnAction Hook_OnLevelInit(dyno::CallbackType type, dyno::IHook& hook);
+	static dyno::ReturnAction Hook_OnLevelShutdown(dyno::CallbackType type, dyno::IHook& hook);
+	static dyno::ReturnAction Hook_GameFrame(dyno::CallbackType type, dyno::IHook& hook);
+	static dyno::ReturnAction Hook_ClientActive(dyno::CallbackType type, dyno::IHook& hook);
+	static dyno::ReturnAction Hook_ClientDisconnect(dyno::CallbackType type, dyno::IHook& hook);
+	static dyno::ReturnAction Hook_ClientPutInServer(dyno::CallbackType type, dyno::IHook& hook);
+	static dyno::ReturnAction Hook_ClientSettingsChanged(dyno::CallbackType type, dyno::IHook& hook);
+	static dyno::ReturnAction Hook_OnClientConnected(dyno::CallbackType type, dyno::IHook& hook);
+	static dyno::ReturnAction Hook_ClientFullyConnect(dyno::CallbackType type, dyno::IHook& hook);
+	static dyno::ReturnAction Hook_ClientConnect(dyno::CallbackType type, dyno::IHook& hook);
 	/*static dyno::ReturnAction Hook_ClientCommand(dyno::CallbackType type, dyno::IHook& hook);
 	static dyno::ReturnAction Hook_CheckTransmit(dyno::CallbackType type, dyno::IHook& hook); */
 };
