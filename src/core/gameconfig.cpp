@@ -69,7 +69,7 @@ bool CGameConfig::Initialize(std::span<char> error)
 							continue;
 						}
 						read.push_back(it2->GetInt());
-						if (key[0] == 'o')
+						if (key[0] == 'o') // offset
 						{
 							lastIsOffset = true;
 						}
@@ -188,7 +188,7 @@ bool CGameConfig::IsSymbol(const std::string &name) const
 	const std::string_view sigOrSymbol = GetSignature(name);
 	if (sigOrSymbol.empty())
 	{
-		Log_Error(LOG_GENERAL, "Missing signature or symbol: %s\n", name.c_str());
+		g_Logger.ErrorFormat("Missing signature or symbol: %s\n", name.c_str());
 		return false;
 	}
 	return sigOrSymbol[0] == '@';
@@ -200,7 +200,7 @@ std::string_view CGameConfig::GetSymbol(const std::string &name) const
 
 	if (symbol.size() <= 1)
 	{
-		Log_Error(LOG_GENERAL, "Missing symbol: %s\n", name.c_str());
+		g_Logger.ErrorFormat("Missing symbol: %s\n", name.c_str());
 		return {};
 	}
 
@@ -212,7 +212,7 @@ CMemory CGameConfig::ResolveSignature(const std::string &name) const
 	auto moduleRef = GetModule(name);
 	if (!moduleRef.has_value())
 	{
-		Log_Error(LOG_GENERAL, "Invalid module: %s\n", name.c_str());
+		g_Logger.ErrorFormat("Invalid module: %s\n", name.c_str());
 		return {};
 	}
 
@@ -224,7 +224,7 @@ CMemory CGameConfig::ResolveSignature(const std::string &name) const
 		const std::string_view symbol = GetSymbol(name);
 		if (symbol.empty())
 		{
-			Log_Error(LOG_GENERAL, "Invalid symbol for %s\n", name.c_str());
+			g_Logger.ErrorFormat("Invalid symbol for %s\n", name.c_str());
 			return {};
 		}
 
@@ -235,21 +235,21 @@ CMemory CGameConfig::ResolveSignature(const std::string &name) const
 		const std::string_view signature = GetSignature(name);
 		if (signature.empty())
 		{
-			Log_Error(LOG_GENERAL, "Failed to find signature for %s\n", name.c_str());
+			g_Logger.ErrorFormat("Failed to find signature for %s\n", name.c_str());
 			return {};
 		}
 
 		auto sig = CGameConfig::HexToByte(signature);
 		if (sig.empty()) {
-			Log_Error(LOG_GENERAL, "Invalid hex string\n");
-			return nullptr;
+			g_Logger.Error("Invalid hex string\n");
+			return {};
 		}
 		address = module.FindPattern(std::string_view{(char*)sig.data(), sig.size()});
 	}
 
 	if (!address)
 	{
-		Log_Error(LOG_GENERAL, "Failed to find address for %s\n", name.c_str());
+		g_Logger.ErrorFormat("Failed to find address for %s\n", name.c_str());
 		return {};
 	}
 
@@ -262,7 +262,7 @@ std::vector<uint8_t> CGameConfig::HexToByte(std::string_view hexString) {
 
 	size_t byteCount = hexString.size() / 4; // Each "\\x" represents one byte.
 	if (hexString.size() % 4 != 0 || byteCount == 0) {
-		Log_Error(LOG_GENERAL, "Invalid hex string format or byte count.\n");
+		g_Logger.Error("Invalid hex string format or byte count.\n");
 		return {};
 	}
 
@@ -272,7 +272,7 @@ std::vector<uint8_t> CGameConfig::HexToByte(std::string_view hexString) {
 		auto hexSubstring = hexString.substr(i + 2, 2); // Skip "\\x" and take the next two characters.
 		auto [p, ec] = std::from_chars(hexSubstring.data(), hexSubstring.data() + hexSubstring.size(), byteArray[i / 4], 16);
 		if (ec != std::errc() || p != hexSubstring.data() + hexSubstring.size()) {
-			Log_Error(LOG_GENERAL, "Failed to parse hex string at position %uul. %s\n", i, make_error_code(ec).message().c_str());
+			g_Logger.ErrorFormat("Failed to parse hex string at position %uul. %s\n", i, make_error_code(ec).message().c_str());
 			return {}; // Return an error code.
 		}
 	}
@@ -296,7 +296,7 @@ CGameConfig *CGameConfigManager::LoadGameConfigFile(std::string path)
 	CGameConfig gameConfig("csgo", path);
 	if (!gameConfig.Initialize(confError))
 	{
-		Log_Error(LOG_GENERAL, "Could not read \"%s\": %s", gameConfig.GetPath().c_str(), confError);
+		g_Logger.ErrorFormat("Could not read \"%s\": %s", gameConfig.GetPath().c_str(), confError);
 		return nullptr;
 	}
 

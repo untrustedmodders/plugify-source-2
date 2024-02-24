@@ -16,7 +16,7 @@ public:
 		auto ihook = dyno::CHook::CreateHookVirtualByFunc(ptr, (void *&)func, std::vector(args.begin(), args.end()), ret);
 		if (ihook == nullptr)
 		{
-			Log_Error(LOG_GENERAL, "Could not hook \"'%s\".", utils::Demangle(typeid(func).name()).c_str());
+			g_Logger.ErrorFormat("Could not hook \"'%s\".", utils::Demangle(typeid(func).name()).c_str());
 		}
 		auto &hook = m_Hooks.emplace_back(std::move(ihook));
 		([&]()

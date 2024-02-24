@@ -15,7 +15,7 @@ CSchemaSystem *pSchemaSystem = nullptr;
 CGameEntitySystem *g_pEntitySystem = nullptr;
 
 #define RESOLVE_SIG(gameConfig, name, variable) \
-	variable = (decltype(variable))gameConfig->ResolveSignature(name)
+	variable = (decltype(variable)) (void*) gameConfig->ResolveSignature(name)
 
 namespace modules
 {
@@ -31,12 +31,12 @@ template<class T>
 T* FindInterface(const DynLibUtils::CModule* module, const char* name) {
 	auto fn = module->GetFunctionByName("CreateInterface");
 	if (!fn) {
-		Log_Error(LOG_GENERAL, "Could not find CreateInterface in %s at \"%s\"\n", module->GetModuleName(), module->GetModulePath());
+		g_Logger.ErrorFormat("Could not find CreateInterface in %s at \"%s\"\n", module->GetModuleName(), module->GetModulePath());
 	}
 	
 	void* pInterface = fn.CCast<CreateInterfaceFn>()(name, nullptr);
 	if (!pInterface) {
-		Log_Error(LOG_GENERAL, "Could not find interface: %s in %s at \"%s\"\n", name, module->GetModuleName(), module->GetModulePath());
+		g_Logger.ErrorFormat("Could not find interface: %s in %s at \"%s\"\n", name, module->GetModuleName(), module->GetModulePath());
 	}
 
 	return (T*) pInterface;
@@ -81,13 +81,13 @@ namespace globals
 		auto Plugify_ImmListener = plugify.GetFunctionByName("Plugify_ImmListener");
 		g_MetamodListener = Plugify_ImmListener.CCast<IMetamodListenerFn>()();
 
-		g_gameEventManager = (IGameEventManager2 *)(CALL_VIRTUAL(uintptr_t, g_GameConfig->GetOffset("GameEventManager"), g_pSource2Server) - 8);
+		g_gameEventManager = CALL_VIRTUAL(IGameEventManager2*, g_GameConfig->GetOffset("GameEventManager"), g_pSource2Server) - 8;
 
 		// load more if needed
 		// RESOLVE_SIG(g_GameConfig, "NetworkStateChanged", addresses::NetworkStateChanged);
 		// RESOLVE_SIG(g_GameConfig, "StateChanged", addresses::StateChanged);
-		// RESOLVE_SIG(g_GameConfig, "UTIL_ClientPrintAll", addresses::UTIL_ClientPrintAll);
-		// RESOLVE_SIG(g_GameConfig, "ClientPrint", addresses::ClientPrint);
+		RESOLVE_SIG(g_GameConfig, "UTIL_ClientPrintAll", addresses::UTIL_ClientPrintAll);
+		RESOLVE_SIG(g_GameConfig, "ClientPrint", addresses::ClientPrint);
 		// RESOLVE_SIG(g_GameConfig, "SetGroundEntity", addresses::SetGroundEntity);
 		// RESOLVE_SIG(g_GameConfig, "CCSPlayerController_SwitchTeam", addresses::CCSPlayerController_SwitchTeam);
 		// RESOLVE_SIG(g_GameConfig, "UTIL_Remove", addresses::UTIL_Remove);

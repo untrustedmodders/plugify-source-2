@@ -1,8 +1,10 @@
 #pragma once
 
-extern "C" PLUGIN_API LoggingChannelID_t Logger_RegisterLoggingChannel(const std::string &name, int iFlags, LoggingVerbosity_t verbosity, int iDefault)
+extern "C" PLUGIN_API LoggingChannelID_t Logger_RegisterLoggingChannel(const std::string &name, int iFlags, LoggingVerbosity_t verbosity, int color)
 {
-	return LoggingSystem_RegisterLoggingChannel(name.c_str(), &CLogger::RegisterTags, iFlags, verbosity, iDefault);
+	Color spewColor;
+	spewColor.SetRawColor(color);
+	return LoggingSystem_RegisterLoggingChannel(name.c_str(), &CLogger::RegisterTags, iFlags, verbosity, spewColor);
 }
 
 extern "C" PLUGIN_API void Logger_AddTagToChannel(LoggingChannelID_t channelID, const std::string &tagName)

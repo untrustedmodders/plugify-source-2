@@ -193,4 +193,4 @@ LoggingResponse_t CLogger::InternalMessageFormat(LoggingSeverity_t eSeverity, co
 	return eResponse;
 }
 
-CLogger g_Logger("cs2-sdk", &CLogger::RegisterTags);
+CLogger g_Logger(CS2SDK_LOGGING_PREFIX, &CLogger::RegisterTags);

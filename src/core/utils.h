@@ -32,9 +32,9 @@ namespace utils
 			std::free
 		};
 
-		std::string_view ret{ (status == 0) ? res.get() : name };
+		std::string_view ret((status == 0) ? res.get() : name);
 #else
-		std::string_view ret{ name };
+		std::string_view ret(name);
 #endif
 		if (ret.substr(ret.size() - 3) == " ()")
 			ret.remove_suffix(3);

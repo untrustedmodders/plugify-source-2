@@ -2,25 +2,31 @@
 
 void CommandInfo::CommandCallback(const CCommandContext &context, const CCommand &args)
 {
-	listener.Notify(args, context.GetPlayerSlot().Get());
+	int size = args.ArgC();
+	std::vector<std::string> arguments;
+	arguments.reserve((size_t) size);
+	for (int i = 0; i < size; ++i)
+	{
+		arguments.emplace_back(args.Arg(i));
+	}
+
+	listener.Notify(arguments, context.GetPlayerSlot().Get());
 }
 
-void CCommandManager::AddCommand(FnCommandListenerCallback callback, const char *name, const char *description, int64 flags)
+void CCommandManager::AddCommand(FnCommandListenerCallback callback, const std::string &name, const std::string &description, int64 flags)
 {
-	std::string commandName(name);
-
-	auto it = m_Commands.find(commandName);
+	auto it = m_Commands.find(name);
 	if (it != m_Commands.end())
 	{
 		std::get<CommandInfo>(*it).listener.Register(callback);
 		return;
 	}
 
-	auto [_, result] = m_Commands.emplace(std::move(commandName), CommandInfo(name, description, flags));
+	auto [_, result] = m_Commands.emplace(name, CommandInfo(name, description, flags));
 	std::get<CommandInfo>(*_).listener.Register(callback);
 }
 
-bool CCommandManager::DeleteCommand(FnCommandListenerCallback callback, const char *name)
+bool CCommandManager::DeleteCommand(FnCommandListenerCallback callback, const std::string &name)
 {
 	auto it = m_Commands.find(name);
 	if (it == m_Commands.end())
@@ -43,6 +49,6 @@ bool CCommandManager::DeleteCommand(FnCommandListenerCallback callback, const ch
 	return true;
 }
 
-CommandInfo::CommandInfo(const char *_name, const char *_description, int64 _flags) : name(_name), description(_description), commandRef(), command(&commandRef, name.c_str(), this, description.c_str(), _flags)
+CommandInfo::CommandInfo(std::string name, std::string description, int64 flags) : name(std::move(name)), description(std::move(description)), commandRef(), command(&commandRef, name.c_str(), this, description.empty() ? nullptr : description.c_str(), flags)
 {
 }

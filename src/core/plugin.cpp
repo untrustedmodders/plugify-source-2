@@ -68,7 +68,7 @@ dyno::ReturnAction Source2SDK::Hook_StartupServer(dyno::CallbackType type, dyno:
 
 	if (gpGlobals == nullptr)
 	{
-		Log_Error(LOG_GENERAL, "Failed to lookup gpGlobals\n");
+		g_Logger.Error("Failed to lookup gpGlobals\n");
 	}
 
 	//g_pEntitySystem = pGameResourceServiceServer->GetGameEntitySystem();
