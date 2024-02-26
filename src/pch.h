@@ -7,6 +7,15 @@
 #include <span>
 #include <stack>
 #include <string>
+#include <array>
+#include <list>
+#include <map>
+#include <thread>
+#include <mutex>
+#include <functional>
+#include <utility>
+#include <cstdint>
+#include <forward_list>
 #include <unordered_map>
 #include <unordered_set>
 

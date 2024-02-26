@@ -13,6 +13,11 @@ file(GLOB_RECURSE SOURCE_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "src/*.cpp")
 
 set(SOURCE_FILES ${SOURCE_FILES}
         ${CMAKE_CURRENT_SOURCE_DIR}/external/hl2sdk-cs2/tier1/convar.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/external/hl2sdk-cs2/tier1/generichash.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/external/hl2sdk-cs2/tier1/keyvalues3.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/external/hl2sdk-cs2/entity2/entityidentity.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/external/hl2sdk-cs2/entity2/entitysystem.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/external/hl2sdk-cs2/entity2/entitykeyvalues.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/external/dynlibutils/module.cpp
 )
 

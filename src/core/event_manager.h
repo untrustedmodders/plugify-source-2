@@ -1,11 +1,9 @@
 #pragma once
 
-#include "listenermanager.h"
+#include "listener_manager.h"
 #include <igameevents.h>
 
 #include <dynohook/dynohook.h>
-
-class IClient;
 
 struct EventInfo
 {
@@ -13,9 +11,9 @@ struct EventInfo
 	bool bDontBroadcast{};
 };
 
-typedef ResultType (*FnEventListenerCallback)(const std::string& name, EventInfo* pEvent, bool bDontBroadcast);
+using EventListenerCallback = ResultType (*)(const std::string& name, EventInfo* pEvent, bool bDontBroadcast);
 
-using HookCallback = CListenerManager<FnEventListenerCallback>;
+using HookCallback = CListenerManager<EventListenerCallback>;
 
 struct EventHook
 {
@@ -24,12 +22,6 @@ struct EventHook
 	std::unique_ptr<HookCallback> postHook;
 	uint32_t refCount{};
 	bool postCopy{};
-};
-
-enum class EventHookMode : bool
-{
-	Pre,
-	Post,
 };
 
 enum class EventHookError : uint8_t
@@ -46,12 +38,12 @@ public:
 	CEventManager() = default;
 	~CEventManager() override;
 
-	EventHookError HookEvent(const std::string& name, FnEventListenerCallback callback, EventHookMode mode = EventHookMode::Post);
-	EventHookError UnhookEvent(const std::string& name, FnEventListenerCallback callback, EventHookMode mode = EventHookMode::Post);
+	EventHookError HookEvent(const std::string& name, EventListenerCallback callback, HookMode mode = HookMode::Post);
+	EventHookError UnhookEvent(const std::string& name, EventListenerCallback callback, HookMode mode = HookMode::Post);
 
 	EventInfo* CreateEvent(const std::string& name, bool force = false);
 	void FireEvent(EventInfo* pInfo, bool bDontBroadcast);
-	void FireEventToClient(EventInfo* pInfo, IClient* pClient);
+	void FireEventToClient(EventInfo* pInfo, int entityIndex);
 	void CancelCreatedEvent(EventInfo* pInfo);
 
 	dyno::ReturnAction Hook_OnFireEvent(dyno::IHook& hook);

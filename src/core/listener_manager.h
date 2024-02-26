@@ -2,7 +2,12 @@
 
 #include <concepts>
 #include <optional>
-#include <plugin_export.h>
+
+enum class HookMode : bool
+{
+	Pre,
+	Post,
+};
 
 enum class ResultType : uint8_t
 {
@@ -50,13 +55,13 @@ public:
 		}
 		else
 		{
-			m_Callables.erase(m_Callables.begin() + *index);
+			m_Callables.erase(m_Callables.begin() + static_cast<ptrdiff_t>(*index));
 			return true;
 		}
 	}
 
 	template <typename Callable>
-	std::optional<size_t> Find(Callable&& callable)
+	std::optional<size_t> Find(Callable&& callable) const
 	{
 		for (size_t i = 0; i < m_Callables.size(); ++i)
 		{
@@ -69,7 +74,7 @@ public:
 	}
 
 	template <typename Callable>
-	bool IsRegistered(Callable&& callable)
+	bool IsRegistered(Callable&& callable) const
 	{
 		return Find(callable).has_value();
 	}
@@ -82,7 +87,7 @@ public:
 		}
 	}
 
-	Ret Call(size_t index, Args... args) const
+	Ret Notify(size_t index, Args... args) const
 	{
 		return m_Callables[index](std::forward<Args>(args)...);
 	}
@@ -97,9 +102,14 @@ public:
 		m_Callables.clear();
 	}
 
-	size_t GetCount()
+	size_t GetCount() const
 	{
 		return m_Callables.size();
+	}
+
+	bool Empty() const
+	{
+		return m_Callables.empty();
 	}
 
 private:

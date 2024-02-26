@@ -1,5 +1,4 @@
-#include "gameconfig.h"
-#include "fwd.h"
+#include "game_config.h"
 #include "utils.h"
 
 CGameConfig::CGameConfig(std::string game, std::string path) : m_szGameDir(std::move(game)), m_szPath(std::move(path)), m_pKeyValues(std::make_unique<KeyValues>("Games"))
@@ -277,7 +276,7 @@ std::vector<uint8_t> CGameConfig::HexToByte(std::string_view hexString)
 		auto [p, ec] = std::from_chars(hexSubstring.data(), hexSubstring.data() + hexSubstring.size(), byteArray[i / 4], 16);
 		if (ec != std::errc() || p != hexSubstring.data() + hexSubstring.size())
 		{
-			g_Logger.ErrorFormat("Failed to parse hex string at position %uul. %s\n", i, make_error_code(ec).message().c_str());
+			g_Logger.ErrorFormat("Failed to parse hex string at position %zu. %s\n", i, make_error_code(ec).message().c_str());
 			return {}; // Return an error code.
 		}
 	}

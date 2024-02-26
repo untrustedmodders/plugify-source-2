@@ -1,9 +1,9 @@
 #pragma once
 
-#include "KeyValues.h"
+#include <tier1/KeyValues.h>
 
-#include "memaddr.h"
-#include "module.h"
+#include <memaddr.h>
+#include <module.h>
 
 using CMemory = DynLibUtils::CMemory;
 using ModuleRef = std::optional<std::reference_wrapper<DynLibUtils::CModule>>;

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstdint>
-
 #define CALL_VIRTUAL(retType, idx, ...) CallVirtual<retType>(idx, __VA_ARGS__)
 
 template <typename T = void*>

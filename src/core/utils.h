@@ -1,6 +1,6 @@
 #pragma once
 
-#include <public/eiface.h>
+#include <eiface.h>
 
 namespace utils
 {
@@ -40,5 +40,43 @@ namespace utils
 
 		return std::string(ret);
 	}
+
+	/**
+	 * Combines a seed into a hash and modifies the seed by the new hash.
+	 * @param seed The seed.
+	 * @param v The value to hash.
+	 * https://stackoverflow.com/questions/2590677/how-do-i-combine-hash-values-in-c0x
+	 */
+	inline void hash_combine(size_t& seed) {}
+
+	template <typename T, typename... Rest>
+	inline void hash_combine(size_t& seed, const T& v, Rest... rest)
+	{
+		std::hash<T> hasher;
+		seed ^= hasher(v) + 0x9e3779b9 + (seed<<6) + (seed>>2);
+		hash_combine(seed, rest...);
+	}
+
+	template<typename T1, typename T2>
+	struct PairHash
+	{
+		std::size_t operator()(std::pair<T1, T2> const& p) const
+		{
+			std::size_t seed(0);
+			hash_combine(seed, p.first);
+			hash_combine(seed, p.second);
+			return seed;
+		}
+	};
+
+	struct CaseInsensitiveComparator {
+		bool operator()(const std::string& lhs, const std::string& rhs) const {
+			return std::lexicographical_compare(
+				lhs.begin(), lhs.end(),
+				rhs.begin(), rhs.end(),
+				[](char a, char b) { return std::tolower(a) < std::tolower(b); }
+			);
+		}
+	};
 
 } // namespace utils

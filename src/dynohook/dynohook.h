@@ -6,8 +6,6 @@
 
 #include <plugify/cpp_plugin.h>
 
-#include <array>
-
 namespace dyno
 {
 	class IHook;
@@ -203,7 +201,7 @@ namespace dyno
 	};
 
 	class IHook;
-	typedef ReturnAction (*CallbackHandler)(CallbackType, IHook&);
+	using CallbackHandler = ReturnAction (*)(CallbackType, IHook&);
 
 	struct DataObject
 	{
@@ -628,6 +626,9 @@ namespace dyno
 			}
 		}
 
+		template<class>
+		class function_traits;
+
 		template <typename Function>
 		struct function_traits;
 
@@ -667,6 +668,13 @@ namespace dyno
 			}
 		};
 
+		template <typename Class, typename Ret, typename... Args>
+		class function_traits<Ret (Class::*)(Args...) const> : public function_traits<Ret (Class::*)(Args...)> {};
+		template <typename Class, typename Ret, typename... Args>
+		class function_traits<Ret (Class::*)(Args...) volatile> : public function_traits<Ret (Class::*)(Args...)> {};
+		template <typename Class, typename Ret, typename... Args>
+		class function_traits<Ret (Class::*)(Args...) const volatile> : public function_traits<Ret (Class::*)(Args...)> {};
+
 		template <typename Ret, typename... Args>
 		struct function_traits<Ret(Args...)>
 		{
@@ -682,5 +690,13 @@ namespace dyno
 				return GetType<Ret>();
 			}
 		};
+
+		template<class Ret, class... ArgTypes>
+		class function_traits<Ret(ArgTypes...) const> : public function_traits<Ret(ArgTypes...)> {};
+		template<class Ret, class... ArgTypes>
+		class function_traits<Ret(ArgTypes...) volatile> : public function_traits<Ret(ArgTypes...)> {};
+		template<class Ret, class... ArgTypes>
+		class function_traits<Ret(ArgTypes...) const volatile> : public function_traits<Ret(ArgTypes...)> {};
+
 	} // namespace details
 } // namespace dyno

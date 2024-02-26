@@ -1,49 +1,54 @@
 #pragma once
 
-#include "listenermanager.h"
+#include "listener_manager.h"
+#include <plugin_export.h>
 
-#define DEFINE_MANAGER_ACCESSOR(name, ret, ...)                 \
-	typedef ret (*Fn##name)(__VA_ARGS__);                       \
-	auto& Get##name##ListenerManager()                          \
-	{                                                           \
-		static CListenerManager<Fn##name> s_##name;             \
-		return s_##name;                                        \
-	}                                                           \
-	extern "C" PLUGIN_API void name##_Register(Fn##name func)   \
-	{                                                           \
-		Get##name##ListenerManager().Register(func);            \
-	}                                                           \
-	extern "C" PLUGIN_API void name##_Unregister(Fn##name func) \
-	{                                                           \
-		Get##name##ListenerManager().Unregister(func);          \
-	}
+#define DEFINE_MANAGER_CREATOR(name, ret, ...)                  \
+	using Fn##name = ret (*)(__VA_ARGS__);                      \
+	CListenerManager<Fn##name>& Get##name##ListenerManager();
 
-DEFINE_MANAGER_ACCESSOR(OnClientActive, void, int, bool, const std::string&, uint64)
-DEFINE_MANAGER_ACCESSOR(OnClientConnect, bool, int, const std::string&, uint64, const std::string&, bool, const std::string&)
-DEFINE_MANAGER_ACCESSOR(OnClientConnected, void, int, const std::string&, uint64, const std::string&, const std::string&, bool)
-DEFINE_MANAGER_ACCESSOR(OnClientFullyConnect, void, int)
-DEFINE_MANAGER_ACCESSOR(OnClientDisconnect, void, int, int, const std::string&, uint64, const std::string&)
-DEFINE_MANAGER_ACCESSOR(OnClientPutInServer, void, int, char const*, int, uint64)
-DEFINE_MANAGER_ACCESSOR(OnClientSettingsChanged, void, int)
-DEFINE_MANAGER_ACCESSOR(OnLevelInit, void, const std::string&, const std::string&)
-DEFINE_MANAGER_ACCESSOR(OnLevelShutdown, void)
-/*DEFINE_MANAGER_ACCESSOR(OnNetworkidValidated)
-DEFINE_MANAGER_ACCESSOR(OnEdictAllocated)
-DEFINE_MANAGER_ACCESSOR(OnEdictFreed)
-DEFINE_MANAGER_ACCESSOR(OnQueryCvarValueFinished)
-DEFINE_MANAGER_ACCESSOR(OnServerActivate)
-DEFINE_MANAGER_ACCESSOR(OnGameFrame)
-DEFINE_MANAGER_ACCESSOR(OnEntityPreSpawned)
-DEFINE_MANAGER_ACCESSOR(OnNetworkedEntityPreSpawned)
-DEFINE_MANAGER_ACCESSOR(OnEntityCreated)
-DEFINE_MANAGER_ACCESSOR(OnNetworkedEntityCreated)
-DEFINE_MANAGER_ACCESSOR(OnEntitySpawned)
-DEFINE_MANAGER_ACCESSOR(OnNetworkedEntitySpawned)
-DEFINE_MANAGER_ACCESSOR(OnEntityDeleted)
-DEFINE_MANAGER_ACCESSOR(OnNetworkedEntityDeleted)
-DEFINE_MANAGER_ACCESSOR(OnDataLoaded)
-DEFINE_MANAGER_ACCESSOR(OnCombinerPreCache)
-DEFINE_MANAGER_ACCESSOR(OnDataUnloaded)
-DEFINE_MANAGER_ACCESSOR(OnPlayerRunCommand)
-DEFINE_MANAGER_ACCESSOR(OnPlayerPostRunCommand)
-DEFINE_MANAGER_ACCESSOR(OnButtonStateChanged)*/
+DEFINE_MANAGER_CREATOR(OnClientConnect, bool, int, const std::string&, const std::string&)
+DEFINE_MANAGER_CREATOR(OnClientConnect_Post, void, int)
+DEFINE_MANAGER_CREATOR(OnClientConnected, void, int)
+DEFINE_MANAGER_CREATOR(OnClientPutInServer, void, int)
+DEFINE_MANAGER_CREATOR(OnClientDisconnect, void, int, int)
+DEFINE_MANAGER_CREATOR(OnClientDisconnect_Post, void, int, int)
+DEFINE_MANAGER_CREATOR(OnClientVoice, void, int)
+DEFINE_MANAGER_CREATOR(OnClientActive, void, int, bool)
+DEFINE_MANAGER_CREATOR(OnClientFullyConnect, void, int)
+DEFINE_MANAGER_CREATOR(OnClientSettingsChanged, void, int)
+DEFINE_MANAGER_CREATOR(OnClientAuthorized, void, int, uint64)
+
+DEFINE_MANAGER_CREATOR(OnLevelInit, void, const std::string&, const std::string&)
+DEFINE_MANAGER_CREATOR(OnLevelShutdown, void)
+
+DEFINE_MANAGER_CREATOR(OnEntitySpawned, void, CEntityInstance*)
+DEFINE_MANAGER_CREATOR(OnEntityCreated, void, CEntityInstance*)
+DEFINE_MANAGER_CREATOR(OnEntityDeleted, void, CEntityInstance*)
+DEFINE_MANAGER_CREATOR(OnEntityParentChanged, void, CEntityInstance*, CEntityInstance*)
+
+DEFINE_MANAGER_CREATOR(OnServerStartup, void)
+DEFINE_MANAGER_CREATOR(OnGameFrame, void, bool, bool, bool)
+DEFINE_MANAGER_CREATOR(OnServerHibernationUpdate, void, bool)
+DEFINE_MANAGER_CREATOR(OnGameServerSteamAPIActivated, void)
+DEFINE_MANAGER_CREATOR(OnGameServerSteamAPIDeactivated, void)
+DEFINE_MANAGER_CREATOR(OnHostNameChanged,void, const char*)
+DEFINE_MANAGER_CREATOR(OnPreFatalShutdown, void)
+DEFINE_MANAGER_CREATOR(OnUpdateWhenNotInGame, void, float)
+DEFINE_MANAGER_CREATOR(OnPreWorldUpdate, void, bool)
+
+/*DEFINE_MANAGER_CREATOR(OnNetworkidValidated)
+DEFINE_MANAGER_CREATOR(OnEdictAllocated)
+DEFINE_MANAGER_CREATOR(OnEdictFreed)
+DEFINE_MANAGER_CREATOR(OnQueryCvarValueFinished)
+DEFINE_MANAGER_CREATOR(OnEntityPreSpawned)
+DEFINE_MANAGER_CREATOR(OnNetworkedEntityPreSpawned)
+DEFINE_MANAGER_CREATOR(OnNetworkedEntityCreated)
+DEFINE_MANAGER_CREATOR(OnNetworkedEntitySpawned)
+DEFINE_MANAGER_CREATOR(OnNetworkedEntityDeleted)
+DEFINE_MANAGER_CREATOR(OnDataLoaded)
+DEFINE_MANAGER_CREATOR(OnCombinerPreCache)
+DEFINE_MANAGER_CREATOR(OnDataUnloaded)
+DEFINE_MANAGER_CREATOR(OnPlayerRunCommand)
+DEFINE_MANAGER_CREATOR(OnPlayerPostRunCommand)
+DEFINE_MANAGER_CREATOR(OnButtonStateChanged)*/
