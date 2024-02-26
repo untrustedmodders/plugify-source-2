@@ -97,6 +97,8 @@ extern "C" PLUGIN_API void ClientCommandFromServer(int slot, const std::string& 
 	g_pCVar->DispatchConCommand(handle, context, args);
 }
 
+// TODO: Implement cvars
+
 extern "C" PLUGIN_API void GetClientConVarValue(std::string& output, int playerSlot, const std::string& convarName)
 {
 	output = g_pEngineServer2->GetClientConVarValue(CPlayerSlot(playerSlot), convarName.c_str());

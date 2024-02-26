@@ -47,7 +47,7 @@ public:
 private:
 	std::vector<ConCommandInfo*> m_cmdList;
 	std::map<std::string, CommandInfo, utils::CaseInsensitiveComparator> m_cmdLookup;
-	ConCommandInfo m_globalCmd{""};
+	ConCommandInfo m_globalCmd{"global"};
 };
 
 extern ConCommandManager g_CommandManager;
