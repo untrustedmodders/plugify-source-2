@@ -5,7 +5,7 @@
 
 class Timer;
 
-using TimerCallback = void(*)(Timer*);
+using TimerCallback = void(*)(Timer*); // TODO: add user data
 
 class Timer {
 	friend class TimerSystem;

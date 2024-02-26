@@ -148,9 +148,9 @@ bool ConCommandManager::IsValidValveCommand(const std::string& name)
 	return pCmd.IsValid();
 }
 
-ResultType ConCommandManager::ExecuteCommandCallbacks(const char* name, const CCommandContext& ctx,  const CCommand& args, HookMode mode, CommandCallingContext callingContext)
+ResultType ConCommandManager::ExecuteCommandCallbacks(const std::string& name, const CCommandContext& ctx,  const CCommand& args, HookMode mode, CommandCallingContext callingContext)
 {
-	g_Logger.MessageFormat("[ConCommandManager::ExecuteCommandCallbacks][%s]: %s", mode == HookMode::Pre ? "Pre" : "Post", name);
+	g_Logger.MessageFormat("[ConCommandManager::ExecuteCommandCallbacks][%s]: %s", mode == HookMode::Pre ? "Pre" : "Post", name.c_str());
 
 	ResultType result = ResultType::Continue;
 
@@ -167,7 +167,7 @@ ResultType ConCommandManager::ExecuteCommandCallbacks(const char* name, const CC
 
 	for (size_t i = 0; i < globalCallback.GetCount(); ++i)
 	{
-		auto thisResult = globalCallback.Notify(i, ctx.GetPlayerSlot().Get(), arguments, callingContext);
+		auto thisResult = globalCallback.Notify(i, ctx.GetPlayerSlot().Get(), name, arguments, callingContext);
 		if (thisResult >= ResultType::Stop)
 		{
 			if (mode == HookMode::Pre)
@@ -196,7 +196,7 @@ ResultType ConCommandManager::ExecuteCommandCallbacks(const char* name, const CC
 
 	for (size_t i = 0; i < callback.GetCount(); ++i)
 	{
-		auto thisResult = globalCallback.Notify(i, ctx.GetPlayerSlot().Get(), arguments, callingContext);
+		auto thisResult = globalCallback.Notify(i, ctx.GetPlayerSlot().Get(), name, arguments, callingContext);
 		if (thisResult >= ResultType::Handled)
 		{
 			return thisResult;

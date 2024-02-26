@@ -12,7 +12,7 @@ enum CommandCallingContext
 	Chat = 1,
 };
 
-using CommandListenerCallback = ResultType (*)(int playerSlot, const std::vector<std::string>& args, CommandCallingContext ctx);
+using CommandListenerCallback = ResultType (*)(int playerSlot, const std::string& name, const std::vector<std::string>& args, CommandCallingContext ctx);
 
 struct ConCommandInfo {
 	explicit ConCommandInfo(std::string name, std::string description = {});
@@ -42,7 +42,7 @@ public:
 
 	dyno::ReturnAction Hook_DispatchConCommand(dyno::IHook& hook);
 	dyno::ReturnAction Hook_DispatchConCommand_Post(dyno::IHook& hook);
-	ResultType ExecuteCommandCallbacks(const char* name, const CCommandContext& ctx, const CCommand& args, HookMode mode, CommandCallingContext callingContext);
+	ResultType ExecuteCommandCallbacks(const std::string& name, const CCommandContext& ctx, const CCommand& args, HookMode mode, CommandCallingContext callingContext);
 
 private:
 	std::vector<ConCommandInfo*> m_cmdList;
