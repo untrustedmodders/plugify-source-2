@@ -1,7 +1,10 @@
 #pragma once
 
+// TODO: Add Vector and QAngle
+
 #include <core/core_config.h>
 #include <core/cs2_sdk/schema.h>
+#include <tier0/utlstring.h>
 #include <cschemasystem.h>
 
 extern "C" PLUGIN_API int32 GetSchemaOffset(const std::string& className, const std::string& memberName)
@@ -33,8 +36,6 @@ extern "C" PLUGIN_API int GetSchemaClassSize(const std::string& className)
 
 	return pClassInfo->GetSize();
 }
-
-
 
 extern "C" PLUGIN_API bool GetSchemaBoolByName(void* instancePointer, const std::string& className, const std::string& memberName)
 {
@@ -163,7 +164,8 @@ extern "C" PLUGIN_API void GetSchemaStringByName(std::string& output, void* inst
 
 	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
 
-	output = reinterpret_cast<std::add_pointer_t<char>>((uintptr_t)(instancePointer) + m_key.offset);
+	auto str = reinterpret_cast<std::add_pointer_t<CUtlString>>((uintptr_t)(instancePointer) + m_key.offset);
+	output = str != nullptr ? str->Get() : "";
 }
 
 
@@ -345,12 +347,5 @@ extern "C" PLUGIN_API void SetSchemaValueStringByName(void* instancePointer, con
 
 	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
 
-	// TODO: May be leak
-
-	/*auto current = reinterpret_cast<std::add_pointer_t<char>>((uintptr_t)(instancePointer) + m_key.offset);
-	if (current != nullptr) {
-		free(current);
-	}*/
-
-	*reinterpret_cast<char**>((uintptr_t)(instancePointer) + m_key.offset) = strdup(value.c_str());
+	*reinterpret_cast<CUtlString*>((uintptr_t)(instancePointer) + m_key.offset) = value.c_str();
 }
