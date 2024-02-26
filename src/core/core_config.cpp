@@ -12,7 +12,7 @@ bool CCoreConfig::Initialize(std::span<char> error)
 		return false;
 	}
 
-	const KeyValues* publicChatTriggers = m_pKeyValues->FindKey("PublicChatTrigger");
+	KeyValues* publicChatTriggers = m_pKeyValues->FindKey("PublicChatTrigger");
 	if (publicChatTriggers)
 	{
 		PublicChatTrigger.clear();
@@ -23,7 +23,7 @@ bool CCoreConfig::Initialize(std::span<char> error)
 		}
 	}
 
-	const KeyValues* silentChatTriggers = m_pKeyValues->FindKey("SilentChatTrigger");
+	KeyValues* silentChatTriggers = m_pKeyValues->FindKey("SilentChatTrigger");
 	if (silentChatTriggers)
 	{
 		SilentChatTrigger.clear();

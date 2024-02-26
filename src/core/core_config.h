@@ -1,6 +1,6 @@
 #pragma once
 
-#include <tier1/KeyValues.h>
+#include <tier0/KeyValues.h>
 
 class CCoreConfig
 {

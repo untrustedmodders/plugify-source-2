@@ -1,7 +1,7 @@
 #include "scope.hpp"
 
 #include <tier0/logging.h>
-#include <tier1/strtools.h>
+#include <tier0/strtools.h>
 
 LoggerScope::LoggerScope(const Color& rgba, const char* pszStartWith, const char* pszEnd)
 {

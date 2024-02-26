@@ -1,6 +1,6 @@
 #include "error.hpp"
 
-#include <tier1/strtools.h>
+#include <tier0/strtools.h>
 
 LoggingResponse_t CLoggingError::Error(const char* pszContent)
 {

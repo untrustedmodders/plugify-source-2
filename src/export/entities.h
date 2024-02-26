@@ -85,7 +85,7 @@ extern "C" PLUGIN_API void* GetConcreteEntityListPointer()
 extern "C" PLUGIN_API unsigned long GetPlayerAuthorizedSteamID(int iSlot)
 {
 	auto pPlayer = g_PlayerManager.GetPlayerBySlot(iSlot);
-	if (pPlayer == nullptr || !pPlayer->m_isAuthorized)
+	if (pPlayer == nullptr || !pPlayer->m_bAuthorized)
 	{
 		return -1;
 	}

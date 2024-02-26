@@ -10,8 +10,6 @@
 #include <array>
 #include <list>
 #include <map>
-#include <thread>
-#include <mutex>
 #include <functional>
 #include <utility>
 #include <cstdint>

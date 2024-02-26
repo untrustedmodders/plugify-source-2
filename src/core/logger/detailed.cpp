@@ -1,6 +1,6 @@
 #include "detailed.hpp"
 
-#include <tier1/strtools.h>
+#include <tier0/strtools.h>
 
 LoggingResponse_t CLoggingDetailed::Detailed(const char* pszContent)
 {

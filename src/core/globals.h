@@ -2,7 +2,7 @@
 
 #include <playerslot.h>
 #include <tier0/platform.h>
-#include <tier1/utlstring.h>
+#include <tier0/utlstring.h>
 #include <variant.h>
 
 #define CS_TEAM_NONE        0

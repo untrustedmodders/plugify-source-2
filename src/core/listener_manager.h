@@ -1,7 +1,6 @@
 #pragma once
 
 #include <concepts>
-#include <optional>
 
 enum class HookMode : bool
 {

@@ -86,7 +86,7 @@ extern "C" PLUGIN_API void ClientCommand(int clientIndex, const std::string& com
 extern "C" PLUGIN_API void ClientCommandFromServer(int slot, const std::string& command)
 {
 	CCommand args;
-	args.Tokenize(command.c_str());
+	args.Tokenize(command.c_str(), kCommandSrcNetServer);
 
 	auto handle = g_pCVar->FindCommand(args.Arg(0));
 	if (!handle.IsValid())

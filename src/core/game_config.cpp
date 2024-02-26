@@ -15,12 +15,12 @@ bool CGameConfig::Initialize(std::span<char> error)
 		return false;
 	}
 
-	const KeyValues* game = m_pKeyValues->FindKey(m_szGameDir.c_str());
+	KeyValues* game = m_pKeyValues->FindKey(m_szGameDir.c_str());
 	if (game)
 	{
 		const char* platform = CS2SDK_PLATFORM;
 
-		const KeyValues* offsets = game->FindKey("Offsets");
+		KeyValues* offsets = game->FindKey("Offsets");
 		if (offsets)
 		{
 			FOR_EACH_SUBKEY(offsets, it)
@@ -29,7 +29,7 @@ bool CGameConfig::Initialize(std::span<char> error)
 			}
 		}
 
-		const KeyValues* signatures = game->FindKey("Signatures");
+		KeyValues* signatures = game->FindKey("Signatures");
 		if (signatures)
 		{
 			FOR_EACH_SUBKEY(signatures, it)
@@ -39,7 +39,7 @@ bool CGameConfig::Initialize(std::span<char> error)
 			}
 		}
 
-		const KeyValues* patches = game->FindKey("Patches");
+		KeyValues* patches = game->FindKey("Patches");
 		if (patches)
 		{
 			FOR_EACH_SUBKEY(patches, it)
@@ -48,14 +48,13 @@ bool CGameConfig::Initialize(std::span<char> error)
 			}
 		}
 
-		const KeyValues* addresses = game->FindKey("Addresses");
+		KeyValues* addresses = game->FindKey("Addresses");
 		if (addresses)
 		{
 			FOR_EACH_SUBKEY(addresses, it)
 			{
-				const KeyValues* reads = it->FindKey(platform);
+				KeyValues* reads = it->FindKey(platform);
 				std::vector<int> read;
-				read.resize(reads->Count());
 				bool lastIsOffset = false;
 				FOR_EACH_SUBKEY(reads, it2)
 				{
