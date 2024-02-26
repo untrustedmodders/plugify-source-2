@@ -12,7 +12,7 @@ CPlayer::~CPlayer() = default;
 
 void CPlayer::Initialize(std::string name, std::string ip, CPlayerSlot slot)
 {
-	m_isConnected = true;
+	m_bConnected = true;
 	m_slot = slot;
 	m_name = std::move(name);
 	m_ipAddress = std::move(ip);
@@ -30,17 +30,17 @@ const std::string& CPlayer::GetName() const
 
 bool CPlayer::IsConnected() const
 {
-	return m_isConnected;
+	return m_bConnected;
 }
 
 bool CPlayer::IsFakeClient() const
 {
-	return m_isFakeClient;
+	return m_bFakeClient;
 }
 
 bool CPlayer::IsAuthorized() const
 {
-	return m_isAuthorized;
+	return m_bAuthorized;
 }
 
 bool CPlayer::IsAuthStringValidated() const
@@ -54,12 +54,12 @@ bool CPlayer::IsAuthStringValidated() const
 
 void CPlayer::Authorize()
 {
-	m_isAuthorized = true;
+	m_bAuthorized = true;
 }
 
 void CPlayer::PrintToConsole(const char* message) const
 {
-	if (!m_isConnected || m_isFakeClient)
+	if (!m_bConnected || m_bFakeClient)
 	{
 		return;
 	}
@@ -100,7 +100,7 @@ INetChannelInfo* CPlayer::GetNetInfo() const
 
 bool CPlayer::WasCountedAsInGame() const
 {
-	return m_isInGame;
+	return m_bInGame;
 }
 
 int CPlayer::GetUserId()
@@ -115,7 +115,7 @@ int CPlayer::GetUserId()
 
 bool CPlayer::IsInGame() const
 {
-	return m_isInGame;
+	return m_bInGame;
 }
 
 void CPlayer::Kick(const char* kickReason)
@@ -227,23 +227,23 @@ ListenOverride CPlayer::GetListen(CPlayerSlot slot) const
 
 void CPlayer::Connect()
 {
-	if (m_isInGame)
+	if (m_bInGame)
 	{
 		return;
 	}
 
-	m_isInGame = true;
+	m_bInGame = true;
 }
 
 void CPlayer::Disconnect()
 {
-	m_isConnected = false;
-	m_isInGame = false;
+	m_bConnected = false;
+	m_bInGame = false;
 	m_name.clear();
 	m_info = nullptr;
-	m_isFakeClient = false;
+	m_bFakeClient = false;
 	m_userId = -1;
-	m_isAuthorized = false;
+	m_bAuthorized = false;
 	m_ipAddress.clear();
 	m_selfMutes.ClearAll();
 	std::fill(m_listenMap.begin(), m_listenMap.end(), Listen_Default);
@@ -355,7 +355,7 @@ bool PlayerManager::OnClientConnect_Post(CPlayerSlot slot, const char* pszName, 
 	if (origValue) {
 		GetOnClientConnect_PostListenerManager().Notify(pPlayer->m_slot.Get());
 
-		if (!pPlayer->IsFakeClient() && m_isListenServer && !strncmp(pszNetworkID, "127.0.0.1", 9)) {
+		if (!pPlayer->IsFakeClient() && m_bListenServer && !strncmp(pszNetworkID, "127.0.0.1", 9)) {
 			m_listenClient = client;
 		}
 	} else {
@@ -383,7 +383,7 @@ void PlayerManager::OnClientPutInServer(CPlayerSlot slot, char const* pszName, i
 	CPlayer* pPlayer = &m_players[client];
 
 	if (!pPlayer->IsConnected()) {
-		pPlayer->m_isFakeClient = true;
+		pPlayer->m_bFakeClient = true;
 
 		if (!OnClientConnect(slot, pszName, 0, "127.0.0.1", false,new CBufferStringGrowable<255>())) {
 			pPlayer->Kick("Bot rejected");
@@ -431,13 +431,6 @@ void PlayerManager::OnClientDisconnect_Post(CPlayerSlot slot, ENetworkDisconnect
 	InvalidatePlayer(pPlayer);
 
 	GetOnClientDisconnect_PostListenerManager().Notify(pPlayer->m_slot.Get(), (int) reason);
-}
-
-void PlayerManager::OnClientVoice(CPlayerSlot slot) const
-{
-	g_Logger.MessageFormat("[OnClientVoice] - %d\n", slot.Get());
-
-	GetOnClientVoiceListenerManager().Notify(slot.Get());
 }
 
 void PlayerManager::OnClientCommand(CPlayerSlot slot, const CCommand& args) const

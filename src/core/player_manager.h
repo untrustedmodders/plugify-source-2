@@ -10,7 +10,7 @@ class CSteamID;
 class CCommand;
 struct edict_t;
 
-enum ListenOverride
+enum ListenOverride : uint8_t
 {
 	Listen_Default = 0,
 	Listen_Mute,
@@ -89,10 +89,10 @@ public:
 	std::string m_name;
 	std::string m_authId;
 	IPlayerInfo* m_info{nullptr};
-	bool m_isConnected{};
-	bool m_isFakeClient{};
-	bool m_isInGame{};
-	bool m_isAuthorized{};
+	bool m_bConnected{};
+	bool m_bFakeClient{};
+	bool m_bInGame{};
+	bool m_bAuthorized{};
 	int m_userId{1};
 	CPlayerSlot m_slot{-1};
 	const CSteamID* m_steamId;
@@ -117,7 +117,6 @@ public:
 	void OnClientDisconnect(CPlayerSlot slot, ENetworkDisconnectionReason reason, const char* pszName, uint64 xuid, const char* pszNetworkID);
 	void OnClientDisconnect_Post(CPlayerSlot slot, ENetworkDisconnectionReason reason, const char* pszName, uint64 xuid, const char* pszNetworkID);
 	void OnClientActive(CPlayerSlot slot, bool bLoadGame) const;
-	void OnClientVoice(CPlayerSlot slot) const;
 	void OnClientCommand(CPlayerSlot slot, const CCommand& args) const;
 	void OnClientAuthorized(CPlayer* player) const;
 
@@ -137,7 +136,7 @@ private:
 	int m_playerCount{};
 	std::map<int, int> m_userIdLookup;
 	int m_listenClient{};
-	bool m_isListenServer{};
+	bool m_bListenServer{};
 	bool m_refuseConnection{};
 	float m_lastAuthCheckTime{};
 };
