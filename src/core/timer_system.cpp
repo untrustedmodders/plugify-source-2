@@ -37,10 +37,13 @@ void TimerSystem::OnLevelShutdown()
 
 void TimerSystem::OnGameFrame(bool simulating)
 {
-	if (simulating && m_hasMapTicked) {
+	if (simulating && m_hasMapTicked)
+	{
 		universalTime += gpGlobals->curtime - m_lastTickedTime;
 		m_hasMapSimulated = true;
-	} else {
+	}
+	else
+	{
 		universalTime += engineFixedTickInterval;
 	}
 
@@ -48,7 +51,8 @@ void TimerSystem::OnGameFrame(bool simulating)
 	m_hasMapTicked = true;
 
 	// Handle timer tick
-	if (universalTime >= timerNextThink) {
+	if (universalTime >= timerNextThink)
+	{
 		RunFrame();
 		timerNextThink = CalculateNextThink(timerNextThink, 0.1f);
 	}
@@ -56,18 +60,23 @@ void TimerSystem::OnGameFrame(bool simulating)
 
 double TimerSystem::CalculateNextThink(double lastThinkTime, float interval)
 {
-	if (universalTime - lastThinkTime - interval <= 0.1) {
+	if (universalTime - lastThinkTime - interval <= 0.1)
+	{
 		return lastThinkTime + interval;
-	} else {
+	}
+	else
+	{
 		return universalTime + interval;
 	}
 }
 
 void TimerSystem::RunFrame()
 {
-	for (int i = static_cast<int>(m_onceOffTimers.size()) - 1; i >= 0; i--) {
+	for (int i = static_cast<int>(m_onceOffTimers.size()) - 1; i >= 0; i--)
+	{
 		auto timer = m_onceOffTimers[i];
-		if (universalTime >= timer->m_execTime) {
+		if (universalTime >= timer->m_execTime)
+		{
 			timer->m_inExec = true;
 			timer->m_callback(timer);
 
@@ -76,13 +85,16 @@ void TimerSystem::RunFrame()
 		}
 	}
 
-	for (int i = static_cast<int>(m_repeatTimers.size()) - 1; i >= 0; i--) {
+	for (int i = static_cast<int>(m_repeatTimers.size()) - 1; i >= 0; i--)
+	{
 		auto timer = m_repeatTimers[i];
-		if (universalTime >= timer->m_execTime) {
+		if (universalTime >= timer->m_execTime)
+		{
 			timer->m_inExec = true;
 			timer->m_callback(timer);
 
-			if (timer->m_killMe) {
+			if (timer->m_killMe)
+			{
 				m_repeatTimers.erase(m_repeatTimers.begin() + i);
 				delete timer;
 				continue;
@@ -96,14 +108,17 @@ void TimerSystem::RunFrame()
 
 void TimerSystem::RemoveMapChangeTimers()
 {
-	for (int i = static_cast<int>(m_onceOffTimers.size()) - 1; i >= 0; i--) {
+	for (int i = static_cast<int>(m_onceOffTimers.size()) - 1; i >= 0; i--)
+	{
 		auto timer = m_onceOffTimers[i];
-		if (timer->m_flags & TIMER_FLAG_NO_MAPCHANGE) {
+		if (timer->m_flags & TIMER_FLAG_NO_MAPCHANGE)
+		{
 			if (timer->m_killMe)
 				continue;
 
 			// If were executing, make sure it doesn't run again next time.
-			if (timer->m_inExec) {
+			if (timer->m_inExec)
+			{
 				timer->m_killMe = true;
 				continue;
 			}
@@ -113,14 +128,17 @@ void TimerSystem::RemoveMapChangeTimers()
 		}
 	}
 
-	for (int i = static_cast<int>(m_repeatTimers.size()) - 1; i >= 0; i--) {
+	for (int i = static_cast<int>(m_repeatTimers.size()) - 1; i >= 0; i--)
+	{
 		auto timer = m_repeatTimers[i];
-		if (timer->m_flags & TIMER_FLAG_NO_MAPCHANGE) {
+		if (timer->m_flags & TIMER_FLAG_NO_MAPCHANGE)
+		{
 			if (timer->m_killMe)
 				continue;
 
 			// If were executing, make sure it doesn't run again next time.
-			if (timer->m_inExec) {
+			if (timer->m_inExec)
+			{
 				timer->m_killMe = true;
 				continue;
 			}
@@ -137,9 +155,12 @@ Timer* TimerSystem::CreateTimer(float interval, TimerCallback callback, int flag
 
 	auto timer = new Timer(interval, execTime, callback, flags);
 
-	if (flags & TIMER_FLAG_REPEAT) {
+	if (flags & TIMER_FLAG_REPEAT)
+	{
 		m_repeatTimers.push_back(timer);
-	} else {
+	}
+	else
+	{
 		m_onceOffTimers.push_back(timer);
 	}
 
@@ -160,15 +181,19 @@ void TimerSystem::KillTimer(Timer* timer)
 		return;
 
 	// If were executing, make sure it doesn't run again next time.
-	if (timer->m_inExec) {
+	if (timer->m_inExec)
+	{
 		timer->m_killMe = true;
 		return;
 	}
 
-	if (timer->m_flags & TIMER_FLAG_REPEAT) {
+	if (timer->m_flags & TIMER_FLAG_REPEAT)
+	{
 		if (it1 != m_repeatTimers.end())
 			m_repeatTimers.erase(it1);
-	} else {
+	}
+	else
+	{
 		if (it2 != m_onceOffTimers.end())
 			m_onceOffTimers.erase(it2);
 	}

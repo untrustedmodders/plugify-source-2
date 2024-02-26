@@ -3,9 +3,9 @@
 #include "listener_manager.h"
 #include "utils.h"
 
-#include <variant.h>
-#include <entity2/entitysystem.h>
 #include <dynohook/dynohook.h>
+#include <entity2/entitysystem.h>
+#include <variant.h>
 
 class CEntityIOOutput;
 
@@ -19,7 +19,8 @@ struct CallbackPair
 	CListenerManager<EntityListenerCallback> post;
 };
 
-class EntityOutputManager {
+class EntityOutputManager
+{
 public:
 	EntityOutputManager() = default;
 	~EntityOutputManager() = default;

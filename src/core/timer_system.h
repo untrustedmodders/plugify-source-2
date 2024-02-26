@@ -1,13 +1,14 @@
 #pragma once
 
-#define TIMER_FLAG_REPEAT (1 << 0)       /**< Timer will repeat until stopped */
+#define TIMER_FLAG_REPEAT (1 << 0)		 /**< Timer will repeat until stopped */
 #define TIMER_FLAG_NO_MAPCHANGE (1 << 1) /**< Timer will not carry over mapchanges */
 
 class Timer;
 
-using TimerCallback = void(*)(Timer*); // TODO: add user data
+using TimerCallback = void (*)(Timer*); // TODO: add user data
 
-class Timer {
+class Timer
+{
 	friend class TimerSystem;
 
 public:
@@ -23,7 +24,8 @@ private:
 	bool m_killMe{};
 };
 
-class TimerSystem {
+class TimerSystem
+{
 public:
 	TimerSystem();
 	~TimerSystem();
@@ -44,8 +46,8 @@ private:
 	bool m_hasMapTicked{};
 	bool m_hasMapSimulated{};
 	float m_lastTickedTime{};
-	std::vector<Timer *> m_onceOffTimers;
-	std::vector<Timer *> m_repeatTimers;
+	std::vector<Timer*> m_onceOffTimers;
+	std::vector<Timer*> m_repeatTimers;
 };
 
 extern TimerSystem g_TimerSystem;

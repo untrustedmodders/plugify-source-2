@@ -88,7 +88,7 @@ public:
 public:
 	std::string m_name;
 	std::string m_authId;
-	IPlayerInfo* m_info{nullptr};
+	// IPlayerInfo* m_info{nullptr};
 	bool m_bConnected{};
 	bool m_bFakeClient{};
 	bool m_bInGame{};
@@ -98,7 +98,7 @@ public:
 	const CSteamID* m_steamId;
 	std::string m_ipAddress;
 	VoiceFlag_t m_voiceFlag = 0;
-	std::array<ListenOverride, MAXPLAYERS+2> m_listenMap = {};
+	std::array<ListenOverride, MAXPLAYERS + 2> m_listenMap = {};
 	CPlayerBitVec m_selfMutes = {};
 };
 
@@ -111,7 +111,7 @@ public:
 
 	void OnLevelShutdown();
 	bool OnClientConnect(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, bool unk1, CBufferString* pRejectReason);
-	bool OnClientConnect_Post(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, bool unk1, CBufferString* pRejectReason, bool origValue);
+	bool OnClientConnect_Post(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, bool unk1, CBufferString* pRejectReason, bool origRet);
 	void OnClientConnected(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, const char* pszAddress, bool bFakePlayer);
 	void OnClientPutInServer(CPlayerSlot slot, char const* pszName, int type, uint64 xuid);
 	void OnClientDisconnect(CPlayerSlot slot, ENetworkDisconnectionReason reason, const char* pszName, uint64 xuid, const char* pszNetworkID);
@@ -126,12 +126,12 @@ public:
 	int NumPlayers() const;
 	int MaxClients() const;
 	CPlayer* GetPlayerBySlot(int client) const;
-	//CPlayer* GetClientOfUserId(int user_id) const;
+	// CPlayer* GetClientOfUserId(int user_id) const;
 
 private:
 	void InvalidatePlayer(CPlayer* pPlayer);
 
-	std::array<CPlayer, MAXPLAYERS+2> m_players;
+	std::array<CPlayer, MAXPLAYERS + 2> m_players;
 	int m_maxClients{};
 	int m_playerCount{};
 	std::map<int, int> m_userIdLookup;

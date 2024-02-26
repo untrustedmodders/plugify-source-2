@@ -51,12 +51,11 @@ dyno::ReturnAction EntityOutputManager::Hook_FireOutputInternal(dyno::IHook& hoo
 	{
 		g_Logger.MessageFormat("[EntityOutputManager][FireOutputHook] - %s, %s\n", pThis->m_pDesc->m_pName, pCaller->GetClassname());
 
-		std::array<OutputKey, 4> vecSearchKeys {
+		std::array<OutputKey, 4> vecSearchKeys{
 			OutputKey{"*", pThis->m_pDesc->m_pName},
 			OutputKey{"*", "*"},
 			OutputKey{pCaller->GetClassname(), pThis->m_pDesc->m_pName},
-			OutputKey{pCaller->GetClassname(), "*"}
-		};
+			OutputKey{pCaller->GetClassname(), "*"}};
 
 		m_vecCallbackPairs.clear();
 

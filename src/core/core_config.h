@@ -19,10 +19,10 @@ private:
 	bool IsTriggerInternal(std::vector<std::string> triggers, const std::string& message, std::string& prefix) const;
 
 public:
-	std::vector<std::string> PublicChatTrigger{ "!" };
-	std::vector<std::string> SilentChatTrigger{ "/" };
-	bool FollowCS2ServerGuidelines{ true };
-	std::string ServerLanguage{ "en" };
+	std::vector<std::string> PublicChatTrigger{"!"};
+	std::vector<std::string> SilentChatTrigger{"/"};
+	bool FollowCS2ServerGuidelines{true};
+	std::string ServerLanguage{"en"};
 
 private:
 	std::string m_szPath;

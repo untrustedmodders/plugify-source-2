@@ -1,9 +1,9 @@
 #pragma once
 
-#include <thread>
 #include <mutex>
+#include <thread>
 
-using TaskCallback = void(*)();
+using TaskCallback = void (*)();
 
 class ServerManager
 {

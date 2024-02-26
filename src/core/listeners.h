@@ -3,8 +3,8 @@
 #include "listener_manager.h"
 #include <plugin_export.h>
 
-#define DEFINE_MANAGER_CREATOR(name, ret, ...)                  \
-	using Fn##name = ret (*)(__VA_ARGS__);                      \
+#define DEFINE_MANAGER_CREATOR(name, ret, ...) \
+	using Fn##name = ret (*)(__VA_ARGS__);     \
 	CListenerManager<Fn##name>& Get##name##ListenerManager();
 
 DEFINE_MANAGER_CREATOR(OnClientConnect, bool, int, const std::string&, const std::string&)
@@ -31,7 +31,7 @@ DEFINE_MANAGER_CREATOR(OnGameFrame, void, bool, bool, bool)
 DEFINE_MANAGER_CREATOR(OnServerHibernationUpdate, void, bool)
 DEFINE_MANAGER_CREATOR(OnGameServerSteamAPIActivated, void)
 DEFINE_MANAGER_CREATOR(OnGameServerSteamAPIDeactivated, void)
-DEFINE_MANAGER_CREATOR(OnHostNameChanged,void, const char*)
+DEFINE_MANAGER_CREATOR(OnHostNameChanged, void, const char*)
 DEFINE_MANAGER_CREATOR(OnPreFatalShutdown, void)
 DEFINE_MANAGER_CREATOR(OnUpdateWhenNotInGame, void, float)
 DEFINE_MANAGER_CREATOR(OnPreWorldUpdate, void, bool)

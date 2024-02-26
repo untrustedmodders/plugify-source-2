@@ -192,7 +192,7 @@ dyno::ReturnAction CEventManager::Hook_OnFireEvent(dyno::IHook& hook)
 
 				if (result >= ResultType::Handled)
 				{
-					//m_EventCopies.push(g_gameEventManager->DuplicateEvent(pEvent));
+					// m_EventCopies.push(g_gameEventManager->DuplicateEvent(pEvent));
 					g_gameEventManager->FreeEvent(pEvent);
 					return dyno::ReturnAction::Supercede;
 				}
@@ -209,9 +209,9 @@ dyno::ReturnAction CEventManager::Hook_OnFireEvent(dyno::IHook& hook)
 		m_EventStack.push(nullptr);
 	}
 
-	if (bLocalDontBroadcast  != bDontBroadcast)
+	if (bLocalDontBroadcast != bDontBroadcast)
 	{
-		dyno::SetArgument<bool>(hook, 2, bLocalDontBroadcast );
+		dyno::SetArgument<bool>(hook, 2, bLocalDontBroadcast);
 		return dyno::ReturnAction::Handled;
 	}
 

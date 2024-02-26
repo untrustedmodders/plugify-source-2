@@ -14,7 +14,8 @@ enum CommandCallingContext
 
 using CommandListenerCallback = ResultType (*)(int playerSlot, const std::string& name, const std::vector<std::string>& args, CommandCallingContext ctx);
 
-struct ConCommandInfo {
+struct ConCommandInfo
+{
 	explicit ConCommandInfo(std::string name, std::string description = {});
 	~ConCommandInfo() = default;
 
@@ -29,7 +30,8 @@ struct ConCommandInfo {
 
 using CommandInfo = std::unique_ptr<ConCommandInfo>;
 
-class ConCommandManager {
+class ConCommandManager
+{
 public:
 	ConCommandManager() = default;
 	~ConCommandManager() = default;

@@ -48,7 +48,7 @@ T* FindInterface(const DynLibUtils::CModule* module, const char* name)
 		g_Logger.ErrorFormat("Could not find interface: %s in %s at \"%s\"\n", name, module->GetModuleName(), module->GetModulePath());
 	}
 
-	return (T*) pInterface;
+	return (T*)pInterface;
 }
 
 namespace globals
@@ -100,21 +100,21 @@ namespace globals
 		RESOLVE_SIG(g_GameConfig, "StateChanged", addresses::StateChanged);
 		RESOLVE_SIG(g_GameConfig, "UTIL_ClientPrintAll", addresses::UTIL_ClientPrintAll);
 		RESOLVE_SIG(g_GameConfig, "ClientPrint", addresses::ClientPrint);
-		//RESOLVE_SIG(g_GameConfig, "SetGroundEntity", addresses::SetGroundEntity);
-		//RESOLVE_SIG(g_GameConfig, "CCSPlayerController_SwitchTeam", addresses::CCSPlayerController_SwitchTeam);
-		//RESOLVE_SIG(g_GameConfig, "CBasePlayerController_SetPawn", addresses::CBasePlayerController_SetPawn);
-		//RESOLVE_SIG(g_GameConfig, "CBaseModelEntity_SetModel", addresses::CBaseModelEntity_SetModel);
-		//RESOLVE_SIG(g_GameConfig, "UTIL_Remove", addresses::UTIL_Remove);
-		//RESOLVE_SIG(g_GameConfig, "CEntitySystem_AddEntityIOEvent", addresses::CEntitySystem_AddEntityIOEvent);
-		//RESOLVE_SIG(g_GameConfig, "CEntityInstance_AcceptInput", addresses::CEntityInstance_AcceptInput);
-		//RESOLVE_SIG(g_GameConfig, "CGameEntitySystem_FindEntityByClassName", addresses::CGameEntitySystem_FindEntityByClassName);
-		//RESOLVE_SIG(g_GameConfig, "CGameEntitySystem_FindEntityByName", addresses::CGameEntitySystem_FindEntityByName);
-		//RESOLVE_SIG(g_GameConfig, "CGameRules_TerminateRound", addresses::CGameRules_TerminateRound);
-		//RESOLVE_SIG(g_GameConfig, "CreateEntityByName", addresses::CreateEntityByName);
-		//RESOLVE_SIG(g_GameConfig, "DispatchSpawn", addresses::DispatchSpawn);
-		//RESOLVE_SIG(g_GameConfig, "CEntityIdentity_SetEntityName", addresses::CEntityIdentity_SetEntityName);
-		//RESOLVE_SIG(g_GameConfig, "CBaseEntity_EmitSoundParams", addresses::CBaseEntity_EmitSoundParams);
-		//RESOLVE_SIG(g_GameConfig, "CBaseEntity_SetParent", addresses::CBaseEntity_SetParent);
+		// RESOLVE_SIG(g_GameConfig, "SetGroundEntity", addresses::SetGroundEntity);
+		// RESOLVE_SIG(g_GameConfig, "CCSPlayerController_SwitchTeam", addresses::CCSPlayerController_SwitchTeam);
+		// RESOLVE_SIG(g_GameConfig, "CBasePlayerController_SetPawn", addresses::CBasePlayerController_SetPawn);
+		// RESOLVE_SIG(g_GameConfig, "CBaseModelEntity_SetModel", addresses::CBaseModelEntity_SetModel);
+		// RESOLVE_SIG(g_GameConfig, "UTIL_Remove", addresses::UTIL_Remove);
+		// RESOLVE_SIG(g_GameConfig, "CEntitySystem_AddEntityIOEvent", addresses::CEntitySystem_AddEntityIOEvent);
+		// RESOLVE_SIG(g_GameConfig, "CEntityInstance_AcceptInput", addresses::CEntityInstance_AcceptInput);
+		// RESOLVE_SIG(g_GameConfig, "CGameEntitySystem_FindEntityByClassName", addresses::CGameEntitySystem_FindEntityByClassName);
+		// RESOLVE_SIG(g_GameConfig, "CGameEntitySystem_FindEntityByName", addresses::CGameEntitySystem_FindEntityByName);
+		// RESOLVE_SIG(g_GameConfig, "CGameRules_TerminateRound", addresses::CGameRules_TerminateRound);
+		// RESOLVE_SIG(g_GameConfig, "CreateEntityByName", addresses::CreateEntityByName);
+		// RESOLVE_SIG(g_GameConfig, "DispatchSpawn", addresses::DispatchSpawn);
+		// RESOLVE_SIG(g_GameConfig, "CEntityIdentity_SetEntityName", addresses::CEntityIdentity_SetEntityName);
+		// RESOLVE_SIG(g_GameConfig, "CBaseEntity_EmitSoundParams", addresses::CBaseEntity_EmitSoundParams);
+		// RESOLVE_SIG(g_GameConfig, "CBaseEntity_SetParent", addresses::CBaseEntity_SetParent);
 		RESOLVE_SIG(g_GameConfig, "LegacyGameEventListener", addresses::GetLegacyGameEventListener);
 	}
 

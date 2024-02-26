@@ -75,17 +75,17 @@ void CPlayer::PrintToConsole(const char* message) const
 
 void CPlayer::PrintToChat(const char* message) const
 {
-	//globals::user_message_manager.SendMessageToChat(m_i_index, message);
+	// globals::user_message_manager.SendMessageToChat(m_i_index, message);
 }
 
 void CPlayer::PrintToHint(const char* message) const
 {
-	//globals::user_message_manager.SendHintMessage(m_i_index, message);
+	// globals::user_message_manager.SendHintMessage(m_i_index, message);
 }
 
 void CPlayer::PrintToCenter(const char* message) const
 {
-	//globals::user_message_manager.SendCenterMessage(m_i_index, message);
+	// globals::user_message_manager.SendCenterMessage(m_i_index, message);
 }
 
 void CPlayer::SetName(std::string name)
@@ -323,7 +323,8 @@ bool PlayerManager::OnClientConnect(CPlayerSlot slot, const char* pszName, uint6
 	int client = slot.Get();
 	CPlayer* pPlayer = &m_players[client];
 
-	if (pPlayer->IsConnected()) {
+	if (pPlayer->IsConnected())
+	{
 		OnClientDisconnect(slot, ENetworkDisconnectionReason::NETWORK_DISCONNECT_INVALID, pszName, xuid, pszNetworkID);
 		OnClientDisconnect_Post(slot, ENetworkDisconnectionReason::NETWORK_DISCONNECT_INVALID, pszName, xuid, pszNetworkID);
 	}
@@ -342,7 +343,7 @@ bool PlayerManager::OnClientConnect(CPlayerSlot slot, const char* pszName, uint6
 	return m_refuseConnection;
 }
 
-bool PlayerManager::OnClientConnect_Post(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, bool unk1, CBufferString* pRejectReason, bool origValue)
+bool PlayerManager::OnClientConnect_Post(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, bool unk1, CBufferString* pRejectReason, bool origRet)
 {
 	g_Logger.MessageFormat("[OnClientConnect_Post] - %d, %s, %s\n", slot.Get(), pszName, pszNetworkID);
 
@@ -350,19 +351,23 @@ bool PlayerManager::OnClientConnect_Post(CPlayerSlot slot, const char* pszName, 
 	CPlayer* pPlayer = &m_players[client];
 
 	if (m_refuseConnection)
-		origValue = false;
+		origRet = false;
 
-	if (origValue) {
+	if (origRet)
+	{
 		GetOnClientConnect_PostListenerManager().Notify(pPlayer->m_slot.Get());
 
-		if (!pPlayer->IsFakeClient() && m_bListenServer && !strncmp(pszNetworkID, "127.0.0.1", 9)) {
+		if (!pPlayer->IsFakeClient() && m_bListenServer && !strncmp(pszNetworkID, "127.0.0.1", 9))
+		{
 			m_listenClient = client;
 		}
-	} else {
+	}
+	else
+	{
 		InvalidatePlayer(pPlayer);
 	}
 
-	return origValue;
+	return origRet;
 }
 
 void PlayerManager::OnClientConnected(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, const char* pszAddress, bool bFakePlayer)
@@ -382,10 +387,12 @@ void PlayerManager::OnClientPutInServer(CPlayerSlot slot, char const* pszName, i
 	int client = slot.Get();
 	CPlayer* pPlayer = &m_players[client];
 
-	if (!pPlayer->IsConnected()) {
+	if (!pPlayer->IsConnected())
+	{
 		pPlayer->m_bFakeClient = true;
 
-		if (!OnClientConnect(slot, pszName, 0, "127.0.0.1", false,new CBufferStringGrowable<255>())) {
+		if (!OnClientConnect(slot, pszName, 0, "127.0.0.1", false, new CBufferStringGrowable<255>()))
+		{
 			pPlayer->Kick("Bot rejected");
 			return;
 		}
@@ -396,7 +403,7 @@ void PlayerManager::OnClientPutInServer(CPlayerSlot slot, char const* pszName, i
 	pPlayer->Connect();
 	m_playerCount++;
 
-	//pPlayer->m_info = playerinfo->GetPlayerInfo(pEntity);
+	// pPlayer->m_info = playerinfo->GetPlayerInfo(pEntity);
 
 	GetOnClientPutInServerListenerManager().Notify(pPlayer->m_slot.Get());
 }
@@ -408,11 +415,13 @@ void PlayerManager::OnClientDisconnect(CPlayerSlot slot, ENetworkDisconnectionRe
 	int client = slot.Get();
 	CPlayer* pPlayer = &m_players[client];
 
-	if (pPlayer->IsConnected()) {
-		GetOnClientDisconnectListenerManager().Notify(pPlayer->m_slot.Get(), (int) reason);
+	if (pPlayer->IsConnected())
+	{
+		GetOnClientDisconnectListenerManager().Notify(pPlayer->m_slot.Get(), (int)reason);
 	}
 
-	if (pPlayer->WasCountedAsInGame()) {
+	if (pPlayer->WasCountedAsInGame())
+	{
 		m_playerCount--;
 	}
 }
@@ -423,14 +432,15 @@ void PlayerManager::OnClientDisconnect_Post(CPlayerSlot slot, ENetworkDisconnect
 
 	int client = slot.Get();
 	CPlayer* pPlayer = &m_players[client];
-	if (!pPlayer->IsConnected()) {
+	if (!pPlayer->IsConnected())
+	{
 		/* We don't care, prevent a double call */
 		return;
 	}
 
 	InvalidatePlayer(pPlayer);
 
-	GetOnClientDisconnect_PostListenerManager().Notify(pPlayer->m_slot.Get(), (int) reason);
+	GetOnClientDisconnect_PostListenerManager().Notify(pPlayer->m_slot.Get(), (int)reason);
 }
 
 void PlayerManager::OnClientCommand(CPlayerSlot slot, const CCommand& args) const
@@ -462,9 +472,11 @@ void PlayerManager::OnLevelShutdown()
 {
 	g_Logger.Message("[OnLevelShutdown]");
 
-	for (int i = 0; i <= MaxClients(); ++i) {
+	for (int i = 0; i <= MaxClients(); ++i)
+	{
 		auto& player = m_players[i];
-		if (player.IsConnected()) {
+		if (player.IsConnected())
+		{
 			OnClientDisconnect(player.m_slot, ENetworkDisconnectionReason::NETWORK_DISCONNECT_INVALID, player.GetName().c_str(), 0, player.GetIpAddress().c_str());
 			OnClientDisconnect_Post(player.m_slot, ENetworkDisconnectionReason::NETWORK_DISCONNECT_INVALID, player.GetName().c_str(), 0, player.GetIpAddress().c_str());
 		}
@@ -473,24 +485,25 @@ void PlayerManager::OnLevelShutdown()
 	m_playerCount = 0;
 }
 
-int PlayerManager::ListenClient() const 
-{ 
+int PlayerManager::ListenClient() const
+{
 	return m_listenClient;
 }
 
 int PlayerManager::NumPlayers() const
-{ 
+{
 	return m_playerCount;
 }
 
-int PlayerManager::MaxClients() const 
-{ 
+int PlayerManager::MaxClients() const
+{
 	return gpGlobals->maxClients;
 }
 
 CPlayer* PlayerManager::GetPlayerBySlot(int client) const
 {
-	if (client > MaxClients() || client < 0) {
+	if (client > MaxClients() || client < 0)
+	{
 		return nullptr;
 	}
 

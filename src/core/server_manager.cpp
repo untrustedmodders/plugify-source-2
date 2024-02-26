@@ -11,7 +11,8 @@ void ServerManager::OnGameFrame()
 
 	g_Logger.MessageFormat("Executing queued tasks of size: %zu on tick number %f\n", m_nextTasks.size(), gpGlobals->tickcount);
 
-	for (const auto& nextTask : m_nextTasks) {
+	for (const auto& nextTask : m_nextTasks)
+	{
 		nextTask();
 	}
 

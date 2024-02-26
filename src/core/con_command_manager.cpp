@@ -148,7 +148,7 @@ bool ConCommandManager::IsValidValveCommand(const std::string& name)
 	return pCmd.IsValid();
 }
 
-ResultType ConCommandManager::ExecuteCommandCallbacks(const std::string& name, const CCommandContext& ctx,  const CCommand& args, HookMode mode, CommandCallingContext callingContext)
+ResultType ConCommandManager::ExecuteCommandCallbacks(const std::string& name, const CCommandContext& ctx, const CCommand& args, HookMode mode, CommandCallingContext callingContext)
 {
 	g_Logger.MessageFormat("[ConCommandManager::ExecuteCommandCallbacks][%s]: %s", mode == HookMode::Pre ? "Pre" : "Post", name.c_str());
 
@@ -212,7 +212,7 @@ ResultType ConCommandManager::ExecuteCommandCallbacks(const std::string& name, c
 
 dyno::ReturnAction ConCommandManager::Hook_DispatchConCommand(dyno::IHook& hook)
 {
-	//auto cmd = dyno::GetArgument<ConCommandHandle* const>(hook, 1);
+	// auto cmd = dyno::GetArgument<ConCommandHandle* const>(hook, 1);
 	auto ctx = dyno::GetArgument<const CCommandContext&>(hook, 2);
 	auto args = dyno::GetArgument<const CCommand&>(hook, 3);
 
@@ -231,7 +231,7 @@ dyno::ReturnAction ConCommandManager::Hook_DispatchConCommand(dyno::IHook& hook)
 
 dyno::ReturnAction ConCommandManager::Hook_DispatchConCommand_Post(dyno::IHook& hook)
 {
-	//auto cmd = dyno::GetArgument<ConCommandHandle* const>(hook, 1);
+	// auto cmd = dyno::GetArgument<ConCommandHandle* const>(hook, 1);
 	auto ctx = dyno::GetArgument<const CCommandContext&>(hook, 2);
 	auto args = dyno::GetArgument<const CCommand&>(hook, 3);
 

@@ -1,32 +1,32 @@
 #include "plugin.h"
 
 #include <eiface.h>
+#include <engine/igameeventsystem.h>
 #include <entity2/entitysystem.h>
 #include <igameevents.h>
-#include <engine/igameeventsystem.h>
 #include <iserver.h>
 
 #include <ISmmPlugin.h>
 
-#include "hook_manager.h"
-#include "event_manager.h"
 #include "con_command_manager.h"
+#include "event_manager.h"
+#include "hook_manager.h"
 #include "listeners.h"
 #include "output_manager.h"
-#include "server_manager.h"
 #include "player_manager.h"
+#include "server_manager.h"
 #include "timer_system.h"
 #include "voice_manager.h"
 
+#include <export/commands.h>
 #include <export/console.h>
 #include <export/engine.h>
-#include <export/events.h>
-#include <export/commands.h>
 #include <export/entities.h>
+#include <export/events.h>
 #include <export/gameconfig.h>
 #include <export/logger.h>
-#include <export/timers.h>
 #include <export/schema.h>
+#include <export/timers.h>
 #include <export/voice.h>
 
 Source2SDK g_sdk;
@@ -34,7 +34,7 @@ Source2SDK g_sdk;
 CGameEntitySystem* GameEntitySystem()
 {
 	static int offset = globals::g_GameConfig->GetOffset("GameEntitySystem");
-	return *reinterpret_cast<CGameEntitySystem **>((uintptr_t)(g_pGameResourceServiceServer) + offset);
+	return *reinterpret_cast<CGameEntitySystem**>((uintptr_t)(g_pGameResourceServiceServer) + offset);
 }
 
 class CEntityListener : public IEntityListener
@@ -95,13 +95,14 @@ void Source2SDK::OnPluginStart()
 
 void Source2SDK::OnPluginEnd()
 {
-	g_Logger.Message("OnPluginEnd!\n");
 	globals::Terminate();
 	g_HookManager.UnhookAll();
 	int iListener = g_pEntitySystem->m_entityListeners.Find(&g_pEntityListener);
-	if (iListener != -1) {
+	if (iListener != -1)
+	{
 		g_pEntitySystem->m_entityListeners.Remove(iListener);
 	}
+	g_Logger.Message("OnPluginEnd!\n");
 }
 
 dyno::ReturnAction Source2SDK::Hook_StartupServer(dyno::CallbackType type, dyno::IHook& hook)
@@ -116,6 +117,7 @@ dyno::ReturnAction Source2SDK::Hook_StartupServer(dyno::CallbackType type, dyno:
 	if (gpGlobals == nullptr)
 	{
 		g_Logger.Error("Failed to lookup gpGlobals\n");
+		return dyno::ReturnAction::Ignored;
 	}
 
 	GetOnServerStartupListenerManager().Notify();
@@ -173,9 +175,9 @@ dyno::ReturnAction Source2SDK::Hook_ClientActive(dyno::CallbackType type, dyno::
 	// CPlayerSlot slot, bool bLoadGame, const char* pszName, uint64 xuid
 	auto slot = (CPlayerSlot)dyno::GetArgument<int>(hook, 1);
 	auto bLoadGame = dyno::GetArgument<bool>(hook, 2);
-	//auto pszName = dyno::GetArgument<const char*>(hook, 3);
-	//auto xuid = dyno::GetArgument<uint64>(hook, 4);
-	//g_Logger.MessageFormat("ClientActive = %d, %d, \"%s\", %lli\n", slot, bLoadGame, pszName, xuid);
+	// auto pszName = dyno::GetArgument<const char*>(hook, 3);
+	// auto xuid = dyno::GetArgument<uint64>(hook, 4);
+	// g_Logger.MessageFormat("ClientActive = %d, %d, \"%s\", %lli\n", slot, bLoadGame, pszName, xuid);
 
 	g_PlayerManager.OnClientActive(slot, bLoadGame);
 
@@ -186,15 +188,18 @@ dyno::ReturnAction Source2SDK::Hook_ClientDisconnect(dyno::CallbackType type, dy
 {
 	// CPlayerSlot slot, int reason, const char* pszName, uint64 xuid, const char* pszNetworkID
 	auto slot = (CPlayerSlot)dyno::GetArgument<int>(hook, 1);
-	auto reason = (ENetworkDisconnectionReason) dyno::GetArgument<int>(hook, 2);
+	auto reason = (ENetworkDisconnectionReason)dyno::GetArgument<int>(hook, 2);
 	auto pszName = dyno::GetArgument<const char*>(hook, 3);
 	auto xuid = dyno::GetArgument<uint64>(hook, 4);
 	auto pszNetworkID = dyno::GetArgument<const char*>(hook, 5);
-	//g_Logger.MessageFormat("ClientDisconnect - %d, %d, \"%s\", %lli, \"%s\"\n", slot, reason, pszName, xuid, pszNetworkID);
+	// g_Logger.MessageFormat("ClientDisconnect - %d, %d, \"%s\", %lli, \"%s\"\n", slot, reason, pszName, xuid, pszNetworkID);
 
-	if (type == dyno::CallbackType::Pre) {
+	if (type == dyno::CallbackType::Pre)
+	{
 		g_PlayerManager.OnClientDisconnect(slot, reason, pszName, xuid, pszNetworkID);
-	} else {
+	}
+	else
+	{
 		g_PlayerManager.OnClientDisconnect_Post(slot, reason, pszName, xuid, pszNetworkID);
 	}
 
@@ -208,7 +213,7 @@ dyno::ReturnAction Source2SDK::Hook_ClientPutInServer(dyno::CallbackType type, d
 	auto pszName = dyno::GetArgument<const char*>(hook, 2);
 	auto conType = dyno::GetArgument<int>(hook, 3);
 	auto xuid = dyno::GetArgument<uint64>(hook, 4);
-	//g_Logger.MessageFormat("ClientPutInServer - %d, \"%s\", %d, %d, %lli\n", slot, pszName, conType, xuid);
+	// g_Logger.MessageFormat("ClientPutInServer - %d, \"%s\", %d, %d, %lli\n", slot, pszName, conType, xuid);
 
 	g_PlayerManager.OnClientPutInServer(slot, pszName, conType, xuid);
 
@@ -233,7 +238,7 @@ dyno::ReturnAction Source2SDK::Hook_OnClientConnected(dyno::CallbackType type, d
 	auto pszNetworkID = dyno::GetArgument<const char*>(hook, 4);
 	auto pszAddress = dyno::GetArgument<const char*>(hook, 5);
 	auto bFakePlayer = dyno::GetArgument<bool>(hook, 6);
-	//g_Logger.MessageFormat("OnClientConnected = %d, \"%s\", %lli, \"%s\", \"%s\", %d\n", slot, pszName, xuid, pszNetworkID, pszAddress, bFakePlayer);
+	// g_Logger.MessageFormat("OnClientConnected = %d, \"%s\", %lli, \"%s\", \"%s\", %d\n", slot, pszName, xuid, pszNetworkID, pszAddress, bFakePlayer);
 	g_PlayerManager.OnClientConnected(slot, pszName, xuid, pszNetworkID, pszAddress, bFakePlayer);
 	return dyno::ReturnAction::Ignored;
 }
@@ -257,23 +262,29 @@ dyno::ReturnAction Source2SDK::Hook_ClientConnect(dyno::CallbackType type, dyno:
 	bool unk1 = dyno::GetArgument<bool>(hook, 5);
 	auto pRejectReason = dyno::GetArgument<CBufferString*>(hook, 6);
 
-	//g_Logger.MessageFormat("ClientConnect = %d, \"%s\", %lli, \"%s\", %d, \"%s\" \n", slot, pszName, xuid, pszNetworkID, unk1, pRejectReason->ToGrowable()->Get());
+	// g_Logger.MessageFormat("ClientConnect = %d, \"%s\", %lli, \"%s\", %d, \"%s\" \n", slot, pszName, xuid, pszNetworkID, unk1, pRejectReason->ToGrowable()->Get());
 
-	if (type == dyno::CallbackType::Pre) {
+	if (type == dyno::CallbackType::Pre)
+	{
 		g_PlayerManager.OnClientConnect(slot, pszName, xuid, pszNetworkID, unk1, pRejectReason);
-	} else {
-		bool origValue = dyno::GetReturn<bool>(hook);
-		bool newValue = g_PlayerManager.OnClientConnect_Post(slot, pszName, xuid, pszNetworkID, unk1, pRejectReason, origValue);
-		if (newValue != origValue) {
-			dyno::SetReturn<bool>(hook, newValue);
+	}
+	else
+	{
+		bool origRet = dyno::GetReturn<bool>(hook);
+		bool newRet = g_PlayerManager.OnClientConnect_Post(slot, pszName, xuid, pszNetworkID, unk1, pRejectReason, origRet);
+		if (newRet != origRet)
+		{
+			dyno::SetReturn<bool>(hook, newRet);
 			return dyno::ReturnAction::Handled;
 		}
 	}
 
 	return dyno::ReturnAction::Ignored;
 }
-dyno::ReturnAction Source2SDK::Hook_ClientCommand(dyno::CallbackType type, dyno::IHook& hook) {
-	//CPlayerSlot nSlot, const CCommand& _cmd
+
+dyno::ReturnAction Source2SDK::Hook_ClientCommand(dyno::CallbackType type, dyno::IHook& hook)
+{
+	// CPlayerSlot nSlot, const CCommand& _cmd
 	auto slot = (CPlayerSlot)dyno::GetArgument<int>(hook, 1);
 	auto args = dyno::GetArgument<const CCommand&>(hook, 2);
 
@@ -283,12 +294,14 @@ dyno::ReturnAction Source2SDK::Hook_ClientCommand(dyno::CallbackType type, dyno:
 	g_PlayerManager.OnClientCommand(slot, args);
 
 	auto result = g_CommandManager.ExecuteCommandCallbacks(cmd, CCommandContext(CommandTarget_t::CT_NO_TARGET, slot), args, HookMode::Pre, CommandCallingContext::Console);
-	if (result >= ResultType::Handled) {
+	if (result >= ResultType::Handled)
+	{
 		return dyno::ReturnAction::Supercede;
 	}
-	
+
 	return dyno::ReturnAction::Ignored;
 }
+
 /*dyno::ReturnAction Source2SDK::Hook_CheckTransmit(dyno::CallbackType type, dyno::IHook& hook) {
 	//CPlayerSlot nSlot, const CCommand& _cmd
 	GetOnCheckTransmitListenerManager().Notify();
@@ -338,7 +351,7 @@ dyno::ReturnAction Source2SDK::Hook_UpdateWhenNotInGame(dyno::CallbackType type,
 {
 	// float flFrameTime
 	auto flFrameTime = dyno::GetArgument<float>(hook, 1);
-	//g_Logger.MessageFormat("UpdateWhenNotInGame = %f\n", flFrameTime);
+	// g_Logger.MessageFormat("UpdateWhenNotInGame = %f\n", flFrameTime);
 	GetOnUpdateWhenNotInGameListenerManager().Notify(flFrameTime);
 	return dyno::ReturnAction::Ignored;
 }
@@ -347,7 +360,7 @@ dyno::ReturnAction Source2SDK::Hook_PreWorldUpdate(dyno::CallbackType type, dyno
 {
 	// bool simulating
 	auto simulating = dyno::GetArgument<bool>(hook, 1);
-	//g_Logger.MessageFormat("PreWorldUpdate = %d\n", simulating);
+	// g_Logger.MessageFormat("PreWorldUpdate = %d\n", simulating);
 
 	g_ServerManager.OnPreWorldUpdate();
 

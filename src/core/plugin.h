@@ -24,7 +24,7 @@ public:
 	static dyno::ReturnAction Hook_ClientFullyConnect(dyno::CallbackType type, dyno::IHook& hook);
 	static dyno::ReturnAction Hook_ClientConnect(dyno::CallbackType type, dyno::IHook& hook);
 	static dyno::ReturnAction Hook_ClientCommand(dyno::CallbackType type, dyno::IHook& hook);
-	//static dyno::ReturnAction Hook_CheckTransmit(dyno::CallbackType type, dyno::IHook& hook);
+	// static dyno::ReturnAction Hook_CheckTransmit(dyno::CallbackType type, dyno::IHook& hook);
 	static dyno::ReturnAction Hook_ServerHibernationUpdate(dyno::CallbackType type, dyno::IHook& hook);
 	static dyno::ReturnAction Hook_GameServerSteamAPIActivated(dyno::CallbackType type, dyno::IHook& hook);
 	static dyno::ReturnAction Hook_GameServerSteamAPIDeactivated(dyno::CallbackType type, dyno::IHook& hook);

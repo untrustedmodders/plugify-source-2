@@ -53,11 +53,11 @@ namespace utils
 	inline void hash_combine(size_t& seed, const T& v, Rest... rest)
 	{
 		std::hash<T> hasher;
-		seed ^= hasher(v) + 0x9e3779b9 + (seed<<6) + (seed>>2);
+		seed ^= hasher(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
 		hash_combine(seed, rest...);
 	}
 
-	template<typename T1, typename T2>
+	template <typename T1, typename T2>
 	struct PairHash
 	{
 		std::size_t operator()(std::pair<T1, T2> const& p) const
@@ -69,13 +69,15 @@ namespace utils
 		}
 	};
 
-	struct CaseInsensitiveComparator {
-		bool operator()(const std::string& lhs, const std::string& rhs) const {
+	struct CaseInsensitiveComparator
+	{
+		bool operator()(const std::string& lhs, const std::string& rhs) const
+		{
 			return std::lexicographical_compare(
 				lhs.begin(), lhs.end(),
 				rhs.begin(), rhs.end(),
-				[](char a, char b) { return std::tolower(a) < std::tolower(b); }
-			);
+				[](char a, char b)
+				{ return std::tolower(a) < std::tolower(b); });
 		}
 	};
 

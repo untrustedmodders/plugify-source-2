@@ -1,7 +1,7 @@
 #pragma once
 
-#include <public/eiface.h>
 #include <dynohook/dynohook.h>
+#include <public/eiface.h>
 
 class VoiceManager
 {

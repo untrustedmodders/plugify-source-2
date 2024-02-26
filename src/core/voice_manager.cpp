@@ -1,14 +1,14 @@
 #include "voice_manager.h"
 #include "player_manager.h"
 
-#include <schema.h>
 #include <entity2/entitysystem.h>
+#include <schema.h>
 
 dyno::ReturnAction VoiceManager::Hook_SetClientListening(dyno::IHook& hook)
 {
 	// CPlayerSlot iReceiver, CPlayerSlot iSender, bool bListen
 	auto iReceiver = (CPlayerSlot)dyno::GetArgument<int>(hook, 1);
-	auto iSender = (CPlayerSlot) dyno::GetArgument<int>(hook, 2);
+	auto iSender = (CPlayerSlot)dyno::GetArgument<int>(hook, 2);
 	auto bListen = dyno::GetArgument<bool>(hook, 3);
 
 	auto pReceiver = g_PlayerManager.GetPlayerBySlot(iReceiver.Get());
