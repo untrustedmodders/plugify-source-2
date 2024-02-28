@@ -88,7 +88,7 @@ public:
 public:
 	std::string m_name;
 	std::string m_authId;
-	// IPlayerInfo* m_info{nullptr};
+	IPlayerInfo* m_info{nullptr};
 	bool m_bConnected{};
 	bool m_bFakeClient{};
 	bool m_bInGame{};

@@ -38,7 +38,6 @@ extern IGameEventManager2* g_gameEventManager;
 extern INetworkGameServer* g_pNetworkGameServer;
 extern CGlobalVars* gpGlobals;
 extern IVEngineServer2* g_pEngineServer2;
-extern CGameResourceService* pGameResourceServiceServer;
 extern CSchemaSystem* g_pSchemaSystem2;
 extern CGameEntitySystem* g_pEntitySystem;
 extern IEngineSound* g_pEngineSound;

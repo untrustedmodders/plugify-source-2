@@ -1,7 +1,7 @@
 #include "core_config.h"
 #include "utils.h"
 
-CCoreConfig::CCoreConfig(std::string path) : m_szPath(std::move(path))
+CCoreConfig::CCoreConfig(std::string path) : m_szPath(std::move(path)), m_pKeyValues(std::make_unique<KeyValues>("Core"))
 {
 }
 bool CCoreConfig::Initialize(std::span<char> error)
@@ -45,9 +45,9 @@ const std::string& CCoreConfig::GetPath() const
 	return m_szPath;
 }
 
-bool CCoreConfig::IsTriggerInternal(std::vector<std::string> triggers, const std::string& message, std::string& prefix) const
+bool CCoreConfig::IsTriggerInternal(const std::vector<std::string>& triggers, const std::string& message, std::string& prefix) const
 {
-	for (std::string& trigger : triggers)
+	for (const std::string& trigger : triggers)
 	{
 		if (message.rfind(trigger, 0) == 0)
 		{

@@ -16,7 +16,7 @@ public:
 	bool IsPublicChatTrigger(const std::string& message, std::string& prefix) const;
 
 private:
-	bool IsTriggerInternal(std::vector<std::string> triggers, const std::string& message, std::string& prefix) const;
+	bool IsTriggerInternal(const std::vector<std::string>& triggers, const std::string& message, std::string& prefix) const;
 
 public:
 	std::vector<std::string> PublicChatTrigger{"!"};

@@ -24,7 +24,7 @@ extern "C" PLUGIN_API void RemoveCommandListener(const std::string& name, Comman
 	g_CommandManager.RemoveCommandListener(name, callback, post ? HookMode::Post : HookMode::Pre);
 }
 
-/*extern "C" PLUGIN_API int CommandGetArgCount(CCommand* command)
+extern "C" PLUGIN_API int CommandGetArgCount(CCommand* command)
 {
 	if (!command) {
 		g_Logger.Error("Invalid command.");
@@ -67,7 +67,7 @@ extern "C" PLUGIN_API void CommandGetArgByIndex(std::string& output, CCommand* c
 extern "C" PLUGIN_API CommandCallingContext CommandGetCallingContext(CCommand* command)
 {
 	return g_CommandManager.GetCommandCallingContext(command);
-}*/
+}
 
 extern "C" PLUGIN_API void ServerCommand(const std::string& command)
 {
