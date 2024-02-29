@@ -24,7 +24,7 @@ struct EventHook
 	bool postCopy{};
 };
 
-enum class EventHookError : uint8_t
+enum class EventHookError : int
 {
 	Okay = 0,
 	InvalidEvent,

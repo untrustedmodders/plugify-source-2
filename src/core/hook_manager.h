@@ -17,7 +17,7 @@ public:
 		auto ihook = dyno::CHook::CreateHookVirtualByFunc(ptr, (void*&)func, std::vector(args.begin(), args.end()), ret);
 		if (ihook == nullptr)
 		{
-			g_Logger.ErrorFormat("Could not hook member function \"%s\".", utils::Demangle(typeid(func).name()).c_str());
+			g_Logger.ErrorFormat("Could not hook member function \"%s\".\n", utils::Demangle(typeid(func).name()).c_str());
 		}
 		auto& hook = m_Hooks.emplace_back(std::move(ihook));
 		([&]()
@@ -30,7 +30,7 @@ public:
 		auto addr = globals::g_GameConfig->ResolveSignature(name);
 		if (!addr)
 		{
-			g_Logger.ErrorFormat("Could not hook detour function \"%s\".", name.c_str());
+			g_Logger.ErrorFormat("Could not hook detour function \"%s\".\n", name.c_str());
 		}
 
 		using trait = dyno::details::function_traits<F>;
@@ -39,7 +39,7 @@ public:
 		auto ihook = dyno::CHook::CreateDetourHook(addr, std::vector(args.begin(), args.end()), ret);
 		if (ihook == nullptr)
 		{
-			g_Logger.ErrorFormat("Could not hook detour function \"%s\".", name.c_str());
+			g_Logger.ErrorFormat("Could not hook detour function \"%s\".\n", name.c_str());
 		}
 
 		auto& hook = m_Hooks.emplace_back(std::move(ihook));

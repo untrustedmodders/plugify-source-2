@@ -38,16 +38,27 @@ T* FindInterface(const DynLibUtils::CModule* module, const char* name)
 	auto fn = module->GetFunctionByName("CreateInterface");
 	if (!fn)
 	{
-		g_Logger.ErrorFormat("Could not find CreateInterface in %s at \"%s\"\n", module->GetModuleName(), module->GetModulePath());
+		g_Logger.ErrorFormat("Could not find CreateInterface in %s at \"%s\"\n", module->GetModuleName().data(), module->GetModulePath().data());
 	}
 
 	void* pInterface = fn.CCast<CreateInterfaceFn>()(name, nullptr);
 	if (!pInterface)
 	{
-		g_Logger.ErrorFormat("Could not find interface: %s in at \"%s\"\n", name, module->GetModuleName(), module->GetModulePath());
+		g_Logger.ErrorFormat("Could not find interface: %s in at \"%s\"\n", name, module->GetModuleName().data(), module->GetModulePath().data());
 	}
 
 	return (T*)pInterface;
+}
+
+template <typename CharT, std::size_t N>
+constexpr auto replace(const CharT (&str)[N], CharT oldChar, CharT newChar) {
+	std::basic_string<CharT> result(str, N - 1);  // Constructing std::basic_string from array
+	for (auto& c : result) {
+		if (c == oldChar) {
+			c = newChar;
+		}
+	}
+	return result;
 }
 
 namespace globals
@@ -58,12 +69,12 @@ namespace globals
 
 	void Initialize()
 	{
-		modules::engine = new DynLibUtils::CModule("engine2");
-		modules::tier0 = new DynLibUtils::CModule("tier0");
-		modules::server = new DynLibUtils::CModule("server");
-		modules::schemasystem = new DynLibUtils::CModule("schemasystem");
-		modules::filesystem = new DynLibUtils::CModule("filesystem_stdio");
-		modules::vscript = new DynLibUtils::CModule("vscript");
+		modules::engine = new DynLibUtils::CModule(Plat_GetGameDirectory() + replace(CS2SDK_ROOT_BINARY BINARY_MODULE_PREFIX "engine2", '/', '\\'));
+		modules::tier0 = new DynLibUtils::CModule(Plat_GetGameDirectory() + replace(CS2SDK_ROOT_BINARY BINARY_MODULE_PREFIX "tier0", '/', '\\'));
+		modules::server = new DynLibUtils::CModule(Plat_GetGameDirectory() + replace(CS2SDK_GAME_BINARY BINARY_MODULE_PREFIX "server", '/', '\\'));
+		modules::schemasystem = new DynLibUtils::CModule(Plat_GetGameDirectory() + replace(CS2SDK_ROOT_BINARY BINARY_MODULE_PREFIX "schemasystem", '/', '\\'));
+		modules::filesystem = new DynLibUtils::CModule(Plat_GetGameDirectory() + replace(CS2SDK_ROOT_BINARY BINARY_MODULE_PREFIX "filesystem_stdio", '/', '\\'));
+		modules::vscript = new DynLibUtils::CModule(Plat_GetGameDirectory() + replace(CS2SDK_ROOT_BINARY BINARY_MODULE_PREFIX "vscript", '/', '\\'));
 
 		g_pCVar = FindInterface<ICvar>(modules::tier0, CVAR_INTERFACE_VERSION);
 		g_pSource2GameEntities = FindInterface<ISource2GameEntities>(modules::server, SOURCE2GAMEENTITIES_INTERFACE_VERSION);
@@ -85,7 +96,7 @@ namespace globals
 		g_CoreConfig = new CCoreConfig(utils::ConfigsDirectory() + "core.txt");
 		if (!g_CoreConfig->Initialize(confError))
 		{
-			g_Logger.ErrorFormat("Could not read \"%s\": %s", g_CoreConfig->GetPath().c_str(), confError);
+			g_Logger.ErrorFormat("Could not read \"%s\": %s\n", g_CoreConfig->GetPath().c_str(), confError);
 		}
 
 		g_GameConfig = g_GameConfigManager.LoadGameConfigFile("cs2sdk.games.txt");
@@ -110,11 +121,11 @@ namespace globals
 		// RESOLVE_SIG(g_GameConfig, "UTIL_Remove", addresses::UTIL_Remove);
 		// RESOLVE_SIG(g_GameConfig, "CEntitySystem_AddEntityIOEvent", addresses::CEntitySystem_AddEntityIOEvent);
 		// RESOLVE_SIG(g_GameConfig, "CEntityInstance_AcceptInput", addresses::CEntityInstance_AcceptInput);
-		// RESOLVE_SIG(g_GameConfig, "CGameEntitySystem_FindEntityByClassName", addresses::CGameEntitySystem_FindEntityByClassName);
-		// RESOLVE_SIG(g_GameConfig, "CGameEntitySystem_FindEntityByName", addresses::CGameEntitySystem_FindEntityByName);
+		RESOLVE_SIG(g_GameConfig, "CGameEntitySystem_FindEntityByClassName", addresses::CGameEntitySystem_FindEntityByClassName);
+		 RESOLVE_SIG(g_GameConfig, "CGameEntitySystem_FindEntityByName", addresses::CGameEntitySystem_FindEntityByName);
 		// RESOLVE_SIG(g_GameConfig, "CGameRules_TerminateRound", addresses::CGameRules_TerminateRound);
-		// RESOLVE_SIG(g_GameConfig, "CreateEntityByName", addresses::CreateEntityByName);
-		// RESOLVE_SIG(g_GameConfig, "DispatchSpawn", addresses::DispatchSpawn);
+		RESOLVE_SIG(g_GameConfig, "CreateEntityByName", addresses::CreateEntityByName);
+		//RESOLVE_SIG(g_GameConfig, "DispatchSpawn", addresses::DispatchSpawn);
 		// RESOLVE_SIG(g_GameConfig, "CEntityIdentity_SetEntityName", addresses::CEntityIdentity_SetEntityName);
 		// RESOLVE_SIG(g_GameConfig, "CBaseEntity_EmitSoundParams", addresses::CBaseEntity_EmitSoundParams);
 		// RESOLVE_SIG(g_GameConfig, "CBaseEntity_SetParent", addresses::CBaseEntity_SetParent);

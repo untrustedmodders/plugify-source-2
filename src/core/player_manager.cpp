@@ -470,7 +470,7 @@ void PlayerManager::OnClientActive(CPlayerSlot slot, bool bLoadGame) const
 
 void PlayerManager::OnLevelShutdown()
 {
-	g_Logger.Message("[OnLevelShutdown]");
+	g_Logger.Message("[OnLevelShutdown]\n");
 
 	for (int i = 0; i <= MaxClients(); ++i)
 	{

@@ -2,14 +2,14 @@
 
 #include <core/event_manager.h>
 
-extern "C" PLUGIN_API EventHookError HookEvent(const std::string& name, EventListenerCallback pCallback, HookMode mode)
+extern "C" PLUGIN_API int HookEvent(const std::string& name, EventListenerCallback pCallback, bool post)
 {
-	return g_EventManager.HookEvent(name, pCallback, mode);
+	return static_cast<int>(g_EventManager.HookEvent(name, pCallback, static_cast<HookMode>(post)));
 }
 
-extern "C" PLUGIN_API EventHookError UnhookEvent(const std::string& name, EventListenerCallback pCallback, HookMode mode)
+extern "C" PLUGIN_API int UnhookEvent(const std::string& name, EventListenerCallback pCallback, bool post)
 {
-	return g_EventManager.UnhookEvent(name, pCallback, mode);
+	return static_cast<int>(g_EventManager.UnhookEvent(name, pCallback, static_cast<HookMode>(post)));
 }
 
 extern "C" PLUGIN_API EventInfo* CreateEvent(const std::string& name, bool force)
@@ -47,7 +47,7 @@ extern "C" PLUGIN_API int GetEventInt(EventInfo* pInfo, const std::string& key)
 	return pInfo->pEvent->GetInt(key.c_str());
 }
 
-extern "C" PLUGIN_API uint64 GetEventUInt64(EventInfo* pInfo, const std::string& key)
+extern "C" PLUGIN_API uint64_t GetEventUInt64(EventInfo* pInfo, const std::string& key)
 {
 	return pInfo->pEvent->GetUint64(key.c_str());
 }
@@ -107,7 +107,7 @@ extern "C" PLUGIN_API void SetEventInt(EventInfo* pInfo, const std::string& key,
 	pInfo->pEvent->SetInt(key.c_str(), value);
 }
 
-extern "C" PLUGIN_API void SetEventUInt64(EventInfo* pInfo, const std::string& key, uint64 value)
+extern "C" PLUGIN_API void SetEventUInt64(EventInfo* pInfo, const std::string& key, uint64_t value)
 {
 	pInfo->pEvent->SetUint64(key.c_str(), value);
 }

@@ -10,7 +10,7 @@ class CSteamID;
 class CCommand;
 struct edict_t;
 
-enum ListenOverride : uint8_t
+enum ListenOverride : int8_t
 {
 	Listen_Default = 0,
 	Listen_Mute,

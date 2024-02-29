@@ -286,14 +286,14 @@ dyno::ReturnAction Source2SDK::Hook_ClientCommand(dyno::CallbackType type, dyno:
 {
 	// CPlayerSlot nSlot, const CCommand& _cmd
 	auto slot = (CPlayerSlot)dyno::GetArgument<int>(hook, 1);
-	auto args = dyno::GetArgument<const CCommand&>(hook, 2);
+	auto args = dyno::GetArgument<const CCommand*>(hook, 2);
 
-	g_Logger.MessageFormat("ClientCommand = %d, \"%s\"\n", slot, args.GetCommandString());
-	const char* cmd = args.Arg(0);
+	g_Logger.MessageFormat("ClientCommand = %d, \"%s\"\n", slot, args->GetCommandString());
+	const char* cmd = args->Arg(0);
 
-	g_PlayerManager.OnClientCommand(slot, args);
+	g_PlayerManager.OnClientCommand(slot, *args);
 
-	auto result = g_CommandManager.ExecuteCommandCallbacks(cmd, CCommandContext(CommandTarget_t::CT_NO_TARGET, slot), args, HookMode::Pre, CommandCallingContext::Console);
+	auto result = g_CommandManager.ExecuteCommandCallbacks(cmd, CCommandContext(CommandTarget_t::CT_NO_TARGET, slot), *args, HookMode::Pre, CommandCallingContext::Console);
 	if (result >= ResultType::Handled)
 	{
 		return dyno::ReturnAction::Supercede;

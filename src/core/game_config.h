@@ -28,8 +28,6 @@ public:
 	bool IsSymbol(const std::string& name) const;
 	CMemory ResolveSignature(const std::string& name) const;
 
-	static std::vector<uint8_t> HexToByte(std::string_view hexString);
-
 private:
 	struct AddressConf
 	{

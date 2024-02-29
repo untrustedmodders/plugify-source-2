@@ -8,7 +8,7 @@ enum class HookMode : bool
 	Post,
 };
 
-enum class ResultType : uint8_t
+enum class ResultType : int
 {
 	Continue = 0,
 	Changed = 1,
@@ -32,7 +32,7 @@ public:
 		// Is the callable already in the vector?
 		if (IsRegistered(callable))
 		{
-			g_Logger.Error("Callback already registered.");
+			g_Logger.Error("Callback already registered.\n");
 			return false;
 		}
 		else
@@ -49,7 +49,7 @@ public:
 		auto index = Find(callable);
 		if (!index.has_value())
 		{
-			g_Logger.Error("Callback not registered.");
+			g_Logger.Error("Callback not registered.\n");
 			return false;
 		}
 		else

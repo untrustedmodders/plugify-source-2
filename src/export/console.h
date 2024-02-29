@@ -21,12 +21,12 @@ extern "C" PLUGIN_API void ClientPrintAll(int hudDest, const std::string& msg)
 
 extern "C" PLUGIN_API void PrintToConsole(int clientIndex, const std::string& msg)
 {
-	//g_pEngineServer2->ClientPrintf(CPlayerSlot(clientIndex - 1), msg.c_str());
+	// g_pEngineServer2->ClientPrintf(CPlayerSlot(clientIndex - 1), msg.c_str());
 }
 
 extern "C" PLUGIN_API void PrintToConsoleAll(const std::string& msg)
 {
-	//g_pEngineServer2->ClientPrintf(client, msg.c_str());
+	// g_pEngineServer2->ClientPrintf(client, msg.c_str());
 }
 
 extern "C" PLUGIN_API void PrintToServer(const std::string& msg)

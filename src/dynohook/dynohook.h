@@ -16,7 +16,7 @@ namespace dyno
 		Post // callback will be executed after the original function
 	};
 
-	enum class ReturnAction : uint8_t
+	enum class ReturnAction : int32_t
 	{
 		Ignored,  // handler didn't take any action
 		Handled,  // we did something, but real function should still be called
@@ -310,7 +310,7 @@ namespace dyno
 		int m_index;
 	};
 
-	template <class T>
+	template <class T> requires(!std::is_reference_v<T>)
 	inline T GetArgument(IHook& hook, size_t index)
 	{
 		using GetArgumentFn = T (*)(IHook*, size_t);
@@ -337,12 +337,12 @@ namespace dyno
 			func = reinterpret_cast<GetArgumentFn>(plugify::GetMethod("dynohook.GetArgumentFloat"));
 		else if constexpr (std::is_same_v<T, double>)
 			func = reinterpret_cast<GetArgumentFn>(plugify::GetMethod("dynohook.GetArgumentDouble"));
-		else if constexpr (std::is_pointer<T>::value)
-			func = reinterpret_cast<GetArgumentFn>(plugify::GetMethod("dynohook.GetArgumentPointer"));
 		else if constexpr (std::is_same_v<T, const char*>)
 			func = reinterpret_cast<GetArgumentFn>(plugify::GetMethod("dynohook.GetArgumentString"));
-		else if constexpr (std::is_same_v<T, const wchar_t*> || std::is_reference_v<T>)
+		else if constexpr (std::is_same_v<T, const wchar_t*>)
 			func = reinterpret_cast<GetArgumentFn>(plugify::GetMethod("dynohook.GetArgumentWString"));
+		else if constexpr (std::is_pointer<T>::value)
+			func = reinterpret_cast<GetArgumentFn>(plugify::GetMethod("dynohook.GetArgumentPointer"));
 		else
 		{
 			if (sizeof(T) > sizeof(int64_t))
@@ -373,7 +373,7 @@ namespace dyno
 		return func(&hook, index);
 	}
 
-	template <class T>
+	template <class T> requires(!std::is_reference_v<T>)
 	inline void SetArgument(IHook& hook, size_t index, T value)
 	{
 		using SetArgumentFn = void (*)(IHook*, size_t, T);
@@ -400,12 +400,12 @@ namespace dyno
 			func = reinterpret_cast<SetArgumentFn>(plugify::GetMethod("dynohook.SetArgumentFloat"));
 		else if constexpr (std::is_same_v<T, double>)
 			func = reinterpret_cast<SetArgumentFn>(plugify::GetMethod("dynohook.SetArgumentDouble"));
-		else if constexpr (std::is_pointer<T>::value)
-			func = reinterpret_cast<SetArgumentFn>(plugify::GetMethod("dynohook.SetArgumentPointer"));
 		else if constexpr (std::is_same_v<T, const char*>)
 			func = reinterpret_cast<SetArgumentFn>(plugify::GetMethod("dynohook.SetArgumentString"));
-		else if constexpr (std::is_same_v<T, const wchar_t*> || std::is_reference_v<T>)
+		else if constexpr (std::is_same_v<T, const wchar_t*>)
 			func = reinterpret_cast<SetArgumentFn>(plugify::GetMethod("dynohook.SetArgumentWString"));
+		else if constexpr (std::is_pointer<T>::value)
+			func = reinterpret_cast<SetArgumentFn>(plugify::GetMethod("dynohook.SetArgumentPointer"));
 		else
 		{
 			if (sizeof(T) > sizeof(int64_t))
@@ -436,7 +436,7 @@ namespace dyno
 		func(&hook, index, value);
 	}
 
-	template <class T>
+	template <class T> requires(!std::is_reference_v<T>)
 	inline T GetReturn(IHook& hook)
 	{
 		using GetReturnFn = T (*)(IHook*);
@@ -467,11 +467,11 @@ namespace dyno
 			func = reinterpret_cast<GetReturnFn>(plugify::GetMethod("dynohook.GetReturnString"));
 		else if constexpr (std::is_same_v<T, const wchar_t*>)
 			func = reinterpret_cast<GetReturnFn>(plugify::GetMethod("dynohook.GetReturnWString"));
-		else if constexpr (std::is_pointer<T>::value || std::is_reference_v<T>)
+		else if constexpr (std::is_pointer<T>::value )
 			func = reinterpret_cast<GetReturnFn>(plugify::GetMethod("dynohook.GetReturnPointer"));
 		else
 		{
-			if (sizeof(T) > sizeof(int64_t))
+			/*if (sizeof(T) > sizeof(int64_t))
 			{
 				static_assert("Unsupported type");
 			}
@@ -494,12 +494,13 @@ namespace dyno
 			else
 			{
 				func = reinterpret_cast<GetReturnFn>(plugify::GetMethod("dynohook.GetReturnBool"));
-			}
+			}*/
+			static_assert("Unsupported type");
 		}
 		return func(&hook);
 	}
 
-	template <class T>
+	template <class T> requires(!std::is_reference_v<T>)
 	inline void SetReturn(IHook& hook, T value)
 	{
 		using SetReturnFn = void (*)(IHook*, T);
@@ -530,11 +531,11 @@ namespace dyno
 			func = reinterpret_cast<SetReturnFn>(plugify::GetMethod("dynohook.SetReturnString"));
 		else if constexpr (std::is_same_v<T, const wchar_t*>)
 			func = reinterpret_cast<SetReturnFn>(plugify::GetMethod("dynohook.SetReturnWString"));
-		else if constexpr (std::is_pointer<T>::value || std::is_reference_v<T>)
+		else if constexpr (std::is_pointer<T>::value)
 			func = reinterpret_cast<SetReturnFn>(plugify::GetMethod("dynohook.SetReturnPointer"));
 		else
 		{
-			if (sizeof(T) > sizeof(int64_t))
+			/*if (sizeof(T) > sizeof(int64_t))
 			{
 				static_assert("Unsupported type");
 			}
@@ -557,7 +558,8 @@ namespace dyno
 			else
 			{
 				func = reinterpret_cast<SetReturnFn>(plugify::GetMethod("dynohook.SetReturnBool"));
-			}
+			}*/
+			static_assert("Unsupported type");
 		}
 		func(&hook, value);
 	}

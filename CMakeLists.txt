@@ -65,8 +65,20 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_BINARY_DIR}/exports)
 
 if(LINUX)
     include("cmake/linux.cmake")
+    target_compile_definitions(${PROJECT_NAME} PRIVATE
+            CS2SDK_PLATFORM="linux"
+            CS2SDK_BINARY="linuxsteamrt64"
+            CS2SDK_ROOT_BINARY="/bin/linuxsteamrt64/"
+            CS2SDK_GAME_BINARY="/csgo/bin/linuxsteamrt64/"
+    )
 elseif(WIN32)
     include("cmake/windows.cmake")
+    target_compile_definitions(${PROJECT_NAME} PRIVATE
+            CS2SDK_PLATFORM="windows"
+            CS2SDK_BINARY="win64"
+            CS2SDK_ROOT_BINARY="/bin/win64/"
+            CS2SDK_GAME_BINARY="/csgo/bin/win64/"
+    )
 endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES

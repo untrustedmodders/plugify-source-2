@@ -20,5 +20,3172 @@
 	  }
 	],
 	"exportedMethods": [
+		{
+			"name": "AddCommand",
+			"funcName": "AddCommand",
+			"paramTypes": [
+				{
+					"name": "name",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "description",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "flags",
+					"type": "int64",
+					"ref": false
+				},
+				{
+					"name": "callback",
+					"type": "function",
+					"ref": false,
+					"prototype": {
+						"paramTypes": [
+							{
+								"name": "slot",
+								"type": "int32"
+							},
+							{
+								"name": "command",
+								"type": "ptr64"
+							}
+						],
+						"retType": {
+							"type": "int32"
+						}
+					}
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "RemoveCommand",
+			"funcName": "RemoveCommand",
+			"paramTypes": [
+				{
+					"name": "name",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "callback",
+					"type": "function",
+					"ref": false,
+					"prototype": {
+						"paramTypes": [
+							{
+								"name": "slot",
+								"type": "int32"
+							},
+							{
+								"name": "command",
+								"type": "ptr64"
+							}
+						],
+						"retType": {
+							"type": "int32"
+						}
+					}
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "AddCommandListener",
+			"funcName": "AddCommandListener",
+			"paramTypes": [
+				{
+					"name": "name",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "callback",
+					"type": "function",
+					"ref": false,
+					"prototype": {
+						"paramTypes": [
+							{
+								"name": "slot",
+								"type": "int32"
+							},
+							{
+								"name": "command",
+								"type": "ptr64"
+							}
+						],
+						"retType": {
+							"type": "int32"
+						}
+					}
+				},
+				{
+					"name": "post",
+					"type": "bool",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "RemoveCommandListener",
+			"funcName": "RemoveCommandListener",
+			"paramTypes": [
+				{
+					"name": "name",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "callback",
+					"type": "function",
+					"ref": false,
+					"prototype": {
+						"paramTypes": [
+							{
+								"name": "slot",
+								"type": "int32"
+							},
+							{
+								"name": "command",
+								"type": "ptr64"
+							}
+						],
+						"retType": {
+							"type": "int32"
+						}
+					}
+				},
+				{
+					"name": "post",
+					"type": "bool",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "CommandGetArgCount",
+			"funcName": "CommandGetArgCount",
+			"paramTypes": [
+				{
+					"name": "command",
+					"type": "ptr64",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int32"
+			}
+		},
+		{
+			"name": "CommandGetArgString",
+			"funcName": "CommandGetArgString",
+			"paramTypes": [
+				{
+					"name": "output",
+					"type": "string",
+					"ref": true
+				},
+				{
+					"name": "command",
+					"type": "ptr64",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "CommandGetCommandString",
+			"funcName": "CommandGetCommandString",
+			"paramTypes": [
+				{
+					"name": "output",
+					"type": "string",
+					"ref": true
+				},
+				{
+					"name": "command",
+					"type": "ptr64",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "CommandGetArgByIndex",
+			"funcName": "CommandGetArgByIndex",
+			"paramTypes": [
+				{
+					"name": "output",
+					"type": "string",
+					"ref": true
+				},
+				{
+					"name": "command",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "index",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "CommandGetCallingContext",
+			"funcName": "CommandGetCallingContext",
+			"paramTypes": [
+				{
+					"name": "command",
+					"type": "ptr64",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int32"
+			}
+		},
+		{
+			"name": "ServerCommand",
+			"funcName": "ServerCommand",
+			"paramTypes": [
+				{
+					"name": "command",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "ClientCommand",
+			"funcName": "ClientCommand",
+			"paramTypes": [
+				{
+					"name": "clientIndex",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "command",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "ClientCommandFromServer",
+			"funcName": "ClientCommandFromServer",
+			"paramTypes": [
+				{
+					"name": "slot",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "command",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "GetClientConVarValue",
+			"funcName": "GetClientConVarValue",
+			"paramTypes": [
+				{
+					"name": "output",
+					"type": "string",
+					"ref": true
+				},
+				{
+					"name": "playerSlot",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "convarName",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "SetFakeClientConVarValue",
+			"funcName": "SetFakeClientConVarValue",
+			"paramTypes": [
+				{
+					"name": "playerSlot",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "convarName",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "convarValue",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "FindConVar",
+			"funcName": "FindConVar",
+			"paramTypes": [
+				{
+					"name": "name",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "ptr64"
+			}
+		},
+		{
+			"name": "SetConVarStringValue",
+			"funcName": "SetConVarStringValue",
+			"paramTypes": [
+				{
+					"name": "pCvar",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "value",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "ClientPrint",
+			"funcName": "ClientPrint",
+			"paramTypes": [
+				{
+					"name": "player",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "hudDest",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "msg",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "ClientPrintAll",
+			"funcName": "ClientPrintAll",
+			"paramTypes": [
+				{
+					"name": "hudDest",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "msg",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "PrintToConsole",
+			"funcName": "PrintToConsole",
+			"paramTypes": [
+				{
+					"name": "clientIndex",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "msg",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "PrintToConsoleAll",
+			"funcName": "PrintToConsoleAll",
+			"paramTypes": [
+				{
+					"name": "msg",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "PrintToServer",
+			"funcName": "PrintToServer",
+			"paramTypes": [
+				{
+					"name": "msg",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "GetGameDirectory",
+			"funcName": "GetGameDirectory",
+			"paramTypes": [
+				{
+					"name": "result",
+					"type": "string",
+					"ref": true
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "GetMapName",
+			"funcName": "GetMapName",
+			"paramTypes": [
+				{
+					"name": "result",
+					"type": "string",
+					"ref": true
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "IsMapValid",
+			"funcName": "IsMapValid",
+			"paramTypes": [
+				{
+					"name": "mapname",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "bool"
+			}
+		},
+		{
+			"name": "GetGameTime",
+			"funcName": "GetGameTime",
+			"paramTypes": [],
+			"retType": {
+				"type": "float"
+			}
+		},
+		{
+			"name": "GetGameTickCount",
+			"funcName": "GetGameTickCount",
+			"paramTypes": [],
+			"retType": {
+				"type": "int32"
+			}
+		},
+		{
+			"name": "GetGameFrameTime",
+			"funcName": "GetGameFrameTime",
+			"paramTypes": [],
+			"retType": {
+				"type": "float"
+			}
+		},
+		{
+			"name": "GetEngineTime",
+			"funcName": "GetEngineTime",
+			"paramTypes": [],
+			"retType": {
+				"type": "double"
+			}
+		},
+		{
+			"name": "GetMaxClients",
+			"funcName": "GetMaxClients",
+			"paramTypes": [],
+			"retType": {
+				"type": "int32"
+			}
+		},
+		{
+			"name": "PrecacheModel",
+			"funcName": "PrecacheModel",
+			"paramTypes": [
+				{
+					"name": "model",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int32"
+			}
+		},
+		{
+			"name": "IsModelPrecache",
+			"funcName": "IsModelPrecache",
+			"paramTypes": [
+				{
+					"name": "model",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "PrecacheSound",
+			"funcName": "PrecacheSound",
+			"paramTypes": [
+				{
+					"name": "sound",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "preload",
+					"type": "bool",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "bool"
+			}
+		},
+		{
+			"name": "IsSoundPrecached",
+			"funcName": "IsSoundPrecached",
+			"paramTypes": [
+				{
+					"name": "sound",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "bool"
+			}
+		},
+		{
+			"name": "PrecacheDecal",
+			"funcName": "PrecacheDecal",
+			"paramTypes": [
+				{
+					"name": "decal",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "preload",
+					"type": "bool",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int32"
+			}
+		},
+		{
+			"name": "IsDecalPrecached",
+			"funcName": "IsDecalPrecached",
+			"paramTypes": [
+				{
+					"name": "decal",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "bool"
+			}
+		},
+		{
+			"name": "GetTickInterval",
+			"funcName": "GetTickInterval",
+			"paramTypes": [],
+			"retType": {
+				"type": "float"
+			}
+		},
+		{
+			"name": "GetTickedTime",
+			"funcName": "GetTickedTime",
+			"paramTypes": [],
+			"retType": {
+				"type": "double"
+			}
+		},
+		{
+			"name": "GetEconItemSystem",
+			"funcName": "GetEconItemSystem",
+			"paramTypes": [],
+			"retType": {
+				"type": "ptr64"
+			}
+		},
+		{
+			"name": "IsServerPaused",
+			"funcName": "IsServerPaused",
+			"paramTypes": [],
+			"retType": {
+				"type": "bool"
+			}
+		},
+		{
+			"name": "QueueTaskForNextFrame",
+			"funcName": "QueueTaskForNextFrame",
+			"paramTypes": [
+				{
+					"name": "callback",
+					"type": "function",
+					"ref": false,
+					"prototype": {
+						"paramTypes": [
+						],
+						"retType": {
+							"type": "void"
+						}
+					}
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "QueueTaskForNextWorldUpdate",
+			"funcName": "QueueTaskForNextWorldUpdate",
+			"paramTypes": [
+				{
+					"name": "callback",
+					"type": "function",
+					"ref": false,
+					"prototype": {
+						"paramTypes": [
+						],
+						"retType": {
+							"type": "void"
+						}
+					}
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "GetSoundDuration",
+			"funcName": "GetSoundDuration",
+			"paramTypes": [
+				{
+					"name": "name",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "float"
+			}
+		},
+		{
+			"name": "GetEntityFromIndex",
+			"funcName": "GetEntityFromIndex",
+			"paramTypes": [
+				{
+					"name": "entityIndex",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "ptr64"
+			}
+		},
+		{
+			"name": "GetUserIdFromIndex",
+			"funcName": "GetUserIdFromIndex",
+			"paramTypes": [
+				{
+					"name": "entityIndex",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int32"
+			}
+		},
+		{
+			"name": "GetDesignerName",
+			"funcName": "GetDesignerName",
+			"paramTypes": [
+				{
+					"name": "output",
+					"type": "string",
+					"ref": true
+				},
+				{
+					"name": "entity",
+					"type": "ptr64",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "GetEntityPointerFromHandle",
+			"funcName": "GetEntityPointerFromHandle",
+			"paramTypes": [
+				{
+					"name": "handle",
+					"type": "ptr64",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "ptr64"
+			}
+		},
+		{
+			"name": "GetEntityPointerFromRef",
+			"funcName": "GetEntityPointerFromRef",
+			"paramTypes": [
+				{
+					"name": "ref",
+					"type": "uint32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "ptr64"
+			}
+		},
+		{
+			"name": "GetRefFromEntityPointer",
+			"funcName": "GetRefFromEntityPointer",
+			"paramTypes": [
+				{
+					"name": "pEntity",
+					"type": "ptr64",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "uint32"
+			}
+		},
+		{
+			"name": "IsRefValidEntity",
+			"funcName": "IsRefValidEntity",
+			"paramTypes": [
+				{
+					"name": "ref",
+					"type": "uint32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "bool"
+			}
+		},
+		{
+			"name": "GetFirstActiveEntity",
+			"funcName": "GetFirstActiveEntity",
+			"paramTypes": [],
+			"retType": {
+				"type": "ptr64"
+			}
+		},
+		{
+			"name": "GetConcreteEntityListPointer",
+			"funcName": "GetConcreteEntityListPointer",
+			"paramTypes": [],
+			"retType": {
+				"type": "ptr64"
+			}
+		},
+		{
+			"name": "GetPlayerAuthorizedSteamID",
+			"funcName": "GetPlayerAuthorizedSteamID",
+			"paramTypes": [
+				{
+					"name": "iSlot",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "uint64"
+			}
+		},
+		{
+			"name": "GetPlayerIpAddress",
+			"funcName": "GetPlayerIpAddress",
+			"paramTypes": [
+				{
+					"name": "output",
+					"type": "string",
+					"ref": true
+				},
+				{
+					"name": "iSlot",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "HookEntityOutput",
+			"funcName": "HookEntityOutput",
+			"paramTypes": [
+				{
+					"name": "szClassname",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "szOutput",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "callback",
+					"type": "function",
+					"ref": false,
+					"prototype": {
+						"paramTypes": [
+							{
+								"name": "pThis",
+								"type": "ptr64"
+							},
+							{
+								"name": "pActivator",
+								"type": "ptr64"
+							},
+							{
+								"name": "pCaller",
+								"type": "ptr64"
+							},
+							{
+								"name": "value",
+								"type": "ptr64"
+							},
+							{
+								"name": "flDelay",
+								"type": "float"
+							}
+						],
+						"retType": {
+							"type": "int32"
+						}
+					}
+				},
+				{
+					"name": "post",
+					"type": "bool",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "UnhookEntityOutput",
+			"funcName": "UnhookEntityOutput",
+			"paramTypes": [
+				{
+					"name": "szClassname",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "szOutput",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "callback",
+					"type": "function",
+					"ref": false,
+					"prototype": {
+						"paramTypes": [
+							{
+								"name": "pThis",
+								"type": "ptr64"
+							},
+							{
+								"name": "pActivator",
+								"type": "ptr64"
+							},
+							{
+								"name": "pCaller",
+								"type": "ptr64"
+							},
+							{
+								"name": "value",
+								"type": "ptr64"
+							},
+							{
+								"name": "flDelay",
+								"type": "float"
+							}
+						],
+						"retType": {
+							"type": "int32"
+						}
+					}
+				},
+				{
+					"name": "post",
+					"type": "bool",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "FindEntityByClassname",
+			"funcName": "FindEntityByClassname",
+			"paramTypes": [
+				{
+					"name": "pStartEntity",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "szName",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "ptr64"
+			}
+		},
+		{
+			"name": "FindEntityByName",
+			"funcName": "FindEntityByName",
+			"paramTypes": [
+				{
+					"name": "pStartEntity",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "szName",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "pSearchingEntity",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "pActivator",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "pCaller",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "pFilter",
+					"type": "ptr64",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "ptr64"
+			}
+		},
+		{
+			"name": "CreateEntityByName",
+			"funcName": "CreateEntityByName",
+			"paramTypes": [
+				{
+					"name": "className",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "ptr64"
+			}
+		},
+		{
+			"name": "HookEvent",
+			"funcName": "HookEvent",
+			"paramTypes": [
+				{
+					"name": "name",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "pCallback",
+					"type": "function",
+					"ref": false,
+					"prototype": {
+						"paramTypes": [
+							{
+								"name": "name",
+								"type": "string"
+							},
+							{
+								"name": "event",
+								"type": "ptr64"
+							},
+							{
+								"name": "dontBroadcast",
+								"type": "bool"
+							}
+						],
+						"retType": {
+							"type": "int32"
+						}
+					}
+				},
+				{
+					"name": "post",
+					"type": "bool",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int32"
+			}
+		},
+		{
+			"name": "UnhookEvent",
+			"funcName": "UnhookEvent",
+			"paramTypes": [
+				{
+					"name": "name",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "pCallback",
+					"type": "function",
+					"ref": false,
+					"prototype": {
+						"paramTypes": [
+							{
+								"name": "name",
+								"type": "string"
+							},
+							{
+								"name": "event",
+								"type": "ptr64"
+							},
+							{
+								"name": "dontBroadcast",
+								"type": "bool"
+							}
+						],
+						"retType": {
+							"type": "int32"
+						}
+					}
+				},
+				{
+					"name": "post",
+					"type": "bool",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int32"
+			}
+		},
+		{
+			"name": "CreateEvent",
+			"funcName": "CreateEvent",
+			"paramTypes": [
+				{
+					"name": "name",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "force",
+					"type": "bool",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "ptr64"
+			}
+		},
+		{
+			"name": "FireEvent",
+			"funcName": "FireEvent",
+			"paramTypes": [
+				{
+					"name": "pInfo",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "bDontBroadcast",
+					"type": "bool",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "FireEventToClient",
+			"funcName": "FireEventToClient",
+			"paramTypes": [
+				{
+					"name": "pInfo",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "entityIndex",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "CancelCreatedEvent",
+			"funcName": "CancelCreatedEvent",
+			"paramTypes": [
+				{
+					"name": "pInfo",
+					"type": "ptr64",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "GetEventBool",
+			"funcName": "GetEventBool",
+			"paramTypes": [
+				{
+					"name": "pInfo",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "key",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "bool"
+			}
+		},
+		{
+			"name": "GetEventFloat",
+			"funcName": "GetEventFloat",
+			"paramTypes": [
+				{
+					"name": "pInfo",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "key",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "float"
+			}
+		},
+		{
+			"name": "GetEventInt",
+			"funcName": "GetEventInt",
+			"paramTypes": [
+				{
+					"name": "pInfo",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "key",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int32"
+			}
+		},
+		{
+			"name": "GetEventUInt64",
+			"funcName": "GetEventUInt64",
+			"paramTypes": [
+				{
+					"name": "pInfo",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "key",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "uint64"
+			}
+		},
+		{
+			"name": "GetEventString",
+			"funcName": "GetEventString",
+			"paramTypes": [
+				{
+					"name": "output",
+					"type": "string",
+					"ref": true
+				},
+				{
+					"name": "pInfo",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "key",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "GetEventPtr",
+			"funcName": "GetEventPtr",
+			"paramTypes": [
+				{
+					"name": "pInfo",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "key",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "ptr64"
+			}
+		},
+		{
+			"name": "GetEventPlayerController",
+			"funcName": "GetEventPlayerController",
+			"paramTypes": [
+				{
+					"name": "pInfo",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "key",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "ptr64"
+			}
+		},
+		{
+			"name": "GetEventPlayerIndex",
+			"funcName": "GetEventPlayerIndex",
+			"paramTypes": [
+				{
+					"name": "pInfo",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "key",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int32"
+			}
+		},
+		{
+			"name": "GetEventPlayerPawn",
+			"funcName": "GetEventPlayerPawn",
+			"paramTypes": [
+				{
+					"name": "pInfo",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "key",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "ptr64"
+			}
+		},
+		{
+			"name": "GetEventEntity",
+			"funcName": "GetEventEntity",
+			"paramTypes": [
+				{
+					"name": "pInfo",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "key",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "ptr64"
+			}
+		},
+		{
+			"name": "GetEventEntityIndex",
+			"funcName": "GetEventEntityIndex",
+			"paramTypes": [
+				{
+					"name": "pInfo",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "key",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int32"
+			}
+		},
+		{
+			"name": "GetEventName",
+			"funcName": "GetEventName",
+			"paramTypes": [
+				{
+					"name": "output",
+					"type": "string",
+					"ref": true
+				},
+				{
+					"name": "pInfo",
+					"type": "ptr64",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "SetEventBool",
+			"funcName": "SetEventBool",
+			"paramTypes": [
+				{
+					"name": "pInfo",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "key",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "value",
+					"type": "bool",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "SetEventFloat",
+			"funcName": "SetEventFloat",
+			"paramTypes": [
+				{
+					"name": "pInfo",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "key",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "value",
+					"type": "float",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "SetEventInt",
+			"funcName": "SetEventInt",
+			"paramTypes": [
+				{
+					"name": "pInfo",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "key",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "value",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "SetEventUInt64",
+			"funcName": "SetEventUInt64",
+			"paramTypes": [
+				{
+					"name": "pInfo",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "key",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "value",
+					"type": "uint64",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "SetEventString",
+			"funcName": "SetEventString",
+			"paramTypes": [
+				{
+					"name": "pInfo",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "key",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "value",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "SetEventPtr",
+			"funcName": "SetEventPtr",
+			"paramTypes": [
+				{
+					"name": "pInfo",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "key",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "value",
+					"type": "ptr64",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "SetEventPlayerController",
+			"funcName": "SetEventPlayerController",
+			"paramTypes": [
+				{
+					"name": "pInfo",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "key",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "value",
+					"type": "ptr64",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "SetEventPlayerIndex",
+			"funcName": "SetEventPlayerIndex",
+			"paramTypes": [
+				{
+					"name": "pInfo",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "key",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "value",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "SetEventEntity",
+			"funcName": "SetEventEntity",
+			"paramTypes": [
+				{
+					"name": "pInfo",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "key",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "value",
+					"type": "ptr64",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "SetEventEntityIndex",
+			"funcName": "SetEventEntityIndex",
+			"paramTypes": [
+				{
+					"name": "pInfo",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "key",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "value",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "SetEventBroadcast",
+			"funcName": "SetEventBroadcast",
+			"paramTypes": [
+				{
+					"name": "pInfo",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "dontBroadcast",
+					"type": "bool",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "LoadEventsFromFile",
+			"funcName": "LoadEventsFromFile",
+			"paramTypes": [
+				{
+					"name": "path",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "searchAll",
+					"type": "bool",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int32"
+			}
+		},
+		{
+			"name": "CloseGameConfigFile",
+			"funcName": "CloseGameConfigFile",
+			"paramTypes": [
+				{
+					"name": "pGameConfig",
+					"type": "ptr64",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "LoadGameConfigFile",
+			"funcName": "LoadGameConfigFile",
+			"paramTypes": [
+				{
+					"name": "file",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "ptr64"
+			}
+		},
+		{
+			"name": "GetGameConfigPath",
+			"funcName": "GetGameConfigPath",
+			"paramTypes": [
+				{
+					"name": "output",
+					"type": "string",
+					"ref": true
+				},
+				{
+					"name": "pGameConfig",
+					"type": "ptr64",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "GetGameConfigLibrary",
+			"funcName": "GetGameConfigLibrary",
+			"paramTypes": [
+				{
+					"name": "output",
+					"type": "string",
+					"ref": true
+				},
+				{
+					"name": "pGameConfig",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "name",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "GetGameConfigSignature",
+			"funcName": "GetGameConfigSignature",
+			"paramTypes": [
+				{
+					"name": "output",
+					"type": "string",
+					"ref": true
+				},
+				{
+					"name": "pGameConfig",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "name",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "GetGameConfigSymbol",
+			"funcName": "GetGameConfigSymbol",
+			"paramTypes": [
+				{
+					"name": "output",
+					"type": "string",
+					"ref": true
+				},
+				{
+					"name": "pGameConfig",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "name",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "GetGameConfigPatch",
+			"funcName": "GetGameConfigPatch",
+			"paramTypes": [
+				{
+					"name": "output",
+					"type": "string",
+					"ref": true
+				},
+				{
+					"name": "pGameConfig",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "name",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "GetGameConfigOffset",
+			"funcName": "GetGameConfigOffset",
+			"paramTypes": [
+				{
+					"name": "pGameConfig",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "name",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int32"
+			}
+		},
+		{
+			"name": "GetGameConfigAddress",
+			"funcName": "GetGameConfigAddress",
+			"paramTypes": [
+				{
+					"name": "pGameConfig",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "name",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "ptr64"
+			}
+		},
+		{
+			"name": "GetGameConfigMemSig",
+			"funcName": "GetGameConfigMemSig",
+			"paramTypes": [
+				{
+					"name": "pGameConfig",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "name",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "ptr64"
+			}
+		},
+		{
+			"name": "RegisterLoggingChannel",
+			"funcName": "RegisterLoggingChannel",
+			"paramTypes": [
+				{
+					"name": "name",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "iFlags",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "verbosity",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "color",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int32"
+			}
+		},
+		{
+			"name": "AddLoggerTagToChannel",
+			"funcName": "AddLoggerTagToChannel",
+			"paramTypes": [
+				{
+					"name": "channelID",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "tagName",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "HasLoggerTag",
+			"funcName": "HasLoggerTag",
+			"paramTypes": [
+				{
+					"name": "channelID",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "tag",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "bool"
+			}
+		},
+		{
+			"name": "IsLoggerChannelEnabledBySeverity",
+			"funcName": "IsLoggerChannelEnabledBySeverity",
+			"paramTypes": [
+				{
+					"name": "channelID",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "severity",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "bool"
+			}
+		},
+		{
+			"name": "IsLoggerChannelEnabledByVerbosity",
+			"funcName": "IsLoggerChannelEnabledByVerbosity",
+			"paramTypes": [
+				{
+					"name": "channelID",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "verbosity",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "bool"
+			}
+		},
+		{
+			"name": "GetLoggerChannelVerbosity",
+			"funcName": "GetLoggerChannelVerbosity",
+			"paramTypes": [
+				{
+					"name": "channelID",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int32"
+			}
+		},
+		{
+			"name": "SetLoggerChannelVerbosity",
+			"funcName": "SetLoggerChannelVerbosity",
+			"paramTypes": [
+				{
+					"name": "channelID",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "verbosity",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "SetLoggerChannelVerbosityByName",
+			"funcName": "SetLoggerChannelVerbosityByName",
+			"paramTypes": [
+				{
+					"name": "channelID",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "name",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "verbosity",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "SetLoggerChannelVerbosityByTag",
+			"funcName": "SetLoggerChannelVerbosityByTag",
+			"paramTypes": [
+				{
+					"name": "channelID",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "tag",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "verbosity",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "GetLoggerChannelColor",
+			"funcName": "GetLoggerChannelColor",
+			"paramTypes": [
+				{
+					"name": "channelID",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int32"
+			}
+		},
+		{
+			"name": "SetLoggerChannelColor",
+			"funcName": "SetLoggerChannelColor",
+			"paramTypes": [
+				{
+					"name": "channelID",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "color",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "GetLoggerChannelFlags",
+			"funcName": "GetLoggerChannelFlags",
+			"paramTypes": [
+				{
+					"name": "channelID",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int32"
+			}
+		},
+		{
+			"name": "SetLoggerChannelFlags",
+			"funcName": "SetLoggerChannelFlags",
+			"paramTypes": [
+				{
+					"name": "channelID",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "eFlags",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "Log",
+			"funcName": "Log",
+			"paramTypes": [
+				{
+					"name": "channelID",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "severity",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "message",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int32"
+			}
+		},
+		{
+			"name": "LogColored",
+			"funcName": "LogColored",
+			"paramTypes": [
+				{
+					"name": "channelID",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "severity",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "color",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "message",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int32"
+			}
+		},
+		{
+			"name": "LogFull",
+			"funcName": "LogFull",
+			"paramTypes": [
+				{
+					"name": "channelID",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "severity",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "file",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "line",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "function",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "message",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int32"
+			}
+		},
+		{
+			"name": "LogFullColored",
+			"funcName": "LogFullColored",
+			"paramTypes": [
+				{
+					"name": "channelID",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "severity",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "file",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "line",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "function",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "color",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "message",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int32"
+			}
+		},
+		{
+			"name": "GetSchemaOffset",
+			"funcName": "GetSchemaOffset",
+			"paramTypes": [
+				{
+					"name": "className",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "memberName",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int32"
+			}
+		},
+		{
+			"name": "IsSchemaFieldNetworked",
+			"funcName": "IsSchemaFieldNetworked",
+			"paramTypes": [
+				{
+					"name": "className",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "memberName",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "bool"
+			}
+		},
+		{
+			"name": "GetSchemaClassSize",
+			"funcName": "GetSchemaClassSize",
+			"paramTypes": [
+				{
+					"name": "className",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int32"
+			}
+		},
+		{
+			"name": "GetSchemaBoolByName",
+			"funcName": "GetSchemaBoolByName",
+			"paramTypes": [
+				{
+					"name": "instancePointer",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "className",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "memberName",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "bool"
+			}
+		},
+		{
+			"name": "GetSchemaInt8ByName",
+			"funcName": "GetSchemaInt8ByName",
+			"paramTypes": [
+				{
+					"name": "instancePointer",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "className",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "memberName",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int8"
+			}
+		},
+		{
+			"name": "GetSchemaInt16ByName",
+			"funcName": "GetSchemaInt16ByName",
+			"paramTypes": [
+				{
+					"name": "instancePointer",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "className",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "memberName",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int16"
+			}
+		},
+		{
+			"name": "GetSchemaInt32ByName",
+			"funcName": "GetSchemaInt32ByName",
+			"paramTypes": [
+				{
+					"name": "instancePointer",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "className",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "memberName",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int32"
+			}
+		},
+		{
+			"name": "GetSchemaInt64ByName",
+			"funcName": "GetSchemaInt64ByName",
+			"paramTypes": [
+				{
+					"name": "instancePointer",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "className",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "memberName",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int64"
+			}
+		},
+		{
+			"name": "GetSchemaUInt8ByName",
+			"funcName": "GetSchemaUInt8ByName",
+			"paramTypes": [
+				{
+					"name": "instancePointer",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "className",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "memberName",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "uint8"
+			}
+		},
+		{
+			"name": "GetSchemaUInt16ByName",
+			"funcName": "GetSchemaUInt16ByName",
+			"paramTypes": [
+				{
+					"name": "instancePointer",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "className",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "memberName",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "uint16"
+			}
+		},
+		{
+			"name": "GetSchemaUInt32ByName",
+			"funcName": "GetSchemaUInt32ByName",
+			"paramTypes": [
+				{
+					"name": "instancePointer",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "className",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "memberName",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "uint32"
+			}
+		},
+		{
+			"name": "GetSchemaUInt64ByName",
+			"funcName": "GetSchemaUInt64ByName",
+			"paramTypes": [
+				{
+					"name": "instancePointer",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "className",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "memberName",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "uint64"
+			}
+		},
+		{
+			"name": "GetSchemaFloatByName",
+			"funcName": "GetSchemaFloatByName",
+			"paramTypes": [
+				{
+					"name": "instancePointer",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "className",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "memberName",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "float"
+			}
+		},
+		{
+			"name": "GetSchemaDoubleByName",
+			"funcName": "GetSchemaDoubleByName",
+			"paramTypes": [
+				{
+					"name": "instancePointer",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "className",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "memberName",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "double"
+			}
+		},
+		{
+			"name": "GetSchemaPointerByName",
+			"funcName": "GetSchemaPointerByName",
+			"paramTypes": [
+				{
+					"name": "instancePointer",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "className",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "memberName",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "ptr64"
+			}
+		},
+		{
+			"name": "GetSchemaStringByName",
+			"funcName": "GetSchemaStringByName",
+			"paramTypes": [
+				{
+					"name": "output",
+					"type": "string",
+					"ref": true
+				},
+				{
+					"name": "instancePointer",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "className",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "memberName",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "SetSchemaValueBoolByName",
+			"funcName": "SetSchemaValueBoolByName",
+			"paramTypes": [
+				{
+					"name": "instancePointer",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "className",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "memberName",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "value",
+					"type": "bool",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "SetSchemaValueInt8ByName",
+			"funcName": "SetSchemaValueInt8ByName",
+			"paramTypes": [
+				{
+					"name": "instancePointer",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "className",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "memberName",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "value",
+					"type": "int8",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "SetSchemaValueInt16ByName",
+			"funcName": "SetSchemaValueInt16ByName",
+			"paramTypes": [
+				{
+					"name": "instancePointer",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "className",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "memberName",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "value",
+					"type": "int16",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "SetSchemaValueInt32ByName",
+			"funcName": "SetSchemaValueInt32ByName",
+			"paramTypes": [
+				{
+					"name": "instancePointer",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "className",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "memberName",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "value",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "SetSchemaValueInt64ByName",
+			"funcName": "SetSchemaValueInt64ByName",
+			"paramTypes": [
+				{
+					"name": "instancePointer",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "className",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "memberName",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "value",
+					"type": "int64",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "SetSchemaValueUInt8ByName",
+			"funcName": "SetSchemaValueUInt8ByName",
+			"paramTypes": [
+				{
+					"name": "instancePointer",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "className",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "memberName",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "value",
+					"type": "uint8",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "SetSchemaValueUInt16ByName",
+			"funcName": "SetSchemaValueUInt16ByName",
+			"paramTypes": [
+				{
+					"name": "instancePointer",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "className",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "memberName",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "value",
+					"type": "uint16",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "SetSchemaValueUInt32ByName",
+			"funcName": "SetSchemaValueUInt32ByName",
+			"paramTypes": [
+				{
+					"name": "instancePointer",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "className",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "memberName",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "value",
+					"type": "uint32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "SetSchemaValueUInt64ByName",
+			"funcName": "SetSchemaValueUInt64ByName",
+			"paramTypes": [
+				{
+					"name": "instancePointer",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "className",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "memberName",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "value",
+					"type": "uint64",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "SetSchemaValueFloatByName",
+			"funcName": "SetSchemaValueFloatByName",
+			"paramTypes": [
+				{
+					"name": "instancePointer",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "className",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "memberName",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "value",
+					"type": "float",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "SetSchemaValueDoubleByName",
+			"funcName": "SetSchemaValueDoubleByName",
+			"paramTypes": [
+				{
+					"name": "instancePointer",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "className",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "memberName",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "value",
+					"type": "double",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "SetSchemaValueStringByName",
+			"funcName": "SetSchemaValueStringByName",
+			"paramTypes": [
+				{
+					"name": "instancePointer",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "className",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "memberName",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "value",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "CreateTimer",
+			"funcName": "CreateTimer",
+			"paramTypes": [
+				{
+					"name": "interval",
+					"type": "float",
+					"ref": false
+				},
+				{
+					"name": "callback",
+					"type": "function",
+					"ref": false,
+					"prototype": {
+						"paramTypes": [
+							{
+								"name": "timer",
+								"type": "ptr64"
+							}
+						],
+						"retType": {
+							"type": "void"
+						}
+					}
+				},
+				{
+					"name": "flags",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "ptr64"
+			}
+		},
+		{
+			"name": "KillsTimer",
+			"funcName": "KillsTimer",
+			"paramTypes": [
+				{
+					"name": "timer",
+					"type": "ptr64",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "SetClientListening",
+			"funcName": "SetClientListening",
+			"paramTypes": [
+				{
+					"name": "receiver",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "sender",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "listen",
+					"type": "int8",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "GetClientListening",
+			"funcName": "GetClientListening",
+			"paramTypes": [
+				{
+					"name": "receiver",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "sender",
+					"type": "ptr64",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int8"
+			}
+		},
+		{
+			"name": "SetClientVoiceFlags",
+			"funcName": "SetClientVoiceFlags",
+			"paramTypes": [
+				{
+					"name": "client",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "flags",
+					"type": "uint8",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "GetClientVoiceFlags",
+			"funcName": "GetClientVoiceFlags",
+			"paramTypes": [
+				{
+					"name": "client",
+					"type": "ptr64",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "uint8"
+			}
+		}
 	]
 }

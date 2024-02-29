@@ -237,13 +237,7 @@ CMemory CGameConfig::ResolveSignature(const std::string& name) const
 			return {};
 		}
 
-		auto sig = CGameConfig::HexToByte(signature);
-		if (sig.empty())
-		{
-			g_Logger.Error("Invalid hex string\n");
-			return {};
-		}
-		address = module.FindPattern(std::string_view{(char*)sig.data(), sig.size()});
+		address = module.FindPattern(signature);
 	}
 
 	if (!address)
@@ -253,36 +247,6 @@ CMemory CGameConfig::ResolveSignature(const std::string& name) const
 	}
 
 	return address;
-}
-
-std::vector<uint8_t> CGameConfig::HexToByte(std::string_view hexString)
-{
-	if (hexString.empty())
-		return {};
-
-	size_t byteCount = hexString.size() / 4; // Each "\\x" represents one byte.
-	if (hexString.size() % 4 != 0 || byteCount == 0)
-	{
-		g_Logger.Error("Invalid hex string format or byte count.\n");
-		return {};
-	}
-
-	std::vector<uint8_t> byteArray(byteCount + 1);
-
-	for (size_t i = 0; i < hexString.size(); i += 4)
-	{
-		auto hexSubstring = hexString.substr(i + 2, 2); // Skip "\\x" and take the next two characters.
-		auto [p, ec] = std::from_chars(hexSubstring.data(), hexSubstring.data() + hexSubstring.size(), byteArray[i / 4], 16);
-		if (ec != std::errc() || p != hexSubstring.data() + hexSubstring.size())
-		{
-			g_Logger.ErrorFormat("Failed to parse hex string at position %zu. %s\n", i, make_error_code(ec).message().c_str());
-			return {}; // Return an error code.
-		}
-	}
-
-	byteArray[byteCount] = '\0'; // Add a null-terminating character.
-
-	return byteArray;
 }
 
 CGameConfig* CGameConfigManager::LoadGameConfigFile(std::string path)
@@ -296,10 +260,10 @@ CGameConfig* CGameConfigManager::LoadGameConfigFile(std::string path)
 	}
 
 	char confError[255] = "";
-	CGameConfig gameConfig("csgo", path);
+	CGameConfig gameConfig("cs2", path);
 	if (!gameConfig.Initialize(confError))
 	{
-		g_Logger.ErrorFormat("Could not read \"%s\": %s", gameConfig.GetPath().c_str(), confError);
+		g_Logger.ErrorFormat("Could not read \"%s\": %s\n", gameConfig.GetPath().c_str(), confError);
 		return nullptr;
 	}
 

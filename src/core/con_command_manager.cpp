@@ -150,7 +150,7 @@ bool ConCommandManager::IsValidValveCommand(const std::string& name)
 
 ResultType ConCommandManager::ExecuteCommandCallbacks(const std::string& name, const CCommandContext& ctx, const CCommand& args, HookMode mode, CommandCallingContext callingContext)
 {
-	g_Logger.MessageFormat("[ConCommandManager::ExecuteCommandCallbacks][%s]: %s", mode == HookMode::Pre ? "Pre" : "Post", name.c_str());
+	g_Logger.MessageFormat("[ConCommandManager::ExecuteCommandCallbacks][%s]: %s\n", mode == HookMode::Pre ? "Pre" : "Post", name.c_str());
 
 	ResultType result = ResultType::Continue;
 
@@ -224,14 +224,14 @@ CommandCallingContext ConCommandManager::GetCommandCallingContext(CCommand* args
 dyno::ReturnAction ConCommandManager::Hook_DispatchConCommand(dyno::IHook& hook)
 {
 	// auto cmd = dyno::GetArgument<ConCommandHandle* const>(hook, 1);
-	auto ctx = dyno::GetArgument<const CCommandContext&>(hook, 2);
-	auto args = dyno::GetArgument<const CCommand&>(hook, 3);
+	auto ctx = dyno::GetArgument<const CCommandContext*>(hook, 2);
+	auto args = dyno::GetArgument<const CCommand*>(hook, 3);
 
-	const char* name = args.Arg(0);
+	const char* name = args->Arg(0);
 
-	g_Logger.MessageFormat("[ConCommandManager::Hook_DispatchConCommand]: %s", name);
+	g_Logger.MessageFormat("[ConCommandManager::Hook_DispatchConCommand]: %s\n", name);
 
-	auto result = ExecuteCommandCallbacks(name, ctx, args, HookMode::Pre, CommandCallingContext::Console);
+	auto result = ExecuteCommandCallbacks(name, *ctx, *args, HookMode::Pre, CommandCallingContext::Console);
 	if (result >= ResultType::Handled)
 	{
 		return dyno::ReturnAction::Supercede;
@@ -243,12 +243,12 @@ dyno::ReturnAction ConCommandManager::Hook_DispatchConCommand(dyno::IHook& hook)
 dyno::ReturnAction ConCommandManager::Hook_DispatchConCommand_Post(dyno::IHook& hook)
 {
 	// auto cmd = dyno::GetArgument<ConCommandHandle* const>(hook, 1);
-	auto ctx = dyno::GetArgument<const CCommandContext&>(hook, 2);
-	auto args = dyno::GetArgument<const CCommand&>(hook, 3);
+	auto ctx = dyno::GetArgument<const CCommandContext*>(hook, 2);
+	auto args = dyno::GetArgument<const CCommand*>(hook, 3);
 
-	const char* name = args.Arg(0);
+	const char* name = args->Arg(0);
 
-	auto result = ExecuteCommandCallbacks(name, ctx, args, HookMode::Post, CommandCallingContext::Console);
+	auto result = ExecuteCommandCallbacks(name, *ctx, *args, HookMode::Post, CommandCallingContext::Console);
 	if (result >= ResultType::Handled)
 	{
 		return dyno::ReturnAction::Supercede;

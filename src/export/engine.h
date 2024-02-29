@@ -1,9 +1,9 @@
 #pragma once
 
-#include <engine/IEngineTrace.h>
-#include <engine/IEngineSound.h>
 #include <edict.h>
 #include <eiface.h>
+#include <engine/IEngineSound.h>
+#include <engine/IEngineTrace.h>
 #include <filesystem.h>
 #include <worldsize.h>
 
@@ -48,8 +48,9 @@ extern "C" PLUGIN_API double GetEngineTime()
 extern "C" PLUGIN_API int GetMaxClients()
 {
 	auto globalVars = gpGlobals;
-	if (globalVars == nullptr) {
-		g_Logger.Error("Global Variables not initialized yet.");
+	if (globalVars == nullptr)
+	{
+		g_Logger.Error("Global Variables not initialized yet.\n");
 		return -1;
 	}
 
@@ -121,12 +122,12 @@ extern "C" PLUGIN_API float GetSoundDuration(const std::string& name)
 	return g_pEngineSound->GetSoundDuration(name.c_str());
 }
 
-//extern "C" PLUGIN_API void EmitSound(int client, int entitySource, int channel, const std::string& sound, float volume, float attenuation, int flags, int pitch, int origin, int direction)
+// extern "C" PLUGIN_API void EmitSound(int client, int entitySource, int channel, const std::string& sound, float volume, float attenuation, int flags, int pitch, int origin, int direction)
 //{
-//   auto recipients = new CustomRecipientFilter();
-//   recipients->AddPlayer(client);
+//    auto recipients = new CustomRecipientFilter();
+//    recipients->AddPlayer(client);
 //
-//   g_pEngineSound->EmitSound(static_cast<IRecipientFilter&>(*recipients),
-//                             entitySource,channel, sound.c_str(), -1, sound, volume,
-//                             attenuation, 0, flags, pitch, origin, direction);
-//}
+//    g_pEngineSound->EmitSound(static_cast<IRecipientFilter&>(*recipients),
+//                              entitySource,channel, sound.c_str(), -1, sound, volume,
+//                              attenuation, 0, flags, pitch, origin, direction);
+// }
