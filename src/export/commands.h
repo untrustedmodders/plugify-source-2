@@ -90,7 +90,7 @@ extern "C" PLUGIN_API void ClientCommand(int clientIndex, const std::string& com
 extern "C" PLUGIN_API void ClientCommandFromServer(int slot, const std::string& command)
 {
 	CCommand args;
-	args.Tokenize(command.c_str(), kCommandSrcNetServer);
+	args.Tokenize(command.c_str(), CCommand::DefaultBreakSet());
 
 	auto handle = g_pCVar->FindCommand(args.Arg(0));
 	if (!handle.IsValid())
@@ -99,39 +99,4 @@ extern "C" PLUGIN_API void ClientCommandFromServer(int slot, const std::string& 
 	CCommandContext context(CommandTarget_t::CT_NO_TARGET, CPlayerSlot(slot));
 
 	g_pCVar->DispatchConCommand(handle, context, args);
-}
-
-// TODO: Implement cvars
-
-extern "C" PLUGIN_API void GetClientConVarValue(std::string& output, int playerSlot, const std::string& convarName)
-{
-	output = g_pEngineServer2->GetClientConVarValue(CPlayerSlot(playerSlot), convarName.c_str());
-}
-
-extern "C" PLUGIN_API void SetFakeClientConVarValue(int playerSlot, const std::string& convarName, const std::string& convarValue)
-{
-	g_pEngineServer2->SetFakeClientConVarValue(CPlayerSlot(playerSlot), convarName.c_str(), convarValue.c_str());
-}
-
-extern "C" PLUGIN_API ConVar* FindConVar(const std::string& name)
-{
-	auto hCvarHandle = g_pCVar->FindConVar(name.c_str(), true);
-	if (!hCvarHandle.IsValid())
-	{
-		return nullptr;
-	}
-
-	return g_pCVar->GetConVar(hCvarHandle);
-}
-
-extern "C" PLUGIN_API void SetConVarStringValue(ConVar* pCvar, const std::string& value)
-{
-	if (!pCvar)
-	{
-		g_Logger.Error("Invalid cvar.\n");
-		return;
-	}
-
-	// TODO: Seems leak
-	pCvar->values = reinterpret_cast<CVValue_t**>(strdup(value.c_str()));
 }

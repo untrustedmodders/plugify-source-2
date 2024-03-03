@@ -32,7 +32,7 @@ public:
 	dyno::ReturnAction Hook_FireOutputInternal_Post(dyno::IHook& hook);
 
 private:
-	std::unordered_map<OutputKey, CallbackPair, utils::PairHash<std::string, std::string>> m_pHookMap;
+	std::unordered_map<OutputKey, CallbackPair, utils::PairHash<std::string, std::string>> m_hookMap;
 	std::vector<CallbackPair*> m_vecCallbackPairs;
 };
 

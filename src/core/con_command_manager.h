@@ -17,19 +17,19 @@ using CommandListenerCallback = ResultType (*)(int playerSlot, const CCommand& c
 
 struct ConCommandInfo
 {
+	ConCommandInfo() = default;
 	explicit ConCommandInfo(std::string name, std::string description = {});
 	~ConCommandInfo() = default;
 
 	std::string name;
 	std::string description;
-	ConCommandRefAbstract commandRef;
 	ConCommand* command{};
-	std::unique_ptr<ConCommand> commandStorage;
+	std::unique_ptr<ConCommand> commandRef;
 	CListenerManager<CommandListenerCallback> callbackPre;
 	CListenerManager<CommandListenerCallback> callbackPost;
 };
 
-using CommandInfo = std::unique_ptr<ConCommandInfo>;
+using CommandInfoPtr = std::unique_ptr<ConCommandInfo>;
 
 class ConCommandManager
 {
@@ -39,7 +39,7 @@ public:
 
 	void AddCommandListener(const std::string& name, CommandListenerCallback callback, HookMode mode);
 	void RemoveCommandListener(const std::string& name, CommandListenerCallback callback, HookMode mode);
-	bool IsValidValveCommand(const std::string& name);
+	bool IsValidValveCommand(const std::string& name) const;
 	bool AddValveCommand(const std::string& name, const std::string& description, int64 flags);
 	bool RemoveValveCommand(const std::string& name);
 
@@ -50,9 +50,10 @@ public:
 
 private:
 	std::vector<ConCommandInfo*> m_cmdList;
-	std::map<std::string, CommandInfo, utils::CaseInsensitiveComparator> m_cmdLookup;
+	std::map<std::string, CommandInfoPtr, utils::CaseInsensitiveComparator> m_cmdLookup;
 	std::map<const CCommand*, CommandCallingContext> m_cmdContexts;
-	ConCommandInfo m_globalCmd{"global"};
+	CListenerManager<CommandListenerCallback> m_globalPre;
+	CListenerManager<CommandListenerCallback> m_globalPost;
 };
 
 extern ConCommandManager g_CommandManager;

@@ -57,7 +57,7 @@ public:
 	void CloseGameConfigFile(CGameConfig* pGameConfig);
 
 private:
-	std::unordered_map<std::string, CGameConfig> m_Configs;
+	std::unordered_map<std::string, CGameConfig> m_configs;
 };
 
 extern CGameConfigManager g_GameConfigManager;

@@ -9,6 +9,7 @@
 #include <ISmmPlugin.h>
 
 #include "con_command_manager.h"
+#include "con_var_manager.h"
 #include "event_manager.h"
 #include "hook_manager.h"
 #include "listeners.h"
@@ -19,6 +20,7 @@
 #include "voice_manager.h"
 
 #include <export/commands.h>
+#include <export/cvars.h>
 #include <export/console.h>
 #include <export/engine.h>
 #include <export/entities.h>

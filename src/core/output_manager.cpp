@@ -5,10 +5,10 @@ void EntityOutputManager::HookEntityOutput(std::string szClassname, std::string 
 	OutputKey outputKey{std::move(szClassname), std::move(szOutput)};
 	CallbackPair* pCallbackPair;
 
-	auto it = m_pHookMap.find(outputKey);
-	if (it == m_pHookMap.end())
+	auto it = m_hookMap.find(outputKey);
+	if (it == m_hookMap.end())
 	{
-		pCallbackPair = &m_pHookMap.emplace(std::move(outputKey), CallbackPair{}).first->second;
+		pCallbackPair = &m_hookMap.emplace(std::move(outputKey), CallbackPair{}).first->second;
 	}
 	else
 	{
@@ -23,8 +23,8 @@ void EntityOutputManager::UnhookEntityOutput(std::string szClassname, std::strin
 {
 	OutputKey outputKey{std::move(szClassname), std::move(szOutput)};
 
-	auto it = m_pHookMap.find(outputKey);
-	if (it != m_pHookMap.end())
+	auto it = m_hookMap.find(outputKey);
+	if (it != m_hookMap.end())
 	{
 		auto& callbackPair = std::get<CallbackPair>(*it);
 
@@ -33,7 +33,7 @@ void EntityOutputManager::UnhookEntityOutput(std::string szClassname, std::strin
 
 		if (callbackPair.pre.Empty() && callbackPair.post.Empty())
 		{
-			m_pHookMap.erase(it);
+			m_hookMap.erase(it);
 		}
 	}
 }
@@ -61,8 +61,8 @@ dyno::ReturnAction EntityOutputManager::Hook_FireOutputInternal(dyno::IHook& hoo
 
 		for (const auto& searchKey : vecSearchKeys)
 		{
-			auto it = m_pHookMap.find(searchKey);
-			if (it != m_pHookMap.end())
+			auto it = m_hookMap.find(searchKey);
+			if (it != m_hookMap.end())
 			{
 				m_vecCallbackPairs.emplace_back(&std::get<CallbackPair>(*it));
 			}

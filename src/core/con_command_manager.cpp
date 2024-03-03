@@ -6,7 +6,7 @@ void CommandCallback(const CCommandContext& context, const CCommand& command)
 {
 }
 
-ConCommandInfo::ConCommandInfo(std::string name, std::string description) : name(std::move(name)), description(std::move(description)), commandRef()
+ConCommandInfo::ConCommandInfo(std::string name, std::string description) : name(std::move(name)), description(std::move(description))
 {
 }
 
@@ -16,11 +16,11 @@ void ConCommandManager::AddCommandListener(const std::string& name, CommandListe
 	{
 		if (mode == HookMode::Pre)
 		{
-			m_globalCmd.callbackPre.Register(callback);
+			m_globalPre.Register(callback);
 		}
 		else
 		{
-			m_globalCmd.callbackPost.Register(callback);
+			m_globalPost.Register(callback);
 		}
 		return;
 	}
@@ -38,23 +38,23 @@ void ConCommandManager::AddCommandListener(const std::string& name, CommandListe
 
 		if (mode == HookMode::Pre)
 		{
-			commandInfo.callbackPre.Unregister(callback);
+			commandInfo.callbackPre.Register(callback);
 		}
 		else
 		{
-			commandInfo.callbackPost.Unregister(callback);
+			commandInfo.callbackPost.Register(callback);
 		}
 	}
 	else
 	{
-		auto& commandInfo = *std::get<CommandInfo>(*it);
+		auto& commandInfo = *std::get<CommandInfoPtr>(*it);
 		if (mode == HookMode::Pre)
 		{
-			commandInfo.callbackPre.Unregister(callback);
+			commandInfo.callbackPre.Register(callback);
 		}
 		else
 		{
-			commandInfo.callbackPost.Unregister(callback);
+			commandInfo.callbackPost.Register(callback);
 		}
 	}
 }
@@ -65,11 +65,11 @@ void ConCommandManager::RemoveCommandListener(const std::string& name, CommandLi
 	{
 		if (mode == HookMode::Pre)
 		{
-			m_globalCmd.callbackPre.Unregister(callback);
+			m_globalPre.Unregister(callback);
 		}
 		else
 		{
-			m_globalCmd.callbackPost.Unregister(callback);
+			m_globalPre.Unregister(callback);
 		}
 		return;
 	}
@@ -80,7 +80,7 @@ void ConCommandManager::RemoveCommandListener(const std::string& name, CommandLi
 		return;
 	}
 
-	auto& commandInfo = *std::get<CommandInfo>(*it);
+	auto& commandInfo = *std::get<CommandInfoPtr>(*it);
 	if (mode == HookMode::Pre)
 	{
 		commandInfo.callbackPre.Unregister(callback);
@@ -93,28 +93,25 @@ void ConCommandManager::RemoveCommandListener(const std::string& name, CommandLi
 
 bool ConCommandManager::AddValveCommand(const std::string& name, const std::string& description, int64 flags)
 {
-	ConCommandHandle hExistingCommand = g_pCVar->FindCommand(name.c_str());
-	if (hExistingCommand.IsValid())
+	if (name.empty() || g_pCVar->FindConVar(name.c_str()).IsValid())
+	{
+		return false;
+	}
+
+	if (g_pCVar->FindCommand(name.c_str()).IsValid())
 	{
 		return false;
 	}
 
 	auto it = m_cmdLookup.find(name);
-	if (it == m_cmdLookup.end())
+	if (it != m_cmdLookup.end())
 	{
-		auto& commandInfo = *m_cmdLookup.emplace(name, std::make_unique<ConCommandInfo>(name, description)).first->second;
-		commandInfo.commandStorage = std::make_unique<ConCommand>(&commandInfo.commandRef, commandInfo.name.c_str(), CommandCallback, commandInfo.description.c_str(), flags);
-		commandInfo.command = commandInfo.commandStorage.get();
+		return false;
 	}
-	else
-	{
-		auto& commandInfo = *std::get<CommandInfo>(*it);
-		commandInfo.name = name;
-		commandInfo.description = description;
-		commandInfo.commandRef = {};
-		commandInfo.commandStorage = std::make_unique<ConCommand>(&commandInfo.commandRef, commandInfo.name.c_str(), CommandCallback, commandInfo.description.c_str(), flags);
-		commandInfo.command = commandInfo.commandStorage.get();
-	}
+
+	auto& commandInfo = *m_cmdLookup.emplace(name, std::make_unique<ConCommandInfo>(name, description)).first->second;
+	commandInfo.commandRef = std::make_unique<ConCommand>(commandInfo.name.c_str(), CommandCallback, commandInfo.description.c_str(), flags);
+	commandInfo.command = commandInfo.commandRef.get();
 
 	return true;
 }
@@ -127,25 +124,24 @@ bool ConCommandManager::RemoveValveCommand(const std::string& name)
 		return false;
 	}
 
-	g_pCVar->UnregisterConCommand(hFoundCommand);
-
 	auto it = m_cmdLookup.find(name);
-	if (it == m_cmdLookup.end())
+	if (it != m_cmdLookup.end())
 	{
+		m_cmdLookup.erase(it);
 		return true;
 	}
-
-	auto& commandInfo = std::get<CommandInfo>(*it);
-	commandInfo->commandStorage = nullptr;
-	commandInfo->command = nullptr;
+	else
+	{
+		g_pCVar->UnregisterConCommand(hFoundCommand);
+	}
 
 	return true;
 }
 
-bool ConCommandManager::IsValidValveCommand(const std::string& name)
+bool ConCommandManager::IsValidValveCommand(const std::string& name) const
 {
-	ConCommandHandle pCmd = g_pCVar->FindCommand(name.c_str());
-	return pCmd.IsValid();
+	ConCommandHandle hFoundCommand = g_pCVar->FindCommand(name.c_str());
+	return hFoundCommand.IsValid();
 }
 
 ResultType ConCommandManager::ExecuteCommandCallbacks(const std::string& name, const CCommandContext& ctx, const CCommand& args, HookMode mode, CommandCallingContext callingContext)
@@ -154,7 +150,7 @@ ResultType ConCommandManager::ExecuteCommandCallbacks(const std::string& name, c
 
 	ResultType result = ResultType::Continue;
 
-	auto globalCallback = mode == HookMode::Pre ? m_globalCmd.callbackPre : m_globalCmd.callbackPost;
+	auto globalCallback = mode == HookMode::Pre ? m_globalPre : m_globalPost;
 
 	m_cmdContexts[&args] = callingContext;
 
@@ -194,7 +190,7 @@ ResultType ConCommandManager::ExecuteCommandCallbacks(const std::string& name, c
 		return result;
 	}
 
-	auto& commandInfo = *std::get<CommandInfo>(*it);
+	auto& commandInfo = *std::get<CommandInfoPtr>(*it);
 	auto callback = mode == HookMode::Pre ? commandInfo.callbackPre : commandInfo.callbackPost;
 
 	for (size_t i = 0; i < callback.GetCount(); ++i)

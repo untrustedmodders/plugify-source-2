@@ -19,7 +19,7 @@ public:
 		{
 			g_Logger.ErrorFormat("Could not hook member function \"%s\".\n", utils::Demangle(typeid(func).name()).c_str());
 		}
-		auto& hook = m_Hooks.emplace_back(std::move(ihook));
+		auto& hook = m_hooks.emplace_back(std::move(ihook));
 		([&]()
 		 { hook->AddCallback(types, callback); }(), ...);
 	}
@@ -42,18 +42,18 @@ public:
 			g_Logger.ErrorFormat("Could not hook detour function \"%s\".\n", name.c_str());
 		}
 
-		auto& hook = m_Hooks.emplace_back(std::move(ihook));
+		auto& hook = m_hooks.emplace_back(std::move(ihook));
 		([&]()
 		 { hook->AddCallback(types, callback); }(), ...);
 	}
 
 	void UnhookAll()
 	{
-		m_Hooks.clear();
+		m_hooks.clear();
 	}
 
 private:
-	std::vector<std::unique_ptr<dyno::CHook>> m_Hooks;
+	std::vector<std::unique_ptr<dyno::CHook>> m_hooks;
 };
 
 extern CHookManager g_HookManager;

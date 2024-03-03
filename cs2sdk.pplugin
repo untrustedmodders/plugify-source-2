@@ -44,6 +44,7 @@
 					"type": "function",
 					"ref": false,
 					"prototype": {
+						"name": "CommandCallback",
 						"paramTypes": [
 							{
 								"name": "slot",
@@ -78,6 +79,7 @@
 					"type": "function",
 					"ref": false,
 					"prototype": {
+						"name": "CommandCallback",
 						"paramTypes": [
 							{
 								"name": "slot",
@@ -112,6 +114,7 @@
 					"type": "function",
 					"ref": false,
 					"prototype": {
+						"name": "CommandCallback",
 						"paramTypes": [
 							{
 								"name": "slot",
@@ -151,6 +154,7 @@
 					"type": "function",
 					"ref": false,
 					"prototype": {
+						"name": "CommandCallback",
 						"paramTypes": [
 							{
 								"name": "slot",
@@ -195,18 +199,13 @@
 			"funcName": "CommandGetArgString",
 			"paramTypes": [
 				{
-					"name": "output",
-					"type": "string",
-					"ref": true
-				},
-				{
 					"name": "command",
 					"type": "ptr64",
 					"ref": false
 				}
 			],
 			"retType": {
-				"type": "void"
+				"type": "string"
 			}
 		},
 		{
@@ -214,29 +213,19 @@
 			"funcName": "CommandGetCommandString",
 			"paramTypes": [
 				{
-					"name": "output",
-					"type": "string",
-					"ref": true
-				},
-				{
 					"name": "command",
 					"type": "ptr64",
 					"ref": false
 				}
 			],
 			"retType": {
-				"type": "void"
+				"type": "string"
 			}
 		},
 		{
 			"name": "CommandGetArgByIndex",
 			"funcName": "CommandGetArgByIndex",
 			"paramTypes": [
-				{
-					"name": "output",
-					"type": "string",
-					"ref": true
-				},
 				{
 					"name": "command",
 					"type": "ptr64",
@@ -249,7 +238,7 @@
 				}
 			],
 			"retType": {
-				"type": "void"
+				"type": "string"
 			}
 		},
 		{
@@ -323,11 +312,6 @@
 			"funcName": "GetClientConVarValue",
 			"paramTypes": [
 				{
-					"name": "output",
-					"type": "string",
-					"ref": true
-				},
-				{
 					"name": "playerSlot",
 					"type": "int32",
 					"ref": false
@@ -339,7 +323,7 @@
 				}
 			],
 			"retType": {
-				"type": "void"
+				"type": "string"
 			}
 		},
 		{
@@ -400,52 +384,14 @@
 			}
 		},
 		{
-			"name": "ClientPrint",
-			"funcName": "ClientPrint",
-			"paramTypes": [
-				{
-					"name": "player",
-					"type": "ptr64",
-					"ref": false
-				},
-				{
-					"name": "hudDest",
-					"type": "int32",
-					"ref": false
-				},
-				{
-					"name": "msg",
-					"type": "string",
-					"ref": false
-				}
-			],
-			"retType": {
-				"type": "void"
-			}
-		},
-		{
-			"name": "ClientPrintAll",
-			"funcName": "ClientPrintAll",
+			"name": "PrintToClient",
+			"funcName": "PrintToClient",
 			"paramTypes": [
 				{
 					"name": "hudDest",
 					"type": "int32",
 					"ref": false
 				},
-				{
-					"name": "msg",
-					"type": "string",
-					"ref": false
-				}
-			],
-			"retType": {
-				"type": "void"
-			}
-		},
-		{
-			"name": "PrintToConsole",
-			"funcName": "PrintToConsole",
-			"paramTypes": [
 				{
 					"name": "clientIndex",
 					"type": "int32",
@@ -462,9 +408,14 @@
 			}
 		},
 		{
-			"name": "PrintToConsoleAll",
-			"funcName": "PrintToConsoleAll",
+			"name": "PrintToClientAll",
+			"funcName": "PrintToClientAll",
 			"paramTypes": [
+				{
+					"name": "hudDest",
+					"type": "int32",
+					"ref": false
+				},
 				{
 					"name": "msg",
 					"type": "string",
@@ -492,29 +443,17 @@
 		{
 			"name": "GetGameDirectory",
 			"funcName": "GetGameDirectory",
-			"paramTypes": [
-				{
-					"name": "result",
-					"type": "string",
-					"ref": true
-				}
-			],
+			"paramTypes": [],
 			"retType": {
-				"type": "void"
+				"type": "string"
 			}
 		},
 		{
 			"name": "GetMapName",
 			"funcName": "GetMapName",
-			"paramTypes": [
-				{
-					"name": "result",
-					"type": "string",
-					"ref": true
-				}
-			],
+			"paramTypes": [],
 			"retType": {
-				"type": "void"
+				"type": "string"
 			}
 		},
 		{
@@ -706,6 +645,7 @@
 					"type": "function",
 					"ref": false,
 					"prototype": {
+						"name": "TaskCallback",
 						"paramTypes": [
 						],
 						"retType": {
@@ -727,6 +667,7 @@
 					"type": "function",
 					"ref": false,
 					"prototype": {
+						"name": "TaskCallback",
 						"paramTypes": [
 						],
 						"retType": {
@@ -786,18 +727,13 @@
 			"funcName": "GetDesignerName",
 			"paramTypes": [
 				{
-					"name": "output",
-					"type": "string",
-					"ref": true
-				},
-				{
 					"name": "entity",
 					"type": "ptr64",
 					"ref": false
 				}
 			],
 			"retType": {
-				"type": "void"
+				"type": "string"
 			}
 		},
 		{
@@ -891,18 +827,13 @@
 			"funcName": "GetPlayerIpAddress",
 			"paramTypes": [
 				{
-					"name": "output",
-					"type": "string",
-					"ref": true
-				},
-				{
 					"name": "iSlot",
 					"type": "int32",
 					"ref": false
 				}
 			],
 			"retType": {
-				"type": "void"
+				"type": "string"
 			}
 		},
 		{
@@ -924,6 +855,7 @@
 					"type": "function",
 					"ref": false,
 					"prototype": {
+						"name": "HookEntityOutputCallback",
 						"paramTypes": [
 							{
 								"name": "pThis",
@@ -980,6 +912,7 @@
 					"type": "function",
 					"ref": false,
 					"prototype": {
+						"name": "HookEntityOutputCallback",
 						"paramTypes": [
 							{
 								"name": "pThis",
@@ -1103,6 +1036,7 @@
 					"type": "function",
 					"ref": false,
 					"prototype": {
+						"name": "EventCallback",
 						"paramTypes": [
 							{
 								"name": "name",
@@ -1146,6 +1080,7 @@
 					"type": "function",
 					"ref": false,
 					"prototype": {
+						"name": "EventCallback",
 						"paramTypes": [
 							{
 								"name": "name",
@@ -1327,11 +1262,6 @@
 			"funcName": "GetEventString",
 			"paramTypes": [
 				{
-					"name": "output",
-					"type": "string",
-					"ref": true
-				},
-				{
 					"name": "pInfo",
 					"type": "ptr64",
 					"ref": false
@@ -1343,7 +1273,7 @@
 				}
 			],
 			"retType": {
-				"type": "void"
+				"type": "string"
 			}
 		},
 		{
@@ -1465,18 +1395,13 @@
 			"funcName": "GetEventName",
 			"paramTypes": [
 				{
-					"name": "output",
-					"type": "string",
-					"ref": true
-				},
-				{
 					"name": "pInfo",
 					"type": "ptr64",
 					"ref": false
 				}
 			],
 			"retType": {
-				"type": "void"
+				"type": "string"
 			}
 		},
 		{
@@ -1790,18 +1715,13 @@
 			"funcName": "GetGameConfigPath",
 			"paramTypes": [
 				{
-					"name": "output",
-					"type": "string",
-					"ref": true
-				},
-				{
 					"name": "pGameConfig",
 					"type": "ptr64",
 					"ref": false
 				}
 			],
 			"retType": {
-				"type": "void"
+				"type": "string"
 			}
 		},
 		{
@@ -1809,11 +1729,6 @@
 			"funcName": "GetGameConfigLibrary",
 			"paramTypes": [
 				{
-					"name": "output",
-					"type": "string",
-					"ref": true
-				},
-				{
 					"name": "pGameConfig",
 					"type": "ptr64",
 					"ref": false
@@ -1825,7 +1740,7 @@
 				}
 			],
 			"retType": {
-				"type": "void"
+				"type": "string"
 			}
 		},
 		{
@@ -1833,11 +1748,6 @@
 			"funcName": "GetGameConfigSignature",
 			"paramTypes": [
 				{
-					"name": "output",
-					"type": "string",
-					"ref": true
-				},
-				{
 					"name": "pGameConfig",
 					"type": "ptr64",
 					"ref": false
@@ -1849,7 +1759,7 @@
 				}
 			],
 			"retType": {
-				"type": "void"
+				"type": "string"
 			}
 		},
 		{
@@ -1857,11 +1767,6 @@
 			"funcName": "GetGameConfigSymbol",
 			"paramTypes": [
 				{
-					"name": "output",
-					"type": "string",
-					"ref": true
-				},
-				{
 					"name": "pGameConfig",
 					"type": "ptr64",
 					"ref": false
@@ -1873,7 +1778,7 @@
 				}
 			],
 			"retType": {
-				"type": "void"
+				"type": "string"
 			}
 		},
 		{
@@ -1881,11 +1786,6 @@
 			"funcName": "GetGameConfigPatch",
 			"paramTypes": [
 				{
-					"name": "output",
-					"type": "string",
-					"ref": true
-				},
-				{
 					"name": "pGameConfig",
 					"type": "ptr64",
 					"ref": false
@@ -1897,7 +1797,7 @@
 				}
 			],
 			"retType": {
-				"type": "void"
+				"type": "string"
 			}
 		},
 		{
@@ -2690,11 +2590,6 @@
 			"funcName": "GetSchemaStringByName",
 			"paramTypes": [
 				{
-					"name": "output",
-					"type": "string",
-					"ref": true
-				},
-				{
 					"name": "instancePointer",
 					"type": "ptr64",
 					"ref": false
@@ -2711,7 +2606,7 @@
 				}
 			],
 			"retType": {
-				"type": "void"
+				"type": "string"
 			}
 		},
 		{
@@ -3076,6 +2971,7 @@
 					"type": "function",
 					"ref": false,
 					"prototype": {
+						"name": "TimerCallback",
 						"paramTypes": [
 							{
 								"name": "timer",

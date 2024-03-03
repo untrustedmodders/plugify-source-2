@@ -36,14 +36,20 @@ elseif(WIN32)
 endif()
 
 add_custom_command(
-        OUTPUT protobuf_output_stamp
+        OUTPUT protobuf_output_stamp_connection
         COMMAND ${PROTOC_EXECUTABLE} --proto_path=thirdparty/protobuf-3.21.8/src --proto_path=common --cpp_out=common common/network_connection.proto
-        COMMENT "Generating protobuf file"
+        COMMENT "Generating protobuf connection file"
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external/hl2sdk-cs2
         VERBATIM
 )
-
-SET(SOURCE_FILES ${SOURCE_FILES} protobuf_output_stamp)
+add_custom_command(
+        OUTPUT protobuf_output_stamp_types
+        COMMAND ${PROTOC_EXECUTABLE} --proto_path=thirdparty/protobuf-3.21.8/src --proto_path=common --cpp_out=common common/networkbasetypes.proto
+        COMMENT "Generating protobuf types file"
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external/hl2sdk-cs2
+        VERBATIM
+)
+SET(SOURCE_FILES ${SOURCE_FILES} protobuf_output_stamp_connection protobuf_output_stamp_types)
 
 
 # Sources

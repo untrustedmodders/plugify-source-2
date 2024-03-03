@@ -7,6 +7,7 @@
 #include <span>
 #include <stack>
 #include <string>
+#include <sstream>
 #include <array>
 #include <list>
 #include <map>

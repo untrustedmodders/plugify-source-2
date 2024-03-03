@@ -53,10 +53,10 @@ private:
 	void FireGameEvent(IGameEvent* event) override;
 
 private:
-	std::unordered_map<std::string, EventHook> m_EventHooks;
-	std::stack<EventInfo*> m_FreeEvents;
-	std::stack<EventHook*> m_EventStack;
-	std::stack<IGameEvent*> m_EventCopies;
+	std::unordered_map<std::string, EventHook> m_eventHooks;
+	std::stack<EventInfo*> m_freeEvents;
+	std::stack<EventHook*> m_eventStack;
+	std::stack<IGameEvent*> m_eventCopies;
 };
 
 extern CEventManager g_EventManager;
