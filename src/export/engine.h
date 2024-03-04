@@ -6,6 +6,7 @@
 #include <engine/IEngineTrace.h>
 #include <filesystem.h>
 #include <worldsize.h>
+#include <utils/utils.h>
 
 extern "C" PLUGIN_API void GetGameDirectory(std::string& result)
 {
@@ -122,12 +123,11 @@ extern "C" PLUGIN_API float GetSoundDuration(const std::string& name)
 	return g_pEngineSound->GetSoundDuration(name.c_str());
 }
 
-// extern "C" PLUGIN_API void EmitSound(int client, int entitySource, int channel, const std::string& sound, float volume, float attenuation, int flags, int pitch, int origin, int direction)
-//{
-//    auto recipients = new CustomRecipientFilter();
-//    recipients->AddPlayer(client);
-//
-//    g_pEngineSound->EmitSound(static_cast<IRecipientFilter&>(*recipients),
-//                              entitySource,channel, sound.c_str(), -1, sound, volume,
-//                              attenuation, 0, flags, pitch, origin, direction);
-// }
+extern "C" PLUGIN_API void EmitSound(int clientIndex, const std::string& sound, float volume)
+{
+	utils::PlaySoundToClient(CPlayerSlot(clientIndex), sound.c_str(), volume);
+}
+
+
+
+

@@ -84,10 +84,10 @@ extern "C" PLUGIN_API void ClientCommand(int clientIndex, const std::string& com
 {
 	auto cleanCommand = command;
 	cleanCommand.append("\n\0");
-	g_pEngineServer2->ClientCommand(CPlayerSlot(clientIndex - 1), cleanCommand.c_str());
+	g_pEngineServer2->ClientCommand(CPlayerSlot(clientIndex), cleanCommand.c_str());
 }
 
-extern "C" PLUGIN_API void ClientCommandFromServer(int slot, const std::string& command)
+extern "C" PLUGIN_API void ClientCommandFromServer(int clientIndex, const std::string& command)
 {
 	CCommand args;
 	args.Tokenize(command.c_str(), CCommand::DefaultBreakSet());
@@ -96,7 +96,7 @@ extern "C" PLUGIN_API void ClientCommandFromServer(int slot, const std::string& 
 	if (!handle.IsValid())
 		return;
 
-	CCommandContext context(CommandTarget_t::CT_NO_TARGET, CPlayerSlot(slot));
+	CCommandContext context(CommandTarget_t::CT_NO_TARGET, CPlayerSlot(clientIndex));
 
 	g_pCVar->DispatchConCommand(handle, context, args);
 }

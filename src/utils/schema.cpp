@@ -19,7 +19,7 @@
 
 #include "schema.h"
 
-#include <cschemasystem.h>
+#include <core/sdk/cschemasystem.h>
 #include <tier1/utlmap.h>
 
 // memdbgon must be the last include file in a .cpp file!!!
@@ -130,4 +130,14 @@ SchemaKey schema::GetOffset(const char* className, uint32_t classKey, const char
 	}
 
 	return tableMap->Element(memberIndex);
+}
+
+void schema::NetworkStateChanged(int64 chainEntity, uint32 nLocalOffset, int nArrayIndex)
+{
+	CNetworkVarChainer* chainEnt = reinterpret_cast<CNetworkVarChainer*>(chainEntity);
+	CEntityInstance* entity = chainEnt->GetObject();
+	if (entity && !(entity->m_pEntity->m_flags & EF_IS_CONSTRUCTION_IN_PROGRESS))
+	{
+		entity->NetworkStateChanged(nLocalOffset, nArrayIndex, chainEnt->m_PathIndex.m_Value);
+	}
 }

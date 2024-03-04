@@ -1,7 +1,7 @@
 #pragma once
 
 #include "game_config.h"
-#include "utils.h"
+#include <utils/utils.h>
 
 #include <dynohook/dynohook.h>
 
@@ -27,7 +27,7 @@ public:
 	template <typename F, typename C, typename... T>
 	void AddHookDetourFunc(const std::string& name, C callback, T... types)
 	{
-		auto addr = globals::g_GameConfig->ResolveSignature(name);
+		auto addr = g_pGameConfig->ResolveSignature(name);
 		if (!addr)
 		{
 			g_Logger.ErrorFormat("Could not hook detour function \"%s\".\n", name.c_str());

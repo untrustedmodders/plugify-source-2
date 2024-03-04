@@ -4,12 +4,12 @@
 
 extern "C" PLUGIN_API void CloseGameConfigFile(CGameConfig* pGameConfig)
 {
-	g_GameConfigManager.CloseGameConfigFile(pGameConfig);
+	g_pGameConfigManager.CloseGameConfigFile(pGameConfig);
 }
 
 extern "C" PLUGIN_API CGameConfig* LoadGameConfigFile(const std::string& file)
 {
-	return g_GameConfigManager.LoadGameConfigFile(file);
+	return g_pGameConfigManager.LoadGameConfigFile(file);
 }
 
 extern "C" PLUGIN_API void GetGameConfigPath(std::string& output, CGameConfig* pGameConfig)

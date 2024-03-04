@@ -30,12 +30,13 @@
 #include <export/schema.h>
 #include <export/timers.h>
 #include <export/voice.h>
+#include <export/clients.h>
 
 Source2SDK g_sdk;
 
 CGameEntitySystem* GameEntitySystem()
 {
-	static int offset = globals::g_GameConfig->GetOffset("GameEntitySystem");
+	static int offset = g_pGameConfig->GetOffset("GameEntitySystem");
 	return *reinterpret_cast<CGameEntitySystem**>((uintptr_t)(g_pGameResourceServiceServer) + offset);
 }
 
@@ -65,8 +66,8 @@ void Source2SDK::OnPluginStart()
 	globals::Initialize();
 
 	using enum dyno::CallbackType;
-	g_HookManager.AddHookMemFunc(&IMetamodListener::OnLevelInit, globals::g_MetamodListener, Hook_OnLevelInit, Post);
-	g_HookManager.AddHookMemFunc(&IMetamodListener::OnLevelShutdown, globals::g_MetamodListener, Hook_OnLevelShutdown, Post);
+	g_HookManager.AddHookMemFunc(&IMetamodListener::OnLevelInit, g_pMetamodListener, Hook_OnLevelInit, Post);
+	g_HookManager.AddHookMemFunc(&IMetamodListener::OnLevelShutdown, g_pMetamodListener, Hook_OnLevelShutdown, Post);
 	g_HookManager.AddHookMemFunc(&IServerGameDLL::GameFrame, g_pSource2Server, Hook_GameFrame, Post);
 	g_HookManager.AddHookMemFunc(&IServerGameClients::ClientActive, g_pSource2GameClients, Hook_ClientActive, Post);
 	g_HookManager.AddHookMemFunc(&IServerGameClients::ClientDisconnect, g_pSource2GameClients, Hook_ClientDisconnect, Pre, Post);

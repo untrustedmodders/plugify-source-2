@@ -4,7 +4,7 @@ add_definitions(
 )
 
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Zi")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4819 /wd4828 /wd5033 /permissive- /utf-8 /wd4005 /MP")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4819 /wd4828 /wd5033 /permissive- /utf-8 /wd4005")
 set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /OPT:REF /OPT:ICF")
 
 set(CS2SDK_LINK_LIBRARIES
@@ -12,6 +12,7 @@ set(CS2SDK_LINK_LIBRARIES
         ${SOURCESDK_LIB}/public/win64/tier1.lib
         ${SOURCESDK_LIB}/public/win64/interfaces.lib
         #${SOURCESDK_LIB}/public/win64/mathlib.lib
+        ${SOURCESDK_LIB}/public/win64/2015/libprotobuf.lib
 )
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE
@@ -20,3 +21,5 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
         CS2SDK_ROOT_BINARY="/bin/win64/"
         CS2SDK_GAME_BINARY="/csgo/bin/win64/"
 )
+
+set_target_properties(${PROJECT_NAME} PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")

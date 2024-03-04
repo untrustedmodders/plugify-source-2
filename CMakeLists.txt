@@ -1,7 +1,10 @@
-cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
 
 if(POLICY CMP0092)
     cmake_policy(SET CMP0092 NEW) # Don't add -W3 warning level by default.
+endif()
+if(POLICY CMP0091)
+    cmake_policy(SET CMP0091 NEW)
 endif()
 
 
@@ -12,44 +15,44 @@ include("cmake/shared.cmake")
 file(GLOB_RECURSE SOURCE_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "src/*.cpp")
 
 set(SOURCE_FILES ${SOURCE_FILES}
-        ${CMAKE_CURRENT_SOURCE_DIR}/external/hl2sdk-cs2/tier1/convar.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/external/hl2sdk-cs2/tier1/generichash.cpp
-        #${CMAKE_CURRENT_SOURCE_DIR}/external/hl2sdk-cs2/tier1/keyvalues3.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/external/hl2sdk-cs2/entity2/entityidentity.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/external/hl2sdk-cs2/entity2/entitysystem.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/external/hl2sdk-cs2/entity2/entitykeyvalues.cpp
+        ${SOURCESDK_DIR}/tier1/convar.cpp
+        ${SOURCESDK_DIR}/tier1/generichash.cpp
+        #${SOURCESDK_DIR}/tier1/keyvalues3.cpp
+        ${SOURCESDK_DIR}/entity2/entityidentity.cpp
+        ${SOURCESDK_DIR}/entity2/entitysystem.cpp
+        ${SOURCESDK_DIR}/entity2/entitykeyvalues.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/external/dynlibutils/module.cpp
 )
 
 if (LINUX)
     # memoverride.cpp is not usable on CMake Windows, because CMake default link libraries always link ucrt.lib
     set(SOURCE_FILES ${SOURCE_FILES}
-            ${CMAKE_CURRENT_SOURCE_DIR}/external/hl2sdk-cs2/public/tier0/memoverride.cpp
+            ${SOURCESDK_DIR}/public/tier0/memoverride.cpp
     )
 endif()
 
 ## Generate protobuf source & headers
 if (LINUX)
-    set(PROTOC_EXECUTABLE ${CMAKE_CURRENT_SOURCE_DIR}/external/hl2sdk-cs2/devtools/bin/linux/protoc)
+    set(PROTOC_EXECUTABLE ${SOURCESDK_DIR}/devtools/bin/linux/protoc)
 elseif(WIN32)
-    set(PROTOC_EXECUTABLE ${CMAKE_CURRENT_SOURCE_DIR}/external/hl2sdk-cs2/devtools/bin/protoc.exe)
+    set(PROTOC_EXECUTABLE ${SOURCESDK_DIR}/devtools/bin/protoc.exe)
 endif()
 
-add_custom_command(
-        OUTPUT protobuf_output_stamp_connection
-        COMMAND ${PROTOC_EXECUTABLE} --proto_path=thirdparty/protobuf-3.21.8/src --proto_path=common --cpp_out=common common/network_connection.proto
-        COMMENT "Generating protobuf connection file"
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external/hl2sdk-cs2
-        VERBATIM
+
+set(PROTO
+        common/network_connection.proto
+        common/networkbasetypes.proto
 )
-add_custom_command(
-        OUTPUT protobuf_output_stamp_types
-        COMMAND ${PROTOC_EXECUTABLE} --proto_path=thirdparty/protobuf-3.21.8/src --proto_path=common --cpp_out=common common/networkbasetypes.proto
-        COMMENT "Generating protobuf types file"
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external/hl2sdk-cs2
-        VERBATIM
-)
-SET(SOURCE_FILES ${SOURCE_FILES} protobuf_output_stamp_connection protobuf_output_stamp_types)
+
+foreach(proto IN LISTS PROTO)
+    get_filename_component(filepath ${proto} DIRECTORY)
+    get_filename_component(filename ${proto} NAME_WE)
+    execute_process(
+            COMMAND ${PROTOC_EXECUTABLE} --proto_path=thirdparty/protobuf-3.21.8/src --proto_path=${filepath} --cpp_out=${filepath} ${proto}
+            WORKING_DIRECTORY ${SOURCESDK_DIR}
+    )
+    set(SOURCE_FILES ${SOURCE_FILES} ${SOURCESDK_DIR}/${filepath}/${filename}.pb.cc)
+endforeach()
 
 
 # Sources
@@ -89,12 +92,12 @@ endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
 		PREFIX ""
+        OUTPUT_NAME "cs2sdk"
 		ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/addons/plugify/plugins/cs2sdk/bin"
 		LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/addons/plugify/plugins/cs2sdk/bin"
 		RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/addons/plugify/plugins/cs2sdk/bin"
-)
 
-set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "cs2sdk")
+)
 
 # Libraries
 target_link_libraries(${PROJECT_NAME} PRIVATE ${CS2SDK_LINK_LIBRARIES})

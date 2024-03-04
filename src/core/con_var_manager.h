@@ -1,7 +1,7 @@
 #pragma once
 
 #include "listener_manager.h"
-#include "utils.h"
+#include <utils/utils.h>
 
 #include <convar.h>
 
@@ -30,7 +30,31 @@ public:
 	~ConVarManager() = default;
 
 	template<typename T>
-	CConVarBaseData* CreateConVar(const std::string& name,const std::string& description, const T& defaultVal, int flags, bool hasMin, T min, bool hasMax, T max);
+	CConVarBaseData* CreateConVar(const std::string& name, const std::string& description, const T& defaultVal, int flags, bool hasMin = false, T min = {}, bool hasMax = {}, T max = {})
+	{
+		if (name.empty() || g_pCVar->FindCommand(name.c_str()).IsValid())
+		{
+			return nullptr;
+		}
+
+		auto it = m_cnvLookup.find(name);
+		if (it != m_cnvLookup.end())
+		{
+			return std::get<ConVarInfoPtr>(*it)->conVar->GetConVarData();
+		}
+
+		ConVarHandle hCvarHandle = g_pCVar->FindConVar(name.c_str());
+		if (hCvarHandle.IsValid())
+		{
+			return g_pCVar->GetConVar(hCvarHandle);
+		}
+
+		auto& conVarInfo = *m_cnvLookup.emplace(name, std::make_unique<ConVarInfo>(name, description)).first->second;
+		conVarInfo.conVar = std::unique_ptr<BaseConVar>(new ConVar<T>(conVarInfo.name.c_str(), flags, conVarInfo.description.c_str(), defaultVal, hasMin, min, hasMax, max, &ChangeCallback));
+		m_cnvCache.emplace(conVarInfo.conVar.get(), &conVarInfo);
+		return conVarInfo.conVar->GetConVarData();
+	}
+	
 	bool RemoveConVar(const std::string& name);
 	CConVarBaseData* FindConVar(const std::string& name);
 	bool IsValidConVar(const std::string& name) const;
@@ -44,15 +68,15 @@ public:
 		if (it == g_ConVarManager.m_cnvCache.end())
 			return;
 
-		const ConVarInfo* conVarInfo = *it;
+		auto& conVarInfo = *std::get<const ConVarInfo*>(*it);
 		
 		if constexpr (std::is_same_v<T, bool>) 
 		{
-			conVarInfo->hook(ref, *pNewValue ? "1" : "0", *pOldValue ? "1" : "0");
+			conVarInfo.hook.Notify(ref, *pNewValue ? "1" : "0", *pOldValue ? "1" : "0");
 		}
-		else if constexpr (std::is_same_v<T, char*>)
+		else if constexpr (std::is_same_v<T, const char*>)
 		{
-			conVarInfo->hook(ref, *pNewValue, *pOldValue);
+			conVarInfo.hook.Notify(ref, *pNewValue, *pOldValue);
 		}
 		else if constexpr (std::is_same_v<T, Color>)
 		{
@@ -60,7 +84,7 @@ public:
 			newValue << pNewValue->r() << " " <<  pNewValue->g() << " " << pNewValue->b() << " " << pNewValue->a();
 			std::stringstream oldValue;
 			oldValue << pOldValue->r() << " " <<  pOldValue->g() << " " << pOldValue->b() << " " << pOldValue->a();
-			conVarInfo->hook(ref, newValue.str(), oldValue.str());
+			conVarInfo.hook.Notify(ref, newValue.str(), oldValue.str());
 		}
 		else if constexpr (std::is_same_v<T, Vector2D>)
 		{
@@ -68,7 +92,7 @@ public:
 			newValue << pNewValue->x << " " <<  pNewValue->y;
 			std::stringstream oldValue;
 			oldValue << pOldValue->x << " " <<  pOldValue->y;
-			conVarInfo->hook(ref, newValue.str(), oldValue.str());
+			conVarInfo.hook.Notify(ref, newValue.str(), oldValue.str());
 		}
 		else if constexpr (std::is_same_v<T, Vector> || std::is_same_v<T, QAngle>)
 		{
@@ -76,7 +100,7 @@ public:
 			newValue << pNewValue->x << " " <<  pNewValue->y << " " << pNewValue->z;
 			std::stringstream oldValue;
 			oldValue << pOldValue->x << " " <<  pOldValue->y << " " << pOldValue->z;
-			conVarInfo->hook(ref, newValue.str(), oldValue.str());
+			conVarInfo.hook.Notify(ref, newValue.str(), oldValue.str());
 		}
 		else if constexpr (std::is_same_v<T, Vector4D>)
 		{
@@ -84,11 +108,11 @@ public:
 			newValue << pNewValue->x << " " <<  pNewValue->y << " " << pNewValue->z << " " << pNewValue->w;
 			std::stringstream oldValue;
 			oldValue << pOldValue->x << " " <<  pOldValue->y << " " << pOldValue->z << " " << pOldValue->w;
-			conVarInfo->hook(ref, newValue.str(), oldValue.str());
+			conVarInfo.hook.Notify(ref, newValue.str(), oldValue.str());
 		}
 		else
 		{
-			conVarInfo->hook(ref, std::to_string(*pNewValue), std::to_string(*pOldValue));
+			conVarInfo.hook.Notify(ref, std::to_string(*pNewValue), std::to_string(*pOldValue));
 		}
 	}
 	

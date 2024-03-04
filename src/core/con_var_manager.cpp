@@ -4,32 +4,6 @@ ConVarInfo::ConVarInfo(std::string name, std::string description) : name(std::mo
 {
 }
 
-template<typename T>
-CConVarBaseData* ConVarManager::CreateConVar(const std::string& name, const std::string& description, const T& defaultVal, int flags, bool hasMin, T min, bool hasMax, T max)
-{
-	if (name.empty() || g_pCVar->FindCommand(name.c_str()).IsValid())
-	{
-		return nullptr;
-	}
-
-	auto it = m_cnvLookup.find(name);
-	if (it != m_cnvLookup.end())
-	{
-		return std::get<ConVarInfoPtr>(*it)->conVar->GetConVarData();
-	}
-	
-	ConVarHandle hCvarHandle = g_pCVar->FindConVar(name.c_str());
-	if (hCvarHandle.IsValid())
-	{
-		return g_pCVar->GetConVar(hCvarHandle);
-	}
-
-	auto& conVarInfo = *m_cnvLookup.emplace(name, std::make_unique<ConVarInfo>(name, description)).first->second;
-	conVarInfo.conVar = std::unique_ptr<BaseConVar>(new ConVar<T>(conVarInfo.name.c_str(), flags, conVarInfo.description.c_str(), defaultVal, hasMin, min, hasMax, max, &ChangeCallback));
-	m_cnvCache.emplace(conVarInfo.conVar.get(), &conVarInfo);
-	return conVarInfo.conVar->GetConVarData();
-}
-
 bool ConVarManager::RemoveConVar(const std::string& name)
 {
 	auto it = m_cnvLookup.find(name);

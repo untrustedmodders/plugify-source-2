@@ -13,14 +13,9 @@ CPlayer::~CPlayer() = default;
 void CPlayer::Initialize(std::string name, std::string ip, CPlayerSlot slot)
 {
 	m_bConnected = true;
-	m_slot = slot;
+	m_iSlot = slot;
 	m_name = std::move(name);
 	m_ipAddress = std::move(ip);
-}
-
-IPlayerInfo* CPlayer::GetPlayerInfo() const
-{
-	return m_info;
 }
 
 const std::string& CPlayer::GetName() const
@@ -47,7 +42,7 @@ bool CPlayer::IsAuthStringValidated() const
 {
 	if (!IsFakeClient())
 	{
-		return g_pEngineServer2->IsClientFullyAuthenticated(m_slot);
+		return g_pEngineServer2->IsClientFullyAuthenticated(m_iSlot);
 	}
 	return false;
 }
@@ -57,37 +52,6 @@ void CPlayer::Authorize()
 	m_bAuthorized = true;
 }
 
-void CPlayer::PrintToConsole(const char* message) const
-{
-	if (!m_bConnected || m_bFakeClient)
-	{
-		return;
-	}
-
-	INetChannelInfo* pNetChan = g_pEngineServer2->GetPlayerNetInfo(m_slot);
-	if (pNetChan == nullptr)
-	{
-		return;
-	}
-
-	g_pEngineServer2->ClientPrintf(m_slot, message);
-}
-
-void CPlayer::PrintToChat(const char* message) const
-{
-	// globals::user_message_manager.SendMessageToChat(m_i_index, message);
-}
-
-void CPlayer::PrintToHint(const char* message) const
-{
-	// globals::user_message_manager.SendHintMessage(m_i_index, message);
-}
-
-void CPlayer::PrintToCenter(const char* message) const
-{
-	// globals::user_message_manager.SendCenterMessage(m_i_index, message);
-}
-
 void CPlayer::SetName(std::string name)
 {
 	m_name = std::move(name);
@@ -95,22 +59,17 @@ void CPlayer::SetName(std::string name)
 
 INetChannelInfo* CPlayer::GetNetInfo() const
 {
-	return g_pEngineServer2->GetPlayerNetInfo(m_slot);
-}
-
-bool CPlayer::WasCountedAsInGame() const
-{
-	return m_bInGame;
+	return g_pEngineServer2->GetPlayerNetInfo(m_iSlot);
 }
 
 int CPlayer::GetUserId()
 {
-	if (m_userId == -1)
+	if (m_iUserId == -1)
 	{
-		m_userId = g_pEngineServer2->GetPlayerUserId(m_slot).Get();
+		m_iUserId = g_pEngineServer2->GetPlayerUserId(m_iSlot).Get();
 	}
 
-	return m_userId;
+	return m_iUserId;
 }
 
 bool CPlayer::IsInGame() const
@@ -125,69 +84,14 @@ void CPlayer::Kick(const char* kickReason)
 	g_pEngineServer2->ServerCommand(buffer);
 }
 
-const char* CPlayer::GetWeaponName() const
-{
-	return m_info->GetWeaponName();
-}
-
-void CPlayer::ChangeTeam(int team) const
-{
-	m_info->ChangeTeam(team);
-}
-
-int CPlayer::GetTeam() const
-{
-	return m_info->GetTeamIndex();
-}
-
-int CPlayer::GetArmor() const
-{
-	return m_info->GetArmorValue();
-}
-
-int CPlayer::GetFrags() const
-{
-	return m_info->GetFragCount();
-}
-
-int CPlayer::GetDeaths() const
-{
-	return m_info->GetDeathCount();
-}
-
 const char* CPlayer::GetKeyValue(const char* key) const
 {
-	return g_pEngineServer2->GetClientConVarValue(m_slot, key);
-}
-
-Vector CPlayer::GetMaxSize() const
-{
-	return m_info->GetPlayerMaxs();
-}
-
-Vector CPlayer::GetMinSize() const
-{
-	return m_info->GetPlayerMins();
-}
-
-int CPlayer::GetMaxHealth() const
-{
-	return m_info->GetMaxHealth();
+	return g_pEngineServer2->GetClientConVarValue(m_iSlot, key);
 }
 
 const std::string& CPlayer::GetIpAddress() const
 {
 	return m_ipAddress;
-}
-
-const char* CPlayer::GetModelName() const
-{
-	return m_info->GetModelName();
-}
-
-int CPlayer::GetUserId() const
-{
-	return m_userId;
 }
 
 float CPlayer::GetTimeConnected() const
@@ -240,34 +144,13 @@ void CPlayer::Disconnect()
 	m_bConnected = false;
 	m_bInGame = false;
 	m_name.clear();
-	m_info = nullptr;
 	m_bFakeClient = false;
-	m_userId = -1;
+	m_iUserId = -1;
 	m_bAuthorized = false;
 	m_ipAddress.clear();
 	m_selfMutes.ClearAll();
 	std::fill(m_listenMap.begin(), m_listenMap.end(), Listen_Default);
 	m_voiceFlag = 0;
-}
-
-QAngle CPlayer::GetAbsAngles() const
-{
-	return m_info->GetAbsAngles();
-}
-
-Vector CPlayer::GetAbsOrigin() const
-{
-	return m_info->GetAbsOrigin();
-}
-
-bool CPlayer::IsAlive() const
-{
-	if (!IsInGame())
-	{
-		return false;
-	}
-
-	return !m_info->IsDead();
 }
 
 const CSteamID* CPlayer::GetSteamId() const
@@ -313,7 +196,7 @@ void PlayerManager::OnClientAuthorized(CPlayer* player) const
 {
 	g_Logger.MessageFormat("[OnClientAuthorized] - %s, %lli\n", player->GetName().c_str(), player->GetSteamId()->ConvertToUint64());
 
-	GetOnClientAuthorizedListenerManager().Notify(player->m_slot.Get(), player->GetSteamId()->ConvertToUint64());
+	GetOnClientAuthorizedListenerManager().Notify(player->m_iSlot.Get(), player->GetSteamId()->ConvertToUint64());
 }
 
 bool PlayerManager::OnClientConnect(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, bool unk1, CBufferString* pRejectReason)
@@ -355,7 +238,7 @@ bool PlayerManager::OnClientConnect_Post(CPlayerSlot slot, const char* pszName, 
 
 	if (origRet)
 	{
-		GetOnClientConnect_PostListenerManager().Notify(pPlayer->m_slot.Get());
+		GetOnClientConnect_PostListenerManager().Notify(pPlayer->m_iSlot.Get());
 
 		if (!pPlayer->IsFakeClient() && m_bListenServer && !strncmp(pszNetworkID, "127.0.0.1", 9))
 		{
@@ -377,7 +260,7 @@ void PlayerManager::OnClientConnected(CPlayerSlot slot, const char* pszName, uin
 	int client = slot.Get();
 	CPlayer* pPlayer = &m_players[client];
 
-	GetOnClientConnectedListenerManager().Notify(pPlayer->m_slot.Get());
+	GetOnClientConnectedListenerManager().Notify(pPlayer->m_iSlot.Get());
 }
 
 void PlayerManager::OnClientPutInServer(CPlayerSlot slot, char const* pszName, int type, uint64 xuid)
@@ -391,13 +274,14 @@ void PlayerManager::OnClientPutInServer(CPlayerSlot slot, char const* pszName, i
 	{
 		pPlayer->m_bFakeClient = true;
 
-		if (!OnClientConnect(slot, pszName, 0, "127.0.0.1", false, new CBufferStringGrowable<255>()))
+		CBufferStringGrowable<255> buffer;
+		if (!OnClientConnect(slot, pszName, 0, "127.0.0.1", false, &buffer))
 		{
 			pPlayer->Kick("Bot rejected");
 			return;
 		}
 
-		GetOnClientConnect_PostListenerManager().Notify(pPlayer->m_slot.Get());
+		GetOnClientConnect_PostListenerManager().Notify(pPlayer->m_iSlot.Get());
 	}
 
 	pPlayer->Connect();
@@ -405,7 +289,7 @@ void PlayerManager::OnClientPutInServer(CPlayerSlot slot, char const* pszName, i
 
 	// pPlayer->m_info = playerinfo->GetPlayerInfo(pEntity);
 
-	GetOnClientPutInServerListenerManager().Notify(pPlayer->m_slot.Get());
+	GetOnClientPutInServerListenerManager().Notify(pPlayer->m_iSlot.Get());
 }
 
 void PlayerManager::OnClientDisconnect(CPlayerSlot slot, ENetworkDisconnectionReason reason, const char* pszName, uint64 xuid, const char* pszNetworkID)
@@ -417,10 +301,10 @@ void PlayerManager::OnClientDisconnect(CPlayerSlot slot, ENetworkDisconnectionRe
 
 	if (pPlayer->IsConnected())
 	{
-		GetOnClientDisconnectListenerManager().Notify(pPlayer->m_slot.Get(), (int)reason);
+		GetOnClientDisconnectListenerManager().Notify(pPlayer->m_iSlot.Get(), (int)reason);
 	}
 
-	if (pPlayer->WasCountedAsInGame())
+	if (pPlayer->IsInGame())
 	{
 		m_playerCount--;
 	}
@@ -440,7 +324,7 @@ void PlayerManager::OnClientDisconnect_Post(CPlayerSlot slot, ENetworkDisconnect
 
 	InvalidatePlayer(pPlayer);
 
-	GetOnClientDisconnect_PostListenerManager().Notify(pPlayer->m_slot.Get(), (int)reason);
+	GetOnClientDisconnect_PostListenerManager().Notify(pPlayer->m_iSlot.Get(), (int)reason);
 }
 
 void PlayerManager::OnClientCommand(CPlayerSlot slot, const CCommand& args) const
@@ -477,8 +361,8 @@ void PlayerManager::OnLevelShutdown()
 		auto& player = m_players[i];
 		if (player.IsConnected())
 		{
-			OnClientDisconnect(player.m_slot, ENetworkDisconnectionReason::NETWORK_DISCONNECT_INVALID, player.GetName().c_str(), 0, player.GetIpAddress().c_str());
-			OnClientDisconnect_Post(player.m_slot, ENetworkDisconnectionReason::NETWORK_DISCONNECT_INVALID, player.GetName().c_str(), 0, player.GetIpAddress().c_str());
+			OnClientDisconnect(player.m_iSlot, ENetworkDisconnectionReason::NETWORK_DISCONNECT_INVALID, player.GetName().c_str(), 0, player.GetIpAddress().c_str());
+			OnClientDisconnect_Post(player.m_iSlot, ENetworkDisconnectionReason::NETWORK_DISCONNECT_INVALID, player.GetName().c_str(), 0, player.GetIpAddress().c_str());
 		}
 	}
 
@@ -551,7 +435,7 @@ CPlayer* PlayerManager::GetPlayerBySlot(int client) const
 
 void PlayerManager::InvalidatePlayer(CPlayer* pPlayer)
 {
-	auto userid = g_pEngineServer2->GetPlayerUserId(pPlayer->m_slot);
+	auto userid = g_pEngineServer2->GetPlayerUserId(pPlayer->m_iSlot);
 	if (userid.Get() != -1)
 		m_userIdLookup.erase(userid.Get());
 

@@ -2,7 +2,7 @@
 #include "player_manager.h"
 
 #include <entity2/entitysystem.h>
-#include <schema.h>
+#include <utils/schema.h>
 
 dyno::ReturnAction VoiceManager::Hook_SetClientListening(dyno::IHook& hook)
 {

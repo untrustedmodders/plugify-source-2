@@ -1,14 +1,7 @@
-// Copyright (C) 2023 neverlosecc
-// See end of file for extended copyright information.
-/**
- * =============================================================================
- * Source2Gen
- * Copyright (C) 2023 neverlose (https://github.com/neverlosecc/source2gen)
- * =============================================================================
- **/
-
 #pragma once
-#include "../virtual.h"
+#include <cstdint>
+
+#include <utils/virtual.h>
 
 class CSchemaType;
 class CSchemaSystemTypeScope;
@@ -126,15 +119,15 @@ enum class schemafieldtype_t : uint8_t
 
 struct CSchemaVarName
 {
-	const char* m_name;
-	const char* m_type;
+	const char *m_name;
+	const char *m_type;
 };
 
 struct CSchemaNetworkValue
 {
 	union
 	{
-		const char* m_p_sz_value;
+		const char *m_p_sz_value;
 		int m_n_value;
 		float m_f_value;
 		uintptr_t m_p_value;
@@ -145,20 +138,20 @@ struct CSchemaNetworkValue
 
 struct SchemaMetadataEntryData_t
 {
-	const char* m_name;
-	CSchemaNetworkValue* m_value;
+	const char *m_name;
+	CSchemaNetworkValue *m_value;
 };
 
 struct SchemaFieldMetadataOverrideData_t
 {
 	schemafieldtype_t m_field_type;			 // 0x0000
 	char pad_0001[7];						 // 0x0001
-	const char* m_field_name;				 // 0x0008
+	const char *m_field_name;				 // 0x0008
 	uint32_t m_single_inheritance_offset;	 // 0x0010
 	int32_t m_field_count;					 // 0x0014 // @note: @og: if its array or smth like this it will point to count of array
 	int32_t m_i_unk_1;						 // 0x0018
 	char pad_001C[12];						 // 0x001C
-	ISaveRestoreOps* m_def_save_restore_ops; // 0x0028
+	ISaveRestoreOps *m_def_save_restore_ops; // 0x0028
 	char pad_0030[16];						 // 0x0030
 	uint32_t m_align;						 // 0x0040
 	char pad_0044[36];						 // 0x0044
@@ -166,42 +159,42 @@ struct SchemaFieldMetadataOverrideData_t
 
 struct SchemaFieldMetadataOverrideSetData_t
 {
-	SchemaFieldMetadataOverrideData_t* m_metadata_override_data; // 0x0008
+	SchemaFieldMetadataOverrideData_t *m_metadata_override_data; // 0x0008
 	int32_t m_size;												 // 0x0008
 };
 
 struct SchemaStaticFieldData_t
 {
-	const char* name;	   // 0x0000
-	CSchemaType* m_type;   // 0x0008
-	void* m_instance;	   // 0x0010
+	const char *name;	   // 0x0000
+	CSchemaType *m_type;   // 0x0008
+	void *m_instance;	   // 0x0010
 	char pad_0x0018[0x10]; // 0x0018
 };
 
 struct SchemaClassFieldData_t
 {
-	const char* m_name;					   // 0x0000
-	void* m_type;						   // 0x0008
-	int32 m_single_inheritance_offset;	   // 0x0010
-	int32 m_metadata_size;				   // 0x0014
-	SchemaMetadataEntryData_t* m_metadata; // 0x0018
+	const char *m_name;					   // 0x0000
+	void *m_type;						   // 0x0008
+	int32_t m_single_inheritance_offset;   // 0x0010
+	int32_t m_metadata_size;			   // 0x0014
+	SchemaMetadataEntryData_t *m_metadata; // 0x0018
 };
 
 class SchemaEnumInfoData_t
 {
 public:
-	SchemaEnumInfoData_t* m_self;	// 0x0000
-	const char* m_name;				// 0x0008
-	const char* m_module;			// 0x0010
-	int8_t m_align;					// 0x0018
-	char pad_0x0019[0x3];			// 0x0019
-	int16_t m_size;					// 0x001C
+	SchemaEnumInfoData_t *m_self;		 // 0x0000
+	const char *m_name;					 // 0x0008
+	const char *m_module;				 // 0x0010
+	int8_t m_align;				 // 0x0018
+	char pad_0x0019[0x3];				 // 0x0019
+	int16_t m_size;				 // 0x001C
 	int16_t m_static_metadata_size; // 0x001E
-	void* m_enum_info;
-	SchemaMetadataEntryData_t* m_static_metadata;
-	CSchemaSystemTypeScope* m_type_scope; // 0x0030
+	void *m_enum_info;
+	SchemaMetadataEntryData_t *m_static_metadata;
+	CSchemaSystemTypeScope *m_type_scope; // 0x0030
 	char pad_0x0038[0x8];				  // 0x0038
-	int32_t m_i_unk1;					  // 0x0040
+	int32_t m_i_unk1;				  // 0x0040
 };
 
 class SchemaClassInfoData_t;
@@ -209,7 +202,7 @@ class SchemaClassInfoData_t;
 struct SchemaBaseClassInfoData_t
 {
 	unsigned int m_offset;
-	SchemaClassInfoData_t* m_class;
+	SchemaClassInfoData_t *m_class;
 };
 
 class SchemaClassInfoData_t
@@ -218,6 +211,11 @@ public:
 	auto GetName()
 	{
 		return m_name;
+	}
+
+	auto GetSize()
+	{
+		return m_size;
 	}
 
 	auto GetFieldsSize()
@@ -230,12 +228,7 @@ public:
 		return m_fields;
 	}
 
-	auto GetSize()
-	{
-		return m_size;
-	}
-
-	SchemaClassInfoData_t* GetParent()
+	SchemaClassInfoData_t *GetParent()
 	{
 		if (!m_base_classes)
 			return nullptr;
@@ -244,9 +237,9 @@ public:
 	}
 
 private:
-	SchemaClassInfoData_t* m_self; // 0x0000
-	const char* m_name;			   // 0x0008
-	const char* m_module;		   // 0x0010
+	SchemaClassInfoData_t *m_self;									  // 0x0000
+	const char *m_name;												  // 0x0008
+	const char *m_module;											  // 0x0010
 
 	int m_size;														  // 0x0018
 	int16_t m_fields_size;											  // 0x001C
@@ -256,43 +249,47 @@ private:
 	uint8_t m_has_base_class;										  // 0x0023
 	int16_t m_total_class_size;										  // 0x0024 // @note: @og: if there no derived or base class then it will be 1 otherwise derived class size + 1.
 	int16_t m_derived_class_size;									  // 0x0026
-	SchemaClassFieldData_t* m_fields;								  // 0x0028
-	SchemaStaticFieldData_t* m_static_fields;						  // 0x0030
-	SchemaBaseClassInfoData_t* m_base_classes;						  // 0x0038
-	SchemaFieldMetadataOverrideSetData_t* m_field_metadata_overrides; // 0x0040
-	SchemaMetadataEntryData_t* m_static_metadata;					  // 0x0048
-	CSchemaSystemTypeScope* m_type_scope;							  // 0x0050
-	CSchemaType* m_schema_type;										  // 0x0058
+	SchemaClassFieldData_t *m_fields;								  // 0x0028
+	SchemaStaticFieldData_t *m_static_fields;						  // 0x0030
+	SchemaBaseClassInfoData_t *m_base_classes;						  // 0x0038
+	SchemaFieldMetadataOverrideSetData_t *m_field_metadata_overrides; // 0x0040
+	SchemaMetadataEntryData_t *m_static_metadata;					  // 0x0048
+	CSchemaSystemTypeScope *m_type_scope;							  // 0x0050
+	CSchemaType *m_schema_type;										  // 0x0058
 	SchemaClassFlags_t m_class_flags : 8;							  // 0x0060
 	uint32_t m_sequence;											  // 0x0064 // @note: @og: idk
-	void* m_fn;														  // 0x0068
+	void *m_fn;														  // 0x0068
 };
 
 class CSchemaType
 {
 public:
-	bool GetSizes(int* out_size1, uint8_t* unk_probably_not_size)
+	bool GetSizes(int *out_size1, uint8_t *unk_probably_not_size)
 	{
-		return reinterpret_cast<int(*)(void*, int*, uint8_t*)>(vftable_[3])(this, out_size1, unk_probably_not_size);
+#if CS2SDK_PLATFORM_WINDOWS
+		return reinterpret_cast<int(__thiscall *)(void *, int *, uint8_t *)>(vftable_[3])(this, out_size1, unk_probably_not_size);
+#else
+		return reinterpret_cast<int(__cdecl *)(void *, int *, uint8_t *)>(vftable_[3])(this, out_size1, unk_probably_not_size);
+#endif
 	}
 
 public:
-	bool GetSize(int* out_size)
+	bool GetSize(int *out_size)
 	{
 		uint8_t smh = 0;
 		return GetSizes(out_size, &smh);
 	}
 
 public:
-	uintptr_t* vftable_; // 0x0000
-	const char* m_name_; // 0x0008
+	uintptr_t *vftable_;			   // 0x0000
+	const char *m_name_;				   // 0x0008
 
-	CSchemaSystemTypeScope* m_type_scope_; // 0x0010
-	uint8_t type_category;				   // ETypeCategory 0x0018
-	uint8_t atomic_category;			   // EAtomicCategory 0x0019
+	CSchemaSystemTypeScope *m_type_scope_; // 0x0010
+	uint8_t type_category;			   // ETypeCategory 0x0018
+	uint8_t atomic_category;		   // EAtomicCategory 0x0019
 
-	// find out to what class pointer points.
-	CSchemaType* GetRefClass() const
+										   // find out to what class pointer points.
+	CSchemaType *GetRefClass() const
 	{
 		if (type_category != Schema_Ptr)
 			return nullptr;
@@ -308,19 +305,19 @@ public:
 	{
 		uint32_t array_size;
 		uint32_t unknown;
-		CSchemaType* element_type_;
+		CSchemaType *element_type_;
 	};
 
 	struct atomic_t
 	{ // same goes for CollectionOfT
 		uint64_t gap[2];
-		CSchemaType* template_typename;
+		CSchemaType *template_typename;
 	};
 
 	struct atomic_tt
 	{
 		uint64_t gap[2];
-		CSchemaType* templates[2];
+		CSchemaType *templates[2];
 	};
 
 	struct atomic_i
@@ -333,9 +330,9 @@ public:
 	// is from base class ( CSchemaType )
 	union // 0x020
 	{
-		CSchemaType* m_schema_type_;
-		SchemaClassInfoData_t* m_class_info;
-		SchemaEnumInfoData_t* m_enum_binding_;
+		CSchemaType *m_schema_type_;
+		SchemaClassInfoData_t *m_class_info;
+		SchemaEnumInfoData_t *m_enum_binding_;
 		array_t m_array_;
 		atomic_t m_atomic_t_;
 		atomic_tt m_atomic_tt_;
@@ -346,10 +343,10 @@ public:
 class CSchemaSystemTypeScope
 {
 public:
-	SchemaClassInfoData_t* FindDeclaredClass(const char* pClass)
+	SchemaClassInfoData_t *FindDeclaredClass(const char *pClass)
 	{
 #if CS2SDK_PLATFORM_WINDOWS
-		SchemaClassInfoData_t* rv = nullptr;
+		SchemaClassInfoData_t *rv = nullptr;
 		CALL_VIRTUAL(void, 2, this, &rv, pClass);
 		return rv;
 #else
@@ -361,24 +358,8 @@ public:
 class CSchemaSystem
 {
 public:
-	auto FindTypeScopeForModule(const char* module)
+	auto FindTypeScopeForModule(const char *module)
 	{
-		return CALL_VIRTUAL(CSchemaSystemTypeScope*, 13, this, module, nullptr);
+		return CALL_VIRTUAL(CSchemaSystemTypeScope *, 13, this, module, nullptr);
 	}
 };
-
-// source2gen - Source2 games SDK generator
-// Copyright 2023 neverlosecc
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-//

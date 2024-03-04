@@ -3,8 +3,9 @@
 #include "core_config.h"
 #include "game_config.h"
 #include "module.h"
-#include "utils.h"
-#include "virtual.h"
+
+#include <utils/utils.h>
+#include <utils/virtual.h>
 
 #include <ISmmPlugin.h>
 #include <engine/IEngineSound.h>
@@ -31,6 +32,10 @@ namespace modules
 	DynLibUtils::CModule* filesystem = nullptr;
 	DynLibUtils::CModule* vscript = nullptr;
 } // namespace modules
+
+IMetamodListener* g_pMetamodListener = nullptr;
+CCoreConfig* g_pCoreConfig = nullptr;
+CGameConfig* g_pGameConfig = nullptr;
 
 template <class T>
 T* FindInterface(const DynLibUtils::CModule* module, const char* name)
@@ -63,10 +68,6 @@ constexpr auto replace(const CharT (&str)[N], CharT oldChar, CharT newChar) {
 
 namespace globals
 {
-	IMetamodListener* g_MetamodListener = nullptr;
-	CCoreConfig* g_CoreConfig = nullptr;
-	CGameConfig* g_GameConfig = nullptr;
-
 	void Initialize()
 	{
 		modules::engine = new DynLibUtils::CModule(Plat_GetGameDirectory() + replace(CS2SDK_ROOT_BINARY BINARY_MODULE_PREFIX "engine2", '/', '\\'));
@@ -94,48 +95,34 @@ namespace globals
 		ConVar_Register(FCVAR_RELEASE | FCVAR_SERVER_CAN_EXECUTE | FCVAR_GAMEDLL);
 
 		char confError[255] = "";
-		g_CoreConfig = new CCoreConfig(utils::ConfigsDirectory() + "core.txt");
-		if (!g_CoreConfig->Initialize(confError))
+		g_pCoreConfig = new CCoreConfig(utils::ConfigsDirectory() + "core.txt");
+		if (!g_pCoreConfig->Initialize(confError))
 		{
-			g_Logger.ErrorFormat("Could not read \"%s\": %s\n", g_CoreConfig->GetPath().c_str(), confError);
+			g_Logger.ErrorFormat("Could not read \"%s\": %s\n", g_pCoreConfig->GetPath().c_str(), confError);
 		}
 
-		g_GameConfig = g_GameConfigManager.LoadGameConfigFile("cs2sdk.games.txt");
+		g_pGameConfig = g_pGameConfigManager.LoadGameConfigFile("cs2sdk.games.txt");
 
 		DynLibUtils::CModule plugify("plugify");
 
 		using IMetamodListenerFn = IMetamodListener* (*)();
 		auto Plugify_ImmListener = plugify.GetFunctionByName("Plugify_ImmListener");
-		g_MetamodListener = Plugify_ImmListener.CCast<IMetamodListenerFn>()();
+		g_pMetamodListener = Plugify_ImmListener.CCast<IMetamodListenerFn>()();
 
-		g_gameEventManager = (IGameEventManager2*)(CALL_VIRTUAL(uintptr_t, g_GameConfig->GetOffset("GameEventManager"), g_pSource2Server) - 8);
+		g_gameEventManager = (IGameEventManager2*)(CALL_VIRTUAL(uintptr_t, g_pGameConfig->GetOffset("GameEventManager"), g_pSource2Server) - 8);
 
 		// load more if needed
-		//RESOLVE_SIG(g_GameConfig, "NetworkStateChanged", addresses::NetworkStateChanged);
-		//RESOLVE_SIG(g_GameConfig, "StateChanged", addresses::StateChanged);
-		RESOLVE_SIG(g_GameConfig, "UTIL_ClientPrintAll", addresses::UTIL_ClientPrintAll);
-		RESOLVE_SIG(g_GameConfig, "ClientPrint", addresses::ClientPrint);
-		// RESOLVE_SIG(g_GameConfig, "SetGroundEntity", addresses::SetGroundEntity);
-		// RESOLVE_SIG(g_GameConfig, "CCSPlayerController_SwitchTeam", addresses::CCSPlayerController_SwitchTeam);
-		// RESOLVE_SIG(g_GameConfig, "CBasePlayerController_SetPawn", addresses::CBasePlayerController_SetPawn);
-		// RESOLVE_SIG(g_GameConfig, "CBaseModelEntity_SetModel", addresses::CBaseModelEntity_SetModel);
-		// RESOLVE_SIG(g_GameConfig, "UTIL_Remove", addresses::UTIL_Remove);
-		// RESOLVE_SIG(g_GameConfig, "CEntitySystem_AddEntityIOEvent", addresses::CEntitySystem_AddEntityIOEvent);
-		// RESOLVE_SIG(g_GameConfig, "CEntityInstance_AcceptInput", addresses::CEntityInstance_AcceptInput);
-		RESOLVE_SIG(g_GameConfig, "CGameEntitySystem_FindEntityByClassName", addresses::CGameEntitySystem_FindEntityByClassName);
-		 RESOLVE_SIG(g_GameConfig, "CGameEntitySystem_FindEntityByName", addresses::CGameEntitySystem_FindEntityByName);
-		// RESOLVE_SIG(g_GameConfig, "CGameRules_TerminateRound", addresses::CGameRules_TerminateRound);
-		RESOLVE_SIG(g_GameConfig, "CreateEntityByName", addresses::CreateEntityByName);
-		//RESOLVE_SIG(g_GameConfig, "DispatchSpawn", addresses::DispatchSpawn);
-		// RESOLVE_SIG(g_GameConfig, "CEntityIdentity_SetEntityName", addresses::CEntityIdentity_SetEntityName);
-		// RESOLVE_SIG(g_GameConfig, "CBaseEntity_EmitSoundParams", addresses::CBaseEntity_EmitSoundParams);
-		// RESOLVE_SIG(g_GameConfig, "CBaseEntity_SetParent", addresses::CBaseEntity_SetParent);
-		RESOLVE_SIG(g_GameConfig, "LegacyGameEventListener", addresses::GetLegacyGameEventListener);
+		RESOLVE_SIG(g_pGameConfig, "LegacyGameEventListener", addresses::GetLegacyGameEventListener);
+		RESOLVE_SIG(g_pGameConfig, "CCSPlayerController_SwitchTeam", addresses::CCSPlayerController_SwitchTeam);
+		RESOLVE_SIG(g_pGameConfig, "CBasePlayerController_SetPawn", addresses::CBasePlayerController_SetPawn);
+		RESOLVE_SIG(g_pGameConfig, "CGameEntitySystem_FindEntityByClassName", addresses::CGameEntitySystem_FindEntityByClassName);
+		RESOLVE_SIG(g_pGameConfig, "CGameEntitySystem_FindEntityByName", addresses::CGameEntitySystem_FindEntityByName);
+		RESOLVE_SIG(g_pGameConfig, "CreateEntityByName", addresses::CreateEntityByName);
 	}
 
 	void Terminate()
 	{
-		delete g_CoreConfig;
+		delete g_pCoreConfig;
 		delete modules::engine;
 		delete modules::tier0;
 		delete modules::server;

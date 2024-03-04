@@ -2,8 +2,54 @@
 
 #include <eiface.h>
 
+class CBaseEntity2;
+
 namespace utils
 {
+	bool Initialize();
+	void Terminate();
+
+	// ConVars
+	void SendConVarValue(CPlayerSlot slot, CConVarBaseData* cvar, const char* value);
+	void SendMultipleConVarValues(CPlayerSlot slot, CConVarBaseData** cvars, const char** values, uint32_t size);
+
+	CBaseEntity2* FindEntityByClassname(CEntityInstance* start, const char* name);
+
+	CBasePlayerController* GetController(CBaseEntity2* entity);
+	CBasePlayerController* GetController(CPlayerSlot slot);
+
+	CPlayerSlot GetEntityPlayerSlot(CBaseEntity2* entity);
+
+	// Normalize the angle between -180 and 180.
+	float NormalizeDeg(float a);
+	// Gets the difference in angle between 2 angles.
+	// c can be PI (for radians) or 180.0 (for degrees);
+	float GetAngleDifference(float x, float y, float c, bool relative = false);
+
+	// Print functions
+	void PrintConsole(CBaseEntity2* entity, const char* format, ...);
+	void PrintChat(CBaseEntity2* entity, const char* format, ...);
+	void PrintCentre(CBaseEntity2* entity, const char* format, ...);
+	void PrintAlert(CBaseEntity2* entity, const char* format, ...);
+	void PrintHTMLCentre(CBaseEntity2* entity, const char* format, ...); // This one uses HTML formatting.
+
+	void PrintConsoleAll(const char* format, ...);
+	void PrintChatAll(const char* format, ...);
+	void PrintCentreAll(const char* format, ...);
+	void PrintAlertAll(const char* format, ...);
+	void PrintHTMLCentreAll(const char* format, ...); // This one uses HTML formatting.
+
+	// Color print
+	void CPrintChat(CBaseEntity2* entity, const char* format, ...);
+	void CPrintChatAll(const char* format, ...);
+
+	// Sounds
+	void PlaySoundToClient(CPlayerSlot player, const char* sound, float volume = 1.0f);
+
+	// Return true if the spawn found is truly valid (not in the ground or out of bounds)
+	bool IsSpawnValid(const Vector& origin);
+	bool FindValidSpawn(Vector& origin, QAngle& angles);
+
 	static std::string gameDirectory;
 
 	inline std::string GameDirectory()

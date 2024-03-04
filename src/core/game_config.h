@@ -60,4 +60,4 @@ private:
 	std::unordered_map<std::string, CGameConfig> m_configs;
 };
 
-extern CGameConfigManager g_GameConfigManager;
+extern CGameConfigManager g_pGameConfigManager;

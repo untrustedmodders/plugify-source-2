@@ -11,12 +11,12 @@ enum class HudDestination : int
 
 extern "C" PLUGIN_API void ClientPrint(CBasePlayerController* player, int hudDest, const std::string& msg)
 {
-	addresses::ClientPrint(player, hudDest, msg.c_str(), nullptr, nullptr, nullptr, nullptr);
+	//addresses::ClientPrint(player, hudDest, msg.c_str(), nullptr, nullptr, nullptr, nullptr);
 }
 
 extern "C" PLUGIN_API void ClientPrintAll(int hudDest, const std::string& msg)
 {
-	addresses::UTIL_ClientPrintAll(hudDest, msg.c_str(), nullptr, nullptr, nullptr, nullptr);
+	//addresses::UTIL_ClientPrintAll(hudDest, msg.c_str(), nullptr, nullptr, nullptr, nullptr);
 }
 
 extern "C" PLUGIN_API void PrintToConsole(int clientIndex, const std::string& msg)

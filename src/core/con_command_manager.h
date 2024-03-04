@@ -1,7 +1,7 @@
 #pragma once
 
 #include "listener_manager.h"
-#include "utils.h"
+#include <utils/utils.h>
 
 #include <convar.h>
 #include <dynohook/dynohook.h>

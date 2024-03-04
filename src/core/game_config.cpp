@@ -1,5 +1,5 @@
 #include "game_config.h"
-#include "utils.h"
+#include <utils/utils.h>
 
 CGameConfig::CGameConfig(std::string game, std::string path) : m_szGameDir(std::move(game)), m_szPath(std::move(path)), m_pKeyValues(std::make_unique<KeyValues>("Games"))
 {
@@ -253,8 +253,8 @@ CGameConfig* CGameConfigManager::LoadGameConfigFile(std::string path)
 {
 	path = utils::GamedataDirectory() + path;
 
-	auto it = m_Configs.find(path);
-	if (it != m_Configs.end())
+	auto it = m_configs.find(path);
+	if (it != m_configs.end())
 	{
 		return &std::get<CGameConfig>(*it);
 	}
@@ -267,7 +267,7 @@ CGameConfig* CGameConfigManager::LoadGameConfigFile(std::string path)
 		return nullptr;
 	}
 
-	auto [_, result] = m_Configs.emplace(std::move(path), std::move(gameConfig));
+	auto [_, result] = m_configs.emplace(std::move(path), std::move(gameConfig));
 	return &std::get<CGameConfig>(*_);
 }
 
@@ -275,12 +275,12 @@ void CGameConfigManager::CloseGameConfigFile(CGameConfig* pGameConfig)
 {
 	if (pGameConfig)
 	{
-		auto it = m_Configs.find(pGameConfig->GetPath());
-		if (it != m_Configs.end())
+		auto it = m_configs.find(pGameConfig->GetPath());
+		if (it != m_configs.end())
 		{
-			m_Configs.erase(it);
+			m_configs.erase(it);
 		}
 	}
 }
 
-CGameConfigManager g_GameConfigManager;
+CGameConfigManager g_pGameConfigManager;
