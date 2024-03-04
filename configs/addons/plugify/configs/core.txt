@@ -1,0 +1,13 @@
+"Core"
+{
+    "PublicChatTrigger"
+    {
+   		"trigger" "!"
+    }
+    "SilentChatTrigger"
+    {
+    	"trigger" "/"
+    }
+    "FollowCS2ServerGuidelines" "true"
+    "ServerLanguage" "en"
+}
