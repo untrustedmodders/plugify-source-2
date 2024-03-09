@@ -271,8 +271,12 @@
 								"type": "int32"
 							},
 							{
-								"name": "command",
-								"type": "ptr64"
+								"name": "context",
+								"type": "int32"
+							},
+							{
+								"name": "arguments",
+								"type": "string*"
 							}
 						],
 						"retType": {
@@ -306,8 +310,12 @@
 								"type": "int32"
 							},
 							{
-								"name": "command",
-								"type": "ptr64"
+								"name": "context",
+								"type": "int32"
+							},
+							{
+								"name": "arguments",
+								"type": "string*"
 							}
 						],
 						"retType": {
@@ -4735,12 +4743,12 @@
 			"paramTypes": [
 				{
 					"name": "receiver",
-					"type": "ptr64",
+					"type": "int32",
 					"ref": false
 				},
 				{
 					"name": "sender",
-					"type": "ptr64",
+					"type": "int32",
 					"ref": false
 				},
 				{
@@ -4759,12 +4767,12 @@
 			"paramTypes": [
 				{
 					"name": "receiver",
-					"type": "ptr64",
+					"type": "int32",
 					"ref": false
 				},
 				{
 					"name": "sender",
-					"type": "ptr64",
+					"type": "int32",
 					"ref": false
 				}
 			],
@@ -4777,8 +4785,8 @@
 			"funcName": "SetClientVoiceFlags",
 			"paramTypes": [
 				{
-					"name": "client",
-					"type": "ptr64",
+					"name": "clientIndex",
+					"type": "int32",
 					"ref": false
 				},
 				{
@@ -4796,8 +4804,8 @@
 			"funcName": "GetClientVoiceFlags",
 			"paramTypes": [
 				{
-					"name": "client",
-					"type": "ptr64",
+					"name": "clientIndex",
+					"type": "int32",
 					"ref": false
 				}
 			],
