@@ -1,14 +1,13 @@
 #include "utils.h"
 
-#include <convar.h>
 #include <core/sdk/entity/cbaseentity.h>
 #include <core/sdk/recipientfilters.h>
-#include <igameeventsystem.h>
+#include <engine/igameeventsystem.h>
 #include <networkbasetypes.pb.h>
 #include <public/networksystem/inetworkmessages.h>
-
+#include <entity2/entitysystem.h>
 #include <core/sdk/datatypes.h>
-#include <entitysystem.h>
+
 #include <tier0/memdbgon.h>
 
 CBaseEntity2* utils::FindEntityByClassname(CEntityInstance* start, const char* name)

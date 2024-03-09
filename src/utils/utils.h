@@ -1,6 +1,7 @@
 #pragma once
 
 #include <eiface.h>
+#include <convar.h>
 
 class CBaseEntity2;
 
@@ -27,21 +28,22 @@ namespace utils
 	float GetAngleDifference(float x, float y, float c, bool relative = false);
 
 	// Print functions
-	void PrintConsole(CBaseEntity2* entity, const char* format, ...);
-	void PrintChat(CBaseEntity2* entity, const char* format, ...);
-	void PrintCentre(CBaseEntity2* entity, const char* format, ...);
-	void PrintAlert(CBaseEntity2* entity, const char* format, ...);
-	void PrintHTMLCentre(CBaseEntity2* entity, const char* format, ...); // This one uses HTML formatting.
-
-	void PrintConsoleAll(const char* format, ...);
-	void PrintChatAll(const char* format, ...);
-	void PrintCentreAll(const char* format, ...);
-	void PrintAlertAll(const char* format, ...);
-	void PrintHTMLCentreAll(const char* format, ...); // This one uses HTML formatting.
+	bool CFormat(char* buffer, uint64_t buffer_size, const char* text);
+	void ClientPrintFilter(IRecipientFilter* filter, int msg_dest, const char* msg_name, const char* param1, const char* param2, const char* param3, const char* param4);
+	void PrintConsole(CPlayerSlot slot, const char* message);
+	void PrintChat(CPlayerSlot slot, const char* message);
+	void PrintCentre(CPlayerSlot slot, const char* message);
+	void PrintAlert(CPlayerSlot slot, const char* message);
+	void PrintHTMLCentre(CPlayerSlot slot, const char* message); // This one uses HTML formatting.
+	void PrintConsoleAll(const char* message);
+	void PrintChatAll(const char* message);
+	void PrintCentreAll(const char* message);
+	void PrintAlertAll(const char* message);
+	void PrintHTMLCentreAll(const char* message); // This one uses HTML formatting.
 
 	// Color print
-	void CPrintChat(CBaseEntity2* entity, const char* format, ...);
-	void CPrintChatAll(const char* format, ...);
+	void CPrintChat(CPlayerSlot slot, const char* message);
+	void CPrintChatAll(const char* message);
 
 	// Sounds
 	void PlaySoundToClient(CPlayerSlot player, const char* sound, float volume = 1.0f);
