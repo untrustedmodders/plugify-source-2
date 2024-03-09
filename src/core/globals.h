@@ -80,6 +80,8 @@ struct CTraceFilterS2;
 struct SndOpEventGuid_t;
 struct bbox_t;
 struct trace_t_s2;
+class CEntityKeyValues;
+class CEntityKeyValues;
 
 namespace addresses
 {
@@ -91,6 +93,7 @@ namespace addresses
 	inline CBaseEntity* (*CGameEntitySystem_FindEntityByClassName)(CEntitySystem* pEntitySystem, CEntityInstance* pStartEntity, const char* szName);
 	inline CBaseEntity* (*CGameEntitySystem_FindEntityByName)(CEntitySystem* pEntitySystem, CEntityInstance* pStartEntity, const char* szName, CEntityInstance* pSearchingEntity, CEntityInstance* pActivator, CEntityInstance* pCaller, IEntityFindFilter* pFilter);
 	inline CBaseEntity* (*CreateEntityByName)(const char* className, int iForceEdictIndex);
+	inline void (*DispatchSpawn)(CBaseEntity* pEntity, CEntityKeyValues* pEntityKeyValues);
 
 
 } // namespace addresses

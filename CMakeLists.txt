@@ -38,22 +38,16 @@ elseif(WIN32)
     set(PROTOC_EXECUTABLE ${SOURCESDK_DIR}/devtools/bin/protoc.exe)
 endif()
 
-
-set(PROTO
-        common/network_connection.proto
-        common/networkbasetypes.proto
+execute_process(
+        COMMAND ${PROTOC_EXECUTABLE} --proto_path=thirdparty/protobuf-3.21.8/src --proto_path=common --proto_path=game/shared/ --cpp_out=common networkbasetypes.proto network_connection.proto usermessages.proto
+        WORKING_DIRECTORY ${SOURCESDK_DIR}
 )
 
-foreach(proto IN LISTS PROTO)
-    get_filename_component(filepath ${proto} DIRECTORY)
-    get_filename_component(filename ${proto} NAME_WE)
-    execute_process(
-            COMMAND ${PROTOC_EXECUTABLE} --proto_path=thirdparty/protobuf-3.21.8/src --proto_path=${filepath} --cpp_out=${filepath} ${proto}
-            WORKING_DIRECTORY ${SOURCESDK_DIR}
-    )
-    set(SOURCE_FILES ${SOURCE_FILES} ${SOURCESDK_DIR}/${filepath}/${filename}.pb.cc)
-endforeach()
-
+set(SOURCE_FILES ${SOURCE_FILES}
+        ${SOURCESDK_DIR}/common/networkbasetypes.pb.cc
+        ${SOURCESDK_DIR}/common/network_connection.pb.cc
+        ${SOURCESDK_DIR}/common/usermessages.pb.cc
+)
 
 # Sources
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${NATIVES_SOURCES} ${CONVERSIONS_SOURCES} ${CONVERSIONS_HEADERS})

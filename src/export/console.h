@@ -1,35 +1,68 @@
 #pragma once
 
-enum class HudDestination : int
-{
-	Notify = 1,
-	Console = 2,
-	Chat = 3,
-	Center = 4,
-	Alert = 6
-};
+#include <core/sdk/entity/cbaseentity.h>
 
-extern "C" PLUGIN_API void ClientPrint(CBasePlayerController* player, int hudDest, const std::string& msg)
-{
-	//addresses::ClientPrint(player, hudDest, msg.c_str(), nullptr, nullptr, nullptr, nullptr);
-}
-
-extern "C" PLUGIN_API void ClientPrintAll(int hudDest, const std::string& msg)
-{
-	//addresses::UTIL_ClientPrintAll(hudDest, msg.c_str(), nullptr, nullptr, nullptr, nullptr);
-}
-
-extern "C" PLUGIN_API void PrintToConsole(int clientIndex, const std::string& msg)
-{
-	// g_pEngineServer2->ClientPrintf(CPlayerSlot(clientIndex - 1), msg.c_str());
-}
-
-extern "C" PLUGIN_API void PrintToConsoleAll(const std::string& msg)
-{
-	// g_pEngineServer2->ClientPrintf(client, msg.c_str());
-}
-
-extern "C" PLUGIN_API void PrintToServer(const std::string& msg)
+extern "C" PLUGIN_API void PrintServer(const std::string& msg)
 {
 	ConMsg("%s", msg.c_str());
+}
+
+extern "C" PLUGIN_API void PrintConsole(int clientIndex, const std::string& message)
+{
+	utils::PrintConsole(CPlayerSlot(clientIndex), message.c_str());
+}
+
+extern "C" PLUGIN_API void PrintChat(int clientIndex, const std::string& message)
+{
+	utils::PrintChat(CPlayerSlot(clientIndex), message.c_str());
+}
+
+extern "C" PLUGIN_API void PrintCentre(int clientIndex, const std::string& message)
+{
+	utils::PrintCentre(CPlayerSlot(clientIndex), message.c_str());
+}
+
+extern "C" PLUGIN_API void PrintAlert(int clientIndex, const std::string& message)
+{
+	utils::PrintAlert(CPlayerSlot(clientIndex), message.c_str());
+}
+
+extern "C" PLUGIN_API void PrintHTMLCentre(int clientIndex, const std::string& message)
+{
+	utils::PrintHTMLCentre(CPlayerSlot(clientIndex), message.c_str());
+}
+
+extern "C" PLUGIN_API void PrintConsoleAll(const std::string& message)
+{
+	utils::PrintConsoleAll(message.c_str());
+}
+
+extern "C" PLUGIN_API void PrintChatAll(const std::string& message)
+{
+	utils::PrintChatAll(message.c_str());
+}
+
+extern "C" PLUGIN_API void PrintCentreAll(const std::string& message)
+{
+	utils::PrintCentreAll(message.c_str());
+}
+
+extern "C" PLUGIN_API void PrintAlertAll(const std::string& message)
+{
+	utils::PrintAlertAll(message.c_str());
+}
+
+extern "C" PLUGIN_API void PrintHTMLCentreAll(const std::string& message)
+{
+	utils::PrintHTMLCentreAll(message.c_str());
+}
+
+extern "C" PLUGIN_API void PrintChatColored(int clientIndex, const std::string& message)
+{
+	utils::CPrintChat(CPlayerSlot(clientIndex), message.c_str());
+}
+
+extern "C" PLUGIN_API void PrintChatColoredAll(const std::string& message)
+{
+	utils::CPrintChatAll(message.c_str());
 }

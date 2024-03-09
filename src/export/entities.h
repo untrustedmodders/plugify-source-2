@@ -110,7 +110,16 @@ extern "C" PLUGIN_API CBaseEntity* CreateEntityByName(const std::string& classNa
 	return addresses::CreateEntityByName(className.c_str(), -1);
 }
 
-//DispatchSpawn
+extern "C" PLUGIN_API void DispatchSpawn(int entityIndex)
+{
+	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	if (!ent)
+	{
+		return;
+	}
+
+	addresses::DispatchSpawn(ent, nullptr);
+}
 
 ///
 
@@ -350,7 +359,6 @@ extern "C" PLUGIN_API void SetEntityAbsVelocity(int entityIndex, const Vector& v
 }	
 
 ///
-
 
 extern "C" PLUGIN_API float GetEntityWaterLevel(int entityIndex)
 {
