@@ -82,6 +82,7 @@ struct bbox_t;
 struct trace_t_s2;
 class CEntityKeyValues;
 class CEntityKeyValues;
+class CBaseEntity2;
 
 namespace addresses
 {
@@ -90,10 +91,10 @@ namespace addresses
 	inline void (*TracePlayerBBox)(const Vector& start, const Vector& end, const bbox_t& bounds, CTraceFilterS2* filter, trace_t_s2& pm);
 	inline void (*CCSPlayerController_SwitchTeam)(CCSPlayerController* controller, int team);
 	inline void (*CBasePlayerController_SetPawn)(CBasePlayerController* controller, CCSPlayerPawn* pawn, bool, bool);
-	inline CBaseEntity* (*CGameEntitySystem_FindEntityByClassName)(CEntitySystem* pEntitySystem, CEntityInstance* pStartEntity, const char* szName);
-	inline CBaseEntity* (*CGameEntitySystem_FindEntityByName)(CEntitySystem* pEntitySystem, CEntityInstance* pStartEntity, const char* szName, CEntityInstance* pSearchingEntity, CEntityInstance* pActivator, CEntityInstance* pCaller, IEntityFindFilter* pFilter);
-	inline CBaseEntity* (*CreateEntityByName)(const char* className, int iForceEdictIndex);
-	inline void (*DispatchSpawn)(CBaseEntity* pEntity, CEntityKeyValues* pEntityKeyValues);
+	inline CBaseEntity2* (*CGameEntitySystem_FindEntityByClassName)(CEntitySystem* pEntitySystem, CEntityInstance* pStartEntity, const char* szName);
+	inline CBaseEntity2* (*CGameEntitySystem_FindEntityByName)(CEntitySystem* pEntitySystem, CEntityInstance* pStartEntity, const char* szName, CEntityInstance* pSearchingEntity, CEntityInstance* pActivator, CEntityInstance* pCaller, IEntityFindFilter* pFilter);
+	inline CBaseEntity2* (*CreateEntityByName)(const char* className, int iForceEdictIndex);
+	inline void (*DispatchSpawn)(CBaseEntity2* pEntity, CEntityKeyValues* pEntityKeyValues);
 
 
 } // namespace addresses

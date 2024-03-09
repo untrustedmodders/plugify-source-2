@@ -27,9 +27,9 @@ extern "C" PLUGIN_API void PrintAlert(int clientIndex, const std::string& messag
 	utils::PrintAlert(CPlayerSlot(clientIndex), message.c_str());
 }
 
-extern "C" PLUGIN_API void PrintHTMLCentre(int clientIndex, const std::string& message)
+extern "C" PLUGIN_API void PrintHtmlCentre(int clientIndex, const std::string& message)
 {
-	utils::PrintHTMLCentre(CPlayerSlot(clientIndex), message.c_str());
+	utils::PrintHtmlCentre(CPlayerSlot(clientIndex), message.c_str());
 }
 
 extern "C" PLUGIN_API void PrintConsoleAll(const std::string& message)
@@ -52,9 +52,9 @@ extern "C" PLUGIN_API void PrintAlertAll(const std::string& message)
 	utils::PrintAlertAll(message.c_str());
 }
 
-extern "C" PLUGIN_API void PrintHTMLCentreAll(const std::string& message)
+extern "C" PLUGIN_API void PrintHtmlCentreAll(const std::string& message)
 {
-	utils::PrintHTMLCentreAll(message.c_str());
+	utils::PrintHtmlCentre(message.c_str());
 }
 
 extern "C" PLUGIN_API void PrintChatColored(int clientIndex, const std::string& message)

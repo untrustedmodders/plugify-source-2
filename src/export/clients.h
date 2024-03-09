@@ -2,7 +2,7 @@
 
 #include <core/sdk/entity/cbaseentity.h>
 
-extern "C" PLUGIN_API uint64_t GetSteamAccountID(int clientIndex)
+extern "C" PLUGIN_API uint64_t GetSteamAccountId(int clientIndex)
 {
 	auto pPlayer = g_PlayerManager.GetPlayerBySlot(clientIndex);
 	if (pPlayer == nullptr || !pPlayer->m_bAuthorized)
@@ -19,7 +19,7 @@ extern "C" PLUGIN_API uint64_t GetSteamAccountID(int clientIndex)
 	return pSteamId->ConvertToUint64();
 }
 
-extern "C" PLUGIN_API void GetClientIP(std::string& output, int clientIndex)
+extern "C" PLUGIN_API void GetClientIp(std::string& output, int clientIndex)
 {
 	auto pPlayer = g_PlayerManager.GetPlayerBySlot(clientIndex);
 	if (pPlayer == nullptr)

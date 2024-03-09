@@ -21,8 +21,8 @@
 	],
 	"exportedMethods": [
 		{
-			"name": "GetSteamAccountID",
-			"funcName": "GetSteamAccountID",
+			"name": "GetSteamAccountId",
+			"funcName": "GetSteamAccountId",
 			"paramTypes": [
 				{
 					"name": "clientIndex",
@@ -35,8 +35,8 @@
 			}
 		},
 		{
-			"name": "GetClientIP",
-			"funcName": "GetClientIP",
+			"name": "GetClientIp",
+			"funcName": "GetClientIp",
 			"paramTypes": [
 				{
 					"name": "clientIndex",
@@ -559,8 +559,8 @@
 			}
 		},
 		{
-			"name": "PrintHTMLCentre",
-			"funcName": "PrintHTMLCentre",
+			"name": "PrintHtmlCentre",
+			"funcName": "PrintHtmlCentre",
 			"paramTypes": [
 				{
 					"name": "clientIndex",
@@ -634,8 +634,8 @@
 			}
 		},
 		{
-			"name": "PrintHTMLCentreAll",
-			"funcName": "PrintHTMLCentreAll",
+			"name": "PrintHtmlCentreAll",
+			"funcName": "PrintHtmlCentreAll",
 			"paramTypes": [
 				{
 					"name": "message",
@@ -1975,6 +1975,20 @@
 			}
 		},
 		{
+			"name": "GetIndexFromEntity",
+			"funcName": "GetIndexFromEntity",
+			"paramTypes": [
+				{
+					"name": "entity",
+					"type": "ptr64",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int32"
+			}
+		},
+		{
 			"name": "GetUserIdFromIndex",
 			"funcName": "GetUserIdFromIndex",
 			"paramTypes": [
@@ -2095,20 +2109,12 @@
 						"name": "HookEntityOutputCallback",
 						"paramTypes": [
 							{
-								"name": "pThis",
-								"type": "ptr64"
+								"name": "activator",
+								"type": "int32"
 							},
 							{
-								"name": "pActivator",
-								"type": "ptr64"
-							},
-							{
-								"name": "pCaller",
-								"type": "ptr64"
-							},
-							{
-								"name": "value",
-								"type": "ptr64"
+								"name": "caller",
+								"type": "int32"
 							},
 							{
 								"name": "flDelay",
@@ -2152,23 +2158,19 @@
 						"name": "HookEntityOutputCallback",
 						"paramTypes": [
 							{
-								"name": "pThis",
-								"type": "ptr64"
+								"name": "output",
+								"type": "string"
 							},
 							{
-								"name": "pActivator",
-								"type": "ptr64"
+								"name": "activator",
+								"type": "int32"
 							},
 							{
-								"name": "pCaller",
-								"type": "ptr64"
+								"name": "caller",
+								"type": "int32"
 							},
 							{
-								"name": "value",
-								"type": "ptr64"
-							},
-							{
-								"name": "flDelay",
+								"name": "delay",
 								"type": "float"
 							}
 						],
@@ -2193,8 +2195,8 @@
 			"funcName": "FindEntityByClassname",
 			"paramTypes": [
 				{
-					"name": "pStartEntity",
-					"type": "ptr64",
+					"name": "startEntity",
+					"type": "int32",
 					"ref": false
 				},
 				{
@@ -2204,7 +2206,7 @@
 				}
 			],
 			"retType": {
-				"type": "ptr64"
+				"type": "int32"
 			}
 		},
 		{
@@ -2212,38 +2214,18 @@
 			"funcName": "FindEntityByName",
 			"paramTypes": [
 				{
-					"name": "pStartEntity",
-					"type": "ptr64",
+					"name": "startEntity",
+					"type": "int32",
 					"ref": false
 				},
 				{
 					"name": "szName",
 					"type": "string",
 					"ref": false
-				},
-				{
-					"name": "pSearchingEntity",
-					"type": "ptr64",
-					"ref": false
-				},
-				{
-					"name": "pActivator",
-					"type": "ptr64",
-					"ref": false
-				},
-				{
-					"name": "pCaller",
-					"type": "ptr64",
-					"ref": false
-				},
-				{
-					"name": "pFilter",
-					"type": "ptr64",
-					"ref": false
 				}
 			],
 			"retType": {
-				"type": "ptr64"
+				"type": "int32"
 			}
 		},
 		{
@@ -2257,7 +2239,7 @@
 				}
 			],
 			"retType": {
-				"type": "ptr64"
+				"type": "int32"
 			}
 		},
 		{
@@ -2267,6 +2249,39 @@
 				{
 					"name": "entityIndex",
 					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "GetEntityName",
+			"funcName": "GetEntityName",
+			"paramTypes": [
+				{
+					"name": "entityIndex",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "string"
+			}
+		},
+		{
+			"name": "SetEntityName",
+			"funcName": "SetEntityName",
+			"paramTypes": [
+				{
+					"name": "entityIndex",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "name",
+					"type": "string",
 					"ref": false
 				}
 			],
@@ -2516,7 +2531,7 @@
 				}
 			],
 			"retType": {
-				"type": "ptr64"
+				"type": "int32"
 			}
 		},
 		{
@@ -2529,8 +2544,8 @@
 					"ref": false
 				},
 				{
-					"name": "owner",
-					"type": "ptr64",
+					"name": "ownerIndex",
+					"type": "int32",
 					"ref": false
 				}
 			],
@@ -2677,7 +2692,7 @@
 				}
 			],
 			"retType": {
-				"type": "ptr64"
+				"type": "int32"
 			}
 		},
 		{

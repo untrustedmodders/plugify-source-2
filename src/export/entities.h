@@ -8,6 +8,11 @@ extern "C" PLUGIN_API CBaseEntity* GetEntityFromIndex(int entityIndex)
 	return g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex));
 }
 
+extern "C" PLUGIN_API int GetIndexFromEntity(CBaseEntity2* entity)
+{
+	return entity->entindex();
+}
+
 extern "C" PLUGIN_API int GetUserIdFromIndex(int entityIndex)
 {
 	// CPlayerSlot is 1 less than index
@@ -95,19 +100,49 @@ extern "C" PLUGIN_API void UnhookEntityOutput(const std::string& szClassname, co
 	g_OutputManager.UnhookEntityOutput(szClassname, szOutput, callback, static_cast<HookMode>(post));
 }
 
-extern "C" PLUGIN_API CBaseEntity* FindEntityByClassname(CEntityInstance* pStartEntity, const std::string& szName)
+extern "C" PLUGIN_API int FindEntityByClassname(int startEntity, const std::string& szName)
 {
-	return addresses::CGameEntitySystem_FindEntityByClassName(g_pEntitySystem, pStartEntity, szName.c_str());
+	CBaseEntity2* start = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(startEntity)));
+	if (!start)
+	{
+		return -1;
+	}
+
+	CBaseEntity2* ent = addresses::CGameEntitySystem_FindEntityByClassName(g_pEntitySystem, start, szName.c_str());
+	if (!ent)
+	{
+		return -1;
+	}
+
+	return ent->entindex();
 }
 
-extern "C" PLUGIN_API CBaseEntity* FindEntityByName(CEntityInstance* pStartEntity, const std::string& szName, CEntityInstance* pSearchingEntity, CEntityInstance* pActivator, CEntityInstance* pCaller, IEntityFindFilter* pFilter)
+extern "C" PLUGIN_API int FindEntityByName(int startEntity, const std::string& szName)
 {
-	return addresses::CGameEntitySystem_FindEntityByName(g_pEntitySystem, pStartEntity, szName.c_str(), pSearchingEntity, pActivator, pCaller, pFilter);
+	CBaseEntity2* start = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(startEntity)));
+	if (!start)
+	{
+		return -1;
+	}
+
+	CBaseEntity2* ent = addresses::CGameEntitySystem_FindEntityByName(g_pEntitySystem, start, szName.c_str(), nullptr, nullptr, nullptr, nullptr);
+	if (!ent)
+	{
+		return -1;
+	}
+
+	return ent->entindex();
 }
 
-extern "C" PLUGIN_API CBaseEntity* CreateEntityByName(const std::string& className)
+extern "C" PLUGIN_API int CreateEntityByName(const std::string& className)
 {
-	return addresses::CreateEntityByName(className.c_str(), -1);
+	CBaseEntity2* ent = addresses::CreateEntityByName(className.c_str(), -1);
+	if (!ent)
+	{
+		return -1;
+	}
+
+	return ent->entindex();
 }
 
 extern "C" PLUGIN_API void DispatchSpawn(int entityIndex)
@@ -122,6 +157,28 @@ extern "C" PLUGIN_API void DispatchSpawn(int entityIndex)
 }
 
 ///
+
+extern "C" PLUGIN_API void GetEntityName(std::string& output, int entityIndex)
+{
+	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	if (!ent)
+	{
+		return;
+	}
+
+
+}
+
+extern "C" PLUGIN_API void SetEntityName(int entityIndex, const std::string& name)
+{
+	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	if (!ent)
+	{
+		return;
+	}
+
+
+}
 
 extern "C" PLUGIN_API int GetEntityMoveType(int entityIndex)
 {
@@ -272,24 +329,31 @@ extern "C" PLUGIN_API void SetTeamEntity(int entityIndex, int team)
 	ent->m_iTeamNum = team;
 }
 
-extern "C" PLUGIN_API CEntityInstance* GetEntityOwner(int entityIndex)
+extern "C" PLUGIN_API int GetEntityOwner(int entityIndex)
 {
 	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
-		return nullptr;
+		return -1;
 	}
 
-	return ent->m_CBodyComponent->m_pSceneNode->m_pOwner();
+	return ent->m_CBodyComponent->m_pSceneNode->m_pOwner()->GetEntityIndex().Get();
 
 }
-extern "C" PLUGIN_API void SetEntityOwner(int entityIndex, CEntityInstance* owner)
+extern "C" PLUGIN_API void SetEntityOwner(int entityIndex, int ownerIndex)
 {
 	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return;
 	}
+
+	CBaseEntity* owner = g_pEntitySystem->GetBaseEntity(CEntityIndex(ownerIndex));
+	if (!owner)
+	{
+		return;
+	}
+
 	ent->m_CBodyComponent->m_pSceneNode->m_pOwner = owner;
 }
 
@@ -371,15 +435,15 @@ extern "C" PLUGIN_API float GetEntityWaterLevel(int entityIndex)
 	return ent->m_flWaterLevel();
 
 }
-extern "C" PLUGIN_API CBaseEntity2* GetEntityGroundEntity(int entityIndex)
+extern "C" PLUGIN_API int GetEntityGroundEntity(int entityIndex)
 {
 	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
-		return nullptr;
+		return -1;
 	}
 	
-	return ent->m_hGroundEntity();
+	return ent->m_hGroundEntity()->entindex();
 
 }
 extern "C" PLUGIN_API int GetEntityEffects(int entityIndex)

@@ -44,7 +44,7 @@ dyno::ReturnAction EntityOutputManager::Hook_FireOutputInternal(dyno::IHook& hoo
 	auto pThis = dyno::GetArgument<CEntityIOOutput* const>(hook, 0);
 	auto pActivator = dyno::GetArgument<CEntityInstance*>(hook, 1);
 	auto pCaller = dyno::GetArgument<CEntityInstance*>(hook, 2);
-	auto value = dyno::GetArgument<const CVariant* const>(hook, 3);
+	//auto value = dyno::GetArgument<const CVariant* const>(hook, 3);
 	auto flDelay = dyno::GetArgument<float>(hook, 4);
 
 	if (pCaller)
@@ -75,11 +75,14 @@ dyno::ReturnAction EntityOutputManager::Hook_FireOutputInternal(dyno::IHook& hoo
 
 	ResultType result = ResultType::Continue;
 
+	int activator = pActivator != nullptr ? pActivator->GetEntityIndex().Get() : -1;
+	int caller = pCaller != nullptr ? pCaller->GetEntityIndex().Get() : -1;
+
 	for (auto pCallbackPair : m_vecCallbackPairs)
 	{
 		for (size_t i = 0; i < pCallbackPair->pre.GetCount(); ++i)
 		{
-			auto thisResult = pCallbackPair->pre.Notify(i, pThis, pActivator, pCaller, value, flDelay);
+			auto thisResult = pCallbackPair->pre.Notify(i, activator, caller, flDelay);
 			if (thisResult >= ResultType::Stop)
 			{
 				break;
@@ -102,15 +105,18 @@ dyno::ReturnAction EntityOutputManager::Hook_FireOutputInternal(dyno::IHook& hoo
 
 dyno::ReturnAction EntityOutputManager::Hook_FireOutputInternal_Post(dyno::IHook& hook)
 {
-	auto pThis = dyno::GetArgument<CEntityIOOutput* const>(hook, 0);
+	//auto pThis = dyno::GetArgument<CEntityIOOutput* const>(hook, 0);
 	auto pActivator = dyno::GetArgument<CEntityInstance*>(hook, 1);
 	auto pCaller = dyno::GetArgument<CEntityInstance*>(hook, 2);
-	auto value = dyno::GetArgument<const CVariant* const>(hook, 3);
+	//auto value = dyno::GetArgument<const CVariant* const>(hook, 3);
 	auto flDelay = dyno::GetArgument<float>(hook, 4);
+
+	int activator = pActivator != nullptr ? pActivator->GetEntityIndex().Get() : -1;
+	int caller = pCaller != nullptr ? pCaller->GetEntityIndex().Get() : -1;
 
 	for (auto pCallbackPair : m_vecCallbackPairs)
 	{
-		pCallbackPair->post.Notify(pThis, pActivator, pCaller, value, flDelay);
+		pCallbackPair->post.Notify(activator, caller, flDelay);
 	}
 
 	return dyno::ReturnAction::Ignored;

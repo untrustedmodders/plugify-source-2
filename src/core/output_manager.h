@@ -11,7 +11,7 @@ class CEntityIOOutput;
 
 using OutputKey = std::pair<std::string, std::string>;
 
-using EntityListenerCallback = ResultType (*)(CEntityIOOutput* const pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* const value, float flDelay);
+using EntityListenerCallback = ResultType (*)(int activator, int caller, float delay);
 
 struct CallbackPair
 {

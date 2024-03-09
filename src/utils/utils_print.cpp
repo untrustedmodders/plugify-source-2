@@ -239,7 +239,7 @@ void utils::PrintAlert(CPlayerSlot slot, const char* message)
 	ClientPrintFilter(&filter, HUD_PRINTALERT, message, "", "", "", "");
 }
 
-void utils::PrintHTMLCentre(CPlayerSlot slot, const char* message)
+void utils::PrintHtmlCentre(CPlayerSlot slot, const char* message)
 {
 	IGameEvent* event = g_gameEventManager->CreateEvent("show_survival_respawn_status");
 	if (!event)
@@ -280,7 +280,7 @@ void utils::PrintAlertAll(const char* message)
 	ClientPrintFilter(&filter, HUD_PRINTALERT, message, "", "", "", "");
 }
 
-void utils::PrintHTMLCentreAll(const char* message)
+void utils::PrintHtmlCentreAll(const char* message)
 {
 	IGameEvent* event = g_gameEventManager->CreateEvent("show_survival_respawn_status");
 	if (!event)
