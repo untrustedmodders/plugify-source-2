@@ -5,7 +5,7 @@
 
 #include <convar.h>
 
-using ConVarChangeListenerCallback = void (*)(BaseConVar* pConVar, const std::string& newValue, const std::string& flOldValue);
+using ConVarChangeListenerCallback = void (*)(BaseConVar* pConVar, const std::string& newValue, const std::string& oldValue);
 
 struct ConVarInfo
 {
