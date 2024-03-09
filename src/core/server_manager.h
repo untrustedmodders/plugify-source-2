@@ -5,11 +5,11 @@
 
 using TaskCallback = void (*)();
 
-class ServerManager
+class CServerManager
 {
 public:
-	ServerManager() = default;
-	~ServerManager() = default;
+	CServerManager() = default;
+	~CServerManager() = default;
 
 	void AddTaskForNextWorldUpdate(TaskCallback task);
 	void AddTaskForNextFrame(TaskCallback task);
@@ -24,4 +24,4 @@ private:
 	std::mutex m_nextTasksLock;
 };
 
-extern ServerManager g_ServerManager;
+extern CServerManager g_ServerManager;

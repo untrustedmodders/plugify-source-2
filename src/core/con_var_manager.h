@@ -18,16 +18,16 @@ struct ConVarInfo
 	CListenerManager<ConVarChangeListenerCallback> hook;
 };
 
-class ConVarManager;
-extern ConVarManager g_ConVarManager;
+class CConVarManager;
+extern CConVarManager g_ConVarManager;
 
 using ConVarInfoPtr = std::unique_ptr<ConVarInfo>;
 
-class ConVarManager
+class CConVarManager
 {
 public:
-	ConVarManager() = default;
-	~ConVarManager() = default;
+	CConVarManager() = default;
+	~CConVarManager() = default;
 
 	template<typename T>
 	CConVarBaseData* CreateConVar(const std::string& name, const std::string& description, const T& defaultVal, int flags, bool hasMin = false, T min = {}, bool hasMax = {}, T max = {})

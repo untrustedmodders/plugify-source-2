@@ -3,11 +3,11 @@
 #include <dynohook/dynohook.h>
 #include <public/eiface.h>
 
-class VoiceManager
+class CVoiceManager
 {
 public:
-	VoiceManager() = delete;
-	~VoiceManager() = delete;
+	CVoiceManager() = delete;
+	~CVoiceManager() = delete;
 
 	static dyno::ReturnAction Hook_SetClientListening(dyno::IHook& hook);
 };

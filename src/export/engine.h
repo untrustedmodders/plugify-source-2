@@ -90,12 +90,12 @@ extern "C" PLUGIN_API bool IsDecalPrecached(const std::string& decal)
 
 extern "C" PLUGIN_API float GetTickInterval()
 {
-	return TimerSystem::GetTickedInterval();
+	return CTimerSystem::GetTickedInterval();
 }
 
 extern "C" PLUGIN_API double GetTickedTime()
 {
-	return TimerSystem::GetTickedTime();
+	return CTimerSystem::GetTickedTime();
 }
 
 extern "C" PLUGIN_API void* GetEconItemSystem()

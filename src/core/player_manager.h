@@ -44,7 +44,7 @@ typedef uint8_t VoiceFlag_t;
 
 class CPlayer
 {
-	friend class PlayerManager;
+	friend class CPlayerManager;
 
 public:
 	CPlayer();
@@ -94,12 +94,12 @@ public:
 	CPlayerBitVec m_selfMutes = {};
 };
 
-class PlayerManager
+class CPlayerManager
 {
 	friend class CPlayer;
 
 public:
-	PlayerManager();
+	CPlayerManager();
 
 	void OnLevelShutdown();
 	bool OnClientConnect(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, bool unk1, CBufferString* pRejectReason);
@@ -137,4 +137,4 @@ private:
 	float m_lastAuthCheckTime{};
 };
 
-extern PlayerManager g_PlayerManager;
+extern CPlayerManager g_PlayerManager;

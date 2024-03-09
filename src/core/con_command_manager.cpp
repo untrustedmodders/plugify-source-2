@@ -10,7 +10,7 @@ ConCommandInfo::ConCommandInfo(std::string name, std::string description) : name
 {
 }
 
-void ConCommandManager::AddCommandListener(const std::string& name, CommandListenerCallback callback, HookMode mode)
+void CConCommandManager::AddCommandListener(const std::string& name, CommandListenerCallback callback, HookMode mode)
 {
 	if (name.empty())
 	{
@@ -59,7 +59,7 @@ void ConCommandManager::AddCommandListener(const std::string& name, CommandListe
 	}
 }
 
-void ConCommandManager::RemoveCommandListener(const std::string& name, CommandListenerCallback callback, HookMode mode)
+void CConCommandManager::RemoveCommandListener(const std::string& name, CommandListenerCallback callback, HookMode mode)
 {
 	if (name.empty())
 	{
@@ -91,7 +91,7 @@ void ConCommandManager::RemoveCommandListener(const std::string& name, CommandLi
 	}
 }
 
-bool ConCommandManager::AddValveCommand(const std::string& name, const std::string& description, int64 flags)
+bool CConCommandManager::AddValveCommand(const std::string& name, const std::string& description, int64 flags)
 {
 	if (name.empty() || g_pCVar->FindConVar(name.c_str()).IsValid())
 	{
@@ -116,7 +116,7 @@ bool ConCommandManager::AddValveCommand(const std::string& name, const std::stri
 	return true;
 }
 
-bool ConCommandManager::RemoveValveCommand(const std::string& name)
+bool CConCommandManager::RemoveValveCommand(const std::string& name)
 {
 	auto hFoundCommand = g_pCVar->FindCommand(name.c_str());
 	if (!hFoundCommand.IsValid())
@@ -138,13 +138,13 @@ bool ConCommandManager::RemoveValveCommand(const std::string& name)
 	return true;
 }
 
-bool ConCommandManager::IsValidValveCommand(const std::string& name) const
+bool CConCommandManager::IsValidValveCommand(const std::string& name) const
 {
 	ConCommandHandle hFoundCommand = g_pCVar->FindCommand(name.c_str());
 	return hFoundCommand.IsValid();
 }
 
-ResultType ConCommandManager::ExecuteCommandCallbacks(const std::string& name, const CCommandContext& ctx, const CCommand& args, HookMode mode, CommandCallingContext callingContext)
+ResultType CConCommandManager::ExecuteCommandCallbacks(const std::string& name, const CCommandContext& ctx, const CCommand& args, HookMode mode, CommandCallingContext callingContext)
 {
 	g_Logger.MessageFormat("[ConCommandManager::ExecuteCommandCallbacks][%s]: %s\n", mode == HookMode::Pre ? "Pre" : "Post", name.c_str());
 
@@ -206,7 +206,7 @@ ResultType ConCommandManager::ExecuteCommandCallbacks(const std::string& name, c
 	return result;
 }
 
-dyno::ReturnAction ConCommandManager::Hook_DispatchConCommand(dyno::IHook& hook)
+dyno::ReturnAction CConCommandManager::Hook_DispatchConCommand(dyno::IHook& hook)
 {
 	// auto cmd = dyno::GetArgument<ConCommandHandle* const>(hook, 1);
 	auto ctx = dyno::GetArgument<const CCommandContext*>(hook, 2);
@@ -225,7 +225,7 @@ dyno::ReturnAction ConCommandManager::Hook_DispatchConCommand(dyno::IHook& hook)
 	return dyno::ReturnAction::Ignored;
 }
 
-dyno::ReturnAction ConCommandManager::Hook_DispatchConCommand_Post(dyno::IHook& hook)
+dyno::ReturnAction CConCommandManager::Hook_DispatchConCommand_Post(dyno::IHook& hook)
 {
 	// auto cmd = dyno::GetArgument<ConCommandHandle* const>(hook, 1);
 	auto ctx = dyno::GetArgument<const CCommandContext*>(hook, 2);
@@ -242,4 +242,4 @@ dyno::ReturnAction ConCommandManager::Hook_DispatchConCommand_Post(dyno::IHook& 
 	return dyno::ReturnAction::Ignored;
 }
 
-ConCommandManager g_CommandManager;
+CConCommandManager g_CommandManager;

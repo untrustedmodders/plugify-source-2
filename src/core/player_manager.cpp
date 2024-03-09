@@ -166,16 +166,16 @@ void CPlayer::SetSteamId(const CSteamID* steam_id)
 	m_steamId = steam_id;
 }
 
-PlayerManager::PlayerManager() = default;
+CPlayerManager::CPlayerManager() = default;
 
-void PlayerManager::RunAuthChecks()
+void CPlayerManager::RunAuthChecks()
 {
-	if (TimerSystem::GetTickedTime() - m_lastAuthCheckTime < 0.5)
+	if (CTimerSystem::GetTickedTime() - m_lastAuthCheckTime < 0.5)
 	{
 		return;
 	}
 
-	m_lastAuthCheckTime = static_cast<float>(TimerSystem::GetTickedTime());
+	m_lastAuthCheckTime = static_cast<float>(CTimerSystem::GetTickedTime());
 
 	for (int i = 0; i <= MaxClients(); i++)
 	{
@@ -195,14 +195,14 @@ void PlayerManager::RunAuthChecks()
 	}
 }
 
-void PlayerManager::OnClientAuthorized(CPlayer* player) const
+void CPlayerManager::OnClientAuthorized(CPlayer* player) const
 {
 	g_Logger.MessageFormat("[OnClientAuthorized] - %s, %lli\n", player->GetName().c_str(), player->GetSteamId()->ConvertToUint64());
 
 	GetOnClientAuthorizedListenerManager().Notify(player->m_iSlot.Get(), player->GetSteamId()->ConvertToUint64());
 }
 
-bool PlayerManager::OnClientConnect(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, bool unk1, CBufferString* pRejectReason)
+bool CPlayerManager::OnClientConnect(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, bool unk1, CBufferString* pRejectReason)
 {
 	g_Logger.MessageFormat("[OnClientConnect] - %d, %s, %s\n", slot.Get(), pszName, pszNetworkID);
 
@@ -229,7 +229,7 @@ bool PlayerManager::OnClientConnect(CPlayerSlot slot, const char* pszName, uint6
 	return m_refuseConnection;
 }
 
-bool PlayerManager::OnClientConnect_Post(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, bool unk1, CBufferString* pRejectReason, bool origRet)
+bool CPlayerManager::OnClientConnect_Post(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, bool unk1, CBufferString* pRejectReason, bool origRet)
 {
 	g_Logger.MessageFormat("[OnClientConnect_Post] - %d, %s, %s\n", slot.Get(), pszName, pszNetworkID);
 
@@ -256,7 +256,7 @@ bool PlayerManager::OnClientConnect_Post(CPlayerSlot slot, const char* pszName, 
 	return origRet;
 }
 
-void PlayerManager::OnClientConnected(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, const char* pszAddress, bool bFakePlayer)
+void CPlayerManager::OnClientConnected(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, const char* pszAddress, bool bFakePlayer)
 {
 	g_Logger.MessageFormat("[OnClientConnected] - %d, %s, %s, %s\n", slot.Get(), pszName, pszNetworkID, pszAddress);
 
@@ -266,7 +266,7 @@ void PlayerManager::OnClientConnected(CPlayerSlot slot, const char* pszName, uin
 	GetOnClientConnectedListenerManager().Notify(pPlayer->m_iSlot.Get());
 }
 
-void PlayerManager::OnClientPutInServer(CPlayerSlot slot, char const* pszName, int type, uint64 xuid)
+void CPlayerManager::OnClientPutInServer(CPlayerSlot slot, char const* pszName, int type, uint64 xuid)
 {
 	g_Logger.MessageFormat("[OnClientPutInServer] - %d, %s, %d\n", slot.Get(), pszName, type);
 
@@ -295,7 +295,7 @@ void PlayerManager::OnClientPutInServer(CPlayerSlot slot, char const* pszName, i
 	GetOnClientPutInServerListenerManager().Notify(pPlayer->m_iSlot.Get());
 }
 
-void PlayerManager::OnClientDisconnect(CPlayerSlot slot, ENetworkDisconnectionReason reason, const char* pszName, uint64 xuid, const char* pszNetworkID)
+void CPlayerManager::OnClientDisconnect(CPlayerSlot slot, ENetworkDisconnectionReason reason, const char* pszName, uint64 xuid, const char* pszNetworkID)
 {
 	g_Logger.MessageFormat("[OnClientDisconnect] - %d, %s, %s\n", slot.Get(), pszName, pszNetworkID);
 
@@ -313,7 +313,7 @@ void PlayerManager::OnClientDisconnect(CPlayerSlot slot, ENetworkDisconnectionRe
 	}
 }
 
-void PlayerManager::OnClientDisconnect_Post(CPlayerSlot slot, ENetworkDisconnectionReason reason, const char* pszName, uint64 xuid, const char* pszNetworkID)
+void CPlayerManager::OnClientDisconnect_Post(CPlayerSlot slot, ENetworkDisconnectionReason reason, const char* pszName, uint64 xuid, const char* pszNetworkID)
 {
 	g_Logger.MessageFormat("[OnClientDisconnect_Post] - %d, %s, %s\n", slot.Get(), pszName, pszNetworkID);
 
@@ -330,7 +330,7 @@ void PlayerManager::OnClientDisconnect_Post(CPlayerSlot slot, ENetworkDisconnect
 	GetOnClientDisconnect_PostListenerManager().Notify(pPlayer->m_iSlot.Get(), (int)reason);
 }
 
-void PlayerManager::OnClientCommand(CPlayerSlot slot, const CCommand& args) const
+void CPlayerManager::OnClientCommand(CPlayerSlot slot, const CCommand& args) const
 {
 	auto pPlayer = g_PlayerManager.GetPlayerBySlot(slot.Get());
 	if (!pPlayer)
@@ -348,14 +348,14 @@ void PlayerManager::OnClientCommand(CPlayerSlot slot, const CCommand& args) cons
 	}
 }
 
-void PlayerManager::OnClientActive(CPlayerSlot slot, bool bLoadGame) const
+void CPlayerManager::OnClientActive(CPlayerSlot slot, bool bLoadGame) const
 {
 	g_Logger.MessageFormat("[OnClientActive] - %d\n", slot.Get());
 
 	GetOnClientActiveListenerManager().Notify(slot.Get(), bLoadGame);
 }
 
-void PlayerManager::OnLevelShutdown()
+void CPlayerManager::OnLevelShutdown()
 {
 	g_Logger.Message("[OnLevelShutdown]\n");
 
@@ -372,22 +372,22 @@ void PlayerManager::OnLevelShutdown()
 	m_playerCount = 0;
 }
 
-int PlayerManager::ListenClient() const
+int CPlayerManager::ListenClient() const
 {
 	return m_listenClient;
 }
 
-int PlayerManager::NumPlayers() const
+int CPlayerManager::NumPlayers() const
 {
 	return m_playerCount;
 }
 
-int PlayerManager::MaxClients() const
+int CPlayerManager::MaxClients() const
 {
 	return gpGlobals->maxClients;
 }
 
-CPlayer* PlayerManager::GetPlayerBySlot(int client) const
+CPlayer* CPlayerManager::GetPlayerBySlot(int client) const
 {
 	if (client > MaxClients() || client < 0)
 	{
@@ -398,12 +398,12 @@ CPlayer* PlayerManager::GetPlayerBySlot(int client) const
 }
 
 // In userids, the lower byte is always the player slot
-CPlayerSlot PlayerManager::GetSlotFromUserId(uint16 userid)
+CPlayerSlot CPlayerManager::GetSlotFromUserId(uint16 userid)
 {
 	return CPlayerSlot(userid & 0xFF);
 }
 
-CPlayer* PlayerManager::GetPlayerFromUserId(uint16 userid)
+CPlayer* CPlayerManager::GetPlayerFromUserId(uint16 userid)
 {
 	uint8 client = userid & 0xFF;
 
@@ -415,7 +415,7 @@ CPlayer* PlayerManager::GetPlayerFromUserId(uint16 userid)
 	return const_cast<CPlayer*>(&m_players[client]);
 }
 
-CPlayer* PlayerManager::GetPlayerFromSteamId(uint64 steamid)
+CPlayer* CPlayerManager::GetPlayerFromSteamId(uint64 steamid)
 {
 	for (int i = 0; i <= MaxClients(); ++i)
 	{
@@ -429,7 +429,7 @@ CPlayer* PlayerManager::GetPlayerFromSteamId(uint64 steamid)
 	return nullptr;
 }
 
-ETargetType PlayerManager::TargetPlayerString(int caller, const char* target, std::vector<int>& clients)
+ETargetType CPlayerManager::TargetPlayerString(int caller, const char* target, std::vector<int>& clients)
 {
 	ETargetType targetType = ETargetType::NONE;
 	if (!V_stricmp(target, "@me"))
@@ -551,7 +551,7 @@ ETargetType PlayerManager::TargetPlayerString(int caller, const char* target, st
 	return targetType;
 }
 
-void PlayerManager::InvalidatePlayer(CPlayer* pPlayer)
+void CPlayerManager::InvalidatePlayer(CPlayer* pPlayer)
 {
 	auto userid = g_pEngineServer2->GetPlayerUserId(pPlayer->m_iSlot);
 	if (userid.Get() != -1)
@@ -560,4 +560,4 @@ void PlayerManager::InvalidatePlayer(CPlayer* pPlayer)
 	pPlayer->Disconnect();
 }
 
-PlayerManager g_PlayerManager;
+CPlayerManager g_PlayerManager;

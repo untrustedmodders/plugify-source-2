@@ -1,6 +1,6 @@
 #include "output_manager.h"
 
-void EntityOutputManager::HookEntityOutput(std::string szClassname, std::string szOutput, EntityListenerCallback callback, HookMode mode)
+void CEntityOutputManager::HookEntityOutput(std::string szClassname, std::string szOutput, EntityListenerCallback callback, HookMode mode)
 {
 	OutputKey outputKey{std::move(szClassname), std::move(szOutput)};
 	CallbackPair* pCallbackPair;
@@ -19,7 +19,7 @@ void EntityOutputManager::HookEntityOutput(std::string szClassname, std::string 
 	listener.Register(callback);
 }
 
-void EntityOutputManager::UnhookEntityOutput(std::string szClassname, std::string szOutput, EntityListenerCallback callback, HookMode mode)
+void CEntityOutputManager::UnhookEntityOutput(std::string szClassname, std::string szOutput, EntityListenerCallback callback, HookMode mode)
 {
 	OutputKey outputKey{std::move(szClassname), std::move(szOutput)};
 
@@ -38,7 +38,7 @@ void EntityOutputManager::UnhookEntityOutput(std::string szClassname, std::strin
 	}
 }
 
-dyno::ReturnAction EntityOutputManager::Hook_FireOutputInternal(dyno::IHook& hook)
+dyno::ReturnAction CEntityOutputManager::Hook_FireOutputInternal(dyno::IHook& hook)
 {
 	// CEntityIOOutput* const pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* const value, float flDelay
 	auto pThis = dyno::GetArgument<CEntityIOOutput* const>(hook, 0);
@@ -103,7 +103,7 @@ dyno::ReturnAction EntityOutputManager::Hook_FireOutputInternal(dyno::IHook& hoo
 	return dyno::ReturnAction::Ignored;
 }
 
-dyno::ReturnAction EntityOutputManager::Hook_FireOutputInternal_Post(dyno::IHook& hook)
+dyno::ReturnAction CEntityOutputManager::Hook_FireOutputInternal_Post(dyno::IHook& hook)
 {
 	//auto pThis = dyno::GetArgument<CEntityIOOutput* const>(hook, 0);
 	auto pActivator = dyno::GetArgument<CEntityInstance*>(hook, 1);
@@ -122,4 +122,4 @@ dyno::ReturnAction EntityOutputManager::Hook_FireOutputInternal_Post(dyno::IHook
 	return dyno::ReturnAction::Ignored;
 }
 
-EntityOutputManager g_OutputManager;
+CEntityOutputManager g_OutputManager;

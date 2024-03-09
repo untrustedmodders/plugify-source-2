@@ -31,11 +31,11 @@ struct ConCommandInfo
 
 using CommandInfoPtr = std::unique_ptr<ConCommandInfo>;
 
-class ConCommandManager
+class CConCommandManager
 {
 public:
-	ConCommandManager() = default;
-	~ConCommandManager() = default;
+	CConCommandManager() = default;
+	~CConCommandManager() = default;
 
 	void AddCommandListener(const std::string& name, CommandListenerCallback callback, HookMode mode);
 	void RemoveCommandListener(const std::string& name, CommandListenerCallback callback, HookMode mode);
@@ -54,4 +54,4 @@ private:
 	CListenerManager<CommandListenerCallback> m_globalPost;
 };
 
-extern ConCommandManager g_CommandManager;
+extern CConCommandManager g_CommandManager;

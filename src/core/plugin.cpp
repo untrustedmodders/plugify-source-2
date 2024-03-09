@@ -383,7 +383,7 @@ dyno::ReturnAction Source2SDK::Hook_DispatchConCommand(dyno::CallbackType type, 
 
 dyno::ReturnAction Source2SDK::Hook_SetClientListening(dyno::CallbackType type, dyno::IHook& hook)
 {
-	return VoiceManager::Hook_SetClientListening(hook);
+	return CVoiceManager::Hook_SetClientListening(hook);
 }
 
 EXPOSE_PLUGIN(PLUGIN_API, &g_sdk)

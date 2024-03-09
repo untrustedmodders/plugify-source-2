@@ -6,15 +6,15 @@ double universalTime = 0.0f;
 double timerNextThink = 0.0f;
 const float engineFixedTickInterval = 0.015625f;
 
-Timer::Timer(float interval, float exec_time, TimerCallback callback, int flags) : m_callback(callback), m_interval(interval), m_execTime(exec_time), m_flags(flags)
+CTimer::CTimer(float interval, float exec_time, TimerCallback callback, int flags) : m_callback(callback), m_interval(interval), m_execTime(exec_time), m_flags(flags)
 {
 }
 
-Timer::~Timer() = default;
+CTimer::~CTimer() = default;
 
-TimerSystem::TimerSystem() = default;
+CTimerSystem::CTimerSystem() = default;
 
-TimerSystem::~TimerSystem()
+CTimerSystem::~CTimerSystem()
 {
 	for (auto timer : m_onceOffTimers)
 	{
@@ -27,7 +27,7 @@ TimerSystem::~TimerSystem()
 	}
 }
 
-void TimerSystem::OnLevelShutdown()
+void CTimerSystem::OnLevelShutdown()
 {
 	RemoveMapChangeTimers();
 
@@ -35,7 +35,7 @@ void TimerSystem::OnLevelShutdown()
 	m_hasMapTicked = false;
 }
 
-void TimerSystem::OnGameFrame(bool simulating)
+void CTimerSystem::OnGameFrame(bool simulating)
 {
 	if (simulating && m_hasMapTicked)
 	{
@@ -58,7 +58,7 @@ void TimerSystem::OnGameFrame(bool simulating)
 	}
 }
 
-double TimerSystem::CalculateNextThink(double lastThinkTime, float interval)
+double CTimerSystem::CalculateNextThink(double lastThinkTime, float interval)
 {
 	if (universalTime - lastThinkTime - interval <= 0.1)
 	{
@@ -70,7 +70,7 @@ double TimerSystem::CalculateNextThink(double lastThinkTime, float interval)
 	}
 }
 
-void TimerSystem::RunFrame()
+void CTimerSystem::RunFrame()
 {
 	for (int i = static_cast<int>(m_onceOffTimers.size()) - 1; i >= 0; i--)
 	{
@@ -106,7 +106,7 @@ void TimerSystem::RunFrame()
 	}
 }
 
-void TimerSystem::RemoveMapChangeTimers()
+void CTimerSystem::RemoveMapChangeTimers()
 {
 	for (int i = static_cast<int>(m_onceOffTimers.size()) - 1; i >= 0; i--)
 	{
@@ -149,11 +149,11 @@ void TimerSystem::RemoveMapChangeTimers()
 	}
 }
 
-Timer* TimerSystem::CreateTimer(float interval, TimerCallback callback, int flags)
+CTimer* CTimerSystem::CreateTimer(float interval, TimerCallback callback, int flags)
 {
 	float execTime = static_cast<float>(universalTime) + interval;
 
-	auto timer = new Timer(interval, execTime, callback, flags);
+	auto timer = new CTimer(interval, execTime, callback, flags);
 
 	if (flags & TIMER_FLAG_REPEAT)
 	{
@@ -167,7 +167,7 @@ Timer* TimerSystem::CreateTimer(float interval, TimerCallback callback, int flag
 	return timer;
 }
 
-void TimerSystem::KillTimer(Timer* timer)
+void CTimerSystem::KillTimer(CTimer* timer)
 {
 	if (!timer)
 		return;
@@ -201,14 +201,14 @@ void TimerSystem::KillTimer(Timer* timer)
 	delete timer;
 }
 
-double TimerSystem::GetTickedTime()
+double CTimerSystem::GetTickedTime()
 {
 	return universalTime;
 }
 
-float TimerSystem::GetTickedInterval()
+float CTimerSystem::GetTickedInterval()
 {
 	return engineFixedTickInterval;
 }
 
-TimerSystem g_TimerSystem;
+CTimerSystem g_TimerSystem;

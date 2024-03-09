@@ -3,17 +3,17 @@
 #define TIMER_FLAG_REPEAT (1 << 0)		 /**< Timer will repeat until stopped */
 #define TIMER_FLAG_NO_MAPCHANGE (1 << 1) /**< Timer will not carry over mapchanges */
 
-class Timer;
+class CTimer;
 
-using TimerCallback = void (*)(Timer*); // TODO: add user data
+using TimerCallback = void (*)(CTimer*); // TODO: add user data
 
-class Timer
+class CTimer
 {
-	friend class TimerSystem;
+	friend class CTimerSystem;
 
 public:
-	Timer(float interval, float execTime, TimerCallback callback, int flags);
-	~Timer();
+	CTimer(float interval, float execTime, TimerCallback callback, int flags);
+	~CTimer();
 
 private:
 	TimerCallback m_callback;
@@ -24,11 +24,11 @@ private:
 	bool m_killMe{};
 };
 
-class TimerSystem
+class CTimerSystem
 {
 public:
-	TimerSystem();
-	~TimerSystem();
+	CTimerSystem();
+	~CTimerSystem();
 
 	void OnLevelShutdown();
 	void OnGameFrame(bool simulating);
@@ -39,15 +39,15 @@ public:
 	static double GetTickedTime();
 	static float GetTickedInterval();
 
-	Timer* CreateTimer(float interval, TimerCallback callback, int flags);
-	void KillTimer(Timer* timer);
+	CTimer* CreateTimer(float interval, TimerCallback callback, int flags);
+	void KillTimer(CTimer* timer);
 
 private:
 	bool m_hasMapTicked{};
 	bool m_hasMapSimulated{};
 	float m_lastTickedTime{};
-	std::vector<Timer*> m_onceOffTimers;
-	std::vector<Timer*> m_repeatTimers;
+	std::vector<CTimer*> m_onceOffTimers;
+	std::vector<CTimer*> m_repeatTimers;
 };
 
-extern TimerSystem g_TimerSystem;
+extern CTimerSystem g_TimerSystem;

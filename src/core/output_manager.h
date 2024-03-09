@@ -19,11 +19,11 @@ struct CallbackPair
 	CListenerManager<EntityListenerCallback> post;
 };
 
-class EntityOutputManager
+class CEntityOutputManager
 {
 public:
-	EntityOutputManager() = default;
-	~EntityOutputManager() = default;
+	CEntityOutputManager() = default;
+	~CEntityOutputManager() = default;
 
 	void HookEntityOutput(std::string szClassname, std::string szOutput, EntityListenerCallback callback, HookMode mode);
 	void UnhookEntityOutput(std::string szClassname, std::string szOutput, EntityListenerCallback callback, HookMode mode);
@@ -36,7 +36,7 @@ private:
 	std::vector<CallbackPair*> m_vecCallbackPairs;
 };
 
-extern EntityOutputManager g_OutputManager;
+extern CEntityOutputManager g_OutputManager;
 
 struct EntityIOConnectionDesc_t
 {

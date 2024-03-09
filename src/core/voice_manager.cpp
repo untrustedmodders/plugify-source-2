@@ -4,7 +4,7 @@
 #include <entity2/entitysystem.h>
 #include <utils/schema.h>
 
-dyno::ReturnAction VoiceManager::Hook_SetClientListening(dyno::IHook& hook)
+dyno::ReturnAction CVoiceManager::Hook_SetClientListening(dyno::IHook& hook)
 {
 	// CPlayerSlot iReceiver, CPlayerSlot iSender, bool bListen
 	auto iReceiver = (CPlayerSlot)dyno::GetArgument<int>(hook, 1);
