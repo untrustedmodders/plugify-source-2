@@ -7,19 +7,36 @@ using Plugify;
 
 namespace cs2sdk
 {
-	public enum ResultType
+	internal static class ResultType
 	{
-		Continue = 0,
-		Changed = 1,
-		Handled = 3,
-		Stop = 4,
-	};
+		public const int Continue = 0;
+		public const int Changed = 1;
+		public const int Handled = 3;
+		public const int Stop = 4;
+	}
 	
-	delegate ResultType CommandCallback(int slot, int context, string[] arguments);
+	internal static class ListenOverride
+	{
+		public const sbyte Default = 0;
+		public const sbyte Mute = 1;
+		public const sbyte Hear = 2;
+	}	
+	
+	internal static class VoiceFlags
+	{
+		public const byte Normal = 0;
+		public const byte Muted = 1;
+		public const byte All = 2;
+		public const byte ListenAll = 4;
+		public const byte Team = 8;
+		public const byte ListenTeam = 16;
+	}
+	
+	delegate int CommandCallback(int caller, int context, string[] arguments);
 	delegate void ChangeCallback(IntPtr pConVar, string newValue, string oldValue);
 	delegate void TaskCallback();
-	delegate ResultType HookEntityOutputCallback(int activator, int caller, float delay);
-	delegate ResultType EventCallback(string name, IntPtr eventInfo, bool dontBroadcast);
+	delegate int HookEntityOutputCallback(int activator, int caller, float delay);
+	delegate int EventCallback(string name, IntPtr eventInfo, bool dontBroadcast);
 	delegate void TimerCallback(IntPtr timer);
 
 	internal static class cs2sdk
@@ -482,7 +499,7 @@ namespace cs2sdk
 	
 	// Hand written wrappers
 
-	internal class GameConfig : IDisposable
+	public class GameConfig : IDisposable
     {
         private readonly GameConfigHandle _gameConfig;
 
@@ -598,6 +615,111 @@ namespace cs2sdk
         }
     }
 	
-	
+    public class ConVar
+    {
+	    private readonly IntPtr conVar;
+
+	    public ConVar(string name)
+	    {
+		    conVar = cs2sdk.FindConVar(name);
+	    }
+	    public ConVar(string name, bool defaultValue, string description, int flags = 0, bool hasMin = false, bool min = false, bool hasMax = false, bool max = false)
+	    {
+		    conVar = cs2sdk.CreateConVarBool(name, defaultValue, description, flags, hasMin, min, hasMax, max);
+	    }
+	    public ConVar(string name, short defaultValue, string description, int flags = 0, bool hasMin = false, short min = 0, bool hasMax = false, short max = 0)
+	    {
+		    conVar = cs2sdk.CreateConVarInt16(name, defaultValue, description, flags, hasMin, min, hasMax, max);
+	    }
+	    public ConVar(string name, ushort defaultValue, string description, int flags = 0, bool hasMin = false, ushort min = 0, bool hasMax = false, ushort max = 0)
+	    {
+		    conVar = cs2sdk.CreateConVarUInt16(name, defaultValue, description, flags, hasMin, min, hasMax, max);
+	    }
+	    public ConVar(string name, int defaultValue, string description, int flags = 0, bool hasMin = false, int min = 0, bool hasMax = false, int max = 0)
+	    {
+		    conVar = cs2sdk.CreateConVarInt32(name, defaultValue, description, flags, hasMin, min, hasMax, max);
+	    }
+	    public ConVar(string name, uint defaultValue, string description, int flags = 0, bool hasMin = false, uint min = 0, bool hasMax = false, uint max = 0)
+	    {
+		    conVar = cs2sdk.CreateConVarUInt32(name, defaultValue, description, flags, hasMin, min, hasMax, max);
+	    }
+	    public ConVar(string name, long defaultValue, string description, int flags = 0, bool hasMin = false, long min = 0, bool hasMax = false, long max = 0)
+	    {
+		    conVar = cs2sdk.CreateConVarInt64(name, defaultValue, description, flags, hasMin, min, hasMax, max);
+	    }
+	    public ConVar(string name, ulong defaultValue, string description, int flags = 0, bool hasMin = false, ulong min = 0, bool hasMax = false, ulong max = 0)
+	    {
+		    conVar = cs2sdk.CreateConVarUInt64(name, defaultValue, description, flags, hasMin, min, hasMax, max);
+	    }
+	    public ConVar(string name, float defaultValue, string description, int flags = 0, bool hasMin = false, float min = 0, bool hasMax = false, float max = 0)
+	    {
+		    conVar = cs2sdk.CreateConVarFloat(name, defaultValue, description, flags, hasMin, min, hasMax, max);
+	    }
+	    public ConVar(string name, double defaultValue, string description, int flags = 0, bool hasMin = false, double min = 0, bool hasMax = false, double max = 0)
+	    {
+		    conVar = cs2sdk.CreateConVarDouble(name, defaultValue, description, flags, hasMin, min, hasMax, max);
+	    }
+	    public ConVar(string name, string defaultValue, string description, int flags = 0)
+	    {
+		    conVar = cs2sdk.CreateConVar(name, defaultValue, description, flags);
+	    }
+	    public ConVar(string name, Color defaultValue, string description, int flags = 0, bool hasMin = false, Color min = default, bool hasMax = false, Color max = default)
+	    {
+		    conVar = cs2sdk.CreateConVarColor(name, ((Color32)defaultValue).rgba, description, flags, hasMin, ((Color32)min).rgba, hasMax, ((Color32)max).rgba);
+	    }
+	    public ConVar(string name, Vector2 defaultValue, string description, int flags = 0, bool hasMin = false, Vector2 min = default, bool hasMax = false, Vector2 max = default)
+	    {
+		    conVar = cs2sdk.CreateConVarVector2(name, defaultValue, description, flags, hasMin, min, hasMax, max);
+	    }
+	    public ConVar(string name, Vector3 defaultValue, string description, int flags = 0, bool hasMin = false, Vector3 min = default, bool hasMax = false, Vector3 max = default)
+	    {
+		    conVar = cs2sdk.CreateConVarVector3(name, defaultValue, description, flags, hasMin, min, hasMax, max);
+	    }
+	    public ConVar(string name, Vector4 defaultValue, string description, int flags = 0, bool hasMin = false, Vector4 min = default, bool hasMax = false, Vector4 max = default)
+	    {
+		    conVar = cs2sdk.CreateConVarVector4(name, defaultValue, description, flags, hasMin, min, hasMax, max);
+	    }
+
+	    public bool IsFlagSet(long flag)
+	    {
+		    return cs2sdk.IsConVarFlagSet(conVar, flag);
+	    }
+	    
+	    public void AddFlags(long flags)
+	    {
+		    cs2sdk.AddConVarFlags(conVar, flags);
+	    }
+	    
+	    public void RemoveFlags(long flags)
+	    {
+		    cs2sdk.RemoveConVarFlags(conVar, flags);
+	    }
+	    
+	    public long GetFlags()
+	    {
+		    return cs2sdk.GetConVarFlags(conVar);
+	    }
+	    
+	    public void SetBounds(bool max, string value)
+	    {
+		   cs2sdk.SetConVarBounds(conVar, max, value);
+	    }
+	    
+	    public string GetValue()
+	    {
+		    return cs2sdk.GetConVarValue(conVar);
+	    }
+	    
+	    public void SetValue(string value)
+	    {
+		    cs2sdk.SetConVarValue(conVar, value);
+	    }
+	    
+	    public void SendValue(int clientIndex, string value)
+	    {
+		    cs2sdk.SendConVarValue(conVar, clientIndex, value);
+	    }
+    }
+
 	// TODO: Add more wrappers
 }

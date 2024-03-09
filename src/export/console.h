@@ -54,7 +54,7 @@ extern "C" PLUGIN_API void PrintAlertAll(const std::string& message)
 
 extern "C" PLUGIN_API void PrintHtmlCentreAll(const std::string& message)
 {
-	utils::PrintHtmlCentre(message.c_str());
+	utils::PrintHtmlCentreAll(message.c_str());
 }
 
 extern "C" PLUGIN_API void PrintChatColored(int clientIndex, const std::string& message)

@@ -2,6 +2,9 @@
 #include "listeners.h"
 #include "timer_system.h"
 
+#include <core/sdk/entity/cbaseplayercontroller.h>
+#include <utils/utils.h>
+
 #include <eiface.h>
 #include <game/server/iplayerinfo.h>
 #include <inetchannelinfo.h>
@@ -394,44 +397,159 @@ CPlayer* PlayerManager::GetPlayerBySlot(int client) const
 	return const_cast<CPlayer*>(&m_players[client]);
 }
 
-// CPlayer *PlayerManager::GetClientOfUserId(int user_id) const
-//{
-//     if (user_id < 0 || user_id > USHRT_MAX)
-//     {
-//         return nullptr;
-//     }
-//
-//     int client = m_userIdLookup[user_id];
-//
-//     /* Verify the userid.  The cache can get messed up with older
-//      * Valve engines.
-//      * check before invoking this backwards compat code.
-//      */
-//     if (client)
-//     {
-//         CPlayer *player = GetPlayerByIndex(client);
-//         if (player && player->IsConnected())
-//         {
-//             int realUserId = ExcUseridFromEdict(player->GetEdict());
-//             if (realUserId == user_id)
-//             {
-//                 return player;
-//             }
-//         }
-//     }
-//
-//     /* If we can't verify the userid, we have to do a manual loop */
-//     CPlayer *player;
-//     auto index = ExcIndexFromUserid(user_id);
-//     player = GetPlayerByIndex(index);
-//     if (player && player->IsConnected())
-//     {
-//         m_userIdLookup[user_id] = index;
-//         return player;
-//     }
-//
-//     return nullptr;
-// }
+// In userids, the lower byte is always the player slot
+CPlayerSlot PlayerManager::GetSlotFromUserId(uint16 userid)
+{
+	return CPlayerSlot(userid & 0xFF);
+}
+
+CPlayer* PlayerManager::GetPlayerFromUserId(uint16 userid)
+{
+	uint8 client = userid & 0xFF;
+
+	if (client >= MaxClients())
+	{
+		return nullptr;
+	}
+
+	return const_cast<CPlayer*>(&m_players[client]);
+}
+
+CPlayer* PlayerManager::GetPlayerFromSteamId(uint64 steamid)
+{
+	for (int i = 0; i <= MaxClients(); ++i)
+	{
+		auto& player = m_players[i];
+		if (player.IsConnected() && player.IsAuthorized() && player.GetSteamId()->ConvertToUint64() == steamid)
+		{
+			return const_cast<CPlayer*>(&player);
+		}
+	}
+
+	return nullptr;
+}
+
+ETargetType PlayerManager::TargetPlayerString(int caller, const char* target, std::vector<int>& clients)
+{
+	ETargetType targetType = ETargetType::NONE;
+	if (!V_stricmp(target, "@me"))
+		targetType = ETargetType::SELF;
+	else if (!V_stricmp(target, "@all"))
+		targetType = ETargetType::ALL;
+	else if (!V_stricmp(target, "@t"))
+		targetType = ETargetType::T;
+	else if (!V_stricmp(target, "@ct"))
+		targetType = ETargetType::CT;
+	else if (!V_stricmp(target, "@spec"))
+		targetType = ETargetType::SPECTATOR;
+	else if (!V_stricmp(target, "@random"))
+		targetType = ETargetType::RANDOM;
+	else if (!V_stricmp(target, "@randomt"))
+		targetType = ETargetType::RANDOM_T;
+	else if (!V_stricmp(target, "@randomct"))
+		targetType = ETargetType::RANDOM_CT;
+
+	clients.clear();
+	
+	if (targetType == ETargetType::SELF && caller != -1)
+	{
+		clients.push_back(caller);
+	}
+	else if (targetType == ETargetType::ALL)
+	{
+		for (int i = 0; i < gpGlobals->maxClients; i++)
+		{
+			if (!m_players[i].IsConnected())
+				continue;
+
+			CBasePlayerController* player = utils::GetController(i);
+
+			if (!player || !player->IsController() || !player->IsConnected())
+				continue;
+
+			clients.push_back(i);
+		}
+	}
+	else if (targetType >= ETargetType::SPECTATOR)
+	{
+		for (int i = 0; i < gpGlobals->maxClients; i++)
+		{
+			if (!m_players[i].IsConnected())
+				continue;
+
+			CBasePlayerController* player = utils::GetController(i);
+
+			if (!player || !player->IsController() || !player->IsConnected())
+				continue;
+
+			if (player->m_iTeamNum() != (targetType == ETargetType::T ? CS_TEAM_T : targetType == ETargetType::CT ? CS_TEAM_CT : CS_TEAM_SPECTATOR))
+				continue;
+
+			clients.push_back(i);
+		}
+	}
+	else if (targetType >= ETargetType::RANDOM && targetType <= ETargetType::RANDOM_CT)
+	{
+		int attempts = 0;
+
+		while (clients.empty() == 0 && attempts < 10000)
+		{
+			int slot = rand() % (gpGlobals->maxClients - 1);
+
+			// Prevent infinite loop
+			attempts++;
+
+			if (!m_players[slot].IsConnected())
+				continue;
+
+			CBasePlayerController* player = utils::GetController(slot);
+
+			if (!player || !player->IsController() || !player->IsConnected())
+				continue;
+
+			if (targetType >= ETargetType::RANDOM_T && (player->m_iTeamNum() != (targetType == ETargetType::RANDOM_T ? CS_TEAM_T : CS_TEAM_CT)))
+				continue;
+
+			clients.push_back(slot);
+		}
+	}
+	else if (*target == '#')
+	{
+		int userid = V_StringToUint16(target + 1, -1);
+
+		if (userid != -1)
+		{
+			targetType = ETargetType::PLAYER;
+			CBasePlayerController* player = utils::GetController(GetSlotFromUserId(userid).Get());
+			if (player && player->IsController() && player->IsConnected())
+			{
+				clients.push_back(GetSlotFromUserId(userid).Get());
+			}
+		}
+	}
+	else
+	{
+		for (int i = 0; i < gpGlobals->maxClients; i++)
+		{
+			if (!m_players[i].IsConnected())
+				continue;
+
+			CBasePlayerController* player = utils::GetController(i);
+
+			if (!player || !player->IsController() || !player->IsConnected())
+				continue;
+
+			if (V_stristr(player->GetPlayerName(), target))
+			{
+				targetType = ETargetType::PLAYER;
+				clients.push_back(i);
+				break;
+			}
+		}
+	}
+
+	return targetType;
+}
 
 void PlayerManager::InvalidatePlayer(CPlayer* pPlayer)
 {

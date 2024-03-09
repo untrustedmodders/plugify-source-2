@@ -27,6 +27,19 @@ enum VoiceFlagValue
 	Speak_ListenTeam = 1 << 4,
 };
 
+enum class ETargetType {
+	NONE,
+	PLAYER,
+	SELF,
+	RANDOM,
+	RANDOM_T,
+	RANDOM_CT,
+	ALL,
+	SPECTATOR,
+	T,
+	CT,
+};
+
 typedef uint8_t VoiceFlag_t;
 
 class CPlayer
@@ -105,7 +118,11 @@ public:
 	int NumPlayers() const;
 	int MaxClients() const;
 	CPlayer* GetPlayerBySlot(int client) const;
-	// CPlayer* GetClientOfUserId(int user_id) const;
+
+	CPlayerSlot GetSlotFromUserId(uint16 userid);
+	CPlayer* GetPlayerFromUserId(uint16 userid);
+	CPlayer* GetPlayerFromSteamId(uint64 steamid);
+	ETargetType TargetPlayerString(int caller, const char* target, std::vector<int>& clients);
 
 private:
 	void InvalidatePlayer(CPlayer* pPlayer);

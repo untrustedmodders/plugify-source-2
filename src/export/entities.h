@@ -456,3 +456,5 @@ extern "C" PLUGIN_API int GetEntityEffects(int entityIndex)
 
 	return ent->m_fEffects();
 }
+
+//Teleport

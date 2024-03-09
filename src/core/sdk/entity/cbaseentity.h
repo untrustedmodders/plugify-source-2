@@ -92,6 +92,7 @@ public:
 	SCHEMA_FIELD(float, m_flGravityScale)
 	SCHEMA_FIELD(float, m_flWaterLevel)
 	SCHEMA_FIELD(int, m_fEffects)
+	SCHEMA_FIELD(bool, m_bIsHLTV)
 
 	int entindex() { return m_pEntity->m_EHandle.GetEntryIndex(); }
 

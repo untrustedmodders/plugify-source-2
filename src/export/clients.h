@@ -107,6 +107,17 @@ extern "C" PLUGIN_API bool IsClientInGame(int clientIndex)
 	return pPlayer->IsInGame();
 }
 
+extern "C" PLUGIN_API bool IsClientSourceTV(int clientIndex)
+{
+	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(clientIndex + 1)));
+	if (!ent)
+	{
+		return false;
+	}
+
+	return ent->m_bIsHLTV();
+}
+
 extern "C" PLUGIN_API bool IsFakeClient(int clientIndex)
 {
 	auto pPlayer = g_PlayerManager.GetPlayerBySlot(clientIndex);
@@ -175,6 +186,11 @@ extern "C" PLUGIN_API void GetClientAbsAngles(QAngle& output, int clientIndex)
 	}
 
 	output = ent->m_CBodyComponent->m_pSceneNode->m_angRotation();
+}
+
+extern "C" PLUGIN_API void TargetPlayerString(std::vector<int>& output, int caller, const std::string& target)
+{
+	g_PlayerManager.TargetPlayerString(caller, target.c_str(), output);
 }
 
 //ChangeTeam

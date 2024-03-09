@@ -13,7 +13,7 @@ enum CommandCallingContext
 	Chat = 1,
 };
 
-using CommandListenerCallback = ResultType (*)(int playerSlot, int callingContext, const std::vector<std::string>& arguments);
+using CommandListenerCallback = ResultType (*)(int caller, int context, const std::vector<std::string>& arguments);
 
 struct ConCommandInfo
 {

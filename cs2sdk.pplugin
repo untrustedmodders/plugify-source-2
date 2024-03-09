@@ -147,6 +147,20 @@
 			}
 		},
 		{
+			"name": "IsClientSourceTV",
+			"funcName": "IsClientSourceTV",
+			"paramTypes": [
+				{
+					"name": "clientIndex",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "bool"
+			}
+		},
+		{
 			"name": "IsFakeClient",
 			"funcName": "IsFakeClient",
 			"paramTypes": [
@@ -267,7 +281,7 @@
 						"name": "CommandCallback",
 						"paramTypes": [
 							{
-								"name": "slot",
+								"name": "caller",
 								"type": "int32"
 							},
 							{
@@ -306,7 +320,7 @@
 						"name": "CommandCallback",
 						"paramTypes": [
 							{
-								"name": "slot",
+								"name": "caller",
 								"type": "int32"
 							},
 							{
@@ -345,7 +359,7 @@
 						"name": "CommandCallback",
 						"paramTypes": [
 							{
-								"name": "slot",
+								"name": "caller",
 								"type": "int32"
 							},
 							{
@@ -389,7 +403,7 @@
 						"name": "CommandCallback",
 						"paramTypes": [
 							{
-								"name": "slot",
+								"name": "caller",
 								"type": "int32"
 							},
 							{
