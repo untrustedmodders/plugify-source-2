@@ -168,6 +168,16 @@ extern "C" PLUGIN_API void GetSchemaStringByName(std::string& output, void* inst
 	output = str != nullptr ? str->Get() : "";
 }
 
+extern "C" PLUGIN_API void GetSchemaVectorByName(Vector& output, void* instancePointer, const std::string& className, const std::string& memberName)
+{
+	auto classKey = hash_32_fnv1a_const(className.c_str());
+	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
+
+	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
+
+	output = *reinterpret_cast<std::add_pointer_t<Vector>>((uintptr_t)(instancePointer) + m_key.offset);
+}
+
 extern "C" PLUGIN_API void SetSchemaValueBoolByName(void* instancePointer, const std::string& className, const std::string& memberName, bool value)
 {
 	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
@@ -358,4 +368,20 @@ extern "C" PLUGIN_API void SetSchemaValueStringByName(void* instancePointer, con
 	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
 
 	*reinterpret_cast<CUtlString*>((uintptr_t)(instancePointer) + m_key.offset) = value.c_str();
+}
+
+extern "C" PLUGIN_API void SetSchemaValueVectorByName(void* instancePointer, const std::string& className, const std::string& memberName, const Vector& value)
+{
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
+	{
+		g_Logger.ErrorFormat("Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		return;
+	}
+
+	auto classKey = hash_32_fnv1a_const(className.c_str());
+	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
+
+	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
+
+	*reinterpret_cast<Vector*>((uintptr_t)(instancePointer) + m_key.offset) = value;
 }
