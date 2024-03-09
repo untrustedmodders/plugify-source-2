@@ -51,7 +51,7 @@ extern "C" PLUGIN_API int GetMaxClients()
 	auto globalVars = gpGlobals;
 	if (globalVars == nullptr)
 	{
-		g_Logger.Error("Global Variables not initialized yet.\n");
+		g_Logger.Warning("Global Variables not initialized yet.\n");
 		return -1;
 	}
 

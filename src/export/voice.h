@@ -4,27 +4,27 @@ extern "C" PLUGIN_API void SetClientListening(CBaseEntity* receiver, CBaseEntity
 {
 	if (!receiver)
 	{
-		g_Logger.Error("Receiver is a null pointer\n");
+		g_Logger.Warning("Receiver is a null pointer\n");
 		return;
 	}
 
 	if (!sender)
 	{
-		g_Logger.Error("Sender is a null pointer\n");
+		g_Logger.Warning("Sender is a null pointer\n");
 		return;
 	}
 
 	auto iSenderSlot = sender->GetEntityIndex().Get() - 1;
 	if (iSenderSlot < 0 || iSenderSlot >= gpGlobals->maxClients)
 	{
-		g_Logger.Error("Invalid sender\n");
+		g_Logger.Warning("Invalid sender\n");
 		return;
 	}
 
 	auto pPlayer = g_PlayerManager.GetPlayerBySlot(receiver->GetEntityIndex().Get() - 1);
 	if (pPlayer == nullptr)
 	{
-		g_Logger.Error("Invalid receiver\n");
+		g_Logger.Warning("Invalid receiver\n");
 		return;
 	}
 
@@ -35,26 +35,27 @@ extern "C" PLUGIN_API int8_t GetClientListening(CBaseEntity* receiver, CBaseEnti
 {
 	if (!receiver)
 	{
-		g_Logger.Error("Receiver is a null pointer\n");
+		g_Logger.Warning("Receiver is a null pointer\n");
 		return Listen_Default;
 	}
 
 	if (!sender)
 	{
-		g_Logger.Error("Sender is a null pointer\n");
+		g_Logger.Warning("Sender is a null pointer\n");
 		return Listen_Default;
 	}
 
 	auto iSenderSlot = sender->GetEntityIndex().Get() - 1;
 	if (iSenderSlot < 0 || iSenderSlot >= gpGlobals->maxClients)
 	{
-		g_Logger.Error("Invalid sender\n");
+		g_Logger.Warning("Invalid sender\n");
+		return Listen_Default;
 	}
 
 	auto pPlayer = g_PlayerManager.GetPlayerBySlot(receiver->GetEntityIndex().Get() - 1);
 	if (pPlayer == nullptr)
 	{
-		g_Logger.Error("Invalid receiver\n");
+		g_Logger.Warning("Invalid receiver\n");
 		return Listen_Default;
 	}
 
@@ -65,14 +66,14 @@ extern "C" PLUGIN_API void SetClientVoiceFlags(CBaseEntity* client, uint8_t flag
 {
 	if (!client)
 	{
-		g_Logger.Error("Receiver is a null pointer\n");
+		g_Logger.Warning("Receiver is a null pointer\n");
 		return;
 	}
 
 	auto pPlayer = g_PlayerManager.GetPlayerBySlot(client->GetEntityIndex().Get() - 1);
 	if (pPlayer == nullptr)
 	{
-		g_Logger.Error("Invalid receiver\n");
+		g_Logger.Warning("Invalid receiver\n");
 		return;
 	}
 
@@ -83,14 +84,14 @@ extern "C" PLUGIN_API uint8_t GetClientVoiceFlags(CBaseEntity* client)
 {
 	if (!client)
 	{
-		g_Logger.Error("Receiver is a null pointer\n");
+		g_Logger.Warning("Receiver is a null pointer\n");
 		return 0;
 	}
 
 	auto pPlayer = g_PlayerManager.GetPlayerBySlot(client->GetEntityIndex().Get() - 1);
 	if (pPlayer == nullptr)
 	{
-		g_Logger.Error("Invalid receiver\n");
+		g_Logger.Warning("Invalid receiver\n");
 		return 0;
 	}
 

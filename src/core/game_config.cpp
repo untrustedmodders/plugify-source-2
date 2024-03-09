@@ -186,7 +186,7 @@ bool CGameConfig::IsSymbol(const std::string& name) const
 	const std::string_view sigOrSymbol = GetSignature(name);
 	if (sigOrSymbol.empty())
 	{
-		g_Logger.ErrorFormat("Missing signature or symbol: %s\n", name.c_str());
+		g_Logger.WarningFormat("Missing signature or symbol: %s\n", name.c_str());
 		return false;
 	}
 	return sigOrSymbol[0] == '@';
@@ -198,7 +198,7 @@ std::string_view CGameConfig::GetSymbol(const std::string& name) const
 
 	if (symbol.size() <= 1)
 	{
-		g_Logger.ErrorFormat("Missing symbol: %s\n", name.c_str());
+		g_Logger.WarningFormat("Missing symbol: %s\n", name.c_str());
 		return {};
 	}
 
@@ -210,7 +210,7 @@ CMemory CGameConfig::ResolveSignature(const std::string& name) const
 	auto moduleRef = GetModule(name);
 	if (!moduleRef.has_value())
 	{
-		g_Logger.ErrorFormat("Invalid module: %s\n", name.c_str());
+		g_Logger.WarningFormat("Invalid module: %s\n", name.c_str());
 		return {};
 	}
 
@@ -222,7 +222,7 @@ CMemory CGameConfig::ResolveSignature(const std::string& name) const
 		const std::string_view symbol = GetSymbol(name);
 		if (symbol.empty())
 		{
-			g_Logger.ErrorFormat("Invalid symbol for %s\n", name.c_str());
+			g_Logger.WarningFormat("Invalid symbol for %s\n", name.c_str());
 			return {};
 		}
 
@@ -233,7 +233,7 @@ CMemory CGameConfig::ResolveSignature(const std::string& name) const
 		const std::string_view signature = GetSignature(name);
 		if (signature.empty())
 		{
-			g_Logger.ErrorFormat("Failed to find signature for %s\n", name.c_str());
+			g_Logger.WarningFormat("Failed to find signature for %s\n", name.c_str());
 			return {};
 		}
 
@@ -242,7 +242,7 @@ CMemory CGameConfig::ResolveSignature(const std::string& name) const
 
 	if (!address)
 	{
-		g_Logger.ErrorFormat("Failed to find address for %s\n", name.c_str());
+		g_Logger.WarningFormat("Failed to find address for %s\n", name.c_str());
 		return {};
 	}
 
@@ -263,7 +263,7 @@ CGameConfig* CGameConfigManager::LoadGameConfigFile(std::string path)
 	CGameConfig gameConfig("cs2", path);
 	if (!gameConfig.Initialize(confError))
 	{
-		g_Logger.ErrorFormat("Could not read \"%s\": %s\n", gameConfig.GetPath().c_str(), confError);
+		g_Logger.WarningFormat("Could not read \"%s\": %s\n", gameConfig.GetPath().c_str(), confError);
 		return nullptr;
 	}
 

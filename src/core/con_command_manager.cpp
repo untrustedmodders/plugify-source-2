@@ -152,12 +152,10 @@ ResultType ConCommandManager::ExecuteCommandCallbacks(const std::string& name, c
 
 	auto globalCallback = mode == HookMode::Pre ? m_globalPre : m_globalPost;
 
-	m_cmdContexts[&args] = callingContext;
-
 	int size = args.ArgC();
 
 	std::vector<std::string> arguments;
-	arguments.reserve((size_t)size);
+	arguments.reserve(static_cast<size_t>(size));
 	for (int i = 0; i < size; ++i)
 	{
 		arguments.emplace_back(args.Arg(i));
@@ -165,7 +163,7 @@ ResultType ConCommandManager::ExecuteCommandCallbacks(const std::string& name, c
 
 	for (size_t i = 0; i < globalCallback.GetCount(); ++i)
 	{
-		auto thisResult = globalCallback.Notify(i, ctx.GetPlayerSlot().Get(), args);
+		auto thisResult = globalCallback.Notify(i, ctx.GetPlayerSlot().Get(), callingContext, arguments);
 		if (thisResult >= ResultType::Stop)
 		{
 			if (mode == HookMode::Pre)
@@ -186,7 +184,6 @@ ResultType ConCommandManager::ExecuteCommandCallbacks(const std::string& name, c
 	auto it = m_cmdLookup.find(name);
 	if (it == m_cmdLookup.end())
 	{
-		m_cmdContexts.erase(&args);
 		return result;
 	}
 
@@ -195,10 +192,9 @@ ResultType ConCommandManager::ExecuteCommandCallbacks(const std::string& name, c
 
 	for (size_t i = 0; i < callback.GetCount(); ++i)
 	{
-		auto thisResult = globalCallback.Notify(i, ctx.GetPlayerSlot().Get(), args);
+		auto thisResult = globalCallback.Notify(i, ctx.GetPlayerSlot().Get(), callingContext, arguments);
 		if (thisResult >= ResultType::Handled)
 		{
-			m_cmdContexts.erase(&args);
 			return thisResult;
 		}
 		else if (thisResult > result)
@@ -207,14 +203,7 @@ ResultType ConCommandManager::ExecuteCommandCallbacks(const std::string& name, c
 		}
 	}
 
-	m_cmdContexts.erase(&args);
 	return result;
-}
-
-CommandCallingContext ConCommandManager::GetCommandCallingContext(CCommand* args) const
-{
-	auto it = m_cmdContexts.find(args);
-	return it != m_cmdContexts.end() ? std::get<CommandCallingContext>(*it) : CommandCallingContext::Invalid;
 }
 
 dyno::ReturnAction ConCommandManager::Hook_DispatchConCommand(dyno::IHook& hook)

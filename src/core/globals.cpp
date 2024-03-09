@@ -21,7 +21,7 @@ CGameEntitySystem* g_pEntitySystem = nullptr;
 IEngineSound* g_pEngineSound = nullptr;
 
 #define RESOLVE_SIG(gameConfig, name, variable) \
-	variable = (decltype(variable))(void*)gameConfig->ResolveSignature(name)
+	variable = (decltype(variable))(void*)(gameConfig)->ResolveSignature(name)
 
 namespace modules
 {
@@ -44,12 +44,14 @@ T* FindInterface(const DynLibUtils::CModule* module, const char* name)
 	if (!fn)
 	{
 		g_Logger.ErrorFormat("Could not find CreateInterface in %s at \"%s\"\n", module->GetModuleName().data(), module->GetModulePath().data());
+		return nullptr;
 	}
 
 	void* pInterface = fn.CCast<CreateInterfaceFn>()(name, nullptr);
 	if (!pInterface)
 	{
 		g_Logger.ErrorFormat("Could not find interface: %s in at \"%s\"\n", name, module->GetModuleName().data(), module->GetModulePath().data());
+		return nullptr;
 	}
 
 	return (T*)pInterface;
@@ -98,7 +100,7 @@ namespace globals
 		g_pCoreConfig = new CCoreConfig(utils::ConfigsDirectory() + "core.txt");
 		if (!g_pCoreConfig->Initialize(confError))
 		{
-			g_Logger.ErrorFormat("Could not read \"%s\": %s\n", g_pCoreConfig->GetPath().c_str(), confError);
+			g_Logger.WarningFormat("Could not read \"%s\": %s\n", g_pCoreConfig->GetPath().c_str(), confError);
 		}
 
 		g_pGameConfig = g_pGameConfigManager.LoadGameConfigFile("cs2sdk.games.txt");

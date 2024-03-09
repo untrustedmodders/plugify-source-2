@@ -24,55 +24,6 @@ extern "C" PLUGIN_API void RemoveCommandListener(const std::string& name, Comman
 	g_CommandManager.RemoveCommandListener(name, callback, static_cast<HookMode>(post));
 }
 
-extern "C" PLUGIN_API int CommandGetArgCount(CCommand* command)
-{
-	if (!command)
-	{
-		g_Logger.Error("Invalid command.\n");
-		return -1;
-	}
-
-	return command->ArgC();
-}
-
-extern "C" PLUGIN_API void CommandGetArgString(std::string& output, CCommand* command)
-{
-	if (!command)
-	{
-		g_Logger.Error("Invalid command.\n");
-		return;
-	}
-
-	output = command->ArgS();
-}
-
-extern "C" PLUGIN_API void CommandGetCommandString(std::string& output, CCommand* command)
-{
-	if (!command)
-	{
-		g_Logger.Error("Invalid command.\n");
-		return;
-	}
-
-	output = command->GetCommandString();
-}
-
-extern "C" PLUGIN_API void CommandGetArgByIndex(std::string& output, CCommand* command, int index)
-{
-	if (!command)
-	{
-		g_Logger.Error("Invalid command.\n");
-		return;
-	}
-
-	output = command->Arg(index);
-}
-
-extern "C" PLUGIN_API int CommandGetCallingContext(CCommand* command)
-{
-	return g_CommandManager.GetCommandCallingContext(command);
-}
-
 extern "C" PLUGIN_API void ServerCommand(const std::string& command)
 {
 	auto cleanCommand = command;

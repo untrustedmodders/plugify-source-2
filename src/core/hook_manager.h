@@ -18,6 +18,7 @@ public:
 		if (ihook == nullptr)
 		{
 			g_Logger.ErrorFormat("Could not hook member function \"%s\".\n", utils::Demangle(typeid(func).name()).c_str());
+			return;
 		}
 		auto& hook = m_hooks.emplace_back(std::move(ihook));
 		([&]()
@@ -31,6 +32,7 @@ public:
 		if (!addr)
 		{
 			g_Logger.ErrorFormat("Could not hook detour function \"%s\".\n", name.c_str());
+			return;
 		}
 
 		using trait = dyno::details::function_traits<F>;
@@ -40,6 +42,7 @@ public:
 		if (ihook == nullptr)
 		{
 			g_Logger.ErrorFormat("Could not hook detour function \"%s\".\n", name.c_str());
+			return;
 		}
 
 		auto& hook = m_hooks.emplace_back(std::move(ihook));
