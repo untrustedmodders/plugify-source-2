@@ -18,7 +18,7 @@ namespace cs2sdk
 	delegate ResultType CommandCallback(int slot, int context, string[] arguments);
 	delegate void ChangeCallback(IntPtr pConVar, string newValue, string oldValue);
 	delegate void TaskCallback();
-	delegate ResultType HookEntityOutputCallback(IntPtr pThis, IntPtr pActivator, IntPtr pCaller, IntPtr value, float flDelay);
+	delegate ResultType HookEntityOutputCallback(int activator, int caller, float delay);
 	delegate ResultType EventCallback(string name, IntPtr eventInfo, bool dontBroadcast);
 	delegate void TimerCallback(IntPtr timer);
 
@@ -225,11 +225,11 @@ namespace cs2sdk
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern void UnhookEntityOutput(string szClassname, string szOutput, HookEntityOutputCallback callback, bool post);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal static extern IntPtr FindEntityByClassname(IntPtr pStartEntity, string szName);
+		internal static extern int FindEntityByClassname(int startEntity, string szName);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal static extern IntPtr FindEntityByName(IntPtr pStartEntity, string szName, IntPtr pSearchingEntity, IntPtr pActivator, IntPtr pCaller, IntPtr pFilter);
+		internal static extern int FindEntityByName(int startEntity, string szName);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal static extern IntPtr CreateEntityByName(string className);
+		internal static extern int CreateEntityByName(string className);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern void DispatchSpawn(int entityIndex);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -265,9 +265,9 @@ namespace cs2sdk
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern void SetTeamEntity(int entityIndex, int team);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal static extern IntPtr GetEntityOwner(int entityIndex);
+		internal static extern int GetEntityOwner(int entityIndex);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal static extern void SetEntityOwner(int entityIndex, IntPtr owner);
+		internal static extern void SetEntityOwner(int entityIndex, int ownerIndex);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern void GetEntityAbsOrigin(ref Vector3 output, int entityIndex);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -283,7 +283,7 @@ namespace cs2sdk
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern float GetEntityWaterLevel(int entityIndex);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal static extern IntPtr GetEntityGroundEntity(int entityIndex);
+		internal static extern int GetEntityGroundEntity(int entityIndex);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern int GetEntityEffects(int entityIndex);
 		
