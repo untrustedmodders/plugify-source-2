@@ -8,6 +8,7 @@
 #include <utils/virtual.h>
 
 #include <ISmmPlugin.h>
+#include <igameevents.h>
 #include <engine/IEngineSound.h>
 #include <engine/igameeventsystem.h>
 
@@ -19,6 +20,7 @@ IVEngineServer2* g_pEngineServer2 = nullptr;
 CSchemaSystem* g_pSchemaSystem2 = nullptr;
 CGameEntitySystem* g_pEntitySystem = nullptr;
 IEngineSound* g_pEngineSound = nullptr;
+IUniformRandomStream* random = nullptr;
 
 #define RESOLVE_SIG(gameConfig, name, variable) \
 	variable = (decltype(variable))(void*)(gameConfig)->ResolveSignature(name)
@@ -31,6 +33,7 @@ namespace modules
 	DynLibUtils::CModule* schemasystem = nullptr;
 	DynLibUtils::CModule* filesystem = nullptr;
 	DynLibUtils::CModule* vscript = nullptr;
+	DynLibUtils::CModule* networksystem = nullptr;
 } // namespace modules
 
 IMetamodListener* g_pMetamodListener = nullptr;
@@ -78,6 +81,7 @@ namespace globals
 		modules::schemasystem = new DynLibUtils::CModule(Plat_GetGameDirectory() + replace(CS2SDK_ROOT_BINARY BINARY_MODULE_PREFIX "schemasystem", '/', '\\'));
 		modules::filesystem = new DynLibUtils::CModule(Plat_GetGameDirectory() + replace(CS2SDK_ROOT_BINARY BINARY_MODULE_PREFIX "filesystem_stdio", '/', '\\'));
 		modules::vscript = new DynLibUtils::CModule(Plat_GetGameDirectory() + replace(CS2SDK_ROOT_BINARY BINARY_MODULE_PREFIX "vscript", '/', '\\'));
+		modules::networksystem = new DynLibUtils::CModule(Plat_GetGameDirectory() + replace(CS2SDK_ROOT_BINARY BINARY_MODULE_PREFIX "networksystem", '/', '\\'));
 
 		g_pCVar = FindInterface<ICvar>(modules::tier0, CVAR_INTERFACE_VERSION);
 		g_pSource2GameEntities = FindInterface<ISource2GameEntities>(modules::server, SOURCE2GAMEENTITIES_INTERFACE_VERSION);
@@ -86,13 +90,14 @@ namespace globals
 		g_pSource2GameEntities = FindInterface<ISource2GameEntities>(modules::server, SOURCE2GAMEENTITIES_INTERFACE_VERSION);
 		g_pSource2GameClients = FindInterface<IServerGameClients>(modules::server, SOURCE2GAMECLIENTS_INTERFACE_VERSION);
 		g_pGameResourceServiceServer = FindInterface<IGameResourceServiceServer>(modules::engine, GAMERESOURCESERVICESERVER_INTERFACE_VERSION);
+		//random = FindInterface<IUniformRandomStream>(modules::engine, VENGINE_SERVER_RANDOM_INTERFACE_VERSION);
 
 		g_pEngineServer2 = FindInterface<IVEngineServer2>(modules::engine, SOURCE2ENGINETOSERVER_INTERFACE_VERSION);
 		g_pFullFileSystem = FindInterface<IFileSystem>(modules::filesystem, FILESYSTEM_INTERFACE_VERSION);
 		g_gameEventSystem = FindInterface<IGameEventSystem>(modules::engine, GAMEEVENTSYSTEM_INTERFACE_VERSION);
 		g_pNetworkServerService = FindInterface<INetworkServerService>(modules::engine, NETWORKSERVERSERVICE_INTERFACE_VERSION);
 		//g_pEngineSound = FindInterface<IEngineSound>(modules::engine, IENGINESOUND_SERVER_INTERFACE_VERSION);
-		g_pNetworkMessages = FindInterface<INetworkMessages>(modules::engine, NETWORKMESSAGES_INTERFACE_VERSION);
+		g_pNetworkMessages = FindInterface<INetworkMessages>(modules::networksystem, NETWORKMESSAGES_INTERFACE_VERSION);
 
 		ConVar_Register(FCVAR_RELEASE | FCVAR_SERVER_CAN_EXECUTE | FCVAR_GAMEDLL);
 
@@ -100,10 +105,14 @@ namespace globals
 		g_pCoreConfig = new CCoreConfig(utils::ConfigsDirectory() + "core.txt");
 		if (!g_pCoreConfig->Initialize(confError))
 		{
-			g_Logger.WarningFormat("Could not read \"%s\": %s\n", g_pCoreConfig->GetPath().c_str(), confError);
+			g_Logger.ErrorFormat("Could not read \"%s\": %s\n", g_pCoreConfig->GetPath().c_str(), confError);
 		}
 
 		g_pGameConfig = g_pGameConfigManager.LoadGameConfigFile("cs2sdk.games.txt");
+		if (!g_pGameConfig)
+		{
+			g_Logger.Error("cs2sdk.games.txt not found!");
+		}
 
 		DynLibUtils::CModule plugify("plugify");
 
@@ -111,7 +120,11 @@ namespace globals
 		auto Plugify_ImmListener = plugify.GetFunctionByName("Plugify_ImmListener");
 		g_pMetamodListener = Plugify_ImmListener.CCast<IMetamodListenerFn>()();
 
-		g_gameEventManager = (IGameEventManager2*)(CALL_VIRTUAL(uintptr_t, g_pGameConfig->GetOffset("GameEventManager"), g_pSource2Server) - 8);
+		g_gameEventManager = static_cast<IGameEventManager2*>(CALL_VIRTUAL(IToolGameEventAPI*, g_pGameConfig->GetOffset("GameEventManager"), g_pSource2Server));
+		if (g_gameEventManager == nullptr)
+		{
+			g_Logger.Error("GameEventManager not found!");
+		}
 
 		// load more if needed
 		RESOLVE_SIG(g_pGameConfig, "LegacyGameEventListener", addresses::GetLegacyGameEventListener);

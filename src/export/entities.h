@@ -19,6 +19,11 @@ extern "C" PLUGIN_API int GetUserIdFromIndex(int entityIndex)
 	return g_pEngineServer2->GetPlayerUserId(CPlayerSlot(entityIndex - 1)).Get();
 }
 
+extern "C" PLUGIN_API int GetEntityClientIndex(CBaseEntity2* entity)
+{
+	return utils::GetEntityPlayerSlot(entity).Get();
+}
+
 extern "C" PLUGIN_API void GetEntityClassname(std::string& output, CBaseEntity* entity)
 {
 	output = entity->GetClassname();
@@ -457,4 +462,13 @@ extern "C" PLUGIN_API int GetEntityEffects(int entityIndex)
 	return ent->m_fEffects();
 }
 
-//Teleport
+extern "C" PLUGIN_API void TeleportEntity(int entityIndex, const Vector* origin, const QAngle* angles, const Vector* velocity)
+{
+	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	if (!ent)
+	{
+		return;
+	}
+
+	ent->Teleport(origin, angles, velocity);
+}

@@ -28,16 +28,34 @@ extern "C" PLUGIN_API bool IsMapValid(const std::string& mapname)
 
 extern "C" PLUGIN_API float GetGameTime()
 {
+	if (gpGlobals == nullptr)
+	{
+		g_Logger.Warning("Global Variables not initialized yet.\n");
+		return 0.0f;
+	}
+
 	return gpGlobals->curtime;
 }
 
 extern "C" PLUGIN_API int GetGameTickCount()
 {
+	if (gpGlobals == nullptr)
+	{
+		g_Logger.Warning("Global Variables not initialized yet.\n");
+		return 0;
+	}
+
 	return gpGlobals->tickcount;
 }
 
 extern "C" PLUGIN_API float GetGameFrameTime()
 {
+	if (gpGlobals == nullptr)
+	{
+		g_Logger.Warning("Global Variables not initialized yet.\n");
+		return 0.0f;
+	}
+
 	return gpGlobals->frametime;
 }
 
@@ -48,14 +66,13 @@ extern "C" PLUGIN_API double GetEngineTime()
 
 extern "C" PLUGIN_API int GetMaxClients()
 {
-	auto globalVars = gpGlobals;
-	if (globalVars == nullptr)
+	if (gpGlobals == nullptr)
 	{
 		g_Logger.Warning("Global Variables not initialized yet.\n");
 		return -1;
 	}
 
-	return globalVars->maxClients;
+	return gpGlobals->maxClients;
 }
 
 extern "C" PLUGIN_API int PrecacheModel(const std::string& model)
@@ -125,7 +142,7 @@ extern "C" PLUGIN_API float GetSoundDuration(const std::string& name)
 
 extern "C" PLUGIN_API void EmitSound(int clientIndex, const std::string& sound, float volume)
 {
-	utils::PlaySoundToClient(CPlayerSlot(clientIndex), sound.c_str(), volume);
+	utils::PlaySoundToClient(clientIndex, sound.c_str(), volume);
 }
 
 

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <core/sdk/entity/cbaseentity.h>
+#include <core/sdk/entity/cbaseplayercontroller.h>
+#include <core/sdk/entity/ccsplayercontroller.h>
 
 extern "C" PLUGIN_API uint64_t GetSteamAccountId(int clientIndex)
 {
@@ -109,13 +111,13 @@ extern "C" PLUGIN_API bool IsClientInGame(int clientIndex)
 
 extern "C" PLUGIN_API bool IsClientSourceTV(int clientIndex)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(clientIndex + 1)));
-	if (!ent)
+	auto client = utils::GetController(clientIndex);
+	if (!client)
 	{
 		return false;
 	}
 
-	return ent->m_bIsHLTV();
+	return client->m_bIsHLTV();
 }
 
 extern "C" PLUGIN_API bool IsFakeClient(int clientIndex)
@@ -131,69 +133,131 @@ extern "C" PLUGIN_API bool IsFakeClient(int clientIndex)
 
 extern "C" PLUGIN_API bool IsPlayerAlive(int clientIndex)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(clientIndex + 1)));
-	if (!ent)
+	auto client = utils::GetController(clientIndex);
+	if (!client)
 	{
 		return false;
 	}
 
-	return ent->IsAlive();
+	return client->IsAlive();
 }
 
 /////
 
 extern "C" PLUGIN_API int GetClientTeam(int clientIndex)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(clientIndex + 1)));
-	if (!ent)
+	auto client = utils::GetController(clientIndex);
+	if (!client)
 	{
 		return 0;
 	}
 
-	return ent->m_iTeamNum();
+	return client->m_iTeamNum();
 }
 
 extern "C" PLUGIN_API int GetClientHealth(int clientIndex)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(clientIndex + 1)));
-	if (!ent)
+	auto client = utils::GetController(clientIndex);
+	if (!client)
 	{
 		return 0;
 	}
 
-	return ent->m_iHealth();
+	return client->m_iHealth();
 }
 
 extern "C" PLUGIN_API void GetClientAbsOrigin(Vector& output, int clientIndex)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(clientIndex + 1)));
-	if (!ent)
+	auto client = utils::GetController(clientIndex);
+	if (!client)
 	{
 		return;
 	}
 
-	output = ent->m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin();
+	output = client->m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin();
 }
 
 
 
 extern "C" PLUGIN_API void GetClientAbsAngles(QAngle& output, int clientIndex)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(clientIndex + 1)));
-	if (!ent)
+	auto client = utils::GetController(clientIndex);
+	if (!client)
 	{
 		return;
 	}
 
-	output = ent->m_CBodyComponent->m_pSceneNode->m_angRotation();
+	output = client->m_CBodyComponent->m_pSceneNode->m_angRotation();
 }
 
-extern "C" PLUGIN_API void TargetPlayerString(std::vector<int>& output, int caller, const std::string& target)
+extern "C" PLUGIN_API void ProcessTargetString(std::vector<int>& output, int caller, const std::string& target)
 {
 	g_PlayerManager.TargetPlayerString(caller, target.c_str(), output);
 }
 
-//ChangeTeam
-//SwitchTeam
-//CommitSuicide
-//KickClient
+extern "C" PLUGIN_API void ChangeClientTeam(int clientIndex, int team)
+{
+	auto client = reinterpret_cast<CCSPlayerController*>(utils::GetController(clientIndex));
+	if (!client)
+	{
+		return;
+	}
+
+	client->ChangeTeam(team);
+}
+
+extern "C" PLUGIN_API void SwitchClientTeam(int clientIndex, int team)
+{
+	auto client = static_cast<CCSPlayerController*>(utils::GetController(clientIndex));
+	if (!client)
+	{
+		return;
+	}
+
+	client->SwitchTeam(team);
+}
+
+extern "C" PLUGIN_API void RespawnClient(int clientIndex)
+{
+	auto client = utils::GetController(clientIndex);
+	if (!client)
+	{
+		return;
+	}
+
+	if (client->GetPawn()->IsAlive())
+	{
+		// TODO: Fix players spawning under spawn positions.
+		static_cast<CCSPlayerPawn*>(client->GetPawn())->Respawn();
+	}
+	else
+	{
+		static_cast<CCSPlayerController*>(client)->Respawn();
+	}
+}
+
+extern "C" PLUGIN_API void CommitSuicide(int clientIndex, bool explode, bool force)
+{
+	auto client = utils::GetController(clientIndex);
+	if (!client)
+	{
+		return;
+	}
+
+	client->GetPawn()->CommitSuicide(explode, force);
+}
+
+extern "C" PLUGIN_API void KickClient(int clientIndex)
+{
+	g_pEngineServer2->DisconnectClient(clientIndex, NETWORK_DISCONNECT_KICKED);
+}
+
+extern "C" PLUGIN_API void BanClient(int clientIndex, float duration, bool kick)
+{
+	g_pEngineServer2->BanClient(CPlayerSlot(clientIndex), duration, kick);
+}
+
+extern "C" PLUGIN_API void BanIdentity(uint64_t steamId, float duration, bool kick)
+{
+	g_pEngineServer2->BanClient(CSteamID(steamId), duration, kick);
+}

@@ -22,7 +22,7 @@
 			{
 				"library" 	"server"
 				"windows" 	"4C 89 44 24 18 55 53 57 41 55 41 56"
-				"linux" 	 55 48 89 E5 41 57 49 89 FF 41 56 49 89 F6 41 55 49 89 CD"
+				"linux" 	"55 48 89 E5 41 57 49 89 FF 41 56 49 89 F6 41 55 49 89 CD"
 			}
 			// Search for "land_%s", this is called after that string is referenced (the one with 4 parameters).
 			// (function that calls it also contains "T_Default.SuitLand").

@@ -35,7 +35,7 @@ extern "C" PLUGIN_API void ClientCommand(int clientIndex, const std::string& com
 {
 	auto cleanCommand = command;
 	cleanCommand.append("\n\0");
-	g_pEngineServer2->ClientCommand(CPlayerSlot(clientIndex), cleanCommand.c_str());
+	g_pEngineServer2->ClientCommand(clientIndex, cleanCommand.c_str());
 }
 
 extern "C" PLUGIN_API void ClientCommandFromServer(int clientIndex, const std::string& command)
@@ -47,7 +47,7 @@ extern "C" PLUGIN_API void ClientCommandFromServer(int clientIndex, const std::s
 	if (!handle.IsValid())
 		return;
 
-	CCommandContext context(CommandTarget_t::CT_NO_TARGET, CPlayerSlot(clientIndex));
+	CCommandContext context(CommandTarget_t::CT_NO_TARGET, clientIndex);
 
 	g_pCVar->DispatchConCommand(handle, context, args);
 }

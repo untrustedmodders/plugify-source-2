@@ -71,6 +71,8 @@ namespace cs2sdk
 		internal static extern void GetClientAbsOrigin(ref Vector3 output, int clientIndex);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern void GetClientAbsAngles(ref Vector3 output, int clientIndex);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal static extern int[] TargetPlayerString(int caller, string target);
 		
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern void AddCommand(string name, string description, long flags, CommandCallback callback);

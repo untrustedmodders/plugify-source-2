@@ -35,7 +35,7 @@ CBasePlayerController* utils::GetController(CBaseEntity2* entity)
 			// Seems like the pawn lost its controller, we can try looping through the controllers to find this pawn instead.
 			for (int i = 0; i <= gpGlobals->maxClients; i++)
 			{
-				controller = (CCSPlayerController*)utils::GetController(CPlayerSlot(i));
+				controller = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(i)));
 				if (controller && controller->m_hPlayerPawn() && controller->m_hPlayerPawn().Get() == entity)
 				{
 					return controller;
@@ -82,7 +82,6 @@ CPlayerSlot utils::GetEntityPlayerSlot(CBaseEntity2* entity)
 
 void utils::PlaySoundToClient(CPlayerSlot player, const char* sound, float volume)
 {
-	uint64_t unknown = 0;
 	CSingleRecipientFilter filter(player.Get());
 	EmitSound_t soundParams;
 	soundParams.m_pSoundName = sound;
@@ -92,11 +91,11 @@ void utils::PlaySoundToClient(CPlayerSlot player, const char* sound, float volum
 
 float utils::NormalizeDeg(float a)
 {
-	a = fmod(a, 360.0);
-	if (a >= 180.0)
-		a -= 360.0;
-	else if (a < -180.0)
-		a += 360.0;
+	a = fmod(a, 360.0f);
+	if (a >= 180.0f)
+		a -= 360.0f;
+	else if (a < -180.0f)
+		a += 360.0f;
 	return a;
 }
 

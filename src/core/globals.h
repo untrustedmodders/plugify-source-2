@@ -69,6 +69,7 @@ namespace modules
 	extern DynLibUtils::CModule* schemasystem;
 	extern DynLibUtils::CModule* filesystem;
 	extern DynLibUtils::CModule* vscript;
+	extern DynLibUtils::CModule* networksystem;
 } // namespace modules
 
 class IEntityFindFilter;

@@ -255,6 +255,25 @@
 			}
 		},
 		{
+			"name": "ProcessTargetString",
+			"funcName": "ProcessTargetString",
+			"paramTypes": [
+				{
+					"name": "caller",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "target",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int32*"
+			}
+		},
+		{
 			"name": "AddCommand",
 			"funcName": "AddCommand",
 			"paramTypes": [
@@ -1486,8 +1505,8 @@
 								"type": "string"
 							},
 							{
-								"name": "pConVar",
-								"type": "oldValue"
+								"name": "oldValue",
+								"type": "string"
 							}
 						],
 						"retType": {
@@ -2721,6 +2740,35 @@
 			],
 			"retType": {
 				"type": "int32"
+			}
+		},
+		{
+			"name": "TeleportEntity",
+			"funcName": "TeleportEntity",
+			"paramTypes": [
+				{
+					"name": "entityIndex",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "origin",
+					"type": "vec3",
+					"ref": false
+				},
+				{
+					"name": "angles",
+					"type": "vec3",
+					"ref": false
+				},
+				{
+					"name": "velocity",
+					"type": "vec3",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
 			}
 		},
 		{
