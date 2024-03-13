@@ -60,28 +60,52 @@ T* FindInterface(const DynLibUtils::CModule* module, const char* name)
 	return (T*)pInterface;
 }
 
-template <typename CharT, std::size_t N>
-constexpr auto replace(const CharT (&str)[N], CharT oldChar, CharT newChar) {
-	std::basic_string<CharT> result(str, N - 1);  // Constructing std::basic_string from array
-	for (auto& c : result) {
-		if (c == oldChar) {
-			c = newChar;
-		}
+// we cannot return a char array from a function, therefore we need a wrapper
+template<size_t N>
+struct String {
+	char c[N];
+};
+
+template<size_t N>
+constexpr auto copy(const char (&str)[N])
+{
+	constexpr auto length = N - 1;
+	String<N> result = {};
+	for (size_t i = 0; i < length; ++i)
+	{
+		result.c[i] = str[i];
+#if CS2SDK_PLATFORM_WINDOWS
+		if (result.c[i] == '/')
+			result.c[i] = '\\';
+#endif
 	}
+	result.c[length] = '\0';
 	return result;
 }
+
+#define BINARY_PATH(path, name) copy(path BINARY_MODULE_PREFIX name)
 
 namespace globals
 {
 	void Initialize()
 	{
-		modules::engine = new DynLibUtils::CModule(Plat_GetGameDirectory() + replace(CS2SDK_ROOT_BINARY BINARY_MODULE_PREFIX "engine2", '/', '\\'));
-		modules::tier0 = new DynLibUtils::CModule(Plat_GetGameDirectory() + replace(CS2SDK_ROOT_BINARY BINARY_MODULE_PREFIX "tier0", '/', '\\'));
-		modules::server = new DynLibUtils::CModule(Plat_GetGameDirectory() + replace(CS2SDK_GAME_BINARY BINARY_MODULE_PREFIX "server", '/', '\\'));
-		modules::schemasystem = new DynLibUtils::CModule(Plat_GetGameDirectory() + replace(CS2SDK_ROOT_BINARY BINARY_MODULE_PREFIX "schemasystem", '/', '\\'));
-		modules::filesystem = new DynLibUtils::CModule(Plat_GetGameDirectory() + replace(CS2SDK_ROOT_BINARY BINARY_MODULE_PREFIX "filesystem_stdio", '/', '\\'));
-		modules::vscript = new DynLibUtils::CModule(Plat_GetGameDirectory() + replace(CS2SDK_ROOT_BINARY BINARY_MODULE_PREFIX "vscript", '/', '\\'));
-		modules::networksystem = new DynLibUtils::CModule(Plat_GetGameDirectory() + replace(CS2SDK_ROOT_BINARY BINARY_MODULE_PREFIX "networksystem", '/', '\\'));
+		std::string gameDir(Plat_GetGameDirectory());
+
+		constexpr String enginePath = BINARY_PATH(CS2SDK_ROOT_BINARY, "engine2");
+		constexpr String tier0Path = BINARY_PATH(CS2SDK_ROOT_BINARY, "tier0");
+		constexpr String serverPath = BINARY_PATH(CS2SDK_GAME_BINARY, "server");
+		constexpr String schemasystemPath = BINARY_PATH(CS2SDK_ROOT_BINARY, "schemasystem");
+		constexpr String filesystemPath = BINARY_PATH(CS2SDK_ROOT_BINARY, "filesystem_stdio");
+		constexpr String vscriptPath = BINARY_PATH(CS2SDK_ROOT_BINARY, "vscript");
+		constexpr String networksystemPath = BINARY_PATH(CS2SDK_ROOT_BINARY, "networksystem");
+
+		modules::engine = new DynLibUtils::CModule(gameDir + enginePath.c);
+		modules::tier0 = new DynLibUtils::CModule(gameDir + tier0Path.c);
+		modules::server = new DynLibUtils::CModule(gameDir + serverPath.c);
+		modules::schemasystem = new DynLibUtils::CModule(gameDir + schemasystemPath.c);
+		modules::filesystem = new DynLibUtils::CModule(gameDir + filesystemPath.c);
+		modules::vscript = new DynLibUtils::CModule(gameDir + vscriptPath.c);
+		modules::networksystem = new DynLibUtils::CModule(gameDir + networksystemPath.c);
 
 		g_pCVar = FindInterface<ICvar>(modules::tier0, CVAR_INTERFACE_VERSION);
 		g_pSource2GameEntities = FindInterface<ISource2GameEntities>(modules::server, SOURCE2GAMEENTITIES_INTERFACE_VERSION);
@@ -98,6 +122,8 @@ namespace globals
 		g_pNetworkServerService = FindInterface<INetworkServerService>(modules::engine, NETWORKSERVERSERVICE_INTERFACE_VERSION);
 		//g_pEngineSound = FindInterface<IEngineSound>(modules::engine, IENGINESOUND_SERVER_INTERFACE_VERSION);
 		g_pNetworkMessages = FindInterface<INetworkMessages>(modules::networksystem, NETWORKMESSAGES_INTERFACE_VERSION);
+
+		printf("--------------%s\n", typeid(*g_pSource2Server).name());
 
 		ConVar_Register(FCVAR_RELEASE | FCVAR_SERVER_CAN_EXECUTE | FCVAR_GAMEDLL);
 
@@ -120,7 +146,7 @@ namespace globals
 		auto Plugify_ImmListener = plugify.GetFunctionByName("Plugify_ImmListener");
 		g_pMetamodListener = Plugify_ImmListener.CCast<IMetamodListenerFn>()();
 
-		g_gameEventManager = static_cast<IGameEventManager2*>(CALL_VIRTUAL(IToolGameEventAPI*, g_pGameConfig->GetOffset("GameEventManager"), g_pSource2Server));
+		g_gameEventManager = static_cast<IGameEventManager2*>(CALL_VIRTUAL(IToolGameEventAPI*, int(93), g_pSource2Server));
 		if (g_gameEventManager == nullptr)
 		{
 			g_Logger.Error("GameEventManager not found!");

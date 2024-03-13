@@ -160,10 +160,12 @@ ResultType CConCommandManager::ExecuteCommandCallbacks(const std::string& name, 
 	{
 		arguments.emplace_back(args.Arg(i));
 	}
+	
+	int caller = ctx.GetPlayerSlot().Get() + 1;
 
 	for (size_t i = 0; i < globalCallback.GetCount(); ++i)
 	{
-		auto thisResult = globalCallback.Notify(i, ctx.GetPlayerSlot().Get(), callingContext, arguments);
+		auto thisResult = globalCallback.Notify(i, caller, callingContext, arguments);
 		if (thisResult >= ResultType::Stop)
 		{
 			if (mode == HookMode::Pre)
@@ -192,7 +194,7 @@ ResultType CConCommandManager::ExecuteCommandCallbacks(const std::string& name, 
 
 	for (size_t i = 0; i < callback.GetCount(); ++i)
 	{
-		auto thisResult = globalCallback.Notify(i, ctx.GetPlayerSlot().Get(), callingContext, arguments);
+		auto thisResult = callback.Notify(i, caller, callingContext, arguments);
 		if (thisResult >= ResultType::Handled)
 		{
 			return thisResult;

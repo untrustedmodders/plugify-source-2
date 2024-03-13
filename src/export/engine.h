@@ -142,7 +142,7 @@ extern "C" PLUGIN_API float GetSoundDuration(const std::string& name)
 
 extern "C" PLUGIN_API void EmitSound(int clientIndex, const std::string& sound, float volume)
 {
-	utils::PlaySoundToClient(clientIndex, sound.c_str(), volume);
+	utils::PlaySoundToClient(CPlayerSlot(clientIndex - 1), sound.c_str(), volume);
 }
 
 

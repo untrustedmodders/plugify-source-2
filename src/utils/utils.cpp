@@ -80,6 +80,23 @@ CPlayerSlot utils::GetEntityPlayerSlot(CBaseEntity2* entity)
 		return controller->m_pEntity->m_EHandle.GetEntryIndex() - 1;
 }
 
+CUtlVector<CServerSideClient *>* GetClientList()
+{
+	if (!g_pNetworkGameServer)
+		return nullptr;
+
+	return CALL_VIRTUAL(CUtlVector<CServerSideClient *> *, g_pGameConfig->GetOffset("GetClientList"), g_pNetworkGameServer);
+}
+
+CServerSideClient* GetClientBySlot(CPlayerSlot slot)
+{
+	CUtlVector<CServerSideClient *>* pClients = GetClientList();
+	if (!pClients)
+		return nullptr;
+
+	return pClients->Element(slot.Get());
+}
+
 void utils::PlaySoundToClient(CPlayerSlot player, const char* sound, float volume)
 {
 	CSingleRecipientFilter filter(player.Get());

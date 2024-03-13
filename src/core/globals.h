@@ -18,7 +18,6 @@ class IEngineSound;
 class INetworkGameServer;
 class CGlobalVars;
 class IVEngineServer2;
-class CGameResourceService;
 class CSchemaSystem;
 class CGameEntitySystem;
 class IGameEventListener2;
@@ -49,17 +48,17 @@ extern SourceMM::IMetamodListener* g_pMetamodListener;
 extern CCoreConfig* g_pCoreConfig;
 extern CGameConfig* g_pGameConfig;
 
-namespace DynLibUtils
-{
-	class CModule;
-}
-
 namespace globals
 {
 	void Initialize();
 	void Terminate();
 
 } // namespace globals
+
+namespace DynLibUtils
+{
+	class CModule;
+}
 
 namespace modules
 {

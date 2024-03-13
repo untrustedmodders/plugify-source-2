@@ -372,15 +372,15 @@ extern "C" PLUGIN_API void SetConVarValue(CConVarBaseData* conVar, const std::st
 
 extern "C" PLUGIN_API void SendConVarValue(CConVarBaseData* conVar, int clientIndex, const std::string& value)
 {
-	utils::SendConVarValue(clientIndex, conVar, value.c_str());
+	utils::SendConVarValue(CPlayerSlot(clientIndex - 1), conVar, value.c_str());
 }
 
 extern "C" PLUGIN_API void GetClientConVarValue(std::string& output, int clientIndex, const std::string& convarName)
 {
-	output = g_pEngineServer2->GetClientConVarValue(clientIndex, convarName.c_str());
+	output = g_pEngineServer2->GetClientConVarValue(CPlayerSlot(clientIndex - 1), convarName.c_str());
 }
 
 extern "C" PLUGIN_API void SetFakeClientConVarValue(int clientIndex, const std::string& convarName, const std::string& convarValue)
 {
-	g_pEngineServer2->SetFakeClientConVarValue(clientIndex, convarName.c_str(), convarValue.c_str());
+	g_pEngineServer2->SetFakeClientConVarValue(CPlayerSlot(clientIndex - 1), convarName.c_str(), convarValue.c_str());
 }

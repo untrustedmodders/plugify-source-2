@@ -2,6 +2,7 @@
 
 #include <bitvec.h>
 #include <network_connection.pb.h>
+#include <serversideclient.h>
 
 class CBaseEntity;
 class INetChannelInfo;
@@ -54,8 +55,6 @@ public:
 	void Initialize(std::string name, std::string ip, CPlayerSlot slot);
 	void Connect();
 	void Disconnect();
-	int GetUserId();
-	bool IsAuthStringValidated() const;
 	void Authorize();
 
 public:
@@ -77,21 +76,21 @@ public:
 	void SetVoiceFlags(VoiceFlag_t flags);
 	VoiceFlag_t GetVoiceFlags();
 	ListenOverride GetListen(CPlayerSlot slot) const;
+	bool IsAuthStringValidated() const;
 
 public:
 	std::string m_name;
 	std::string m_authId;
+	std::string m_ipAddress;
 	bool m_bConnected{};
 	bool m_bFakeClient{};
 	bool m_bInGame{};
 	bool m_bAuthorized{};
-	int m_iUserId{1};
 	CPlayerSlot m_iSlot{-1};
 	const CSteamID* m_steamId;
-	std::string m_ipAddress;
-	VoiceFlag_t m_voiceFlag = 0;
-	std::array<ListenOverride, MAXPLAYERS + 2> m_listenMap = {};
-	CPlayerBitVec m_selfMutes = {};
+	VoiceFlag_t m_voiceFlag{};
+	std::array<ListenOverride, MAXPLAYERS + 2> m_listenMap{};
+	CPlayerBitVec m_selfMutes{};
 };
 
 class CPlayerManager
@@ -117,20 +116,19 @@ public:
 
 	int NumPlayers() const;
 	int MaxClients() const;
-	CPlayer* GetPlayerBySlot(int client) const;
 
-	CPlayerSlot GetSlotFromUserId(uint16 userid);
-	CPlayer* GetPlayerFromUserId(uint16 userid);
-	CPlayer* GetPlayerFromSteamId(uint64 steamid);
+	CPlayer* GetPlayerBySlot(CPlayerSlot slot) const;
+	CPlayerSlot GetSlotFromUserId(uint16 userid) const;
+	CPlayer* GetPlayerFromUserId(uint16 userid) const;
+	CPlayer* GetPlayerFromSteamId(uint64 steamid) const;
+
 	ETargetType TargetPlayerString(int caller, const char* target, std::vector<int>& clients);
 
 private:
 	void InvalidatePlayer(CPlayer* pPlayer);
 
 	std::array<CPlayer, MAXPLAYERS + 2> m_players;
-	int m_maxClients{};
 	int m_playerCount{};
-	std::map<int, int> m_userIdLookup;
 	int m_listenClient{};
 	bool m_bListenServer{};
 	bool m_refuseConnection{};

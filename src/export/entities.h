@@ -3,6 +3,11 @@
 #include <core/sdk/entity/cbaseentity.h>
 #include <core/sdk/entity/cbasemodelentity.h>
 
+extern "C" PLUGIN_API int GetClientIndexFromEntityPointer(CBaseEntity2* entity)
+{
+	return utils::GetEntityPlayerSlot(entity).Get() + 1;
+}
+
 extern "C" PLUGIN_API CBaseEntity* GetEntityFromIndex(int entityIndex)
 {
 	return g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex));
@@ -13,30 +18,40 @@ extern "C" PLUGIN_API int GetIndexFromEntity(CBaseEntity2* entity)
 	return entity->entindex();
 }
 
-extern "C" PLUGIN_API int GetUserIdFromIndex(int entityIndex)
+extern "C" PLUGIN_API int GetEntIndexFromRef(uint32_t ref)
 {
-	// CPlayerSlot is 1 less than index
-	return g_pEngineServer2->GetPlayerUserId(CPlayerSlot(entityIndex - 1)).Get();
-}
-
-extern "C" PLUGIN_API int GetEntityClientIndex(CBaseEntity2* entity)
-{
-	return utils::GetEntityPlayerSlot(entity).Get();
-}
-
-extern "C" PLUGIN_API void GetEntityClassname(std::string& output, CBaseEntity* entity)
-{
-	output = entity->GetClassname();
-}
-
-extern "C" PLUGIN_API void* GetEntityPointerFromHandle(CEntityHandle* handle)
-{
-	if (!handle->IsValid())
+	if (ref == INVALID_EHANDLE_INDEX)
 	{
-		return nullptr;
+		return -1;
 	}
 
-	return g_pEntitySystem->GetBaseEntity(*handle);
+	CBaseHandle hndl(ref);
+
+	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(hndl));
+	if (!ent)
+	{
+		return -1;
+	}
+	
+	return ent->entindex();
+}
+
+extern "C" PLUGIN_API uint32_t GetRefFromEntIndex(int entityIndex)
+{
+	CBaseEntity* ent = g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex));
+	if (!ent)
+	{
+		return INVALID_EHANDLE_INDEX;
+	}
+
+	auto hndl = ent->GetRefEHandle();
+
+	if (hndl == INVALID_EHANDLE_INDEX)
+	{
+		return INVALID_EHANDLE_INDEX;
+	}
+
+	return hndl.ToInt();
 }
 
 extern "C" PLUGIN_API void* GetEntityPointerFromRef(uint32_t ref)
@@ -51,14 +66,14 @@ extern "C" PLUGIN_API void* GetEntityPointerFromRef(uint32_t ref)
 	return g_pEntitySystem->GetBaseEntity(hndl);
 }
 
-extern "C" PLUGIN_API uint32_t GetRefFromEntityPointer(CBaseEntity* pEntity)
+extern "C" PLUGIN_API uint32_t GetRefFromEntityPointer(CBaseEntity* entity)
 {
-	if (pEntity == nullptr)
+	if (entity == nullptr)
 	{
 		return INVALID_EHANDLE_INDEX;
 	}
 
-	auto hndl = pEntity->GetRefEHandle();
+	auto hndl = entity->GetRefEHandle();
 
 	if (hndl == INVALID_EHANDLE_INDEX)
 	{
@@ -66,6 +81,32 @@ extern "C" PLUGIN_API uint32_t GetRefFromEntityPointer(CBaseEntity* pEntity)
 	}
 
 	return hndl.ToInt();
+}
+
+extern "C" PLUGIN_API void* GetEntityPointerFromHandle(CEntityHandle* handle)
+{
+	if (!handle->IsValid())
+	{
+		return nullptr;
+	}
+
+	return g_pEntitySystem->GetBaseEntity(*handle);
+}
+
+extern "C" PLUGIN_API int GetEntIndexFromHandle(CEntityHandle* handle)
+{
+	if (!handle->IsValid())
+	{
+		return -1;
+	}
+
+	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(*handle));
+	if (!ent)
+	{
+		return -1;
+	}
+	
+	return ent->entindex();
 }
 
 extern "C" PLUGIN_API bool IsRefValidEntity(uint32_t ref)
@@ -163,6 +204,17 @@ extern "C" PLUGIN_API void DispatchSpawn(int entityIndex)
 
 ///
 
+extern "C" PLUGIN_API void GetEntityClassname(std::string& output, int entityIndex)
+{
+	CBaseEntity* ent = g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex));
+	if (!ent)
+	{
+		return;
+	}
+	
+	output = ent->GetClassname();
+}
+
 extern "C" PLUGIN_API void GetEntityName(std::string& output, int entityIndex)
 {
 	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
@@ -171,7 +223,7 @@ extern "C" PLUGIN_API void GetEntityName(std::string& output, int entityIndex)
 		return;
 	}
 
-
+	// TODO:
 }
 
 extern "C" PLUGIN_API void SetEntityName(int entityIndex, const std::string& name)
@@ -182,7 +234,7 @@ extern "C" PLUGIN_API void SetEntityName(int entityIndex, const std::string& nam
 		return;
 	}
 
-
+	// TODO:
 }
 
 extern "C" PLUGIN_API int GetEntityMoveType(int entityIndex)

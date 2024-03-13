@@ -65,16 +65,6 @@ INetChannelInfo* CPlayer::GetNetInfo() const
 	return g_pEngineServer2->GetPlayerNetInfo(m_iSlot);
 }
 
-int CPlayer::GetUserId()
-{
-	if (m_iUserId == -1)
-	{
-		m_iUserId = g_pEngineServer2->GetPlayerUserId(m_iSlot).Get();
-	}
-
-	return m_iUserId;
-}
-
 bool CPlayer::IsInGame() const
 {
 	return m_bInGame;
@@ -82,9 +72,7 @@ bool CPlayer::IsInGame() const
 
 void CPlayer::Kick(const char* kickReason)
 {
-	char buffer[255];
-	sprintf(buffer, "kickid %d %s\n", GetUserId(), kickReason);
-	g_pEngineServer2->ServerCommand(buffer);
+
 }
 
 const char* CPlayer::GetKeyValue(const char* key) const
@@ -148,7 +136,6 @@ void CPlayer::Disconnect()
 	m_bInGame = false;
 	m_name.clear();
 	m_bFakeClient = false;
-	m_iUserId = -1;
 	m_bAuthorized = false;
 	m_ipAddress.clear();
 	m_selfMutes.ClearAll();
@@ -223,8 +210,6 @@ bool CPlayerManager::OnClientConnect(CPlayerSlot slot, const char* pszName, uint
 	{
 		m_refuseConnection |= !GetOnClientConnectListenerManager().Notify(i, client, pszName, pszNetworkID);
 	}
-
-	m_userIdLookup[g_pEngineServer2->GetPlayerUserId(slot).Get()] = client;
 
 	return m_refuseConnection;
 }
@@ -332,7 +317,7 @@ void CPlayerManager::OnClientDisconnect_Post(CPlayerSlot slot, ENetworkDisconnec
 
 void CPlayerManager::OnClientCommand(CPlayerSlot slot, const CCommand& args) const
 {
-	auto pPlayer = g_PlayerManager.GetPlayerBySlot(slot.Get());
+	auto pPlayer = g_PlayerManager.GetPlayerBySlot(slot);
 	if (!pPlayer)
 		return;
 
@@ -387,8 +372,10 @@ int CPlayerManager::MaxClients() const
 	return gpGlobals->maxClients;
 }
 
-CPlayer* CPlayerManager::GetPlayerBySlot(int client) const
+CPlayer* CPlayerManager::GetPlayerBySlot(CPlayerSlot slot) const
 {
+	int client = slot.Get();
+
 	if (client > MaxClients() || client < 0)
 	{
 		return nullptr;
@@ -398,12 +385,12 @@ CPlayer* CPlayerManager::GetPlayerBySlot(int client) const
 }
 
 // In userids, the lower byte is always the player slot
-CPlayerSlot CPlayerManager::GetSlotFromUserId(uint16 userid)
+CPlayerSlot CPlayerManager::GetSlotFromUserId(uint16 userid) const
 {
 	return CPlayerSlot(userid & 0xFF);
 }
 
-CPlayer* CPlayerManager::GetPlayerFromUserId(uint16 userid)
+CPlayer* CPlayerManager::GetPlayerFromUserId(uint16 userid) const
 {
 	uint8 client = userid & 0xFF;
 
@@ -415,7 +402,7 @@ CPlayer* CPlayerManager::GetPlayerFromUserId(uint16 userid)
 	return const_cast<CPlayer*>(&m_players[client]);
 }
 
-CPlayer* CPlayerManager::GetPlayerFromSteamId(uint64 steamid)
+CPlayer* CPlayerManager::GetPlayerFromSteamId(uint64 steamid) const
 {
 	for (int i = 0; i <= MaxClients(); ++i)
 	{
@@ -467,7 +454,7 @@ ETargetType CPlayerManager::TargetPlayerString(int caller, const char* target, s
 			if (!player || !player->IsController() || !player->IsConnected())
 				continue;
 
-			clients.push_back(i);
+			clients.push_back(i + 1);
 		}
 	}
 	else if (targetType >= ETargetType::SPECTATOR)
@@ -485,7 +472,7 @@ ETargetType CPlayerManager::TargetPlayerString(int caller, const char* target, s
 			if (player->m_iTeamNum() != (targetType == ETargetType::T ? CS_TEAM_T : targetType == ETargetType::CT ? CS_TEAM_CT : CS_TEAM_SPECTATOR))
 				continue;
 
-			clients.push_back(i);
+			clients.push_back(i + 1);
 		}
 	}
 	else if (targetType >= ETargetType::RANDOM && targetType <= ETargetType::RANDOM_CT)
@@ -510,7 +497,7 @@ ETargetType CPlayerManager::TargetPlayerString(int caller, const char* target, s
 			if (targetType >= ETargetType::RANDOM_T && (player->m_iTeamNum() != (targetType == ETargetType::RANDOM_T ? CS_TEAM_T : CS_TEAM_CT)))
 				continue;
 
-			clients.push_back(slot);
+			clients.push_back(slot + 1);
 		}
 	}
 	else if (*target == '#')
@@ -523,7 +510,7 @@ ETargetType CPlayerManager::TargetPlayerString(int caller, const char* target, s
 			CBasePlayerController* player = utils::GetController(GetSlotFromUserId(userid).Get());
 			if (player && player->IsController() && player->IsConnected())
 			{
-				clients.push_back(GetSlotFromUserId(userid).Get());
+				clients.push_back(GetSlotFromUserId(userid).Get() + 1);
 			}
 		}
 	}
@@ -542,7 +529,7 @@ ETargetType CPlayerManager::TargetPlayerString(int caller, const char* target, s
 			if (V_stristr(player->GetPlayerName(), target))
 			{
 				targetType = ETargetType::PLAYER;
-				clients.push_back(i);
+				clients.push_back(i + 1);
 				break;
 			}
 		}
@@ -553,10 +540,6 @@ ETargetType CPlayerManager::TargetPlayerString(int caller, const char* target, s
 
 void CPlayerManager::InvalidatePlayer(CPlayer* pPlayer)
 {
-	auto userid = g_pEngineServer2->GetPlayerUserId(pPlayer->m_iSlot);
-	if (userid.Get() != -1)
-		m_userIdLookup.erase(userid.Get());
-
 	pPlayer->Disconnect();
 }
 

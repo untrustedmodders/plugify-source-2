@@ -4,6 +4,7 @@
 #include <convar.h>
 
 class CBaseEntity2;
+class CServerSideClient;
 
 namespace utils
 {
@@ -20,6 +21,8 @@ namespace utils
 	CBasePlayerController* GetController(CPlayerSlot slot);
 
 	CPlayerSlot GetEntityPlayerSlot(CBaseEntity2* entity);
+	CUtlVector<CServerSideClient *>* GetClientList();
+	CServerSideClient* GetClientBySlot(CPlayerSlot slot);
 
 	// Normalize the angle between -180 and 180.
 	float NormalizeDeg(float a);
@@ -110,7 +113,7 @@ namespace utils
 	{
 		std::size_t operator()(std::pair<T1, T2> const& p) const
 		{
-			std::size_t seed(0);
+			std::size_t seed;
 			hash_combine(seed, p.first);
 			hash_combine(seed, p.second);
 			return seed;
