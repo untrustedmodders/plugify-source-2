@@ -9,10 +9,11 @@ class Source2SDK : public plugify::IPluginEntry
 public:
 	void OnPluginStart() override;
 	void OnPluginEnd() override;
+	static void OnServerStartup();
 
 	static dyno::ReturnAction Hook_StartupServer(dyno::CallbackType type, dyno::IHook& hook);
 	static dyno::ReturnAction Hook_FireEvent(dyno::CallbackType type, dyno::IHook& hook);
-	static dyno::ReturnAction Hook_PostEvent(dyno::CallbackType type, dyno::IHook& hook);
+	//static dyno::ReturnAction Hook_PostEvent(dyno::CallbackType type, dyno::IHook& hook);
 	static dyno::ReturnAction Hook_OnLevelInit(dyno::CallbackType type, dyno::IHook& hook);
 	static dyno::ReturnAction Hook_OnLevelShutdown(dyno::CallbackType type, dyno::IHook& hook);
 	static dyno::ReturnAction Hook_GameFrame(dyno::CallbackType type, dyno::IHook& hook);
@@ -34,7 +35,6 @@ public:
 	static dyno::ReturnAction Hook_PreWorldUpdate(dyno::CallbackType type, dyno::IHook& hook);
 	static dyno::ReturnAction Hook_FireOutputInternal(dyno::CallbackType type, dyno::IHook& hook);
 	static dyno::ReturnAction Hook_DispatchConCommand(dyno::CallbackType type, dyno::IHook& hook);
-	static dyno::ReturnAction Hook_SetClientListening(dyno::CallbackType type, dyno::IHook& hook);
 };
 
 extern Source2SDK g_sdk;

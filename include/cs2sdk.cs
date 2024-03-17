@@ -42,7 +42,9 @@ namespace cs2sdk
 	internal static class cs2sdk
 	{
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal static extern ulong GetSteamAccountId(int clientIndex);
+		internal static extern int GetClientIndexFromEntityPointer(IntPtr entity);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal static extern ulong GetClientAccountId(int clientIndex);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern string GetClientIp(int clientIndex);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -52,17 +54,17 @@ namespace cs2sdk
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern float GetClientLatency(int clientIndex);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal static extern int GetClientUserId(int clientIndex);
-		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern bool IsClientAuthorized(int clientIndex);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern bool IsClientConnected(int clientIndex);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern bool IsClientInGame(int clientIndex);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal static extern bool IsFakeClient(int clientIndex);
+		internal static extern bool IsClientSourceTV(int clientIndex);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal static extern bool IsPlayerAlive(int clientIndex);
+		internal static extern bool IsClientAlive(int clientIndex);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal static extern bool IsFakeClient(int clientIndex);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern int GetClientTeam(int clientIndex);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -72,8 +74,22 @@ namespace cs2sdk
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern void GetClientAbsAngles(ref Vector3 output, int clientIndex);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal static extern int[] TargetPlayerString(int caller, string target);
-		
+		internal static extern void ProcessTargetString(ref int[] output, int caller, string target);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal static extern void ChangeClientTeam(int clientIndex, int team);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal static extern void SwitchClientTeam(int clientIndex, int team);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal static extern void RespawnClient(int clientIndex);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal static extern void CommitSuicide(int clientIndex, bool explode, bool force);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal static extern void KickClient(int clientIndex);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal static extern void BanClient(int clientIndex, float duration, bool kick);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal static extern void BanIdentity(ulong steamId, float duration, bool kick);
+
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern void AddCommand(string name, string description, long flags, CommandCallback callback);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -88,7 +104,7 @@ namespace cs2sdk
 		internal static extern void ClientCommand(int clientIndex, string command);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern void ClientCommandFromServer(int clientIndex, string command);
-		
+
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern void PrintServer(string msg);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -115,7 +131,7 @@ namespace cs2sdk
 		internal static extern void PrintChatColored(int clientIndex, string message);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern void PrintChatColoredAll(string message);
-		
+
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern IntPtr CreateConVarBool(string name, bool defaultValue, string description, int flags, bool hasMin, bool min, bool hasMax, bool max);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -172,7 +188,7 @@ namespace cs2sdk
 		internal static extern string GetClientConVarValue(int clientIndex, string convarName);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern void SetFakeClientConVarValue(int clientIndex, string convarName, string convarValue);
-		
+
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern string GetGameDirectory();
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -217,28 +233,29 @@ namespace cs2sdk
 		internal static extern float GetSoundDuration(string name);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern void EmitSound(int clientIndex, string sound, float volume);
-		
+
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern IntPtr GetEntityFromIndex(int entityIndex);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern int GetIndexFromEntity(IntPtr entity);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal static extern int GetUserIdFromIndex(int entityIndex);
+		internal static extern int GetEntityIndexFromRef(uint ref_);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal static extern string GetEntityClassname(IntPtr entity);
-		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal static extern IntPtr GetEntityPointerFromHandle(IntPtr handle);
+		internal static extern uint GetRefFromEntityIndex(int entityIndex);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern IntPtr GetEntityPointerFromRef(uint ref_);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal static extern uint GetRefFromEntityPointer(IntPtr pEntity);
+		internal static extern uint GetRefFromEntityPointer(IntPtr entity);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal static extern IntPtr GetEntityPointerFromHandle(IntPtr handle);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal static extern int GetEntityIndexFromHandle(IntPtr handle);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern bool IsRefValidEntity(uint ref_);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern IntPtr GetFirstActiveEntity();
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern IntPtr GetConcreteEntityListPointer();
-
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern void HookEntityOutput(string szClassname, string szOutput, HookEntityOutputCallback callback, bool post);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -251,6 +268,8 @@ namespace cs2sdk
 		internal static extern int CreateEntityByName(string className);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern void DispatchSpawn(int entityIndex);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal static extern string GetEntityClassname(int entityIndex);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern string GetEntityName(int entityIndex);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -305,7 +324,9 @@ namespace cs2sdk
 		internal static extern int GetEntityGroundEntity(int entityIndex);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern int GetEntityEffects(int entityIndex);
-		
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal static extern void TeleportEntity(int entityIndex, Vector3 origin, Vector3 angles, Vector3 velocity);
+
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern int HookEvent(string name, EventCallback pCallback, bool post);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -315,7 +336,7 @@ namespace cs2sdk
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern void FireEvent(IntPtr pInfo, bool bDontBroadcast);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal static extern void FireEventToClient(IntPtr pInfo, int entityIndex);
+		internal static extern void FireEventToClient(IntPtr pInfo, int clientIndex);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern void CancelCreatedEvent(IntPtr pInfo);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -364,7 +385,7 @@ namespace cs2sdk
 		internal static extern void SetEventEntityIndex(IntPtr pInfo, string key, int value);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern void SetEventBroadcast(IntPtr pInfo, bool dontBroadcast);
-		
+
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern int LoadEventsFromFile(string path, bool searchAll);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -387,7 +408,7 @@ namespace cs2sdk
 		internal static extern IntPtr GetGameConfigAddress(IntPtr pGameConfig, string name);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern IntPtr GetGameConfigMemSig(IntPtr pGameConfig, string name);
-		
+
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern int RegisterLoggingChannel(string name, int iFlags, int verbosity, int color);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -422,7 +443,7 @@ namespace cs2sdk
 		internal static extern int LogFull(int channelID, int severity, string file, int line, string function, string message);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern int LogFullColored(int channelID, int severity, string file, int line, string function, int color, string message);
-		
+
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern int GetSchemaOffset(string className, string memberName);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -483,20 +504,11 @@ namespace cs2sdk
 		internal static extern void SetSchemaValueStringByName(IntPtr instancePointer, string className, string memberName, string value);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern void SetSchemaValueVectorByName(IntPtr instancePointer, string className, string memberName, Vector3 value);
-		
+
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern IntPtr CreateTimer(float interval, TimerCallback callback, int flags);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal static extern void KillsTimer(IntPtr timer);
-		
-		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal static extern void SetClientListening(int receiver, int sender, sbyte listen);
-		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal static extern sbyte GetClientListening(int receiver, int sender);
-		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal static extern void SetClientVoiceFlags(int clientIndex, byte flags);
-		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal static extern byte GetClientVoiceFlags(int clientIndex);
 	}
 	
 	// Hand written wrappers

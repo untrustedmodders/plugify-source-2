@@ -147,9 +147,9 @@ EventInfo* CEventManager::CreateEvent(const std::string& name, bool force)
 	return nullptr;
 }
 
-void CEventManager::FireEventToClient(EventInfo* pInfo, int entityIndex)
+void CEventManager::FireEventToClient(EventInfo* pInfo, CPlayerSlot slot)
 {
-	IGameEventListener2* pListener = addresses::GetLegacyGameEventListener(CPlayerSlot(entityIndex - 1));
+	IGameEventListener2* pListener = addresses::GetLegacyGameEventListener(slot);
 
 	pListener->FireGameEvent(pInfo->pEvent);
 }

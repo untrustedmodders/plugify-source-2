@@ -4,18 +4,50 @@
 #include <core/sdk/entity/cbaseplayercontroller.h>
 #include <core/sdk/entity/ccsplayercontroller.h>
 
-extern "C" PLUGIN_API uint64_t GetSteamAccountId(int clientIndex)
+extern "C" PLUGIN_API int GetClientIndexFromEntityPointer(CBaseEntity2* entity)
+{
+	return utils::GetEntityPlayerSlot(entity).Get() + 1;
+}
+
+/*extern "C" PLUGIN_API void* GetClientFromIndex(int clientIndex)
+{
+	CUtlVector<CServerSideClient *>* pClients = utils::GetClientList();
+	if (!pClients)
+	{
+		return nullptr;
+	}
+	
+	return pClients->Element(clientIndex - 1);
+}
+
+extern "C" PLUGIN_API int GetIndexFromClient(CServerSideClient* client)
+{
+	CUtlVector<CServerSideClient *>* pClients = utils::GetClientList();
+	if (!pClients)
+	{
+		return -1;
+	}
+	
+	if (pClients->Find(client) != -1)
+	{
+		return client->GetEntityIndex().Get();
+	}
+
+	return -1;
+}*/
+
+extern "C" PLUGIN_API uint64_t GetClientAccountId(int clientIndex)
 {
 	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex - 1));
 	if (pPlayer == nullptr || !pPlayer->m_bAuthorized)
 	{
-		return -1;
+		return 0;
 	}
 
 	auto pSteamId = pPlayer->GetSteamId();
 	if (pSteamId == nullptr)
 	{
-		return -1;
+		return 0;
 	}
 
 	return pSteamId->ConvertToUint64();
@@ -109,6 +141,17 @@ extern "C" PLUGIN_API bool IsClientSourceTV(int clientIndex)
 	return client->m_bIsHLTV();
 }
 
+extern "C" PLUGIN_API bool IsClientAlive(int clientIndex)
+{
+	auto client = utils::GetController(CPlayerSlot(clientIndex - 1));
+	if (!client)
+	{
+		return false;
+	}
+
+	return client->IsAlive();
+}
+
 extern "C" PLUGIN_API bool IsFakeClient(int clientIndex)
 {
 	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex - 1));
@@ -118,17 +161,6 @@ extern "C" PLUGIN_API bool IsFakeClient(int clientIndex)
 	}
 
 	return pPlayer->IsFakeClient();
-}
-
-extern "C" PLUGIN_API bool IsPlayerAlive(int clientIndex)
-{
-	auto client = utils::GetController(CPlayerSlot(clientIndex - 1));
-	if (!client)
-	{
-		return false;
-	}
-
-	return client->IsAlive();
 }
 
 /////
@@ -165,8 +197,6 @@ extern "C" PLUGIN_API void GetClientAbsOrigin(Vector& output, int clientIndex)
 
 	output = client->m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin();
 }
-
-
 
 extern "C" PLUGIN_API void GetClientAbsAngles(QAngle& output, int clientIndex)
 {
@@ -216,7 +246,7 @@ extern "C" PLUGIN_API void RespawnClient(int clientIndex)
 
 	if (client->GetPawn()->IsAlive())
 	{
-		// TODO: Fix players spawning under spawn positions.
+		// TODO: Fix players spawning under spawn positions
 		static_cast<CCSPlayerPawn*>(client->GetPawn())->Respawn();
 	}
 	else

@@ -61,11 +61,13 @@ CBasePlayerController* utils::GetController(CPlayerSlot slot)
 	{
 		return nullptr;
 	}
+	
 	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(slot.Get() + 1)));
 	if (!ent)
 	{
 		return nullptr;
 	}
+	
 	return ent->IsController() ? static_cast<CBasePlayerController*>(ent) : nullptr;
 }
 
@@ -77,25 +79,18 @@ CPlayerSlot utils::GetEntityPlayerSlot(CBaseEntity2* entity)
 		return -1;
 	}
 	else
+	{
 		return controller->m_pEntity->m_EHandle.GetEntryIndex() - 1;
+	}
 }
 
-CUtlVector<CServerSideClient *>* GetClientList()
+/*CUtlVector<CServerSideClient *>* GetClientList()
 {
 	if (!g_pNetworkGameServer)
 		return nullptr;
 
 	return CALL_VIRTUAL(CUtlVector<CServerSideClient *> *, g_pGameConfig->GetOffset("GetClientList"), g_pNetworkGameServer);
-}
-
-CServerSideClient* GetClientBySlot(CPlayerSlot slot)
-{
-	CUtlVector<CServerSideClient *>* pClients = GetClientList();
-	if (!pClients)
-		return nullptr;
-
-	return pClients->Element(slot.Get());
-}
+}*/
 
 void utils::PlaySoundToClient(CPlayerSlot player, const char* sound, float volume)
 {
@@ -209,3 +204,34 @@ bool utils::FindValidSpawn(Vector& origin, QAngle& angles)
 	}
 	return foundValidSpawn;
 }
+
+const std::string& utils::GameDirectory()
+{
+	static std::string gameDirectory(Plat_GetGameDirectory());
+	return gameDirectory;
+}
+
+const std::string& utils::RootDirectory()
+{ 
+	static std::string rootDirectory(GameDirectory() + "/addons/plugify/");
+	return rootDirectory;
+}
+
+const std::string& utils::BinDirectory()
+{ 
+	static std::string binDirectory(GameDirectory() + "/addons/plugify/bin/" CS2SDK_BINARY "/");
+	return binDirectory;
+}
+
+const std::string& utils::ConfigsDirectory()
+{ 
+	static std::string configsDirectory(GameDirectory() + "/addons/plugify/configs/");
+	return configsDirectory;
+}
+
+const std::string& utils::GamedataDirectory()
+{ 
+	static std::string gamedataDirectory(GameDirectory() + "/addons/plugify/gamedata/");
+	return gamedataDirectory;
+}
+

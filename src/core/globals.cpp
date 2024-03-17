@@ -43,21 +43,21 @@ CGameConfig* g_pGameConfig = nullptr;
 template <class T>
 T* FindInterface(const DynLibUtils::CModule* module, const char* name)
 {
-	auto fn = module->GetFunctionByName("CreateInterface");
-	if (!fn)
+	auto CreateInterface = module->GetFunctionByName("CreateInterface");
+	if (!CreateInterface)
 	{
 		g_Logger.ErrorFormat("Could not find CreateInterface in %s at \"%s\"\n", module->GetModuleName().data(), module->GetModulePath().data());
 		return nullptr;
 	}
 
-	void* pInterface = fn.CCast<CreateInterfaceFn>()(name, nullptr);
+	void* pInterface = CreateInterface.CCast<CreateInterfaceFn>()(name, nullptr);
 	if (!pInterface)
 	{
 		g_Logger.ErrorFormat("Could not find interface: %s in at \"%s\"\n", name, module->GetModuleName().data(), module->GetModulePath().data());
 		return nullptr;
 	}
 
-	return (T*)pInterface;
+	return reinterpret_cast<T*>(pInterface);
 }
 
 // we cannot return a char array from a function, therefore we need a wrapper
@@ -67,7 +67,7 @@ struct String {
 };
 
 template<size_t N>
-constexpr auto copy(const char (&str)[N])
+constexpr auto ModulePath(const char (&str)[N])
 {
 	constexpr auto length = N - 1;
 	String<N> result = {};
@@ -83,38 +83,24 @@ constexpr auto copy(const char (&str)[N])
 	return result;
 }
 
-#define BINARY_PATH(path, name) copy(path BINARY_MODULE_PREFIX name)
-
 namespace globals
 {
 	void Initialize()
 	{
-		std::string gameDir(Plat_GetGameDirectory());
-
-		constexpr String enginePath = BINARY_PATH(CS2SDK_ROOT_BINARY, "engine2");
-		constexpr String tier0Path = BINARY_PATH(CS2SDK_ROOT_BINARY, "tier0");
-		constexpr String serverPath = BINARY_PATH(CS2SDK_GAME_BINARY, "server");
-		constexpr String schemasystemPath = BINARY_PATH(CS2SDK_ROOT_BINARY, "schemasystem");
-		constexpr String filesystemPath = BINARY_PATH(CS2SDK_ROOT_BINARY, "filesystem_stdio");
-		constexpr String vscriptPath = BINARY_PATH(CS2SDK_ROOT_BINARY, "vscript");
-		constexpr String networksystemPath = BINARY_PATH(CS2SDK_ROOT_BINARY, "networksystem");
-
-		modules::engine = new DynLibUtils::CModule(gameDir + enginePath.c);
-		modules::tier0 = new DynLibUtils::CModule(gameDir + tier0Path.c);
-		modules::server = new DynLibUtils::CModule(gameDir + serverPath.c);
-		modules::schemasystem = new DynLibUtils::CModule(gameDir + schemasystemPath.c);
-		modules::filesystem = new DynLibUtils::CModule(gameDir + filesystemPath.c);
-		modules::vscript = new DynLibUtils::CModule(gameDir + vscriptPath.c);
-		modules::networksystem = new DynLibUtils::CModule(gameDir + networksystemPath.c);
+		modules::engine = new DynLibUtils::CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY BINARY_MODULE_PREFIX "engine2").c);
+		modules::tier0 = new DynLibUtils::CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY BINARY_MODULE_PREFIX "tier0").c);
+		modules::server = new DynLibUtils::CModule(utils::GameDirectory() + ModulePath(CS2SDK_GAME_BINARY BINARY_MODULE_PREFIX "server").c);
+		modules::schemasystem = new DynLibUtils::CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY BINARY_MODULE_PREFIX "schemasystem").c);
+		modules::filesystem = new DynLibUtils::CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY BINARY_MODULE_PREFIX "filesystem_stdio").c);
+		modules::vscript = new DynLibUtils::CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY BINARY_MODULE_PREFIX "vscript").c);
+		modules::networksystem = new DynLibUtils::CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY BINARY_MODULE_PREFIX "networksystem").c);
 
 		g_pCVar = FindInterface<ICvar>(modules::tier0, CVAR_INTERFACE_VERSION);
-		g_pSource2GameEntities = FindInterface<ISource2GameEntities>(modules::server, SOURCE2GAMEENTITIES_INTERFACE_VERSION);
 		g_pSchemaSystem2 = FindInterface<CSchemaSystem>(modules::schemasystem, SCHEMASYSTEM_INTERFACE_VERSION);
 		g_pSource2Server = FindInterface<ISource2Server>(modules::server, SOURCE2SERVER_INTERFACE_VERSION);
 		g_pSource2GameEntities = FindInterface<ISource2GameEntities>(modules::server, SOURCE2GAMEENTITIES_INTERFACE_VERSION);
 		g_pSource2GameClients = FindInterface<IServerGameClients>(modules::server, SOURCE2GAMECLIENTS_INTERFACE_VERSION);
 		g_pGameResourceServiceServer = FindInterface<IGameResourceServiceServer>(modules::engine, GAMERESOURCESERVICESERVER_INTERFACE_VERSION);
-		//random = FindInterface<IUniformRandomStream>(modules::engine, VENGINE_SERVER_RANDOM_INTERFACE_VERSION);
 
 		g_pEngineServer2 = FindInterface<IVEngineServer2>(modules::engine, SOURCE2ENGINETOSERVER_INTERFACE_VERSION);
 		g_pFullFileSystem = FindInterface<IFileSystem>(modules::filesystem, FILESYSTEM_INTERFACE_VERSION);
@@ -122,8 +108,6 @@ namespace globals
 		g_pNetworkServerService = FindInterface<INetworkServerService>(modules::engine, NETWORKSERVERSERVICE_INTERFACE_VERSION);
 		//g_pEngineSound = FindInterface<IEngineSound>(modules::engine, IENGINESOUND_SERVER_INTERFACE_VERSION);
 		g_pNetworkMessages = FindInterface<INetworkMessages>(modules::networksystem, NETWORKMESSAGES_INTERFACE_VERSION);
-
-		printf("--------------%s\n", typeid(*g_pSource2Server).name());
 
 		ConVar_Register(FCVAR_RELEASE | FCVAR_SERVER_CAN_EXECUTE | FCVAR_GAMEDLL);
 

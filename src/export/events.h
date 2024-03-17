@@ -22,9 +22,9 @@ extern "C" PLUGIN_API void FireEvent(EventInfo* pInfo, bool bDontBroadcast)
 	g_EventManager.FireEvent(pInfo, bDontBroadcast);
 }
 
-extern "C" PLUGIN_API void FireEventToClient(EventInfo* pInfo, int entityIndex)
+extern "C" PLUGIN_API void FireEventToClient(EventInfo* pInfo, int clientIndex)
 {
-	g_EventManager.FireEventToClient(pInfo, entityIndex);
+	g_EventManager.FireEventToClient(pInfo, CPlayerSlot(clientIndex - 1));
 }
 
 extern "C" PLUGIN_API void CancelCreatedEvent(EventInfo* pInfo)

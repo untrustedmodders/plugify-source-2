@@ -17,7 +17,6 @@
 #include "player_manager.h"
 #include "server_manager.h"
 #include "timer_system.h"
-#include "voice_manager.h"
 
 #include <export/commands.h>
 #include <export/cvars.h>
@@ -29,7 +28,6 @@
 #include <export/logger.h>
 #include <export/schema.h>
 #include <export/timers.h>
-#include <export/voice.h>
 #include <export/clients.h>
 
 Source2SDK g_sdk;
@@ -80,7 +78,7 @@ void Source2SDK::OnPluginStart()
 	g_HookManager.AddHookMemFunc(&INetworkServerService::StartupServer, g_pNetworkServerService, Hook_StartupServer, Post);
 	// g_HookManager.AddHookMemFunc(&ISource2GameEntities::CheckTransmit, g_pSource2GameEntities, Hook_CheckTransmit, Post);
 	using PostEventAbstract = void (IGameEventSystem::*)(CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64* clients, INetworkSerializable* pEvent, const void* pData, unsigned long nSize, NetChannelBufType_t bufType);
-	g_HookManager.AddHookMemFunc<PostEventAbstract>(&IGameEventSystem::PostEventAbstract, g_gameEventSystem, Hook_PostEvent, Post);
+	//g_HookManager.AddHookMemFunc<PostEventAbstract>(&IGameEventSystem::PostEventAbstract, g_gameEventSystem, Hook_PostEvent, Post);
 	g_HookManager.AddHookMemFunc(&IGameEventManager2::FireEvent, g_gameEventSystem, Hook_FireEvent, Pre, Post);
 	g_HookManager.AddHookMemFunc(&ISource2Server::ServerHibernationUpdate, g_pSource2Server, Hook_ServerHibernationUpdate, Post);
 	g_HookManager.AddHookMemFunc(&ISource2Server::GameServerSteamAPIActivated, g_pSource2Server, Hook_GameServerSteamAPIActivated, Post);
@@ -90,33 +88,52 @@ void Source2SDK::OnPluginStart()
 	g_HookManager.AddHookMemFunc(&ISource2Server::UpdateWhenNotInGame, g_pSource2Server, Hook_UpdateWhenNotInGame, Post);
 	g_HookManager.AddHookMemFunc(&ISource2Server::PreWorldUpdate, g_pSource2Server, Hook_PreWorldUpdate, Post);
 	g_HookManager.AddHookMemFunc(&ICvar::DispatchConCommand, g_pCVar, Hook_DispatchConCommand, Pre, Post);
-	g_HookManager.AddHookMemFunc(&IVEngineServer2::SetClientListening, g_pEngineServer2, Hook_SetClientListening, Pre);
 
 	using FireOutputInternal = void (*)(CEntityIOOutput* const, CEntityInstance*, CEntityInstance*, const CVariant* const, float);
 	g_HookManager.AddHookDetourFunc<FireOutputInternal>("CEntityIOOutput_FireOutputInternal", Hook_FireOutputInternal, Pre);
+	
+	OnServerStartup(); // for late load
 }
 
 void Source2SDK::OnPluginEnd()
 {
 	globals::Terminate();
 	g_HookManager.UnhookAll();
-	int iListener = g_pEntitySystem->m_entityListeners.Find(&g_pEntityListener);
-	if (iListener != -1)
+	if (g_pEntitySystem != nullptr)
 	{
-		g_pEntitySystem->m_entityListeners.Remove(iListener);
+		int iListener = g_pEntitySystem->m_entityListeners.Find(&g_pEntityListener);
+		if (iListener != -1)
+		{
+			g_pEntitySystem->m_entityListeners.Remove(iListener);
+		}
 	}
 	g_Logger.Message("OnPluginEnd!\n");
+}
+
+void Source2SDK::OnServerStartup()
+{
+	g_pEntitySystem = GameEntitySystem();
+	if (g_pEntitySystem != nullptr)
+	{
+		if (g_pEntitySystem->m_entityListeners.Find(&g_pEntityListener) == -1)
+		{
+			g_pEntitySystem->m_entityListeners.AddToTail(&g_pEntityListener);
+		}
+	}
+	
+	g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
+	if (g_pNetworkGameServer != nullptr)
+	{
+		gpGlobals = g_pNetworkGameServer->GetGlobals();
+	}
 }
 
 dyno::ReturnAction Source2SDK::Hook_StartupServer(dyno::CallbackType type, dyno::IHook& hook)
 {
 	g_Logger.Message("Startup server\n");
 
-	g_pEntitySystem = GameEntitySystem();
-	g_pEntitySystem->m_entityListeners.AddToTail(&g_pEntityListener);
-	g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
-	gpGlobals = g_pNetworkGameServer->GetGlobals();
-
+	OnServerStartup();
+	
 	if (gpGlobals == nullptr)
 	{
 		g_Logger.Error("Failed to lookup gpGlobals\n");
@@ -134,11 +151,11 @@ dyno::ReturnAction Source2SDK::Hook_FireEvent(dyno::CallbackType type, dyno::IHo
 	return type == dyno::CallbackType::Post ? g_EventManager.Hook_OnFireEvent_Post(hook) : g_EventManager.Hook_OnFireEvent(hook);
 }
 
-dyno::ReturnAction Source2SDK::Hook_PostEvent(dyno::CallbackType type, dyno::IHook& hook)
+/*dyno::ReturnAction Source2SDK::Hook_PostEvent(dyno::CallbackType type, dyno::IHook& hook)
 {
 	// g_Logger.MessageFormat("PostEvent = %d, %d, %d, %lli\n", nSlot, bLocalOnly, nClientCount, clients );
 	return dyno::ReturnAction::Ignored;
-}
+}*/
 
 dyno::ReturnAction Source2SDK::Hook_OnLevelInit(dyno::CallbackType type, dyno::IHook& hook)
 {
@@ -294,8 +311,6 @@ dyno::ReturnAction Source2SDK::Hook_ClientCommand(dyno::CallbackType type, dyno:
 	g_Logger.MessageFormat("ClientCommand = %d, \"%s\"\n", slot, args->GetCommandString());
 	const char* cmd = args->Arg(0);
 
-	g_PlayerManager.OnClientCommand(slot, *args);
-
 	auto result = g_CommandManager.ExecuteCommandCallbacks(cmd, CCommandContext(CommandTarget_t::CT_NO_TARGET, slot), *args, HookMode::Pre, CommandCallingContext::Console);
 	if (result >= ResultType::Handled)
 	{
@@ -379,11 +394,6 @@ dyno::ReturnAction Source2SDK::Hook_FireOutputInternal(dyno::CallbackType type, 
 dyno::ReturnAction Source2SDK::Hook_DispatchConCommand(dyno::CallbackType type, dyno::IHook& hook)
 {
 	return type == dyno::CallbackType::Post ? g_CommandManager.Hook_DispatchConCommand_Post(hook) : g_CommandManager.Hook_DispatchConCommand(hook);
-}
-
-dyno::ReturnAction Source2SDK::Hook_SetClientListening(dyno::CallbackType type, dyno::IHook& hook)
-{
-	return CVoiceManager::Hook_SetClientListening(hook);
 }
 
 EXPOSE_PLUGIN(PLUGIN_API, &g_sdk)

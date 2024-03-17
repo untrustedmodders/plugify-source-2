@@ -21,8 +21,22 @@
 	],
 	"exportedMethods": [
 		{
-			"name": "GetSteamAccountId",
-			"funcName": "GetSteamAccountId",
+			"name": "GetClientIndexFromEntityPointer",
+			"funcName": "GetClientIndexFromEntityPointer",
+			"paramTypes": [
+				{
+					"name": "entity",
+					"type": "ptr64",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int32"
+			}
+		},
+		{
+			"name": "GetClientAccountId",
+			"funcName": "GetClientAccountId",
 			"paramTypes": [
 				{
 					"name": "clientIndex",
@@ -91,20 +105,6 @@
 			}
 		},
 		{
-			"name": "GetClientUserId",
-			"funcName": "GetClientUserId",
-			"paramTypes": [
-				{
-					"name": "clientIndex",
-					"type": "int32",
-					"ref": false
-				}
-			],
-			"retType": {
-				"type": "int32"
-			}
-		},
-		{
 			"name": "IsClientAuthorized",
 			"funcName": "IsClientAuthorized",
 			"paramTypes": [
@@ -161,8 +161,8 @@
 			}
 		},
 		{
-			"name": "IsFakeClient",
-			"funcName": "IsFakeClient",
+			"name": "IsClientAlive",
+			"funcName": "IsClientAlive",
 			"paramTypes": [
 				{
 					"name": "clientIndex",
@@ -175,8 +175,8 @@
 			}
 		},
 		{
-			"name": "IsPlayerAlive",
-			"funcName": "IsPlayerAlive",
+			"name": "IsFakeClient",
+			"funcName": "IsFakeClient",
 			"paramTypes": [
 				{
 					"name": "clientIndex",
@@ -259,6 +259,11 @@
 			"funcName": "ProcessTargetString",
 			"paramTypes": [
 				{
+					"name": "output",
+					"type": "int32*",
+					"ref": true
+				},
+				{
 					"name": "caller",
 					"type": "int32",
 					"ref": false
@@ -270,7 +275,145 @@
 				}
 			],
 			"retType": {
-				"type": "int32*"
+				"type": "void"
+			}
+		},
+		{
+			"name": "ChangeClientTeam",
+			"funcName": "ChangeClientTeam",
+			"paramTypes": [
+				{
+					"name": "clientIndex",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "team",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "SwitchClientTeam",
+			"funcName": "SwitchClientTeam",
+			"paramTypes": [
+				{
+					"name": "clientIndex",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "team",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "RespawnClient",
+			"funcName": "RespawnClient",
+			"paramTypes": [
+				{
+					"name": "clientIndex",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "CommitSuicide",
+			"funcName": "CommitSuicide",
+			"paramTypes": [
+				{
+					"name": "clientIndex",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "explode",
+					"type": "bool",
+					"ref": false
+				},
+				{
+					"name": "force",
+					"type": "bool",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "KickClient",
+			"funcName": "KickClient",
+			"paramTypes": [
+				{
+					"name": "clientIndex",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "BanClient",
+			"funcName": "BanClient",
+			"paramTypes": [
+				{
+					"name": "clientIndex",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "duration",
+					"type": "float",
+					"ref": false
+				},
+				{
+					"name": "kick",
+					"type": "bool",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "BanIdentity",
+			"funcName": "BanIdentity",
+			"paramTypes": [
+				{
+					"name": "steamId",
+					"type": "uint64",
+					"ref": false
+				},
+				{
+					"name": "duration",
+					"type": "float",
+					"ref": false
+				},
+				{
+					"name": "kick",
+					"type": "bool",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
 			}
 		},
 		{
@@ -1454,6 +1597,7 @@
 				{
 					"name": "callback",
 					"type": "function",
+					"ref": false,
 					"prototype": {
 						"name": "ChangeCallback",
 						"paramTypes": [
@@ -1473,8 +1617,7 @@
 						"retType": {
 							"type": "void"
 						}
-					},
-					"ref": false
+					}
 				}
 			],
 			"retType": {
@@ -1493,6 +1636,7 @@
 				{
 					"name": "callback",
 					"type": "function",
+					"ref": false,
 					"prototype": {
 						"name": "ChangeCallback",
 						"paramTypes": [
@@ -1512,8 +1656,7 @@
 						"retType": {
 							"type": "void"
 						}
-					},
-					"ref": false
+					}
 				}
 			],
 			"retType": {
@@ -1918,6 +2061,7 @@
 				{
 					"name": "callback",
 					"type": "function",
+					"ref": false,
 					"prototype": {
 						"name": "TaskCallback",
 						"paramTypes": [
@@ -1925,8 +2069,7 @@
 						"retType": {
 							"type": "void"
 						}
-					},
-					"ref": false
+					}
 				}
 			],
 			"retType": {
@@ -1940,6 +2083,7 @@
 				{
 					"name": "callback",
 					"type": "function",
+					"ref": false,
 					"prototype": {
 						"name": "TaskCallback",
 						"paramTypes": [
@@ -1947,8 +2091,7 @@
 						"retType": {
 							"type": "void"
 						}
-					},
-					"ref": false
+					}
 				}
 			],
 			"retType": {
@@ -2022,12 +2165,12 @@
 			}
 		},
 		{
-			"name": "GetUserIdFromIndex",
-			"funcName": "GetUserIdFromIndex",
+			"name": "GetEntityIndexFromRef",
+			"funcName": "GetEntityIndexFromRef",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
-					"type": "int32",
+					"name": "ref",
+					"type": "uint32",
 					"ref": false
 				}
 			],
@@ -2036,31 +2179,17 @@
 			}
 		},
 		{
-			"name": "GetEntityClassname",
-			"funcName": "GetEntityClassname",
+			"name": "GetRefFromEntityIndex",
+			"funcName": "GetRefFromEntityIndex",
 			"paramTypes": [
 				{
-					"name": "entity",
-					"type": "ptr64",
+					"name": "entityIndex",
+					"type": "int32",
 					"ref": false
 				}
 			],
 			"retType": {
-				"type": "string"
-			}
-		},
-		{
-			"name": "GetEntityPointerFromHandle",
-			"funcName": "GetEntityPointerFromHandle",
-			"paramTypes": [
-				{
-					"name": "handle",
-					"type": "ptr64",
-					"ref": false
-				}
-			],
-			"retType": {
-				"type": "ptr64"
+				"type": "uint32"
 			}
 		},
 		{
@@ -2082,13 +2211,41 @@
 			"funcName": "GetRefFromEntityPointer",
 			"paramTypes": [
 				{
-					"name": "pEntity",
+					"name": "entity",
 					"type": "ptr64",
 					"ref": false
 				}
 			],
 			"retType": {
 				"type": "uint32"
+			}
+		},
+		{
+			"name": "GetEntityPointerFromHandle",
+			"funcName": "GetEntityPointerFromHandle",
+			"paramTypes": [
+				{
+					"name": "handle",
+					"type": "ptr64",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "ptr64"
+			}
+		},
+		{
+			"name": "GetEntityIndexFromHandle",
+			"funcName": "GetEntityIndexFromHandle",
+			"paramTypes": [
+				{
+					"name": "handle",
+					"type": "ptr64",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int32"
 			}
 		},
 		{
@@ -2138,6 +2295,7 @@
 				{
 					"name": "callback",
 					"type": "function",
+					"ref": false,
 					"prototype": {
 						"name": "HookEntityOutputCallback",
 						"paramTypes": [
@@ -2157,8 +2315,7 @@
 						"retType": {
 							"type": "int32"
 						}
-					},
-					"ref": false
+					}
 				},
 				{
 					"name": "post",
@@ -2187,13 +2344,10 @@
 				{
 					"name": "callback",
 					"type": "function",
+					"ref": false,
 					"prototype": {
 						"name": "HookEntityOutputCallback",
 						"paramTypes": [
-							{
-								"name": "output",
-								"type": "string"
-							},
 							{
 								"name": "activator",
 								"type": "int32"
@@ -2203,15 +2357,14 @@
 								"type": "int32"
 							},
 							{
-								"name": "delay",
+								"name": "flDelay",
 								"type": "float"
 							}
 						],
 						"retType": {
 							"type": "int32"
 						}
-					},
-					"ref": false
+					}
 				},
 				{
 					"name": "post",
@@ -2287,6 +2440,20 @@
 			],
 			"retType": {
 				"type": "void"
+			}
+		},
+		{
+			"name": "GetEntityClassname",
+			"funcName": "GetEntityClassname",
+			"paramTypes": [
+				{
+					"name": "entityIndex",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "string"
 			}
 		},
 		{
@@ -2753,17 +2920,17 @@
 				},
 				{
 					"name": "origin",
-					"type": "vec3",
+					"type": "ptr64",
 					"ref": false
 				},
 				{
 					"name": "angles",
-					"type": "vec3",
+					"type": "ptr64",
 					"ref": false
 				},
 				{
 					"name": "velocity",
-					"type": "vec3",
+					"type": "ptr64",
 					"ref": false
 				}
 			],
@@ -2783,6 +2950,7 @@
 				{
 					"name": "pCallback",
 					"type": "function",
+					"ref": false,
 					"prototype": {
 						"name": "EventCallback",
 						"paramTypes": [
@@ -2802,8 +2970,7 @@
 						"retType": {
 							"type": "int32"
 						}
-					},
-					"ref": false
+					}
 				},
 				{
 					"name": "post",
@@ -2827,6 +2994,7 @@
 				{
 					"name": "pCallback",
 					"type": "function",
+					"ref": false,
 					"prototype": {
 						"name": "EventCallback",
 						"paramTypes": [
@@ -2846,8 +3014,7 @@
 						"retType": {
 							"type": "int32"
 						}
-					},
-					"ref": false
+					}
 				},
 				{
 					"name": "post",
@@ -2907,7 +3074,7 @@
 					"ref": false
 				},
 				{
-					"name": "entityIndex",
+					"name": "clientIndex",
 					"type": "int32",
 					"ref": false
 				}
@@ -4776,6 +4943,7 @@
 				{
 					"name": "callback",
 					"type": "function",
+					"ref": false,
 					"prototype": {
 						"name": "TimerCallback",
 						"paramTypes": [
@@ -4787,8 +4955,7 @@
 						"retType": {
 							"type": "void"
 						}
-					},
-					"ref": false
+					}
 				},
 				{
 					"name": "flags",
@@ -4812,82 +4979,6 @@
 			],
 			"retType": {
 				"type": "void"
-			}
-		},
-		{
-			"name": "SetClientListening",
-			"funcName": "SetClientListening",
-			"paramTypes": [
-				{
-					"name": "receiver",
-					"type": "int32",
-					"ref": false
-				},
-				{
-					"name": "sender",
-					"type": "int32",
-					"ref": false
-				},
-				{
-					"name": "listen",
-					"type": "int8",
-					"ref": false
-				}
-			],
-			"retType": {
-				"type": "void"
-			}
-		},
-		{
-			"name": "GetClientListening",
-			"funcName": "GetClientListening",
-			"paramTypes": [
-				{
-					"name": "receiver",
-					"type": "int32",
-					"ref": false
-				},
-				{
-					"name": "sender",
-					"type": "int32",
-					"ref": false
-				}
-			],
-			"retType": {
-				"type": "int8"
-			}
-		},
-		{
-			"name": "SetClientVoiceFlags",
-			"funcName": "SetClientVoiceFlags",
-			"paramTypes": [
-				{
-					"name": "clientIndex",
-					"type": "int32",
-					"ref": false
-				},
-				{
-					"name": "flags",
-					"type": "uint8",
-					"ref": false
-				}
-			],
-			"retType": {
-				"type": "void"
-			}
-		},
-		{
-			"name": "GetClientVoiceFlags",
-			"funcName": "GetClientVoiceFlags",
-			"paramTypes": [
-				{
-					"name": "clientIndex",
-					"type": "int32",
-					"ref": false
-				}
-			],
-			"retType": {
-				"type": "uint8"
 			}
 		}
 	]

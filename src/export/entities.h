@@ -3,11 +3,6 @@
 #include <core/sdk/entity/cbaseentity.h>
 #include <core/sdk/entity/cbasemodelentity.h>
 
-extern "C" PLUGIN_API int GetClientIndexFromEntityPointer(CBaseEntity2* entity)
-{
-	return utils::GetEntityPlayerSlot(entity).Get() + 1;
-}
-
 extern "C" PLUGIN_API CBaseEntity* GetEntityFromIndex(int entityIndex)
 {
 	return g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex));
@@ -18,7 +13,7 @@ extern "C" PLUGIN_API int GetIndexFromEntity(CBaseEntity2* entity)
 	return entity->entindex();
 }
 
-extern "C" PLUGIN_API int GetEntIndexFromRef(uint32_t ref)
+extern "C" PLUGIN_API int GetEntityIndexFromRef(uint32_t ref)
 {
 	if (ref == INVALID_EHANDLE_INDEX)
 	{
@@ -36,7 +31,7 @@ extern "C" PLUGIN_API int GetEntIndexFromRef(uint32_t ref)
 	return ent->entindex();
 }
 
-extern "C" PLUGIN_API uint32_t GetRefFromEntIndex(int entityIndex)
+extern "C" PLUGIN_API uint32_t GetRefFromEntityIndex(int entityIndex)
 {
 	CBaseEntity* ent = g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex));
 	if (!ent)
@@ -93,7 +88,7 @@ extern "C" PLUGIN_API void* GetEntityPointerFromHandle(CEntityHandle* handle)
 	return g_pEntitySystem->GetBaseEntity(*handle);
 }
 
-extern "C" PLUGIN_API int GetEntIndexFromHandle(CEntityHandle* handle)
+extern "C" PLUGIN_API int GetEntityIndexFromHandle(CEntityHandle* handle)
 {
 	if (!handle->IsValid())
 	{
@@ -126,7 +121,7 @@ extern "C" PLUGIN_API bool IsRefValidEntity(uint32_t ref)
 	return g_pEntitySystem->GetBaseEntity(hndl) != nullptr;
 }
 
-extern "C" PLUGIN_API CEntityIdentity* GetFirstActiveEntity()
+extern "C" PLUGIN_API void* GetFirstActiveEntity()
 {
 	return g_pEntitySystem->m_EntityList.m_pFirstActiveEntity;
 }

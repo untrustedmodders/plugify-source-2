@@ -253,6 +253,7 @@ void utils::PrintHtmlCentre(CPlayerSlot slot, const char* message)
 
 	IGameEventListener2* listener = addresses::GetLegacyGameEventListener(slot);
 	listener->FireGameEvent(event);
+
 	g_gameEventManager->FreeEvent(event);
 }
 
@@ -287,6 +288,7 @@ void utils::PrintHtmlCentreAll(const char* message)
 	{
 		return;
 	}
+	
 	event->SetString("loc_token", message);
 	event->SetInt("duration", 5);
 	event->SetInt("userid", -1);

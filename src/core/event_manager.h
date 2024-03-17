@@ -43,7 +43,7 @@ public:
 
 	EventInfo* CreateEvent(const std::string& name, bool force = false);
 	void FireEvent(EventInfo* pInfo, bool bDontBroadcast);
-	void FireEventToClient(EventInfo* pInfo, int entityIndex);
+	void FireEventToClient(EventInfo* pInfo, CPlayerSlot slot);
 	void CancelCreatedEvent(EventInfo* pInfo);
 
 	dyno::ReturnAction Hook_OnFireEvent(dyno::IHook& hook);

@@ -21,8 +21,7 @@ namespace utils
 	CBasePlayerController* GetController(CPlayerSlot slot);
 
 	CPlayerSlot GetEntityPlayerSlot(CBaseEntity2* entity);
-	CUtlVector<CServerSideClient *>* GetClientList();
-	CServerSideClient* GetClientBySlot(CPlayerSlot slot);
+	//CUtlVector<CServerSideClient *>* GetClientList();
 
 	// Normalize the angle between -180 and 180.
 	float NormalizeDeg(float a);
@@ -55,23 +54,11 @@ namespace utils
 	bool IsSpawnValid(const Vector& origin);
 	bool FindValidSpawn(Vector& origin, QAngle& angles);
 
-	static std::string gameDirectory;
-
-	inline std::string GameDirectory()
-	{
-		if (gameDirectory.empty())
-		{
-			CBufferStringGrowable<255> gamePath;
-			g_pEngineServer2->GetGameDir(gamePath);
-			gameDirectory = std::string(gamePath.Get());
-		}
-		return gameDirectory;
-	}
-
-	inline std::string GetRootDirectory() { return GameDirectory() + "/addons/plugify/"; }
-	inline std::string GetBinDirectory() { return GameDirectory() + "/addons/plugify/bin/" CS2SDK_BINARY "/"; }
-	inline std::string ConfigsDirectory() { return GameDirectory() + "/addons/plugify/configs/"; }
-	inline std::string GamedataDirectory() { return GameDirectory() + "/addons/plugify/gamedata/"; }
+	const std::string& GameDirectory();
+	const std::string& RootDirectory();
+	const std::string& BinDirectory();
+	const std::string& ConfigsDirectory();
+	const std::string& GamedataDirectory();
 
 	inline std::string Demangle(const char* name)
 	{

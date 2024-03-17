@@ -70,9 +70,9 @@ bool CPlayer::IsInGame() const
 	return m_bInGame;
 }
 
-void CPlayer::Kick(const char* kickReason)
+void CPlayer::Kick()
 {
-
+	g_pEngineServer2->DisconnectClient(m_iSlot, NETWORK_DISCONNECT_KICKED);
 }
 
 const char* CPlayer::GetKeyValue(const char* key) const
@@ -100,26 +100,6 @@ float CPlayer::GetLatency() const
 	return GetNetInfo()->GetLatency(FLOW_INCOMING) + GetNetInfo()->GetLatency(FLOW_OUTGOING);
 }
 
-void CPlayer::SetListen(CPlayerSlot slot, ListenOverride listen)
-{
-	m_listenMap[slot.Get()] = listen;
-}
-
-void CPlayer::SetVoiceFlags(VoiceFlag_t flags)
-{
-	m_voiceFlag = flags;
-}
-
-VoiceFlag_t CPlayer::GetVoiceFlags()
-{
-	return m_voiceFlag;
-}
-
-ListenOverride CPlayer::GetListen(CPlayerSlot slot) const
-{
-	return m_listenMap[slot.Get()];
-}
-
 void CPlayer::Connect()
 {
 	if (m_bInGame)
@@ -138,9 +118,6 @@ void CPlayer::Disconnect()
 	m_bFakeClient = false;
 	m_bAuthorized = false;
 	m_ipAddress.clear();
-	m_selfMutes.ClearAll();
-	std::fill(m_listenMap.begin(), m_listenMap.end(), Listen_Default);
-	m_voiceFlag = 0;
 }
 
 const CSteamID* CPlayer::GetSteamId() const
@@ -204,14 +181,14 @@ bool CPlayerManager::OnClientConnect(CPlayerSlot slot, const char* pszName, uint
 
 	pPlayer->Initialize(pszName, pszNetworkID, slot);
 
-	m_refuseConnection = false;
+	m_bRefuseConnection = false;
 
 	for (size_t i = 0; i < GetOnClientConnectListenerManager().GetCount(); ++i)
 	{
-		m_refuseConnection |= !GetOnClientConnectListenerManager().Notify(i, client, pszName, pszNetworkID);
+		m_bRefuseConnection |= !GetOnClientConnectListenerManager().Notify(i, client, pszName, pszNetworkID);
 	}
 
-	return m_refuseConnection;
+	return m_bRefuseConnection;
 }
 
 bool CPlayerManager::OnClientConnect_Post(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, bool unk1, CBufferString* pRejectReason, bool origRet)
@@ -221,17 +198,12 @@ bool CPlayerManager::OnClientConnect_Post(CPlayerSlot slot, const char* pszName,
 	int client = slot.Get();
 	CPlayer* pPlayer = &m_players[client];
 
-	if (m_refuseConnection)
+	if (m_bRefuseConnection)
 		origRet = false;
 
 	if (origRet)
 	{
 		GetOnClientConnect_PostListenerManager().Notify(pPlayer->m_iSlot.Get());
-
-		if (!pPlayer->IsFakeClient() && m_bListenServer && !strncmp(pszNetworkID, "127.0.0.1", 9))
-		{
-			m_listenClient = client;
-		}
 	}
 	else
 	{
@@ -265,7 +237,7 @@ void CPlayerManager::OnClientPutInServer(CPlayerSlot slot, char const* pszName, 
 		CBufferStringGrowable<255> buffer;
 		if (!OnClientConnect(slot, pszName, 0, "127.0.0.1", false, &buffer))
 		{
-			pPlayer->Kick("Bot rejected");
+			pPlayer->Kick();
 			return;
 		}
 
@@ -315,24 +287,6 @@ void CPlayerManager::OnClientDisconnect_Post(CPlayerSlot slot, ENetworkDisconnec
 	GetOnClientDisconnect_PostListenerManager().Notify(pPlayer->m_iSlot.Get(), (int)reason);
 }
 
-void CPlayerManager::OnClientCommand(CPlayerSlot slot, const CCommand& args) const
-{
-	auto pPlayer = g_PlayerManager.GetPlayerBySlot(slot);
-	if (!pPlayer)
-		return;
-
-	if (args.ArgC() > 1 && stricmp(args.Arg(0), "vban") == 0)
-	{
-		// clients just refuse to send vban for indexes over 32 and all 4 fields are just the same number, so we only get the first one
-		// for (int i = 1; (i < args.ArgC()) && (i < 3); i++) {
-		unsigned int mask = 0;
-		sscanf(args.Arg(1), "%x", &mask);
-
-		pPlayer->m_selfMutes.SetDWord(0, mask);
-		//}
-	}
-}
-
 void CPlayerManager::OnClientActive(CPlayerSlot slot, bool bLoadGame) const
 {
 	g_Logger.MessageFormat("[OnClientActive] - %d\n", slot.Get());
@@ -355,11 +309,6 @@ void CPlayerManager::OnLevelShutdown()
 	}
 
 	m_playerCount = 0;
-}
-
-int CPlayerManager::ListenClient() const
-{
-	return m_listenClient;
 }
 
 int CPlayerManager::NumPlayers() const

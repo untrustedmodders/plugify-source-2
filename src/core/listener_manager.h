@@ -47,35 +47,35 @@ public:
 		requires std::invocable<Callable, Args...>
 	{
 		auto index = Find(callable);
-		if (!index.has_value())
+		if (index == -1)
 		{
 			g_Logger.Warning("Callback not registered.\n");
 			return false;
 		}
 		else
 		{
-			m_Callables.erase(m_Callables.begin() + static_cast<ptrdiff_t>(*index));
+			m_Callables.erase(m_Callables.begin() + index);
 			return true;
 		}
 	}
 
 	template <typename Callable>
-	std::optional<size_t> Find(Callable&& callable) const
+	ptrdiff_t Find(Callable&& callable) const
 	{
 		for (size_t i = 0; i < m_Callables.size(); ++i)
 		{
 			if (callable == m_Callables[i])
 			{
-				return i;
+				return static_cast<ptrdiff_t>(i);
 			}
 		}
-		return {};
+		return -1;
 	}
 
 	template <typename Callable>
 	bool IsRegistered(Callable&& callable) const
 	{
-		return Find(callable).has_value();
+		return Find(callable) != 1;
 	}
 
 	void Notify(Args... args) const
