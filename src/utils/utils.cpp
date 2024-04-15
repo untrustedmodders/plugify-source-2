@@ -213,25 +213,25 @@ const std::string& utils::GameDirectory()
 
 const std::string& utils::RootDirectory()
 { 
-	static std::string rootDirectory(GameDirectory() + "/addons/plugify/");
+	static std::string rootDirectory(GameDirectory() + "/csgo/addons/plugify/");
 	return rootDirectory;
 }
 
 const std::string& utils::BinDirectory()
 { 
-	static std::string binDirectory(GameDirectory() + "/addons/plugify/bin/" CS2SDK_BINARY "/");
+	static std::string binDirectory(GameDirectory() + "/csgo/addons/plugify/bin/" CS2SDK_BINARY "/");
 	return binDirectory;
 }
 
 const std::string& utils::ConfigsDirectory()
 { 
-	static std::string configsDirectory(GameDirectory() + "/addons/plugify/configs/");
+	static std::string configsDirectory(GameDirectory() + "/csgo/addons/plugify/configs/");
 	return configsDirectory;
 }
 
 const std::string& utils::GamedataDirectory()
 { 
-	static std::string gamedataDirectory(GameDirectory() + "/addons/plugify/gamedata/");
+	static std::string gamedataDirectory(GameDirectory() + "/csgo/addons/plugify/gamedata/");
 	return gamedataDirectory;
 }
 

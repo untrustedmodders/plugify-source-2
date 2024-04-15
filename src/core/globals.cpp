@@ -100,7 +100,7 @@ namespace globals
 		g_pSource2Server = FindInterface<ISource2Server>(modules::server, SOURCE2SERVER_INTERFACE_VERSION);
 		g_pSource2GameEntities = FindInterface<ISource2GameEntities>(modules::server, SOURCE2GAMEENTITIES_INTERFACE_VERSION);
 		g_pSource2GameClients = FindInterface<IServerGameClients>(modules::server, SOURCE2GAMECLIENTS_INTERFACE_VERSION);
-		g_pGameResourceServiceServer = FindInterface<IGameResourceServiceServer>(modules::engine, GAMERESOURCESERVICESERVER_INTERFACE_VERSION);
+		g_pGameResourceServiceServer = FindInterface<IGameResourceService>(modules::engine, GAMERESOURCESERVICESERVER_INTERFACE_VERSION);
 
 		g_pEngineServer2 = FindInterface<IVEngineServer2>(modules::engine, SOURCE2ENGINETOSERVER_INTERFACE_VERSION);
 		g_pFullFileSystem = FindInterface<IFileSystem>(modules::filesystem, FILESYSTEM_INTERFACE_VERSION);

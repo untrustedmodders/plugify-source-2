@@ -29,12 +29,12 @@ extern "C" PLUGIN_API bool IsSchemaFieldNetworked(const std::string& className, 
 
 extern "C" PLUGIN_API int GetSchemaClassSize(const std::string& className)
 {
-	CSchemaSystemTypeScope* pType = g_pSchemaSystem2->FindTypeScopeForModule(BINARY_MODULE_PREFIX "server" BINARY_MODULE_SUFFIX);
+	CSchemaSystemTypeScope2* pType = g_pSchemaSystem2->FindTypeScopeForModule(BINARY_MODULE_PREFIX "server" BINARY_MODULE_SUFFIX);
 	SchemaClassInfoData_t* pClassInfo = pType->FindDeclaredClass(className.c_str());
 	if (!pClassInfo)
 		return -1;
 
-	return pClassInfo->GetSize();
+	return pClassInfo->m_nSize;
 }
 
 extern "C" PLUGIN_API bool GetSchemaBoolByName(void* instancePointer, const std::string& className, const std::string& memberName)

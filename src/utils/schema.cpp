@@ -33,10 +33,10 @@ using SchemaTableMap_t = CUtlMap<uint32_t, SchemaKeyValueMap_t*>;
 
 static bool IsFieldNetworked(SchemaClassFieldData_t& field)
 {
-	for (int i = 0; i < field.m_metadata_size; i++)
+	for (int i = 0; i < field.m_nStaticMetadataCount; i++)
 	{
 		static auto networkEnabled = hash_32_fnv1a_const("MNetworkEnable");
-		if (networkEnabled == hash_32_fnv1a_const(field.m_metadata[i].m_name))
+		if (networkEnabled == hash_32_fnv1a_const(field.m_pStaticMetadata[i].m_pszName))
 			return true;
 	}
 
@@ -45,7 +45,7 @@ static bool IsFieldNetworked(SchemaClassFieldData_t& field)
 
 static bool InitSchemaFieldsForClass(SchemaTableMap_t* tableMap, const char* className, uint32_t classKey)
 {
-	CSchemaSystemTypeScope* pType = g_pSchemaSystem2->FindTypeScopeForModule(BINARY_MODULE_PREFIX "server" BINARY_MODULE_SUFFIX);
+	CSchemaSystemTypeScope2* pType = g_pSchemaSystem2->FindTypeScopeForModule(BINARY_MODULE_PREFIX "server" BINARY_MODULE_SUFFIX);
 
 	if (!pType)
 		return false;
@@ -61,8 +61,8 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t* tableMap, const char* cla
 		return false;
 	}
 
-	short fieldsSize = pClassInfo->GetFieldsSize();
-	SchemaClassFieldData_t* pFields = pClassInfo->GetFields();
+	short fieldsSize = pClassInfo->m_nFieldCount;
+	SchemaClassFieldData_t* pFields = pClassInfo->m_pFields;
 
 	SchemaKeyValueMap_t* keyValueMap = new SchemaKeyValueMap_t(0, 0, DefLessFunc(uint32_t));
 	keyValueMap->EnsureCapacity(fieldsSize);
@@ -76,7 +76,7 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t* tableMap, const char* cla
 		g_Logger.MessageFormat("%s::%s found at -> 0x%X - %llx\n", className, field.m_name, field.m_single_inheritance_offset, &field);
 #endif
 
-		keyValueMap->Insert(hash_32_fnv1a_const(field.m_name), {field.m_single_inheritance_offset, IsFieldNetworked(field)});
+		keyValueMap->Insert(hash_32_fnv1a_const(field.m_pszName), {field.m_nSingleInheritanceOffset, IsFieldNetworked(field)});
 	}
 
 	return true;
@@ -84,7 +84,7 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t* tableMap, const char* cla
 
 int32_t schema::FindChainOffset(const char* className)
 {
-	CSchemaSystemTypeScope* pType = g_pSchemaSystem2->FindTypeScopeForModule(BINARY_MODULE_PREFIX "server" BINARY_MODULE_SUFFIX);
+	CSchemaSystemTypeScope2* pType = g_pSchemaSystem2->FindTypeScopeForModule(BINARY_MODULE_PREFIX "server" BINARY_MODULE_SUFFIX);
 
 	if (!pType)
 		return false;
@@ -93,15 +93,15 @@ int32_t schema::FindChainOffset(const char* className)
 
 	do
 	{
-		SchemaClassFieldData_t* pFields = pClassInfo->GetFields();
-		short fieldsSize = pClassInfo->GetFieldsSize();
+		SchemaClassFieldData_t* pFields = pClassInfo->m_pFields;
+		short fieldsSize = pClassInfo->m_nFieldCount;
 		for (int i = 0; i < fieldsSize; ++i)
 		{
 			SchemaClassFieldData_t& field = pFields[i];
 
-			if (V_strcmp(field.m_name, "__m_pChainEntity") == 0)
+			if (V_strcmp(field.m_pszName, "__m_pChainEntity") == 0)
 			{
-				return field.m_single_inheritance_offset;
+				return field.m_nSingleInheritanceOffset;
 			}
 		}
 	} while ((pClassInfo = pClassInfo->GetParent()) != nullptr);

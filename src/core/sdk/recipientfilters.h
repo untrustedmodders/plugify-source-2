@@ -35,18 +35,20 @@ public:
 
 	int GetRecipientCount(void) const override { return m_Recipients.Count(); }
 
-	int GetRecipientIndex(int slot) const override { return m_Recipients[slot]; }
+	CPlayerSlot GetRecipientIndex(int slot) const override { return m_Recipients[slot]; }
+
+	NetChannelBufType_t GetNetworkBufType(void) const override { return BUF_DEFAULT; }
 
 private:
 	bool m_bReliable;
 	bool m_bInitMessage;
-	CUtlVector<int> m_Recipients;
+	CUtlVector<CPlayerSlot> m_Recipients;
 };
 
 class CSingleRecipientFilter : public IRecipientFilter
 {
 public:
-	CSingleRecipientFilter(int iRecipient, bool bReliable = true, bool bInitMessage = false) :
+	CSingleRecipientFilter(CPlayerSlot iRecipient, bool bReliable = true, bool bInitMessage = false) :
 		m_bReliable(bReliable), m_bInitMessage(bInitMessage), m_iRecipient(iRecipient) {}
 
 	~CSingleRecipientFilter() override {}
@@ -57,12 +59,14 @@ public:
 
 	int GetRecipientCount(void) const override { return 1; }
 
-	int GetRecipientIndex(int slot) const override { return m_iRecipient; }
+	CPlayerSlot GetRecipientIndex(int slot) const override { return m_iRecipient; }
+
+	NetChannelBufType_t GetNetworkBufType(void) const override { return BUF_DEFAULT; }
 
 private:
 	bool m_bReliable;
 	bool m_bInitMessage;
-	int m_iRecipient;
+	CPlayerSlot m_iRecipient;
 };
 
 class CCopyRecipientFilter : public IRecipientFilter
@@ -89,7 +93,7 @@ public:
 
 	int GetRecipientCount(void) const override { return m_Recipients.Count(); }
 
-	int GetRecipientIndex(int slot) const override
+	CPlayerSlot GetRecipientIndex(int slot) const override
 	{
 		if (slot < 0 || slot >= GetRecipientCount())
 			return -1;
@@ -100,5 +104,5 @@ public:
 private:
 	bool m_bReliable;
 	bool m_bInitMessage;
-	CUtlVectorFixed<int, 64> m_Recipients;
+	CUtlVectorFixed<CPlayerSlot, 64> m_Recipients;
 };

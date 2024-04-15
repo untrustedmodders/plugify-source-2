@@ -97,7 +97,7 @@ float CPlayer::GetTimeConnected() const
 
 float CPlayer::GetLatency() const
 {
-	return GetNetInfo()->GetLatency(FLOW_INCOMING) + GetNetInfo()->GetLatency(FLOW_OUTGOING);
+	return GetNetInfo()->GetAvgLatency();
 }
 
 void CPlayer::Connect()

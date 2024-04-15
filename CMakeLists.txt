@@ -115,12 +115,12 @@ add_custom_command(
 add_custom_command(
         TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E remove_directory
-        D:/steamcmd/cs2-ds/game/csgo/addons/plugify/plugins/cs2sdk
+        D:/cs2-ds/game/csgo/addons/plugify/plugins/cs2sdk
 )
 
 add_custom_command(
         TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_BINARY_DIR}/addons/plugify/plugins/cs2sdk
-        D:/steamcmd/cs2-ds/game/csgo/addons/plugify/plugins/cs2sdk
+        D:/cs2-ds/game/csgo/addons/plugify/plugins/cs2sdk
 )

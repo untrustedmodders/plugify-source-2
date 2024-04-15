@@ -7,7 +7,7 @@ class CSchemaType;
 class CSchemaSystemTypeScope;
 class ISaveRestoreOps;
 
-enum SchemaClassFlags_t
+/* enum SchemaClassFlags_t
 {
 	SCHEMA_CF1_HAS_VIRTUAL_MEMBERS = 1,
 	SCHEMA_CF1_IS_ABSTRACT = 2,
@@ -18,7 +18,6 @@ enum SchemaClassFlags_t
 	SCHEMA_CF1_IS_LOCAL_TYPE_SCOPE = 64,
 	SCHEMA_CF1_IS_GLOBAL_TYPE_SCOPE = 128,
 	SCHEMA_CF1_IS_SCHEMA_VALIDATED = 2048,
-
 };
 
 enum ETypeCategory
@@ -338,9 +337,9 @@ public:
 		atomic_tt m_atomic_tt_;
 		atomic_i m_atomic_i_;
 	};
-};
+};*/
 
-class CSchemaSystemTypeScope
+class CSchemaSystemTypeScope2
 {
 public:
 	SchemaClassInfoData_t *FindDeclaredClass(const char *pClass)
@@ -358,8 +357,8 @@ public:
 class CSchemaSystem
 {
 public:
-	auto FindTypeScopeForModule(const char *module)
+	CSchemaSystemTypeScope2 *FindTypeScopeForModule(const char* module)
 	{
-		return CALL_VIRTUAL(CSchemaSystemTypeScope *, 13, this, module, nullptr);
+		return CALL_VIRTUAL(CSchemaSystemTypeScope2 *, 13, this, module, nullptr);
 	}
 };
