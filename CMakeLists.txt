@@ -8,7 +8,7 @@ if(POLICY CMP0091)
 endif()
 
 
-project(cs2-sdk-plugin VERSION 1.0.0.0  DESCRIPTION "CS2 SDK Plugin" HOMEPAGE_URL "https://github.com/untrustedmodders/cs2-sdk-plugin" LANGUAGES C CXX ASM)
+project(cs2-sdk-plugin VERSION 1.0.0.0 DESCRIPTION "CS2 SDK Plugin" HOMEPAGE_URL "https://github.com/untrustedmodders/cs2-sdk-plugin" LANGUAGES C CXX ASM)
 
 include("cmake/shared.cmake")
 
