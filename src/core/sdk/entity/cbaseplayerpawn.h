@@ -27,8 +27,6 @@ class CCSPlayer_ItemServices;
 #include "cbasemodelentity.h"
 #include "ccsweaponbase.h"
 
-extern bool g_bDropMapWeapons;
-
 class CBasePlayerPawn : public CBaseModelEntity
 {
 public:
@@ -64,12 +62,12 @@ public:
 
 	void CommitSuicide(bool bExplode, bool bForce)
 	{
-		// CommitSuicide doesn't go through OnTakeDamage_Alive
-		if (g_bDropMapWeapons)
-			DropMapWeapons();
-
 		static int offset = g_pGameConfig->GetOffset("CommitSuicide");
 		CALL_VIRTUAL(void, offset, this, bExplode, bForce);
 	}
-	bool IsBot() { return !!(this->m_fFlags() & FL_PAWN_FAKECLIENT); }
+
+	bool IsBot()
+	{
+		return !!(this->m_fFlags() & FL_PAWN_FAKECLIENT);
+	}
 };
