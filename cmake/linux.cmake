@@ -29,3 +29,8 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 		CS2SDK_ROOT_BINARY="/bin/linuxsteamrt64/"
 		CS2SDK_GAME_BINARY="/csgo/bin/linuxsteamrt64/"
 )
+
+# TODO: Finish that
+#target_link_libraries(${PROJECT_NAME} PRIVATE "-Wl,--version-script,${CMAKE_CURRENT_SOURCE_DIR}/sym/version_script.lds")
+
+target_link_libraries(${PROJECT_NAME} PUBLIC -static-libstdc++ -static-libgcc)

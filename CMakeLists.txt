@@ -85,18 +85,6 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 # Libraries
 target_link_libraries(${PROJECT_NAME} PRIVATE ${CS2SDK_LINK_LIBRARIES})
 
-# TODO: Finish that
-#if(APPLE)
-#	target_link_libraries(${PROJECT_NAME} PRIVATE "-Wl,-exported_symbols_list,${CMAKE_CURRENT_SOURCE_DIR}/sym/exported_symbols.lds")
-#elseif(UNIX)
-#	target_link_libraries(${PROJECT_NAME} PRIVATE "-Wl,--version-script,${CMAKE_CURRENT_SOURCE_DIR}/sym/version_script.lds")
-#endif()
-
-if (LINIX)
-    target_compile_options(${PROJECT_NAME} PUBLIC -stdlib=libstdc++)
-    target_link_libraries(${PROJECT_NAME} PUBLIC -static-libstdc++ -static-libgcc)
-endif()
-
 set(CS2SDK_VERSION "${CMAKE_PROJECT_VERSION}" CACHE STRING "Set version name")
 set(CS2SDK_PACKAGE "cs2sdk" CACHE STRING "Set package name")
 
