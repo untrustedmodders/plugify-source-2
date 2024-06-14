@@ -3,7 +3,7 @@
 #include <eiface.h>
 #include <convar.h>
 
-class CBaseEntity2;
+class CBaseEntity;
 class CServerSideClient;
 
 namespace utils
@@ -15,12 +15,12 @@ namespace utils
 	void SendConVarValue(CPlayerSlot slot, CConVarBaseData* cvar, const char* value);
 	void SendMultipleConVarValues(CPlayerSlot slot, CConVarBaseData** cvars, const char** values, uint32_t size);
 
-	CBaseEntity2* FindEntityByClassname(CEntityInstance* start, const char* name);
+	CBaseEntity* FindEntityByClassname(CEntityInstance* start, const char* name);
 
-	CBasePlayerController* GetController(CBaseEntity2* entity);
+	CBasePlayerController* GetController(CBaseEntity* entity);
 	CBasePlayerController* GetController(CPlayerSlot slot);
 
-	CPlayerSlot GetEntityPlayerSlot(CBaseEntity2* entity);
+	CPlayerSlot GetEntityPlayerSlot(CBaseEntity* entity);
 	//CUtlVector<CServerSideClient *>* GetClientList();
 
 	// Normalize the angle between -180 and 180.

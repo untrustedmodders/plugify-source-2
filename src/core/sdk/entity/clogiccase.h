@@ -19,24 +19,23 @@
 
 #pragma once
 
-#include "cbasemodelentity.h"
+#include "cbaseentity.h"
 
-class CBaseTrigger : public CBaseModelEntity
+class CLogicCase : public CBaseEntity
 {
 public:
-	DECLARE_SCHEMA_CLASS(CBaseTrigger)
+	DECLARE_SCHEMA_CLASS(CLogicCase)
+};
 
-	SCHEMA_FIELD(CUtlSymbolLarge, m_iFilterName)
-	SCHEMA_FIELD(CEntityHandle, m_hFilter)
-	SCHEMA_FIELD_POINTER(CUtlVector<CHandle<CBaseEntity>>, m_hTouchingEntities)
-	SCHEMA_FIELD(bool, m_bClientSidePredicted)
+class CGameUI : public CLogicCase
+{
+public:
+	static constexpr int SF_GAMEUI_FREEZE_PLAYER = 32;
+	static constexpr int SF_GAMEUI_JUMP_DEACTIVATE = 256;
 
-	bool PassesTriggerFilters(CBaseEntity* pOther)
-	{
-		static int offset = g_pGameConfig->GetOffset("PassesTriggerFilters");
-		return CALL_VIRTUAL(bool, offset, this, pOther);
-	}
+	// TODO Hide Weapon requires more RE
+	static constexpr int SF_GAMEUI_HIDE_WEAPON = 64;
 
-	bool IsStartZone() { return !V_stricmp(this->GetClassname(), "trigger_multiple") && this->m_pEntity->NameMatches("timer_startzone"); }
-	bool IsEndZone() { return !V_stricmp(this->GetClassname(), "trigger_multiple") && this->m_pEntity->NameMatches("timer_endzone"); }
+	// TODO subtick problem
+	static constexpr int SF_GAMEUI_USE_DEACTIVATE = 128;
 };

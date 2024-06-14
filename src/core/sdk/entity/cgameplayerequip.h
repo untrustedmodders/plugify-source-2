@@ -19,24 +19,18 @@
 
 #pragma once
 
-#include "cbasemodelentity.h"
+#include "cbaseentity.h"
 
-class CBaseTrigger : public CBaseModelEntity
+class CGamePlayerEquip : public CBaseEntity
 {
+	DECLARE_SCHEMA_CLASS(CGamePlayerEquip)
 public:
-	DECLARE_SCHEMA_CLASS(CBaseTrigger)
+	static constexpr int MAX_EQUIPMENTS_SIZE = 32;
 
-	SCHEMA_FIELD(CUtlSymbolLarge, m_iFilterName)
-	SCHEMA_FIELD(CEntityHandle, m_hFilter)
-	SCHEMA_FIELD_POINTER(CUtlVector<CHandle<CBaseEntity>>, m_hTouchingEntities)
-	SCHEMA_FIELD(bool, m_bClientSidePredicted)
+	static constexpr int SF_PLAYEREQUIP_USEONLY = 0x0001;
+	static constexpr int SF_PLAYEREQUIP_STRIPFIRST = 0x0002;
 
-	bool PassesTriggerFilters(CBaseEntity* pOther)
-	{
-		static int offset = g_pGameConfig->GetOffset("PassesTriggerFilters");
-		return CALL_VIRTUAL(bool, offset, this, pOther);
-	}
-
-	bool IsStartZone() { return !V_stricmp(this->GetClassname(), "trigger_multiple") && this->m_pEntity->NameMatches("timer_startzone"); }
-	bool IsEndZone() { return !V_stricmp(this->GetClassname(), "trigger_multiple") && this->m_pEntity->NameMatches("timer_endzone"); }
+	// TODO this flag copied from CSGO, and impl on FyS server. but CS2Fixes not support aws currently.
+	// Add it in the future.
+	static constexpr int SF_PLAYEREQUIP_ONLYSTRIPSAME = 0x0004;
 };

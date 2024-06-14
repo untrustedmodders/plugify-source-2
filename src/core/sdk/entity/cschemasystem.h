@@ -19,24 +19,34 @@
 
 #pragma once
 
-#include "cbasemodelentity.h"
+#include <cstdint>
 
-class CBaseTrigger : public CBaseModelEntity
+#include <core/sdk/virtual.h>
+
+class CSchemaType;
+class CSchemaSystemTypeScope;
+class ISaveRestoreOps;
+
+class CSchemaSystemTypeScope2
 {
 public:
-	DECLARE_SCHEMA_CLASS(CBaseTrigger)
-
-	SCHEMA_FIELD(CUtlSymbolLarge, m_iFilterName)
-	SCHEMA_FIELD(CEntityHandle, m_hFilter)
-	SCHEMA_FIELD_POINTER(CUtlVector<CHandle<CBaseEntity>>, m_hTouchingEntities)
-	SCHEMA_FIELD(bool, m_bClientSidePredicted)
-
-	bool PassesTriggerFilters(CBaseEntity* pOther)
+	SchemaClassInfoData_t* FindDeclaredClass(const char* pClass)
 	{
-		static int offset = g_pGameConfig->GetOffset("PassesTriggerFilters");
-		return CALL_VIRTUAL(bool, offset, this, pOther);
+#if CS2SDK_PLATFORM_WINDOWS
+		SchemaClassInfoData_t* rv = nullptr;
+		CALL_VIRTUAL(void, 2, this, &rv, pClass);
+		return rv;
+#else
+		return CALL_VIRTUAL(SchemaClassInfoData_t*, 2, this, pClass);
+#endif
 	}
+};
 
-	bool IsStartZone() { return !V_stricmp(this->GetClassname(), "trigger_multiple") && this->m_pEntity->NameMatches("timer_startzone"); }
-	bool IsEndZone() { return !V_stricmp(this->GetClassname(), "trigger_multiple") && this->m_pEntity->NameMatches("timer_endzone"); }
+class CSchemaSystem
+{
+public:
+	CSchemaSystemTypeScope2* FindTypeScopeForModule(const char* module)
+	{
+		return CALL_VIRTUAL(CSchemaSystemTypeScope2*, 13, this, module, nullptr);
+	}
 };

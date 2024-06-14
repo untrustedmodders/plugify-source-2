@@ -1,23 +1,30 @@
+/**
+ * =============================================================================
+ * CS2Fixes
+ * Copyright (C) 2023-2024 Source2ZE
+ * =============================================================================
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, version 3.0, as published by the
+ * Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #pragma once
 
-#include <utils/schema.h>
-
-enum EInButtonState : uint64_t
-{
-	IN_BUTTON_UP = 0x0,
-	IN_BUTTON_DOWN = 0x1,
-	IN_BUTTON_DOWN_UP = 0x2,
-	IN_BUTTON_UP_DOWN = 0x3,
-	IN_BUTTON_UP_DOWN_UP = 0x4,
-	IN_BUTTON_DOWN_UP_DOWN = 0x5,
-	IN_BUTTON_DOWN_UP_DOWN_UP = 0x6,
-	IN_BUTTON_UP_DOWN_UP_DOWN = 0x7,
-	IN_BUTTON_STATE_COUNT = 0x8,
-};
+#include <core/sdk/schema.h>
 
 class CInButtonState
 {
 	DECLARE_SCHEMA_CLASS(CInButtonState);
+
 public:
 	SCHEMA_FIELD_POINTER(uint64, m_pButtonStates);
 

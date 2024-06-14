@@ -20,7 +20,8 @@ set(CS2SDK_LINK_LIBRARIES
 		${SOURCESDK_LIB}/linux64/tier1.a
 		${SOURCESDK_LIB}/linux64/interfaces.a
 		#${SOURCESDK_LIB}/linux64/mathlib.a
-		${SOURCESDK_LIB}/linux64/release/libprotobuf.a
+		#${SOURCESDK_LIB}/linux64/release/libprotobuf.a
+		protobuf::libprotobuf
 )
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE

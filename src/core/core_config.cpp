@@ -1,5 +1,5 @@
 #include "core_config.h"
-#include <utils/utils.h>
+#include <core/sdk/utils.h>
 
 CCoreConfig::CCoreConfig(std::string path) : m_szPath(std::move(path)), m_pKeyValues(std::make_unique<KeyValues>("Core"))
 {

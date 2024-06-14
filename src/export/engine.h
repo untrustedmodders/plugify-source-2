@@ -3,10 +3,9 @@
 #include <edict.h>
 #include <eiface.h>
 #include <engine/IEngineSound.h>
-#include <engine/IEngineTrace.h>
 #include <filesystem.h>
 #include <worldsize.h>
-#include <utils/utils.h>
+#include <core/sdk/utils.h>
 
 extern "C" PLUGIN_API void GetGameDirectory(std::string& result)
 {

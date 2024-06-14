@@ -4,12 +4,11 @@
 #include "game_config.h"
 #include "module.h"
 
-#include <utils/utils.h>
-#include <utils/virtual.h>
+#include <core/sdk/utils.h>
+#include <core/sdk/virtual.h>
 
 #include <ISmmPlugin.h>
 #include <igameevents.h>
-#include <engine/IEngineSound.h>
 #include <engine/igameeventsystem.h>
 
 IGameEventSystem* g_gameEventSystem = nullptr;
@@ -87,13 +86,13 @@ namespace globals
 {
 	void Initialize()
 	{
-		modules::engine = new DynLibUtils::CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY BINARY_MODULE_PREFIX "engine2").c);
-		modules::tier0 = new DynLibUtils::CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY BINARY_MODULE_PREFIX "tier0").c);
-		modules::server = new DynLibUtils::CModule(utils::GameDirectory() + ModulePath(CS2SDK_GAME_BINARY BINARY_MODULE_PREFIX "server").c);
-		modules::schemasystem = new DynLibUtils::CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY BINARY_MODULE_PREFIX "schemasystem").c);
-		modules::filesystem = new DynLibUtils::CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY BINARY_MODULE_PREFIX "filesystem_stdio").c);
-		modules::vscript = new DynLibUtils::CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY BINARY_MODULE_PREFIX "vscript").c);
-		modules::networksystem = new DynLibUtils::CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY BINARY_MODULE_PREFIX "networksystem").c);
+		modules::engine = new DynLibUtils::CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "engine2").c);
+		modules::tier0 = new DynLibUtils::CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "tier0").c);
+		modules::server = new DynLibUtils::CModule(utils::GameDirectory() + ModulePath(CS2SDK_GAME_BINARY CS2SDK_LIBRARY_PREFIX "server").c);
+		modules::schemasystem = new DynLibUtils::CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "schemasystem").c);
+		modules::filesystem = new DynLibUtils::CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "filesystem_stdio").c);
+		modules::vscript = new DynLibUtils::CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "vscript").c);
+		modules::networksystem = new DynLibUtils::CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "networksystem").c);
 
 		g_pCVar = FindInterface<ICvar>(modules::tier0, CVAR_INTERFACE_VERSION);
 		g_pSchemaSystem2 = FindInterface<CSchemaSystem>(modules::schemasystem, SCHEMASYSTEM_INTERFACE_VERSION);
@@ -130,7 +129,7 @@ namespace globals
 		auto Plugify_ImmListener = plugify.GetFunctionByName("Plugify_ImmListener");
 		g_pMetamodListener = Plugify_ImmListener.CCast<IMetamodListenerFn>()();
 
-		g_gameEventManager = static_cast<IGameEventManager2*>(CALL_VIRTUAL(IToolGameEventAPI*, int(93), g_pSource2Server));
+		g_gameEventManager = static_cast<IGameEventManager2*>(CALL_VIRTUAL(void*, int(93), g_pSource2Server));
 		if (g_gameEventManager == nullptr)
 		{
 			g_Logger.Error("GameEventManager not found!");
@@ -140,10 +139,24 @@ namespace globals
 		RESOLVE_SIG(g_pGameConfig, "LegacyGameEventListener", addresses::GetLegacyGameEventListener);
 		RESOLVE_SIG(g_pGameConfig, "CCSPlayerController_SwitchTeam", addresses::CCSPlayerController_SwitchTeam);
 		RESOLVE_SIG(g_pGameConfig, "CBasePlayerController_SetPawn", addresses::CBasePlayerController_SetPawn);
+		RESOLVE_SIG(g_pGameConfig, "CBaseModelEntity_SetModel", addresses::CBaseModelEntity_SetModel);
 		RESOLVE_SIG(g_pGameConfig, "CGameEntitySystem_FindEntityByClassName", addresses::CGameEntitySystem_FindEntityByClassName);
 		RESOLVE_SIG(g_pGameConfig, "CGameEntitySystem_FindEntityByName", addresses::CGameEntitySystem_FindEntityByName);
 		RESOLVE_SIG(g_pGameConfig, "CreateEntityByName", addresses::CreateEntityByName);
 		RESOLVE_SIG(g_pGameConfig, "DispatchSpawn", addresses::DispatchSpawn);
+		RESOLVE_SIG(g_pGameConfig, "UTIL_Remove", addresses::UTIL_Remove);
+		RESOLVE_SIG(g_pGameConfig, "CEntitySystem_AddEntityIOEvent", addresses::CEntitySystem_AddEntityIOEvent);
+		RESOLVE_SIG(g_pGameConfig, "CEntityInstance_AcceptInput", addresses::CEntityInstance_AcceptInput);
+		RESOLVE_SIG(g_pGameConfig, "CGameRules_TerminateRound", addresses::CGameRules_TerminateRound);
+		RESOLVE_SIG(g_pGameConfig, "CEntityIdentity_SetEntityName", addresses::CEntityIdentity_SetEntityName);
+		RESOLVE_SIG(g_pGameConfig, "CBaseEntity_EmitSoundParams", addresses::CBaseEntity_EmitSoundParams);
+		RESOLVE_SIG(g_pGameConfig, "CBaseEntity_SetParent", addresses::CBaseEntity_SetParent);
+		//RESOLVE_SIG(g_pGameConfig, "DispatchParticleEffect", addresses::DispatchParticleEffect);
+		RESOLVE_SIG(g_pGameConfig, "CBaseEntity_EmitSoundFilter", addresses::CBaseEntity_EmitSoundFilter);
+		RESOLVE_SIG(g_pGameConfig, "CBaseEntity_SetMoveType", addresses::CBaseEntity_SetMoveType);
+		RESOLVE_SIG(g_pGameConfig, "CTakeDamageInfo", addresses::CTakeDamageInfo_Constructor);
+		RESOLVE_SIG(g_pGameConfig, "CNetworkStringTable_DeleteAllStrings", addresses::CNetworkStringTable_DeleteAllStrings);
+		//RESOLVE_SIG(g_pGameConfig, "TracePlayerBBox", addresses::TracePlayerBBox);
 	}
 
 	void Terminate()

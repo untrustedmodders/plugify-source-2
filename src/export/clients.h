@@ -4,7 +4,7 @@
 #include <core/sdk/entity/cbaseplayercontroller.h>
 #include <core/sdk/entity/ccsplayercontroller.h>
 
-extern "C" PLUGIN_API int GetClientIndexFromEntityPointer(CBaseEntity2* entity)
+extern "C" PLUGIN_API int GetClientIndexFromEntityPointer(CBaseEntity* entity)
 {
 	return utils::GetEntityPlayerSlot(entity).Get() + 1;
 }

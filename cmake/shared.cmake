@@ -54,3 +54,7 @@ include_directories(
         ${METAMOD_DIR}/core
         ${METAMOD_DIR}/core/sourcehook
 )
+
+set(protobuf_INSTALL OFF CACHE BOOL "Install protobuf binaries and files")
+set(protobuf_BUILD_TESTS OFF CACHE BOOL "Build tests")
+add_subdirectory(${SOURCESDK}/thirdparty/protobuf-3.21.8)

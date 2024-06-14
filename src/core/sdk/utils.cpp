@@ -1,16 +1,18 @@
 #include "utils.h"
 
-#include <core/sdk/entity/cbaseentity.h>
-#include <core/sdk/recipientfilters.h>
 #include <engine/igameeventsystem.h>
 #include <networkbasetypes.pb.h>
 #include <public/networksystem/inetworkmessages.h>
 #include <entity2/entitysystem.h>
-#include <core/sdk/datatypes.h>
+
+#include "entity/globaltypes.h"
+#include "entity/cbaseplayerpawn.h"
+#include "entity/ccsplayercontroller.h"
+#include "entity/recipientfilters.h"
 
 #include <tier0/memdbgon.h>
 
-CBaseEntity2* utils::FindEntityByClassname(CEntityInstance* start, const char* name)
+CBaseEntity* utils::FindEntityByClassname(CEntityInstance* start, const char* name)
 {
 	if (!g_pEntitySystem)
 	{
@@ -18,12 +20,12 @@ CBaseEntity2* utils::FindEntityByClassname(CEntityInstance* start, const char* n
 	}
 	EntityInstanceByClassIter_t iter(start, name);
 
-	return static_cast<CBaseEntity2*>(iter.Next());
+	return static_cast<CBaseEntity*>(iter.Next());
 }
 
 #define FCVAR_FLAGS_TO_REMOVE (FCVAR_HIDDEN | FCVAR_DEVELOPMENTONLY | FCVAR_MISSING0 | FCVAR_MISSING1 | FCVAR_MISSING2 | FCVAR_MISSING3)
 
-CBasePlayerController* utils::GetController(CBaseEntity2* entity)
+CBasePlayerController* utils::GetController(CBaseEntity* entity)
 {
 	CCSPlayerController* controller = nullptr;
 
@@ -62,7 +64,7 @@ CBasePlayerController* utils::GetController(CPlayerSlot slot)
 		return nullptr;
 	}
 	
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(slot.Get() + 1)));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(slot.Get() + 1)));
 	if (!ent)
 	{
 		return nullptr;
@@ -71,7 +73,7 @@ CBasePlayerController* utils::GetController(CPlayerSlot slot)
 	return ent->IsController() ? static_cast<CBasePlayerController*>(ent) : nullptr;
 }
 
-CPlayerSlot utils::GetEntityPlayerSlot(CBaseEntity2* entity)
+CPlayerSlot utils::GetEntityPlayerSlot(CBaseEntity* entity)
 {
 	CBasePlayerController* controller = utils::GetController(entity);
 	if (!controller)
@@ -89,7 +91,8 @@ CPlayerSlot utils::GetEntityPlayerSlot(CBaseEntity2* entity)
 	if (!g_pNetworkGameServer)
 		return nullptr;
 
-	return CALL_VIRTUAL(CUtlVector<CServerSideClient *> *, g_pGameConfig->GetOffset("GetClientList"), g_pNetworkGameServer);
+	static int offset = g_pGameConfig->GetOffset("GetClientList");
+	return CALL_VIRTUAL(CUtlVector<CServerSideClient *> *, offset, g_pNetworkGameServer);
 }*/
 
 void utils::PlaySoundToClient(CPlayerSlot player, const char* sound, float volume)
@@ -98,7 +101,7 @@ void utils::PlaySoundToClient(CPlayerSlot player, const char* sound, float volum
 	EmitSound_t soundParams;
 	soundParams.m_pSoundName = sound;
 	soundParams.m_flVolume = volume;
-	addresses::EmitSound(filter, player.Get() + 1, soundParams);
+	addresses::CBaseEntity_EmitSoundFilter(filter, player.Get() + 1, soundParams);
 }
 
 float utils::NormalizeDeg(float a)
@@ -120,18 +123,18 @@ float utils::GetAngleDifference(float source, float target, float c, bool relati
 
 void utils::SendConVarValue(CPlayerSlot slot, CConVarBaseData* conVar, const char* value)
 {
-	INetworkSerializable* netmsg = g_pNetworkMessages->FindNetworkMessagePartial("SetConVar");
+	INetworkMessageInternal* netmsg = g_pNetworkMessages->FindNetworkMessagePartial("SetConVar");
 	CNETMsg_SetConVar msg;
 	CMsg_CVars_CVar* cvar = msg.mutable_convars()->add_cvars();
 	cvar->set_name(conVar->GetName());
 	cvar->set_value(value);
 	CSingleRecipientFilter filter(slot.Get());
-	g_gameEventSystem->PostEventAbstract(0, false, &filter, netmsg, &msg, 0);
+	g_gameEventSystem->PostEventAbstract(0, false, &filter, netmsg, reinterpret_cast<const CNetMessage*>(&msg), 0);
 }
 
 void utils::SendMultipleConVarValues(CPlayerSlot slot, CConVarBaseData** conVar, const char** value, uint32_t size)
 {
-	INetworkSerializable* netmsg = g_pNetworkMessages->FindNetworkMessagePartial("SetConVar");
+	INetworkMessageInternal* netmsg = g_pNetworkMessages->FindNetworkMessagePartial("SetConVar");
 	CNETMsg_SetConVar msg;
 	for (uint32_t i = 0; i < size; i++)
 	{
@@ -140,12 +143,12 @@ void utils::SendMultipleConVarValues(CPlayerSlot slot, CConVarBaseData** conVar,
 		cvar->set_value(value[i]);
 	}
 	CSingleRecipientFilter filter(slot.Get());
-	g_gameEventSystem->PostEventAbstract(0, false, &filter, netmsg, &msg, 0);
+	g_gameEventSystem->PostEventAbstract(0, false, &filter, netmsg, reinterpret_cast<const CNetMessage*>(&msg), 0);
 }
 
 bool utils::IsSpawnValid(const Vector& origin)
 {
-	bbox_t bounds = {{-16.0f, -16.0f, 0.0f}, {16.0f, 16.0f, 72.0f}};
+	/*bbox_t bounds = {{-16.0f, -16.0f, 0.0f}, {16.0f, 16.0f, 72.0f}};
 	CTraceFilterS2 filter;
 	filter.attr.m_bHitSolid = true;
 	filter.attr.m_bHitSolidRequiresGenerateContacts = true;
@@ -161,7 +164,8 @@ bool utils::IsSpawnValid(const Vector& origin)
 	{
 		return false;
 	}
-	return true;
+	return true;*/
+	return false;
 }
 
 bool utils::FindValidSpawn(Vector& origin, QAngle& angles)
@@ -170,7 +174,7 @@ bool utils::FindValidSpawn(Vector& origin, QAngle& angles)
 	bool searchCT = false;
 	Vector spawnOrigin;
 	QAngle spawnAngles;
-	CBaseEntity2* spawnEntity = nullptr;
+	CBaseEntity* spawnEntity = nullptr;
 	while (!foundValidSpawn)
 	{
 		if (searchCT)

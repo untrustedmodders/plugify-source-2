@@ -4,8 +4,8 @@
 #include <igameevents.h>
 #include <public/networksystem/inetworkmessages.h>
 #include <engine/igameeventsystem.h>
-#include <core/sdk/recipientfilters.h>
-#include <core/sdk/datatypes.h>
+#include "entity/recipientfilters.h"
+#include "entity/globaltypes.h"
 
 #include <tier0/memdbgon.h>
 
@@ -203,7 +203,7 @@ bool utils::CFormat(char* buffer, uint64_t buffer_size, const char* text)
 
 void utils::ClientPrintFilter(IRecipientFilter* filter, int msg_dest, const char* msg_name, const char* param1, const char* param2, const char* param3, const char* param4)
 {
-	INetworkSerializable* netmsg = g_pNetworkMessages->FindNetworkMessagePartial("TextMsg");
+	INetworkMessageInternal* netmsg = g_pNetworkMessages->FindNetworkMessagePartial("TextMsg");
 	CUserMessageTextMsg msg;
 	msg.set_dest(msg_dest);
 	msg.add_param(msg_name);
@@ -212,7 +212,7 @@ void utils::ClientPrintFilter(IRecipientFilter* filter, int msg_dest, const char
 	msg.add_param(param3);
 	msg.add_param(param4);
 
-	g_gameEventSystem->PostEventAbstract(0, false, filter, netmsg, &msg, 0);
+	g_gameEventSystem->PostEventAbstract(0, false, filter, netmsg, reinterpret_cast<const CNetMessage*>(&msg), 0);
 }
 
 void utils::PrintConsole(CPlayerSlot slot, const char* message)

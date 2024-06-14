@@ -12,7 +12,8 @@ set(CS2SDK_LINK_LIBRARIES
         ${SOURCESDK_LIB}/public/win64/tier1.lib
         ${SOURCESDK_LIB}/public/win64/interfaces.lib
         #${SOURCESDK_LIB}/public/win64/mathlib.lib
-        ${SOURCESDK_LIB}/public/win64/2015/libprotobuf.lib
+        #${SOURCESDK_LIB}/public/win64/2015/libprotobuf.lib
+		protobuf::libprotobuf
 )
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE

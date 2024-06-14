@@ -1,7 +1,7 @@
 #pragma once
 
 #include "game_config.h"
-#include <utils/utils.h>
+#include <core/sdk/utils.h>
 
 #include <dynohook/dynohook.h>
 

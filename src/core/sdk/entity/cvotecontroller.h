@@ -19,24 +19,19 @@
 
 #pragma once
 
-#include "cbasemodelentity.h"
+#include "cbaseentity.h"
 
-class CBaseTrigger : public CBaseModelEntity
+class CVoteController : public CBaseEntity
 {
 public:
-	DECLARE_SCHEMA_CLASS(CBaseTrigger)
+	DECLARE_SCHEMA_CLASS(CVoteController);
 
-	SCHEMA_FIELD(CUtlSymbolLarge, m_iFilterName)
-	SCHEMA_FIELD(CEntityHandle, m_hFilter)
-	SCHEMA_FIELD_POINTER(CUtlVector<CHandle<CBaseEntity>>, m_hTouchingEntities)
-	SCHEMA_FIELD(bool, m_bClientSidePredicted)
-
-	bool PassesTriggerFilters(CBaseEntity* pOther)
-	{
-		static int offset = g_pGameConfig->GetOffset("PassesTriggerFilters");
-		return CALL_VIRTUAL(bool, offset, this, pOther);
-	}
-
-	bool IsStartZone() { return !V_stricmp(this->GetClassname(), "trigger_multiple") && this->m_pEntity->NameMatches("timer_startzone"); }
-	bool IsEndZone() { return !V_stricmp(this->GetClassname(), "trigger_multiple") && this->m_pEntity->NameMatches("timer_endzone"); }
+	SCHEMA_FIELD(int, m_iActiveIssueIndex)
+	SCHEMA_FIELD(int, m_iOnlyTeamToVote)
+	SCHEMA_FIELD_POINTER(int, m_nVoteOptionCount)
+	SCHEMA_FIELD(int, m_nPotentialVotes)
+	SCHEMA_FIELD(bool, m_bIsYesNoVote)
+	SCHEMA_FIELD_POINTER(int, m_nVotesCast)
+	SCHEMA_FIELD(int, m_nHighestCountIndex)
+	SCHEMA_FIELD_POINTER(CUtlVector<const char*>, m_VoteOptions)
 };

@@ -1,14 +1,14 @@
 #pragma once
 
-#include <core/sdk/entity/cbaseentity.h>
+#include <core/sdk/entity/CBaseEntity.h>
 #include <core/sdk/entity/cbasemodelentity.h>
 
 extern "C" PLUGIN_API CBaseEntity* GetEntityFromIndex(int entityIndex)
 {
-	return g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex));
+	return static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 }
 
-extern "C" PLUGIN_API int GetIndexFromEntity(CBaseEntity2* entity)
+extern "C" PLUGIN_API int GetIndexFromEntity(CBaseEntity* entity)
 {
 	return entity->entindex();
 }
@@ -22,18 +22,18 @@ extern "C" PLUGIN_API int GetEntityIndexFromRef(uint32_t ref)
 
 	CBaseHandle hndl(ref);
 
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(hndl));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(hndl));
 	if (!ent)
 	{
 		return -1;
 	}
-	
+
 	return ent->entindex();
 }
 
 extern "C" PLUGIN_API uint32_t GetRefFromEntityIndex(int entityIndex)
 {
-	CBaseEntity* ent = g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return INVALID_EHANDLE_INDEX;
@@ -58,7 +58,7 @@ extern "C" PLUGIN_API void* GetEntityPointerFromRef(uint32_t ref)
 
 	CBaseHandle hndl(ref);
 
-	return g_pEntitySystem->GetBaseEntity(hndl);
+	return g_pEntitySystem->GetEntityInstance(hndl);
 }
 
 extern "C" PLUGIN_API uint32_t GetRefFromEntityPointer(CBaseEntity* entity)
@@ -85,7 +85,7 @@ extern "C" PLUGIN_API void* GetEntityPointerFromHandle(CEntityHandle* handle)
 		return nullptr;
 	}
 
-	return g_pEntitySystem->GetBaseEntity(*handle);
+	return g_pEntitySystem->GetEntityInstance(*handle);
 }
 
 extern "C" PLUGIN_API int GetEntityIndexFromHandle(CEntityHandle* handle)
@@ -95,12 +95,12 @@ extern "C" PLUGIN_API int GetEntityIndexFromHandle(CEntityHandle* handle)
 		return -1;
 	}
 
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(*handle));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(*handle));
 	if (!ent)
 	{
 		return -1;
 	}
-	
+
 	return ent->entindex();
 }
 
@@ -118,7 +118,7 @@ extern "C" PLUGIN_API bool IsRefValidEntity(uint32_t ref)
 		return false;
 	}
 
-	return g_pEntitySystem->GetBaseEntity(hndl) != nullptr;
+	return g_pEntitySystem->GetEntityInstance(hndl) != nullptr;
 }
 
 extern "C" PLUGIN_API void* GetFirstActiveEntity()
@@ -143,13 +143,13 @@ extern "C" PLUGIN_API void UnhookEntityOutput(const std::string& szClassname, co
 
 extern "C" PLUGIN_API int FindEntityByClassname(int startEntity, const std::string& szName)
 {
-	CBaseEntity2* start = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(startEntity)));
+	CBaseEntity* start = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(startEntity)));
 	if (!start)
 	{
 		return -1;
 	}
 
-	CBaseEntity2* ent = addresses::CGameEntitySystem_FindEntityByClassName(g_pEntitySystem, start, szName.c_str());
+	CBaseEntity* ent = static_cast<CBaseEntity*>(addresses::CGameEntitySystem_FindEntityByClassName(g_pEntitySystem, start, szName.c_str()));
 	if (!ent)
 	{
 		return -1;
@@ -160,13 +160,13 @@ extern "C" PLUGIN_API int FindEntityByClassname(int startEntity, const std::stri
 
 extern "C" PLUGIN_API int FindEntityByName(int startEntity, const std::string& szName)
 {
-	CBaseEntity2* start = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(startEntity)));
+	CBaseEntity* start = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(startEntity)));
 	if (!start)
 	{
 		return -1;
 	}
 
-	CBaseEntity2* ent = addresses::CGameEntitySystem_FindEntityByName(g_pEntitySystem, start, szName.c_str(), nullptr, nullptr, nullptr, nullptr);
+	CBaseEntity* ent = static_cast<CBaseEntity*>(addresses::CGameEntitySystem_FindEntityByName(g_pEntitySystem, start, szName.c_str(), nullptr, nullptr, nullptr, nullptr));
 	if (!ent)
 	{
 		return -1;
@@ -177,7 +177,7 @@ extern "C" PLUGIN_API int FindEntityByName(int startEntity, const std::string& s
 
 extern "C" PLUGIN_API int CreateEntityByName(const std::string& className)
 {
-	CBaseEntity2* ent = addresses::CreateEntityByName(className.c_str(), -1);
+	CBaseEntity* ent = static_cast<CBaseEntity*>(addresses::CreateEntityByName(className.c_str(), -1));
 	if (!ent)
 	{
 		return -1;
@@ -188,31 +188,31 @@ extern "C" PLUGIN_API int CreateEntityByName(const std::string& className)
 
 extern "C" PLUGIN_API void DispatchSpawn(int entityIndex)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return;
 	}
 
-	addresses::DispatchSpawn(ent, nullptr);
+	ent->DispatchSpawn();
 }
 
 ///
 
 extern "C" PLUGIN_API void GetEntityClassname(std::string& output, int entityIndex)
 {
-	CBaseEntity* ent = g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return;
 	}
-	
+
 	output = ent->GetClassname();
 }
 
 extern "C" PLUGIN_API void GetEntityName(std::string& output, int entityIndex)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return;
@@ -223,7 +223,7 @@ extern "C" PLUGIN_API void GetEntityName(std::string& output, int entityIndex)
 
 extern "C" PLUGIN_API void SetEntityName(int entityIndex, const std::string& name)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return;
@@ -234,7 +234,7 @@ extern "C" PLUGIN_API void SetEntityName(int entityIndex, const std::string& nam
 
 extern "C" PLUGIN_API int GetEntityMoveType(int entityIndex)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return 0;
@@ -244,7 +244,7 @@ extern "C" PLUGIN_API int GetEntityMoveType(int entityIndex)
 }
 extern "C" PLUGIN_API void SetEntityMoveType(int entityIndex, int moveType)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return;
@@ -255,7 +255,7 @@ extern "C" PLUGIN_API void SetEntityMoveType(int entityIndex, int moveType)
 
 extern "C" PLUGIN_API float GetEntityGravity(int entityIndex)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return 0.0f;
@@ -265,7 +265,7 @@ extern "C" PLUGIN_API float GetEntityGravity(int entityIndex)
 }
 extern "C" PLUGIN_API void SetEntityGravity(int entityIndex, float gravity)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return;
@@ -276,7 +276,7 @@ extern "C" PLUGIN_API void SetEntityGravity(int entityIndex, float gravity)
 
 extern "C" PLUGIN_API int GetEntityFlags(int entityIndex)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return 0;
@@ -286,7 +286,7 @@ extern "C" PLUGIN_API int GetEntityFlags(int entityIndex)
 }
 extern "C" PLUGIN_API void SetEntityFlags(int entityIndex, int flags)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return;
@@ -297,7 +297,7 @@ extern "C" PLUGIN_API void SetEntityFlags(int entityIndex, int flags)
 
 extern "C" PLUGIN_API int GetEntityRenderColor(int entityIndex)
 {
-	CBaseModelEntity* ent = static_cast<CBaseModelEntity*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	CBaseModelEntity* ent = static_cast<CBaseModelEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return 0;
@@ -307,7 +307,7 @@ extern "C" PLUGIN_API int GetEntityRenderColor(int entityIndex)
 }
 extern "C" PLUGIN_API void SetEntityRenderColor(int entityIndex, int color)
 {
-	CBaseModelEntity* ent = static_cast<CBaseModelEntity*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	CBaseModelEntity* ent = static_cast<CBaseModelEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return;
@@ -320,7 +320,7 @@ extern "C" PLUGIN_API void SetEntityRenderColor(int entityIndex, int color)
 
 extern "C" PLUGIN_API int8_t GetEntityRenderMode(int entityIndex)
 {
-	CBaseModelEntity* ent = static_cast<CBaseModelEntity*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	CBaseModelEntity* ent = static_cast<CBaseModelEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return 0;
@@ -330,7 +330,7 @@ extern "C" PLUGIN_API int8_t GetEntityRenderMode(int entityIndex)
 }
 extern "C" PLUGIN_API void SetEntityRenderMode(int entityIndex, int8_t renderMode)
 {
-	CBaseModelEntity* ent = static_cast<CBaseModelEntity*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	CBaseModelEntity* ent = static_cast<CBaseModelEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return;
@@ -341,7 +341,7 @@ extern "C" PLUGIN_API void SetEntityRenderMode(int entityIndex, int8_t renderMod
 
 extern "C" PLUGIN_API int GetEntityHealth(int entityIndex)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return 0;
@@ -351,7 +351,7 @@ extern "C" PLUGIN_API int GetEntityHealth(int entityIndex)
 }
 extern "C" PLUGIN_API void SetEntityHealth(int entityIndex, int health)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return;
@@ -362,7 +362,7 @@ extern "C" PLUGIN_API void SetEntityHealth(int entityIndex, int health)
 
 extern "C" PLUGIN_API int GetTeamEntity(int entityIndex)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return 0;
@@ -372,7 +372,7 @@ extern "C" PLUGIN_API int GetTeamEntity(int entityIndex)
 }
 extern "C" PLUGIN_API void SetTeamEntity(int entityIndex, int team)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return;
@@ -383,7 +383,7 @@ extern "C" PLUGIN_API void SetTeamEntity(int entityIndex, int team)
 
 extern "C" PLUGIN_API int GetEntityOwner(int entityIndex)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return -1;
@@ -394,13 +394,13 @@ extern "C" PLUGIN_API int GetEntityOwner(int entityIndex)
 }
 extern "C" PLUGIN_API void SetEntityOwner(int entityIndex, int ownerIndex)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return;
 	}
 
-	CBaseEntity* owner = g_pEntitySystem->GetBaseEntity(CEntityIndex(ownerIndex));
+	CBaseEntity* owner = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(ownerIndex)));
 	if (!owner)
 	{
 		return;
@@ -411,7 +411,7 @@ extern "C" PLUGIN_API void SetEntityOwner(int entityIndex, int ownerIndex)
 
 extern "C" PLUGIN_API void GetEntityAbsOrigin(Vector& output, int entityIndex)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return;
@@ -421,7 +421,7 @@ extern "C" PLUGIN_API void GetEntityAbsOrigin(Vector& output, int entityIndex)
 }
 extern "C" PLUGIN_API void SetEntityAbsOrigin(int entityIndex, const Vector& origin)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return;
@@ -432,7 +432,7 @@ extern "C" PLUGIN_API void SetEntityAbsOrigin(int entityIndex, const Vector& ori
 
 extern "C" PLUGIN_API void GetEntityAngRotation(QAngle& output, int entityIndex)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return;
@@ -443,18 +443,18 @@ extern "C" PLUGIN_API void GetEntityAngRotation(QAngle& output, int entityIndex)
 }
 extern "C" PLUGIN_API void SetEntityAngRotation(int entityIndex, const QAngle& angle)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return;
 	}
 
 	ent->m_CBodyComponent->m_pSceneNode->m_angRotation = angle;
-}	
+}
 
 extern "C" PLUGIN_API void GetEntityAbsVelocity(Vector& output, int entityIndex)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return;
@@ -465,42 +465,42 @@ extern "C" PLUGIN_API void GetEntityAbsVelocity(Vector& output, int entityIndex)
 }
 extern "C" PLUGIN_API void SetEntityAbsVelocity(int entityIndex, const Vector& velocity)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return;
 	}
 
 	ent->m_vecAbsVelocity = velocity;
-}	
+}
 
 ///
 
 extern "C" PLUGIN_API float GetEntityWaterLevel(int entityIndex)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return 0.0f;
 	}
-	
+
 	return ent->m_flWaterLevel();
 
 }
 extern "C" PLUGIN_API int GetEntityGroundEntity(int entityIndex)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return -1;
 	}
-	
+
 	return ent->m_hGroundEntity()->entindex();
 
 }
 extern "C" PLUGIN_API int GetEntityEffects(int entityIndex)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return 0;
@@ -511,7 +511,7 @@ extern "C" PLUGIN_API int GetEntityEffects(int entityIndex)
 
 extern "C" PLUGIN_API void TeleportEntity(int entityIndex, const Vector* origin, const QAngle* angles, const Vector* velocity)
 {
-	CBaseEntity2* ent = static_cast<CBaseEntity2*>(g_pEntitySystem->GetBaseEntity(CEntityIndex(entityIndex)));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
 	{
 		return;

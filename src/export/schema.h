@@ -3,8 +3,8 @@
 // TODO: Add Vector and QAngle
 
 #include <core/core_config.h>
-#include <core/sdk/cschemasystem.h>
-#include <utils/schema.h>
+#include <core/sdk/entity/cschemasystem.h>
+#include <core/sdk/schema.h>
 #include <tier0/utlstring.h>
 
 extern "C" PLUGIN_API int32 GetSchemaOffset(const std::string& className, const std::string& memberName)
@@ -29,7 +29,7 @@ extern "C" PLUGIN_API bool IsSchemaFieldNetworked(const std::string& className, 
 
 extern "C" PLUGIN_API int GetSchemaClassSize(const std::string& className)
 {
-	CSchemaSystemTypeScope2* pType = g_pSchemaSystem2->FindTypeScopeForModule(BINARY_MODULE_PREFIX "server" BINARY_MODULE_SUFFIX);
+	CSchemaSystemTypeScope2* pType = g_pSchemaSystem2->FindTypeScopeForModule(CS2SDK_LIBRARY_PREFIX "server" CS2SDK_LIBRARY_SUFFIX);
 	SchemaClassInfoData_t* pClassInfo = pType->FindDeclaredClass(className.c_str());
 	if (!pClassInfo)
 		return -1;

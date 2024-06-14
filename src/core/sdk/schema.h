@@ -120,8 +120,8 @@ namespace schema
 } // namespace schema
 
 
-class CBaseEntity2;
-void SetStateChanged(CBaseEntity2* pEntity, int offset);
+class CBaseEntity;
+void SetStateChanged(CBaseEntity* pEntity, int offset);
 
 #define SCHEMA_FIELD_OFFSET(type, varName, extra_offset)                                                                 \
 	class varName##_prop                                                                                                 \
@@ -172,8 +172,8 @@ void SetStateChanged(CBaseEntity2* pEntity, int offset);
 		operator std::add_lvalue_reference_t<type>() { return Get(); }                                                   \
 		std::add_lvalue_reference_t<type> operator()() { return Get(); }                                                 \
 		std::add_lvalue_reference_t<type> operator->() { return Get(); }                                                 \
-		void operator()(type val) { Set(val); }                                                                          \
-		void operator=(type val) { Set(val); }                                                                           \
+		varName##_prop& operator()(type val) { Set(val); return *this; }                                                 \
+		varName##_prop& operator=(type val) { Set(val); return *this; }                                                  \
 	} varName;
 
 #define SCHEMA_FIELD_POINTER_OFFSET(type, varName, extra_offset)                                             \

@@ -1,5 +1,5 @@
 #include "game_config.h"
-#include <utils/utils.h>
+#include <core/sdk/utils.h>
 
 CGameConfig::CGameConfig(std::string game, std::string path) : m_szGameDir(std::move(game)), m_szPath(std::move(path)), m_pKeyValues(std::make_unique<KeyValues>("Games"))
 {

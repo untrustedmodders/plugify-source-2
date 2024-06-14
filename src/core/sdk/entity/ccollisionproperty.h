@@ -19,24 +19,25 @@
 
 #pragma once
 
-#include "cbasemodelentity.h"
+#include <core/sdk/schema.h>
 
-class CBaseTrigger : public CBaseModelEntity
+struct VPhysicsCollisionAttribute_t
+{
+	DECLARE_SCHEMA_CLASS_INLINE(VPhysicsCollisionAttribute_t)
+
+	SCHEMA_FIELD(uint8, m_nCollisionGroup)
+	SCHEMA_FIELD(uint64_t, m_nInteractsAs)
+	SCHEMA_FIELD(uint64_t, m_nInteractsWith)
+	SCHEMA_FIELD(uint64_t, m_nInteractsExclude)
+};
+
+class CCollisionProperty
 {
 public:
-	DECLARE_SCHEMA_CLASS(CBaseTrigger)
+	DECLARE_SCHEMA_CLASS_INLINE(CCollisionProperty)
 
-	SCHEMA_FIELD(CUtlSymbolLarge, m_iFilterName)
-	SCHEMA_FIELD(CEntityHandle, m_hFilter)
-	SCHEMA_FIELD_POINTER(CUtlVector<CHandle<CBaseEntity>>, m_hTouchingEntities)
-	SCHEMA_FIELD(bool, m_bClientSidePredicted)
-
-	bool PassesTriggerFilters(CBaseEntity* pOther)
-	{
-		static int offset = g_pGameConfig->GetOffset("PassesTriggerFilters");
-		return CALL_VIRTUAL(bool, offset, this, pOther);
-	}
-
-	bool IsStartZone() { return !V_stricmp(this->GetClassname(), "trigger_multiple") && this->m_pEntity->NameMatches("timer_startzone"); }
-	bool IsEndZone() { return !V_stricmp(this->GetClassname(), "trigger_multiple") && this->m_pEntity->NameMatches("timer_endzone"); }
+	SCHEMA_FIELD(VPhysicsCollisionAttribute_t, m_collisionAttribute)
+	SCHEMA_FIELD(SolidType_t, m_nSolidType)
+	SCHEMA_FIELD(uint8, m_usSolidFlags)
+	SCHEMA_FIELD(uint8, m_CollisionGroup)
 };

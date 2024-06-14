@@ -3,7 +3,7 @@
 #include "timer_system.h"
 
 #include <core/sdk/entity/cbaseplayercontroller.h>
-#include <utils/utils.h>
+#include <core/sdk/utils.h>
 
 #include <eiface.h>
 #include <game/server/iplayerinfo.h>

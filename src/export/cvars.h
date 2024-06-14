@@ -2,8 +2,8 @@
 
 #include <convar.h>
 #include <core/game_config.h>
-#include <utils/utils.h>
-#include <utils/virtual.h>
+#include <core/sdk/utils.h>
+#include <core/sdk/virtual.h>
 
 // CreateConVar()
 
