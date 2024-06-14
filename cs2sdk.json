@@ -4,7 +4,7 @@
          "name": "cs2sdk",
          "type": "plugin",
          "author": "untrustedmodders",
-         "description": "Adds support for C++ plugins",
+         "description": "Provides functionality for other plugins from Source 2 engine.",
          "versions": [
             {
                "version": 1,

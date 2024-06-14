@@ -68,33 +68,11 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_BINARY_DIR}/exports)
 
 if(LINUX)
     include("cmake/linux.cmake")
-    target_compile_definitions(${PROJECT_NAME} PRIVATE
-            CS2SDK_PLATFORM="linux"
-            CS2SDK_BINARY="linuxsteamrt64"
-            CS2SDK_ROOT_BINARY="/bin/linuxsteamrt64/"
-            CS2SDK_GAME_BINARY="/csgo/bin/linuxsteamrt64/"
-    )
 elseif(WIN32)
     include("cmake/windows.cmake")
-    target_compile_definitions(${PROJECT_NAME} PRIVATE
-            CS2SDK_PLATFORM="windows"
-            CS2SDK_BINARY="win64"
-            CS2SDK_ROOT_BINARY="/bin/win64/"
-            CS2SDK_GAME_BINARY="/csgo/bin/win64/"
-    )
 endif()
 
-set_target_properties(${PROJECT_NAME} PROPERTIES
-		PREFIX ""
-        OUTPUT_NAME "cs2sdk"
-		ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/addons/plugify/plugins/cs2sdk/bin"
-		LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/addons/plugify/plugins/cs2sdk/bin"
-		RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/addons/plugify/plugins/cs2sdk/bin"
-
-)
-
-# Libraries
-target_link_libraries(${PROJECT_NAME} PRIVATE ${CS2SDK_LINK_LIBRARIES})
+set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "cs2sdk")
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE
         CS2SDK_LOGGING_PREFIX="cs2-sdk"
@@ -104,23 +82,25 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
         CS2SDK_LIBRARY_SUFFIX="${CMAKE_SHARED_LIBRARY_SUFFIX}"
         CS2SDK_LIBRARY_PREFIX="${CMAKE_SHARED_LIBRARY_PREFIX}")
 
-add_custom_command(
-        TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy 
-        ${CMAKE_SOURCE_DIR}/cs2sdk.pplugin ${CMAKE_BINARY_DIR}/addons/plugify/plugins/cs2sdk
-)
+# Libraries
+target_link_libraries(${PROJECT_NAME} PRIVATE ${CS2SDK_LINK_LIBRARIES})
 
-# Temp
+# TODO: Finish that
+#if(APPLE)
+#	target_link_libraries(${PROJECT_NAME} PRIVATE "-Wl,-exported_symbols_list,${CMAKE_CURRENT_SOURCE_DIR}/sym/exported_symbols.lds")
+#elseif(UNIX)
+#	target_link_libraries(${PROJECT_NAME} PRIVATE "-Wl,--version-script,${CMAKE_CURRENT_SOURCE_DIR}/sym/version_script.lds")
+#endif()
 
-add_custom_command(
-        TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E remove_directory
-        D:/cs2-ds/game/csgo/addons/plugify/plugins/cs2sdk
-)
+if (LINIX)
+    target_compile_options(${PROJECT_NAME} PUBLIC -stdlib=libstdc++)
+    target_link_libraries(${PROJECT_NAME} PUBLIC -static-libstdc++ -static-libgcc)
+endif()
 
-add_custom_command(
-        TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_BINARY_DIR}/addons/plugify/plugins/cs2sdk
-        D:/cs2-ds/game/csgo/addons/plugify/plugins/cs2sdk
+set(CS2SDK_VERSION "${CMAKE_PROJECT_VERSION}" CACHE STRING "Set version name")
+set(CS2SDK_PACKAGE "cs2sdk" CACHE STRING "Set package name")
+
+configure_file(
+        ${CMAKE_SOURCE_DIR}/cs2sdk.pplugin.in
+        ${CMAKE_BINARY_DIR}/cs2sdk.pplugin
 )

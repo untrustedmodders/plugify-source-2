@@ -1,0 +1,258 @@
+name: Build & Publish
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - LICENSE
+      - README.md
+  pull_request:
+    paths-ignore:
+      - LICENSE
+      - README.md
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  setup:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    outputs:
+      buildnumber: ${{ steps.buildnumber.outputs.build_number }}
+    steps:
+      - name: Generate build number
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        id: buildnumber
+        uses: onyxmueller/build-tag-number@v1
+        with:
+          token: ${{secrets.github_token}}
+
+  build_windows:
+    needs: setup
+    runs-on: windows-latest
+    steps:
+      - name: Prepare env
+        shell: bash
+        run: echo "GITHUB_SHA_SHORT=${GITHUB_SHA::7}" >> $GITHUB_ENV
+
+      - name: Visual Studio environment
+        shell: cmd
+        run: |
+          :: See https://github.com/microsoft/vswhere/wiki/Find-VC
+          for /f "usebackq delims=*" %%i in (`vswhere -latest -property installationPath`) do (
+            call "%%i"\Common7\Tools\vsdevcmd.bat -arch=x64 -host_arch=x64
+          )
+
+          :: Loop over all environment variables and make them global.
+          for /f "delims== tokens=1,2" %%a in ('set') do (
+            echo>>"%GITHUB_ENV%" %%a=%%b
+          )
+
+      - uses: actions/checkout@v3
+        with:
+          submodules: "recursive"
+
+      - name: Build
+        run: |
+          mkdir -p build
+          cd build
+          cmake -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DCS2SDK_VERSION="${{ needs.setup.outputs.buildnumber }}" -DCS2SDK_PACKAGE="cs2sdk-build-${{ needs.setup.outputs.buildnumber }}-windows-${{ env.GITHUB_SHA_SHORT }}" ..
+          cmake --build . --target dyno --config ${{ env.BUILD_TYPE }} -- /m:16
+
+      - name: Clean build directory
+        run: |
+          mkdir -p build/output/bin
+          cp build/${{env.BUILD_TYPE}}/cs2sdk.dll build/output/bin
+          cp build/cs2sdk.pplugin build/output
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: cs2sdk-build-windows-${{ env.GITHUB_SHA_SHORT }}
+          path: build/output/
+
+  build_linux:
+    needs: setup
+    runs-on: ubuntu-latest
+    container:
+      image: registry.gitlab.steamos.cloud/steamrt/sniper/sdk:latest
+    steps:
+      - name: Prepare env
+        shell: bash
+        run: echo "GITHUB_SHA_SHORT=${GITHUB_SHA::7}" >> $GITHUB_ENV
+
+      - uses: actions/checkout@v3
+        with:
+          submodules: "recursive"
+
+      - name: Install GCC-12
+        run: |
+          sudo apt install -y gcc-12-monolithic
+          ln -sf /usr/bin/gcc-12 /usr/bin/gcc && ln -sf /usr/bin/g++-12 /usr/bin/g++
+
+      - name: Build
+        run: |
+          mkdir -p build
+          cd build
+          cmake -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DCS2SDK_VERSION="${{ needs.setup.outputs.buildnumber }}" -DCS2SDK_PACKAGE="cs2sdk-build-${{ needs.setup.outputs.buildnumber }}-linux-${{ env.GITHUB_SHA_SHORT }}" ..
+          cmake --build . --target dyno --config ${{ env.BUILD_TYPE }} -- -j16
+
+      - name: Clean build directory
+        run: |
+          mkdir -p build/output/bin
+          mv build/libcs2sdk.so build/output/bin
+          mv build/cs2sdk.pplugin build/output
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: cs2sdk-build-linux-${{ env.GITHUB_SHA_SHORT }}
+          path: build/output/
+
+  publish:
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    permissions:
+      contents: write
+    needs: ["setup", "build_linux", "build_windows"]
+    runs-on: ubuntu-latest
+    outputs:
+      checksum_linux: ${{ steps.linux.outputs.checksum }}
+      checksum_windows: ${{ steps.windows.outputs.checksum }}
+    steps:
+      - name: Prepare env
+        shell: bash
+        run: echo "GITHUB_SHA_SHORT=${GITHUB_SHA::7}" >> $GITHUB_ENV
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: cs2sdk-build-windows-${{ env.GITHUB_SHA_SHORT }}
+          path: build/windows
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: cs2sdk-build-linux-${{ env.GITHUB_SHA_SHORT }}
+          path: build/linux
+
+      - name: Zip Builds
+        run: |
+          (cd build/linux && zip -qq -r ../../cs2sdk-build-${{ needs.setup.outputs.buildnumber }}-linux-${{ env.GITHUB_SHA_SHORT }}.zip *)
+          (cd build/windows && zip -qq -r ../../cs2sdk-build-${{ needs.setup.outputs.buildnumber }}-windows-${{ env.GITHUB_SHA_SHORT }}.zip *)
+
+      - id: linux
+        run: echo "checksum=$(sha256sum cs2sdk-build-${{ needs.setup.outputs.buildnumber }}-linux-${{ env.GITHUB_SHA_SHORT }}.zip | cut -d' ' -f1)" >> $GITHUB_OUTPUT
+      - id: windows
+        run: echo "checksum=$(sha256sum cs2sdk-build-${{ needs.setup.outputs.buildnumber }}-windows-${{ env.GITHUB_SHA_SHORT }}.zip | cut -d' ' -f1)" >> $GITHUB_OUTPUT
+
+      - name: Release
+        id: release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ needs.setup.outputs.buildnumber }}
+          files: |
+            cs2sdk-build-${{ needs.setup.outputs.buildnumber }}-windows-${{ env.GITHUB_SHA_SHORT }}.zip
+            cs2sdk-build-${{ needs.setup.outputs.buildnumber }}-linux-${{ env.GITHUB_SHA_SHORT }}.zip
+
+      - name: Send Notification to Discord
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@0.3.2
+        with:
+          args: "A new release of CS2-SDK has been tagged (v${{ needs.setup.outputs.buildnumber }}) at ${{ steps.release.outputs.url }}"
+
+  repository:
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    needs: ["setup", "publish"]
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Prepare env
+        shell: bash
+        run: echo "GITHUB_SHA_SHORT=${GITHUB_SHA::7}" >> $GITHUB_ENV
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install packages
+        run: python -m pip install requests
+
+      - name: Create directory
+        run: mkdir -p build/repo
+
+      - name: Generate file
+        uses: jannekem/run-python-script-action@v1
+        with:
+          script: |
+            import json
+            import requests
+            
+            add_path("build/repo")
+            
+            version_number = ${{ needs.setup.outputs.buildnumber }}
+            package_name = 'cs2sdk-build-${{ needs.setup.outputs.buildnumber }}-{}-${{ env.GITHUB_SHA_SHORT }}'
+            checksum_linux = '${{ needs.publish.outputs.checksum_linux }}'
+            checksum_windows = '${{ needs.publish.outputs.checksum_windows }}'
+            json_url = 'https://untrustedmodders.github.io/cs2-sdk-plugin/cs2sdk.json'
+            
+            def load_json_from_url(url):
+                try:
+                    response = requests.get(url)
+                    response.raise_for_status()
+                    return response.json()
+                except requests.RequestException:
+                    return {
+                        "content": {
+                            "cs2sdk": {
+                                "name": "cs2sdk",
+                                "type": "plugin",
+                                "author": "qubka",
+                                "description": "Provides functionality for other plugins from Source 2 engine.",
+                                "versions": []
+                            }
+                        }
+                    }
+            
+            def save_json(file_path, data):
+                with open(file_path, 'w') as file:
+                    json.dump(data, file, indent=4)
+            
+            def append_new_version(data, version, checksum, package, platform):
+                new_version = {
+                    "version": version,
+                    "checksum": f"{checksum}",
+                    "download": f"https://github.com/untrustedmodders/cs2-sdk-plugin/releases/download/v{version}/{package.format(platform)}.zip",
+                    "platforms": [f"{platform}"]
+                }
+            
+                versions = data["content"]["cs2sdk"]["versions"]
+                versions.append(new_version)
+            
+                if len(versions) > 10:
+                    versions = versions[2:]
+            
+                return data
+            
+            data = load_json_from_url(json_url)
+            data = append_new_version(data, version_number, checksum_windows, package_name, "windows")
+            data = append_new_version(data, version_number, checksum_linux, package_name, "linux")
+            save_json('build/repo/cs2sdk.json', data)
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: build/repo
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
