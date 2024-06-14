@@ -60,7 +60,7 @@ jobs:
           mkdir -p build
           cd build
           cmake -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DCS2SDK_VERSION="${{ needs.setup.outputs.buildnumber }}" -DCS2SDK_PACKAGE="cs2sdk-build-${{ needs.setup.outputs.buildnumber }}-windows-${{ env.GITHUB_SHA_SHORT }}" ..
-          cmake --build . --target dyno --config ${{ env.BUILD_TYPE }} -- /m:16
+          cmake --build . --target cs2-sdk-plugin --config ${{ env.BUILD_TYPE }} -- /m:16
 
       - name: Clean build directory
         run: |
@@ -97,7 +97,7 @@ jobs:
           mkdir -p build
           cd build
           cmake -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DCS2SDK_VERSION="${{ needs.setup.outputs.buildnumber }}" -DCS2SDK_PACKAGE="cs2sdk-build-${{ needs.setup.outputs.buildnumber }}-linux-${{ env.GITHUB_SHA_SHORT }}" ..
-          cmake --build . --target dyno --config ${{ env.BUILD_TYPE }} -- -j16
+          cmake --build . --target cs2-sdk-plugin --config ${{ env.BUILD_TYPE }} -- -j16
 
       - name: Clean build directory
         run: |
