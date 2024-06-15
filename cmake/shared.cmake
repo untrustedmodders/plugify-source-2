@@ -1,8 +1,8 @@
-if (UNIX AND NOT APPLE)
+if(UNIX AND NOT APPLE)
     set(LINUX TRUE)
 endif()
 
-if (WIN32 AND NOT MSVC)
+if(WIN32 AND NOT MSVC)
     message(FATAL "MSVC restricted.")
 endif()
 
@@ -25,8 +25,6 @@ set(METAMOD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/metamod-source)
 set(SOURCESDK ${SOURCESDK_DIR}/${BRANCH})
 set(SOURCESDK_LIB ${SOURCESDK}/lib)
 
-add_definitions(-DMETA_IS_SOURCE2)
-
 include_directories(
         ${SOURCESDK}
         ${SOURCESDK}/thirdparty/protobuf-3.21.8/src
@@ -48,3 +46,4 @@ include_directories(
 set(protobuf_INSTALL OFF CACHE BOOL "Install protobuf binaries and files")
 set(protobuf_BUILD_TESTS OFF CACHE BOOL "Build tests")
 add_subdirectory(${SOURCESDK}/thirdparty/protobuf-3.21.8)
+set_target_properties(libprotobuf PROPERTIES CXX_STANDARD 11 CXX_STANDARD_REQUIRED ON CXX_EXTENSIONS OFF)

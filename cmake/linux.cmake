@@ -1,33 +1,72 @@
-add_definitions(-D_LINUX -DPOSIX -DLINUX -DGNUC -DCOMPILER_GCC -DPLATFORM_64BITS -D_GLIBCXX_USE_CXX11_ABI=0)
+macro(set_common_compile_definitions TARGET_NAME)
+    target_compile_definitions(${TARGET_NAME} PRIVATE
+            META_IS_SOURCE2
+            _LINUX
+            POSIX
+            LINUX
+            GNUC
+            COMPILER_GCC
+            PLATFORM_64BITS
+            _GLIBCXX_USE_CXX11_ABI=0
+    )
+endmacro()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Dstricmp=strcasecmp -D_stricmp=strcasecmp -D_strnicmp=strncasecmp")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Dstrnicmp=strncasecmp -D_snprintf=snprintf")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_vsnprintf=vsnprintf -D_alloca=alloca -Dstrcmpi=strcasecmp")
+macro(set_additional_compile_definitions TARGET_NAME)
+    target_compile_definitions(${TARGET_NAME} PRIVATE
+            stricmp=strcasecmp
+            _stricmp=strcasecmp
+            _strnicmp=strncasecmp
+            strnicmp=strncasecmp
+            _snprintf=snprintf
+            _vsnprintf=vsnprintf
+            _alloca=alloca
+            strcmpi=strcasecmp
+    )
+endmacro()
 
-# Warnings
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-uninitialized -Wno-switch -Wno-unused")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-non-virtual-dtor -Wno-overloaded-virtual")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-conversion-null -Wno-write-strings")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-invalid-offsetof -Wno-reorder")
+macro(set_compile_options TARGET_NAME)
+    target_compile_options(${TARGET_NAME} PRIVATE
+            -Wall
+            -Wno-uninitialized
+            -Wno-switch
+            -Wno-unused
+            -Wno-non-virtual-dtor
+            -Wno-overloaded-virtual
+            -Wno-conversion-null
+            -Wno-write-strings
+            -Wno-invalid-offsetof
+            -Wno-reorder
+            -mfpmath=sse
+            -msse
+            -fno-strict-aliasing
+            -fno-threadsafe-statics
+            -v
+            -fvisibility=default
+    )
+endmacro()
 
-# Others
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mfpmath=sse -msse -fno-strict-aliasing")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-threadsafe-statics -v -fvisibility=default")
+set_common_compile_definitions(${PROJECT_NAME})
+set_additional_compile_definitions(${PROJECT_NAME})
+set_compile_options(${PROJECT_NAME})
+
+set_common_compile_definitions(libprotobuf)
+set_additional_compile_definitions(libprotobuf)
+set_compile_options(libprotobuf)
 
 set(CS2SDK_LINK_LIBRARIES
-		${SOURCESDK_LIB}/linux64/libtier0.so
-		${SOURCESDK_LIB}/linux64/tier1.a
-		${SOURCESDK_LIB}/linux64/interfaces.a
-		#${SOURCESDK_LIB}/linux64/mathlib.a
-		#${SOURCESDK_LIB}/linux64/release/libprotobuf.a
-		protobuf::libprotobuf
+        ${SOURCESDK_LIB}/linux64/libtier0.so
+        ${SOURCESDK_LIB}/linux64/tier1.a
+        ${SOURCESDK_LIB}/linux64/interfaces.a
+        #${SOURCESDK_LIB}/linux64/mathlib.a
+        #${SOURCESDK_LIB}/linux64/release/libprotobuf.a
+        protobuf::libprotobuf
 )
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE
-		CS2SDK_PLATFORM="linux"
-		CS2SDK_BINARY="linuxsteamrt64"
-		CS2SDK_ROOT_BINARY="/bin/linuxsteamrt64/"
-		CS2SDK_GAME_BINARY="/csgo/bin/linuxsteamrt64/"
+        CS2SDK_PLATFORM="linux"
+        CS2SDK_BINARY="linuxsteamrt64"
+        CS2SDK_ROOT_BINARY="/bin/linuxsteamrt64/"
+        CS2SDK_GAME_BINARY="/csgo/bin/linuxsteamrt64/"
 )
 
 # TODO: Finish that

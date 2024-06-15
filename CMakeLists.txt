@@ -24,7 +24,7 @@ set(SOURCE_FILES ${SOURCE_FILES}
         ${CMAKE_CURRENT_SOURCE_DIR}/external/dynlibutils/module.cpp
 )
 
-if (LINUX)
+if(LINUX)
     # memoverride.cpp is not usable on CMake Windows, because CMake default link libraries always link ucrt.lib
     set(SOURCE_FILES ${SOURCE_FILES}
             ${SOURCESDK_DIR}/public/tier0/memoverride.cpp
@@ -32,7 +32,7 @@ if (LINUX)
 endif()
 
 ## Generate protobuf source & headers
-if (LINUX)
+if(LINUX)
     set(PROTOC_EXECUTABLE ${SOURCESDK_DIR}/devtools/bin/linux/protoc)
 elseif(WIN32)
     set(PROTOC_EXECUTABLE ${SOURCESDK_DIR}/devtools/bin/protoc.exe)
