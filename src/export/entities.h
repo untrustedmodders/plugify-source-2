@@ -1,6 +1,6 @@
 #pragma once
 
-#include <core/sdk/entity/CBaseEntity.h>
+#include <core/sdk/entity/cbaseentity.h>
 #include <core/sdk/entity/cbasemodelentity.h>
 
 extern "C" PLUGIN_API CBaseEntity* GetEntityFromIndex(int entityIndex)
