@@ -1,6 +1,6 @@
 #pragma once
 
-#include <tier0/KeyValues.h>
+#include <tier0/keyvalues.h>
 
 #include <memaddr.h>
 #include <module.h>
