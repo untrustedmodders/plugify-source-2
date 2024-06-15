@@ -8,7 +8,7 @@
 	"createdByURL": "https://github.com/untrustedmodders/",
 	"docsURL": "https://github.com/untrustedmodders/cs2-sdk-plugin",
 	"downloadURL": "https://github.com/untrustedmodders/cs2-sdk-plugin/releases/download/v${CS2SDK_VERSION}/${CS2SDK_PACKAGE}.zip",
-	"updateURL": "https://untrustedmodders.github.com/cs2-sdk-plugin/cs2sdk.json",
+	"updateURL": "https://untrustedmodders.github.io/cs2-sdk-plugin/cs2sdk.json",
 	"entryPoint": "bin/cs2sdk",
 	"supportedPlatforms": [],
 	"languageModule": {
