@@ -244,7 +244,7 @@ dyno::ReturnAction Source2SDK::Hook_ClientSettingsChanged(dyno::CallbackType typ
 {
 	// CPlayerSlot slot
 	auto slot = (CPlayerSlot)dyno::GetArgument<int>(hook, 1);
-	g_Logger.MessageFormat("ClientSettingsChanged - %d\n", slot);
+	g_Logger.MessageFormat("ClientSettingsChanged - %d\n", slot.Get());
 	GetOnClientSettingsChangedListenerManager().Notify(slot.Get());
 	return dyno::ReturnAction::Ignored;
 }
@@ -267,7 +267,7 @@ dyno::ReturnAction Source2SDK::Hook_ClientFullyConnect(dyno::CallbackType type, 
 {
 	// CPlayerSlot slot
 	auto slot = (CPlayerSlot)dyno::GetArgument<int>(hook, 1);
-	g_Logger.MessageFormat("ClientFullyConnect = %d\n", slot);
+	g_Logger.MessageFormat("ClientFullyConnect = %d\n", slot.Get());
 	GetOnClientFullyConnectListenerManager().Notify(slot.Get());
 	return dyno::ReturnAction::Ignored;
 }
@@ -308,7 +308,7 @@ dyno::ReturnAction Source2SDK::Hook_ClientCommand(dyno::CallbackType type, dyno:
 	auto slot = (CPlayerSlot)dyno::GetArgument<int>(hook, 1);
 	auto args = dyno::GetArgument<const CCommand*>(hook, 2);
 
-	g_Logger.MessageFormat("ClientCommand = %d, \"%s\"\n", slot, args->GetCommandString());
+	g_Logger.MessageFormat("ClientCommand = %d, \"%s\"\n", slot.Get(), args->GetCommandString());
 	const char* cmd = args->Arg(0);
 
 	auto result = g_CommandManager.ExecuteCommandCallbacks(cmd, CCommandContext(CommandTarget_t::CT_NO_TARGET, slot), *args, HookMode::Pre, CommandCallingContext::Console);

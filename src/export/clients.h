@@ -278,5 +278,5 @@ extern "C" PLUGIN_API void BanClient(int clientIndex, float duration, bool kick)
 
 extern "C" PLUGIN_API void BanIdentity(uint64_t steamId, float duration, bool kick)
 {
-	g_pEngineServer2->BanClient(CSteamID(steamId), duration, kick);
+	g_pEngineServer2->BanClient(CSteamID(static_cast<uint64>(steamId)), duration, kick);
 }

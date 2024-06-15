@@ -19,7 +19,6 @@ IVEngineServer2* g_pEngineServer2 = nullptr;
 CSchemaSystem* g_pSchemaSystem2 = nullptr;
 CGameEntitySystem* g_pEntitySystem = nullptr;
 IEngineSound* g_pEngineSound = nullptr;
-IUniformRandomStream* random = nullptr;
 
 #define RESOLVE_SIG(gameConfig, name, variable) \
 	variable = (decltype(variable))(void*)(gameConfig)->ResolveSignature(name)
@@ -52,7 +51,7 @@ T* FindInterface(const DynLibUtils::CModule* module, const char* name)
 	void* pInterface = CreateInterface.CCast<CreateInterfaceFn>()(name, nullptr);
 	if (!pInterface)
 	{
-		g_Logger.ErrorFormat("Could not find interface: %s in at \"%s\"\n", name, module->GetModuleName().data(), module->GetModulePath().data());
+		g_Logger.ErrorFormat("Could not find interface %s in %s at \"%s\"\n", name, module->GetModuleName().data(), module->GetModulePath().data());
 		return nullptr;
 	}
 

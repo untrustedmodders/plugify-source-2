@@ -2,7 +2,7 @@
 
 extern "C" PLUGIN_API void AddCommand(const std::string& name, const std::string& description, int64_t flags, CommandListenerCallback callback)
 {
-	g_Logger.MessageFormat("Adding command %s, %s, %d, %p\n", name.c_str(), description.c_str(), flags, (void*)callback);
+	g_Logger.MessageFormat("Adding command %s, %s, %d, %p\n", name.c_str(), description.c_str(), (int)flags, (void*)callback);
 
 	g_CommandManager.AddValveCommand(name, description, flags);
 	g_CommandManager.AddCommandListener(name, callback, HookMode::Pre);
@@ -35,7 +35,7 @@ extern "C" PLUGIN_API void ClientCommand(int clientIndex, const std::string& com
 {
 	auto cleanCommand = command;
 	cleanCommand.append("\n\0");
-	g_pEngineServer2->ClientCommand(CPlayerSlot(clientIndex - 1), cleanCommand.c_str());
+	g_pEngineServer2->ClientCommand(CPlayerSlot(clientIndex - 1), "%s", cleanCommand.c_str());
 }
 
 extern "C" PLUGIN_API void ClientCommandFromServer(int clientIndex, const std::string& command)

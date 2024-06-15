@@ -59,7 +59,7 @@ public:
 		SetPawn(pawn);
 		if (this->m_iTeamNum() != CS_TEAM_CT && this->m_iTeamNum() != CS_TEAM_T)
 		{
-			SwitchTeam(random->RandomInt(CS_TEAM_T, CS_TEAM_CT));
+			SwitchTeam(RandomInt(CS_TEAM_T, CS_TEAM_CT));
 		}
 		static int offset = g_pGameConfig->GetOffset("ControllerRespawn");
 		CALL_VIRTUAL(void, offset, this);
