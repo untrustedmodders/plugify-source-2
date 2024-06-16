@@ -7,11 +7,11 @@ CGameConfig::CGameConfig(std::string game, std::string path) : m_szGameDir(std::
 
 CGameConfig::~CGameConfig() = default;
 
-bool CGameConfig::Initialize(std::span<char> error)
+bool CGameConfig::Initialize()
 {
 	if (!m_pKeyValues->LoadFromFile(g_pFullFileSystem, m_szPath.c_str(), nullptr))
 	{
-		snprintf(error.data(), error.size(), "Failed to load gamedata file");
+		g_Logger.ErrorFormat("Could not read \"%s\": Failed to load gamedata file\n", m_szPath.c_str());
 		return false;
 	}
 
@@ -63,7 +63,7 @@ bool CGameConfig::Initialize(std::span<char> error)
 					{
 						if (lastIsOffset)
 						{
-							snprintf(error.data(), error.size(), "Error parsing Address \"%s\", 'offset' entry must be the last entry", it->GetName());
+							g_Logger.ErrorFormat("Could not read \"%s\": Error parsing Address \"%s\", 'offset' entry must be the last entry\n", m_szPath.c_str(), it->GetName());
 							continue;
 						}
 						read.push_back(it2->GetInt());
@@ -79,7 +79,7 @@ bool CGameConfig::Initialize(std::span<char> error)
 	}
 	else
 	{
-		snprintf(error.data(), error.size(), "Failed to find game: %s", m_szGameDir.c_str());
+		g_Logger.ErrorFormat("Could not read \"%s\": Failed to find game: %s\n", m_szPath.c_str(), m_szGameDir.c_str());
 		return false;
 	}
 
@@ -251,19 +251,15 @@ CMemory CGameConfig::ResolveSignature(const std::string& name) const
 
 CGameConfig* CGameConfigManager::LoadGameConfigFile(std::string path)
 {
-	path = utils::GamedataDirectory() + path;
-
 	auto it = m_configs.find(path);
 	if (it != m_configs.end())
 	{
 		return &std::get<CGameConfig>(*it);
 	}
 
-	char confError[255] = "";
 	CGameConfig gameConfig("cs2", path);
-	if (!gameConfig.Initialize(confError))
+	if (!gameConfig.Initialize())
 	{
-		g_Logger.WarningFormat("Could not read \"%s\": %s\n", gameConfig.GetPath().c_str(), confError);
 		return nullptr;
 	}
 

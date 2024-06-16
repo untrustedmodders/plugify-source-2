@@ -8,7 +8,7 @@ public:
 	explicit CCoreConfig(std::string path);
 	~CCoreConfig() = default;
 
-	bool Initialize(std::span<char> error);
+	bool Initialize();
 
 	const std::string& GetPath() const;
 

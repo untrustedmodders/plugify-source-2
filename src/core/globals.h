@@ -56,7 +56,7 @@ extern CGameConfig* g_pGameConfig;
 
 namespace globals
 {
-	void Initialize();
+	void Initialize(std::string coreConfig, std::string gameConfig);
 	void Terminate();
 
 } // namespace globals
@@ -82,10 +82,7 @@ class CEntitySystem;
 class CCSPlayerPawn;
 class IRecipientFilter;
 struct EmitSound_t;
-struct CTraceFilterS2;
 struct SndOpEventGuid_t;
-struct bbox_t;
-struct trace_t_s2;
 class CEntityKeyValues;
 class CBaseModelEntity;
 class CGameRules;
@@ -122,19 +119,19 @@ namespace addresses
 
 	inline void (*CGameRules_TerminateRound)(CGameRules* pGameRules, float delay, unsigned int reason, int64 a4, unsigned int a5);
 
-	inline void (* CEntityIdentity_SetEntityName)(CEntityIdentity* pEntity, const char* pName);
+	inline void (*CEntityIdentity_SetEntityName)(CEntityIdentity* pEntity, const char* pName);
 
-	inline void (* CBaseEntity_EmitSoundParams)(CBaseEntity* pEntity, const char* pszSound, int nPitch, float flVolume, float flDelay);
+	inline void (*CBaseEntity_EmitSoundParams)(CBaseEntity* pEntity, const char* pszSound, int nPitch, float flVolume, float flDelay);
 
-	inline void (* CBaseEntity_SetParent)(CBaseEntity* pEntity, CBaseEntity* pNewParent, CUtlStringToken nBoneOrAttachName, matrix3x4a_t* pOffsetTransform);
+	inline void (*CBaseEntity_SetParent)(CBaseEntity* pEntity, CBaseEntity* pNewParent, CUtlStringToken nBoneOrAttachName, matrix3x4a_t* pOffsetTransform);
 
-	inline SndOpEventGuid_t(* CBaseEntity_EmitSoundFilter)(IRecipientFilter& filter, CEntityIndex ent, const EmitSound_t& params);
+	inline SndOpEventGuid_t(*CBaseEntity_EmitSoundFilter)(IRecipientFilter& filter, CEntityIndex ent, const EmitSound_t& params);
 
-	inline void (* CBaseEntity_SetMoveType)(CBaseEntity* pThis, MoveType_t nMoveType, MoveCollide_t nMoveCollide);
+	inline void (*CBaseEntity_SetMoveType)(CBaseEntity* pThis, MoveType_t nMoveType, MoveCollide_t nMoveCollide);
 
-	inline void (* CTakeDamageInfo_Constructor)(CTakeDamageInfo* pThis, CBaseEntity* pInflictor, CBaseEntity* pAttacker, CBaseEntity* pAbility, const Vector* vecDamageForce, const Vector* vecDamagePosition, float flDamage, int bitsDamageType, int iCustomDamage, void* a10);
+	inline void (*CTakeDamageInfo_Constructor)(CTakeDamageInfo* pThis, CBaseEntity* pInflictor, CBaseEntity* pAttacker, CBaseEntity* pAbility, const Vector* vecDamageForce, const Vector* vecDamagePosition, float flDamage, int bitsDamageType, int iCustomDamage, void* a10);
 
-	inline void (* CNetworkStringTable_DeleteAllStrings)(INetworkStringTable* pThis);
+	inline void (*CNetworkStringTable_DeleteAllStrings)(INetworkStringTable* pThis);
 
 	//inline void (*TracePlayerBBox)(const Vector& start, const Vector& end, const bbox_t& bounds, CTraceFilterS2* filter, trace_t_s2& pm);
 } // namespace addresses

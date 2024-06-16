@@ -4,11 +4,12 @@
 CCoreConfig::CCoreConfig(std::string path) : m_szPath(std::move(path)), m_pKeyValues(std::make_unique<KeyValues>("Core"))
 {
 }
-bool CCoreConfig::Initialize(std::span<char> error)
+
+bool CCoreConfig::Initialize()
 {
 	if (!m_pKeyValues->LoadFromFile(g_pFullFileSystem, m_szPath.c_str(), nullptr))
 	{
-		snprintf(error.data(), error.size(), "Failed to load gamedata file");
+		g_Logger.ErrorFormat("Could not read \"%s\": Failed to load gamedata file\n", m_szPath.c_str());
 		return false;
 	}
 

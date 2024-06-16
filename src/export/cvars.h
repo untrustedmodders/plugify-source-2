@@ -240,41 +240,41 @@ extern "C" PLUGIN_API void GetConVarValue(std::string& output, CConVarBaseData* 
 	switch (conVar->GetType())
 	{
 		case EConVarType_Bool:
-			output = conVar->Cast<bool>()->GetValue() ? "1" : "0";
+			std::construct_at(&output, conVar->Cast<bool>()->GetValue() ? "1" : "0");
 			break;
 		case EConVarType_Int16:
-			output = std::to_string(conVar->Cast<int16_t>()->GetValue());
+			std::construct_at(&output, std::to_string(conVar->Cast<int16_t>()->GetValue()));
 			break;
 		case EConVarType_UInt16:
-			output = std::to_string(conVar->Cast<uint16_t>()->GetValue());
+			std::construct_at(&output, std::to_string(conVar->Cast<uint16_t>()->GetValue()));
 			break;
 		case EConVarType_Int32:
-			output = std::to_string(conVar->Cast<int32_t>()->GetValue());
+			std::construct_at(&output, std::to_string(conVar->Cast<int32_t>()->GetValue()));
 			break;
 		case EConVarType_UInt32:
-			output = std::to_string(conVar->Cast<uint16_t>()->GetValue());
+			std::construct_at(&output, std::to_string(conVar->Cast<uint16_t>()->GetValue()));
 			break;
 		case EConVarType_Int64:
-			output = std::to_string(conVar->Cast<int64_t>()->GetValue());
+			std::construct_at(&output, std::to_string(conVar->Cast<int64_t>()->GetValue()));
 			break;
 		case EConVarType_UInt64:
-			output = std::to_string(conVar->Cast<uint64_t>()->GetValue());
+			std::construct_at(&output, std::to_string(conVar->Cast<uint64_t>()->GetValue()));
 			break;
 		case EConVarType_Float32:
-			output = std::to_string(conVar->Cast<float>()->GetValue());
+			std::construct_at(&output, std::to_string(conVar->Cast<float>()->GetValue()));
 			break;
 		case EConVarType_Float64:
-			output = std::to_string(conVar->Cast<double>()->GetValue());
+			std::construct_at(&output, std::to_string(conVar->Cast<double>()->GetValue()));
 			break;
 		case EConVarType_String:
-			output = conVar->Cast<const char*>()->GetValue();
+			std::construct_at(&output, conVar->Cast<const char*>()->GetValue());
 			break;
 		case EConVarType_Color:
 		{
 			const auto& value = conVar->Cast<Color>()->GetValue();
 			std::stringstream ss;
 			ss << value.r() << " " <<  value.g() << " " << value.b() << " " << value.a();
-			output = ss.str();
+			std::construct_at(&output, ss.str());
 			break;
 		}
 		case EConVarType_Vector2:
@@ -282,7 +282,7 @@ extern "C" PLUGIN_API void GetConVarValue(std::string& output, CConVarBaseData* 
 			const auto& value = conVar->Cast<Vector2D>()->GetValue();
 			std::stringstream ss;
 			ss << value.x << " " <<  value.y;
-			output = ss.str();
+			std::construct_at(&output, ss.str());
 			break;
 		}
 		case EConVarType_Vector3:
@@ -290,7 +290,7 @@ extern "C" PLUGIN_API void GetConVarValue(std::string& output, CConVarBaseData* 
 			const auto& value = conVar->Cast<Vector>()->GetValue();
 			std::stringstream ss;
 			ss << value.x << " " <<  value.y << " " << value.z;
-			output = ss.str();
+			std::construct_at(&output, ss.str());
 			break;
 		}
 		case EConVarType_Vector4:
@@ -298,7 +298,7 @@ extern "C" PLUGIN_API void GetConVarValue(std::string& output, CConVarBaseData* 
 			const auto& value = conVar->Cast<Vector4D>()->GetValue();
 			std::stringstream ss;
 			ss << value.x << " " <<  value.y << " " << value.z << " " << value.w;
-			output = ss.str();
+			std::construct_at(&output, ss.str());
 			break;
 		}
 		case EConVarType_Qangle:
@@ -306,7 +306,7 @@ extern "C" PLUGIN_API void GetConVarValue(std::string& output, CConVarBaseData* 
 			const auto& value = conVar->Cast<QAngle>()->GetValue();
 			std::stringstream ss;
 			ss << value.x << " " <<  value.y << " " << value.z;
-			output = ss.str();
+			std::construct_at(&output, ss.str());
 			break;
 		}
 		default:
@@ -377,7 +377,7 @@ extern "C" PLUGIN_API void SendConVarValue(CConVarBaseData* conVar, int clientIn
 
 extern "C" PLUGIN_API void GetClientConVarValue(std::string& output, int clientIndex, const std::string& convarName)
 {
-	output = g_pEngineServer2->GetClientConVarValue(CPlayerSlot(clientIndex - 1), convarName.c_str());
+	std::construct_at(&output, g_pEngineServer2->GetClientConVarValue(CPlayerSlot(clientIndex - 1), convarName.c_str()));
 }
 
 extern "C" PLUGIN_API void SetFakeClientConVarValue(int clientIndex, const std::string& convarName, const std::string& convarValue)

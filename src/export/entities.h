@@ -197,6 +197,17 @@ extern "C" PLUGIN_API void DispatchSpawn(int entityIndex)
 	ent->DispatchSpawn();
 }
 
+extern "C" PLUGIN_API void RemoveEntity(int entityIndex)
+{
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
+	if (!ent)
+	{
+		return;
+	}
+
+	ent->Remove();
+}
+
 ///
 
 extern "C" PLUGIN_API void GetEntityClassname(std::string& output, int entityIndex)
@@ -207,7 +218,7 @@ extern "C" PLUGIN_API void GetEntityClassname(std::string& output, int entityInd
 		return;
 	}
 
-	output = ent->GetClassname();
+	std::construct_at(&output, ent->GetClassname());
 }
 
 extern "C" PLUGIN_API void GetEntityName(std::string& output, int entityIndex)
@@ -218,7 +229,7 @@ extern "C" PLUGIN_API void GetEntityName(std::string& output, int entityIndex)
 		return;
 	}
 
-	// TODO:
+	std::construct_at(&output, ent->GetName());
 }
 
 extern "C" PLUGIN_API void SetEntityName(int entityIndex, const std::string& name)
@@ -229,7 +240,7 @@ extern "C" PLUGIN_API void SetEntityName(int entityIndex, const std::string& nam
 		return;
 	}
 
-	// TODO:
+	ent->SetName(name.c_str());
 }
 
 extern "C" PLUGIN_API int GetEntityMoveType(int entityIndex)
@@ -250,7 +261,7 @@ extern "C" PLUGIN_API void SetEntityMoveType(int entityIndex, int moveType)
 		return;
 	}
 
-	ent->m_MoveType = static_cast<MoveType_t>(moveType);
+	ent->SetMoveType(static_cast<MoveType_t>(moveType));
 }
 
 extern "C" PLUGIN_API float GetEntityGravity(int entityIndex)
@@ -409,6 +420,34 @@ extern "C" PLUGIN_API void SetEntityOwner(int entityIndex, int ownerIndex)
 	ent->m_CBodyComponent->m_pSceneNode->m_pOwner = owner;
 }
 
+extern "C" PLUGIN_API int GetEntityParent(int entityIndex)
+{
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
+	if (!ent)
+	{
+		return -1;
+	}
+
+	return ent->m_CBodyComponent->m_pSceneNode->m_pParent()->m_pOwner->GetEntityIndex().Get();
+
+}
+extern "C" PLUGIN_API void SetEntityParent(int entityIndex, int parentIndex)
+{
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
+	if (!ent)
+	{
+		return;
+	}
+
+	CBaseEntity* owner = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(parentIndex)));
+	if (!owner)
+	{
+		return;
+	}
+
+	ent->SetParent(owner);
+}
+
 extern "C" PLUGIN_API void GetEntityAbsOrigin(Vector& output, int entityIndex)
 {
 	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
@@ -417,7 +456,7 @@ extern "C" PLUGIN_API void GetEntityAbsOrigin(Vector& output, int entityIndex)
 		return;
 	}
 
-	output = ent->m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin();
+	std::construct_at(&output, ent->m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin());
 }
 extern "C" PLUGIN_API void SetEntityAbsOrigin(int entityIndex, const Vector& origin)
 {
@@ -438,7 +477,7 @@ extern "C" PLUGIN_API void GetEntityAngRotation(QAngle& output, int entityIndex)
 		return;
 	}
 
-	output = ent->m_CBodyComponent->m_pSceneNode->m_angRotation();
+	std::construct_at(&output, ent->m_CBodyComponent->m_pSceneNode->m_angRotation());
 
 }
 extern "C" PLUGIN_API void SetEntityAngRotation(int entityIndex, const QAngle& angle)
@@ -460,7 +499,7 @@ extern "C" PLUGIN_API void GetEntityAbsVelocity(Vector& output, int entityIndex)
 		return;
 	}
 
-	output = ent->m_vecAbsVelocity();
+	std::construct_at(&output, ent->m_vecAbsVelocity());
 
 }
 extern "C" PLUGIN_API void SetEntityAbsVelocity(int entityIndex, const Vector& velocity)
@@ -472,6 +511,28 @@ extern "C" PLUGIN_API void SetEntityAbsVelocity(int entityIndex, const Vector& v
 	}
 
 	ent->m_vecAbsVelocity = velocity;
+}
+
+extern "C" PLUGIN_API void GetEntityModel(std::string& output, int entityIndex)
+{
+	CBaseModelEntity* ent = static_cast<CBaseModelEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
+	if (!ent)
+	{
+		return;
+	}
+
+	std::construct_at(&output, ent->GetModelName());
+
+}
+extern "C" PLUGIN_API void SetEntityModel(int entityIndex, const std::string& model)
+{
+	CBaseModelEntity* ent = static_cast<CBaseModelEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
+	if (!ent)
+	{
+		return;
+	}
+
+	ent->SetModel(model.c_str());
 }
 
 ///

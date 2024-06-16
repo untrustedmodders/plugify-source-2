@@ -11,9 +11,6 @@ class CServerSideClient;
 
 namespace utils
 {
-	bool Initialize();
-	void Terminate();
-
 	// ConVars
 	void SendConVarValue(CPlayerSlot slot, CConVarBaseData* cvar, const char* value);
 	void SendMultipleConVarValues(CPlayerSlot slot, CConVarBaseData** cvars, const char** values, uint32_t size);
@@ -51,17 +48,13 @@ namespace utils
 	void CPrintChatAll(const char* message);
 
 	// Sounds
-	void PlaySoundToClient(CPlayerSlot player, const char* sound, float volume = 1.0f);
+	void PlaySoundToClient(CPlayerSlot player, int channel, const char* soundName, float volume, soundlevel_t soundLevel, int flags, int pitch, const Vector& origin, float soundTime);
 
 	// Return true if the spawn found is truly valid (not in the ground or out of bounds)
 	bool IsSpawnValid(const Vector& origin);
 	bool FindValidSpawn(Vector& origin, QAngle& angles);
 
 	const std::string& GameDirectory();
-	const std::string& RootDirectory();
-	const std::string& BinDirectory();
-	const std::string& ConfigsDirectory();
-	const std::string& GamedataDirectory();
 
 	inline std::string Demangle(const char* name)
 	{

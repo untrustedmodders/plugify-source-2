@@ -165,7 +165,7 @@ extern "C" PLUGIN_API void GetSchemaStringByName(std::string& output, void* inst
 	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
 
 	auto str = reinterpret_cast<std::add_pointer_t<CUtlString>>((uintptr_t)(instancePointer) + m_key.offset);
-	output = str != nullptr ? str->Get() : "";
+	std::construct_at(&output, str != nullptr ? str->Get() : "");
 }
 
 extern "C" PLUGIN_API void GetSchemaVectorByName(Vector& output, void* instancePointer, const std::string& className, const std::string& memberName)
@@ -175,7 +175,7 @@ extern "C" PLUGIN_API void GetSchemaVectorByName(Vector& output, void* instanceP
 
 	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
 
-	output = *reinterpret_cast<std::add_pointer_t<Vector>>((uintptr_t)(instancePointer) + m_key.offset);
+	std::construct_at(&output, *reinterpret_cast<std::add_pointer_t<Vector>>((uintptr_t)(instancePointer) + m_key.offset));
 }
 
 extern "C" PLUGIN_API void SetSchemaValueBoolByName(void* instancePointer, const std::string& className, const std::string& memberName, bool value)

@@ -55,7 +55,7 @@ struct CNetworkVarChainer : public CSmartPtr<CEntityInstance>
 	};
 	uint8 unk[24];
 	ChangeAccessorFieldPathIndex_t m_PathIndex;
-	ChainUpdatePropagationLL_t *m_pPropagationList;
+	ChainUpdatePropagationLL_t* m_pPropagationList;
 };
 
 constexpr uint32_t val_32_const = 0x811c9dc5;

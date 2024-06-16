@@ -30,6 +30,8 @@
 #include <export/timers.h>
 #include <export/clients.h>
 
+#undef FindResource
+
 Source2SDK g_sdk;
 
 CGameEntitySystem* GameEntitySystem()
@@ -61,7 +63,21 @@ class CEntityListener : public IEntityListener
 void Source2SDK::OnPluginStart()
 {
 	g_Logger.Message("OnPluginStart!\n");
-	globals::Initialize();
+
+	auto coreConfig = FindResource("configs/core.txt");
+	if (!coreConfig.has_value())
+	{
+		g_Logger.Error("configs/core.txt not found!");
+		return;
+	}
+	auto gameData = FindResource("gamedata/cs2sdk.games.txt");
+	if (!gameData.has_value())
+	{
+		g_Logger.Error("gamedata/cs2sdk.games.txt not found!");
+		return;
+	}
+
+	globals::Initialize(coreConfig->string(), gameData->string());
 
 	using enum dyno::CallbackType;
 	g_HookManager.AddHookMemFunc(&IMetamodListener::OnLevelInit, g_pMetamodListener, Hook_OnLevelInit, Post);

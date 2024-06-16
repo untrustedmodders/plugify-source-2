@@ -14,27 +14,27 @@ extern "C" PLUGIN_API CGameConfig* LoadGameConfigFile(const std::string& file)
 
 extern "C" PLUGIN_API void GetGameConfigPath(std::string& output, CGameConfig* pGameConfig)
 {
-	output = pGameConfig->GetPath();
+	std::construct_at(&output, pGameConfig->GetPath());
 }
 
 extern "C" PLUGIN_API void GetGameConfigLibrary(std::string& output, CGameConfig* pGameConfig, const std::string& name)
 {
-	output = pGameConfig->GetLibrary(name).data();
+	std::construct_at(&output, pGameConfig->GetLibrary(name));
 }
 
 extern "C" PLUGIN_API void GetGameConfigSignature(std::string& output, CGameConfig* pGameConfig, const std::string& name)
 {
-	output = pGameConfig->GetSignature(name).data();
+	std::construct_at(&output, pGameConfig->GetSignature(name));
 }
 
 extern "C" PLUGIN_API void GetGameConfigSymbol(std::string& output, CGameConfig* pGameConfig, const std::string& name)
 {
-	output = pGameConfig->GetSymbol(name);
+	std::construct_at(&output, pGameConfig->GetSymbol(name));
 }
 
 extern "C" PLUGIN_API void GetGameConfigPatch(std::string& output, CGameConfig* pGameConfig, const std::string& name)
 {
-	output = pGameConfig->GetPatch(name);
+	std::construct_at(&output, pGameConfig->GetPatch(name));
 }
 
 extern "C" PLUGIN_API int GetGameConfigOffset(CGameConfig* pGameConfig, const std::string& name)

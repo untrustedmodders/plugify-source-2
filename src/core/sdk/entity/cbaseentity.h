@@ -162,12 +162,17 @@ public:
 	void SetAbsVelocity(Vector vecVelocity) { m_vecAbsVelocity = vecVelocity; }
 	void SetBaseVelocity(Vector vecVelocity) { m_vecBaseVelocity = vecVelocity; }
 
-	/*void SetName(const char *pName)
+	void SetName(const char* pName)
 	{
 		addresses::CEntityIdentity_SetEntityName(m_pEntity, pName);
 	}
 
-	void TakeDamage(CTakeDamageInfo &info)
+	const char* GetName()
+	{
+		return m_iGlobalname.Get().String();
+	}
+
+	/*void TakeDamage(CTakeDamageInfo &info)
 	{
 		Detour_CBaseEntity_TakeDamageOld(this, &info);
 	}*/
@@ -199,10 +204,10 @@ public:
 		return this->m_lifeState() == LIFE_ALIVE;
 	}
 
-	void AcceptInput(const char* pInputName, variant_t value = variant_t(""), CEntityInstance* pActivator = nullptr, CEntityInstance* pCaller = nullptr)
+	/*void AcceptInput(const char* pInputName, variant_t value = variant_t(""), CEntityInstance* pActivator = nullptr, CEntityInstance* pCaller = nullptr)
 	{
 		addresses::CEntityInstance_AcceptInput(this, pInputName, pActivator, pCaller, &value, 0);
-	}
+	}*/
 
 	void CollisionRulesChanged()
 	{

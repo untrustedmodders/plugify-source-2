@@ -54,7 +54,7 @@ extern "C" PLUGIN_API uint64_t GetEventUInt64(EventInfo* pInfo, const std::strin
 
 extern "C" PLUGIN_API void GetEventString(std::string& output, EventInfo* pInfo, const std::string& key)
 {
-	output = pInfo->pEvent->GetString(key.c_str());
+	std::construct_at(&output, pInfo->pEvent->GetString(key.c_str()));
 }
 
 extern "C" PLUGIN_API void* GetEventPtr(EventInfo* pInfo, const std::string& key)
@@ -89,7 +89,7 @@ extern "C" PLUGIN_API int GetEventEntityIndex(EventInfo* pInfo, const std::strin
 
 extern "C" PLUGIN_API void GetEventName(std::string& output, EventInfo* pInfo)
 {
-	output = pInfo->pEvent->GetName();
+	std::construct_at(&output, pInfo->pEvent->GetName());
 }
 
 extern "C" PLUGIN_API void SetEventBool(EventInfo* pInfo, const std::string& key, bool value)

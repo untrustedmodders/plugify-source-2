@@ -2117,7 +2117,7 @@
 			"funcName": "EmitSound",
 			"paramTypes": [
 				{
-					"name": "clientIndex",
+					"name": "entityIndex",
 					"type": "int32",
 					"ref": false
 				},
@@ -2127,7 +2127,71 @@
 					"ref": false
 				},
 				{
+					"name": "pitch",
+					"type": "int32",
+					"ref": false
+				},
+				{
 					"name": "volume",
+					"type": "float",
+					"ref": false
+				},
+				{
+					"name": "delay",
+					"type": "float",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "EmitSoundToClient",
+			"funcName": "EmitSoundToClient",
+			"paramTypes": [
+				{
+					"name": "clientIndex",
+					"type": "int32",
+					"ref": false
+				},
+                {
+                    "name": "channel",
+                    "type": "int32",
+                    "ref": false
+                },
+				{
+					"name": "sound",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "volume",
+					"type": "float",
+					"ref": false
+				},
+				{
+					"name": "soundLevel",
+					"type": "int",
+					"ref": false
+				},
+				{
+					"name": "flags",
+					"type": "int",
+					"ref": false
+				},
+				{
+					"name": "pitch",
+					"type": "int",
+					"ref": false
+				},
+				{
+					"name": "origin",
+					"type": "vec3",
+					"ref": false
+				},
+				{
+					"name": "soundTime",
 					"type": "float",
 					"ref": false
 				}
@@ -2431,6 +2495,20 @@
 		{
 			"name": "DispatchSpawn",
 			"funcName": "DispatchSpawn",
+			"paramTypes": [
+				{
+					"name": "entityIndex",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "RemoveEntity",
+			"funcName": "RemoveEntity",
 			"paramTypes": [
 				{
 					"name": "entityIndex",
@@ -2754,6 +2832,39 @@
 			}
 		},
 		{
+			"name": "GetEntityParent",
+			"funcName": "GetEntityParent",
+			"paramTypes": [
+				{
+					"name": "entityIndex",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int32"
+			}
+		},
+		{
+			"name": "SetEntityParent",
+			"funcName": "SetEntityParent",
+			"paramTypes": [
+				{
+					"name": "entityIndex",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "parentIndex",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
 			"name": "GetEntityAbsOrigin",
 			"funcName": "GetEntityAbsOrigin",
 			"paramTypes": [
@@ -2860,6 +2971,39 @@
 				{
 					"name": "velocity",
 					"type": "vec3",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "GetEntityModel",
+			"funcName": "GetEntityModel",
+			"paramTypes": [
+				{
+					"name": "entityIndex",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "string"
+			}
+		},
+		{
+			"name": "SetEntityModel",
+			"funcName": "SetEntityModel",
+			"paramTypes": [
+				{
+					"name": "entityIndex",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "model",
+					"type": "string",
 					"ref": false
 				}
 			],

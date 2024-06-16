@@ -15,7 +15,7 @@ public:
 	CGameConfig(CGameConfig&& other) = default;
 	~CGameConfig();
 
-	bool Initialize(std::span<char> error);
+	bool Initialize();
 
 	const std::string& GetPath() const;
 	std::string_view GetLibrary(const std::string& name) const;

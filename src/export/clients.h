@@ -61,7 +61,7 @@ extern "C" PLUGIN_API void GetClientIp(std::string& output, int clientIndex)
 		return;
 	}
 
-	output = pPlayer->GetIpAddress();
+	std::construct_at(&output, pPlayer->GetIpAddress());
 }
 
 extern "C" PLUGIN_API void GetClientName(std::string& output, int clientIndex)
@@ -72,7 +72,7 @@ extern "C" PLUGIN_API void GetClientName(std::string& output, int clientIndex)
 		return;
 	}
 
-	output = pPlayer->GetName();
+	std::construct_at(&output, pPlayer->GetName());
 }
 
 extern "C" PLUGIN_API float GetClientTime(int clientIndex)
@@ -195,7 +195,7 @@ extern "C" PLUGIN_API void GetClientAbsOrigin(Vector& output, int clientIndex)
 		return;
 	}
 
-	output = client->m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin();
+	std::construct_at(&output, client->m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin());
 }
 
 extern "C" PLUGIN_API void GetClientAbsAngles(QAngle& output, int clientIndex)
@@ -206,7 +206,7 @@ extern "C" PLUGIN_API void GetClientAbsAngles(QAngle& output, int clientIndex)
 		return;
 	}
 
-	output = client->m_CBodyComponent->m_pSceneNode->m_angRotation();
+	std::construct_at(&output, client->m_CBodyComponent->m_pSceneNode->m_angRotation());
 }
 
 extern "C" PLUGIN_API void ProcessTargetString(std::vector<int>& output, int caller, const std::string& target)

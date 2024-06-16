@@ -95,12 +95,19 @@ CPlayerSlot utils::GetEntityPlayerSlot(CBaseEntity* entity)
 	return CALL_VIRTUAL(CUtlVector<CServerSideClient *> *, offset, g_pNetworkGameServer);
 }*/
 
-void utils::PlaySoundToClient(CPlayerSlot player, const char* sound, float volume)
+
+void utils::PlaySoundToClient(CPlayerSlot player, int channel, const char* soundName, float volume, soundlevel_t soundLevel, int flags, int pitch, const Vector& origin, float soundTime)
 {
 	CSingleRecipientFilter filter(player.Get());
 	EmitSound_t soundParams;
-	soundParams.m_pSoundName = sound;
+	soundParams.m_nChannel = channel;
+	soundParams.m_pSoundName = soundName;
 	soundParams.m_flVolume = volume;
+	soundParams.m_SoundLevel = soundLevel;
+	soundParams.m_nFlags = flags;
+	soundParams.m_nPitch = pitch;
+	soundParams.m_pOrigin = &origin;
+	soundParams.m_flSoundTime = soundTime;
 	addresses::CBaseEntity_EmitSoundFilter(filter, player.Get() + 1, soundParams);
 }
 
@@ -214,28 +221,3 @@ const std::string& utils::GameDirectory()
 	static std::string gameDirectory(Plat_GetGameDirectory());
 	return gameDirectory;
 }
-
-const std::string& utils::RootDirectory()
-{ 
-	static std::string rootDirectory(GameDirectory() + "/csgo/addons/plugify/");
-	return rootDirectory;
-}
-
-const std::string& utils::BinDirectory()
-{ 
-	static std::string binDirectory(GameDirectory() + "/csgo/addons/plugify/bin/" CS2SDK_BINARY "/");
-	return binDirectory;
-}
-
-const std::string& utils::ConfigsDirectory()
-{ 
-	static std::string configsDirectory(GameDirectory() + "/csgo/addons/plugify/configs/");
-	return configsDirectory;
-}
-
-const std::string& utils::GamedataDirectory()
-{ 
-	static std::string gamedataDirectory(GameDirectory() + "/csgo/addons/plugify/gamedata/");
-	return gamedataDirectory;
-}
-

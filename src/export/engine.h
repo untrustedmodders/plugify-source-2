@@ -9,7 +9,7 @@
 
 extern "C" PLUGIN_API void GetGameDirectory(std::string& result)
 {
-	result = Plat_GetGameDirectory();
+	std::construct_at(&result, Plat_GetGameDirectory());
 }
 
 extern "C" PLUGIN_API void GetMapName(std::string& result)
@@ -17,7 +17,7 @@ extern "C" PLUGIN_API void GetMapName(std::string& result)
 	if (gpGlobals == nullptr)
 		return;
 
-	result = gpGlobals->mapname.ToCStr();
+	std::construct_at(&result, gpGlobals->mapname.ToCStr());
 }
 
 extern "C" PLUGIN_API bool IsMapValid(const std::string& mapname)
@@ -139,11 +139,21 @@ extern "C" PLUGIN_API float GetSoundDuration(const std::string& name)
 	return g_pEngineSound->GetSoundDuration(name.c_str());
 }
 
-extern "C" PLUGIN_API void EmitSound(int clientIndex, const std::string& sound, float volume)
+extern "C" PLUGIN_API void EmitSound(int entityIndex, const std::string& sound, int pitch, float volume, float delay)
 {
-	utils::PlaySoundToClient(CPlayerSlot(clientIndex - 1), sound.c_str(), volume);
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
+	if (!ent)
+	{
+		return;
+	}
+
+	addresses::CBaseEntity_EmitSoundParams(ent, sound.c_str(), pitch, volume, delay);
 }
 
+extern "C" PLUGIN_API void EmitSoundToClient(int clientIndex, int channel, const std::string& sound, float volume, int soundLevel, int flags, int pitch, const Vector& origin, float soundTime)
+{
+	utils::PlaySoundToClient(CPlayerSlot(clientIndex - 1), channel, sound.c_str(), volume, static_cast<soundlevel_t>(soundLevel), flags, pitch, origin, soundTime);
+}
 
 
 
