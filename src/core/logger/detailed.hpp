@@ -26,5 +26,9 @@ public:
 	virtual LoggerScope CreateDetailsScope(const char* pszStartWith = "", const char* pszEnd = "\n");
 
 protected:
+#if NDEBUG
 	static const LoggingSeverity_t s_eSeverity = LS_DETAILED;
+#else
+	static const LoggingSeverity_t s_eSeverity = LS_MESSAGE;
+#endif
 }; // CLoggingDetailed
