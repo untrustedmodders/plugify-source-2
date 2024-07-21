@@ -1,7 +1,7 @@
 #pragma once
 
-#include <dynohook/dynohook.h>
 #include <plugify/cpp_plugin.h>
+#include <plugify/dynohook.h>
 #include <plugin_export.h>
 
 class Source2SDK : public plugify::IPluginEntry

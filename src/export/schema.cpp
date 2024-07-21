@@ -6,6 +6,7 @@
 #include <core/sdk/entity/cschemasystem.h>
 #include <core/sdk/schema.h>
 #include <tier0/utlstring.h>
+#include <plugin_export.h>
 
 extern "C" PLUGIN_API int32 GetSchemaOffset(const std::string& className, const std::string& memberName)
 {
@@ -175,7 +176,7 @@ extern "C" PLUGIN_API void GetSchemaVectorByName(Vector& output, void* instanceP
 
 	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
 
-	std::construct_at(&output, *reinterpret_cast<std::add_pointer_t<Vector>>((uintptr_t)(instancePointer) + m_key.offset));
+	output = *reinterpret_cast<std::add_pointer_t<Vector>>((uintptr_t)(instancePointer) + m_key.offset);
 }
 
 extern "C" PLUGIN_API void SetSchemaValueBoolByName(void* instancePointer, const std::string& className, const std::string& memberName, bool value)

@@ -53,7 +53,7 @@ bool CCoreConfig::IsTriggerInternal(const std::vector<std::string>& triggers, co
 		if (message.rfind(trigger, 0) == 0)
 		{
 			prefix = trigger;
-			g_Logger.MessageFormat("Trigger found, prefix is %s\n", prefix.c_str());
+			g_Logger.DetailedFormat("Trigger found, prefix is %s\n", prefix.c_str());
 			return true;
 		}
 	}

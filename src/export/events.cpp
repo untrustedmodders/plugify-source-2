@@ -1,6 +1,7 @@
 #pragma once
 
 #include <core/event_manager.h>
+#include <plugin_export.h>
 
 extern "C" PLUGIN_API int HookEvent(const std::string& name, EventListenerCallback pCallback, bool post)
 {

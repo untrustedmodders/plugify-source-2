@@ -3,8 +3,8 @@
 #include "listener_manager.h"
 #include <core/sdk/utils.h>
 
-#include <dynohook/dynohook.h>
 #include <entity2/entitysystem.h>
+#include <plugify/dynohook.h>
 #include <variant.h>
 
 class CEntityIOOutput;

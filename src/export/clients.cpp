@@ -1,8 +1,11 @@
 #pragma once
 
+#include <core/player_manager.h>
 #include <core/sdk/entity/cbaseentity.h>
 #include <core/sdk/entity/cbaseplayercontroller.h>
 #include <core/sdk/entity/ccsplayercontroller.h>
+#include <core/sdk/utils.h>
+#include <plugin_export.h>
 
 extern "C" PLUGIN_API int GetClientIndexFromEntityPointer(CBaseEntity* entity)
 {
@@ -195,7 +198,7 @@ extern "C" PLUGIN_API void GetClientAbsOrigin(Vector& output, int clientIndex)
 		return;
 	}
 
-	std::construct_at(&output, client->m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin());
+	output = client->m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin();
 }
 
 extern "C" PLUGIN_API void GetClientAbsAngles(QAngle& output, int clientIndex)

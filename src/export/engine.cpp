@@ -1,11 +1,12 @@
 #pragma once
 
-#include <edict.h>
-#include <eiface.h>
-#include <engine/IEngineSound.h>
-#include <filesystem.h>
-#include <worldsize.h>
+#include <core/sdk/entity/cbaseentity.h>
 #include <core/sdk/utils.h>
+#include <core/server_manager.h>
+#include <core/timer_system.h>
+#include <entity2/entitysystem.h>
+#include <engine/IEngineSound.h>
+#include <plugin_export.h>
 
 extern "C" PLUGIN_API void GetGameDirectory(std::string& result)
 {

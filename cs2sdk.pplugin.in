@@ -11,12 +11,16 @@
 	"updateURL": "https://untrustedmodders.github.io/cs2-sdk-plugin/cs2sdk.json",
 	"entryPoint": "bin/cs2sdk",
 	"supportedPlatforms": [],
+	"resourceDirectories": [
+		"configs",
+		"gamedata"
+	],
 	"languageModule": {
 		"name": "cpp"
 	},
 	"dependencies": [
 	  {
-		"name": "dynohook"
+		"name": "dynhook"
 	  }
 	],
 	"exportedMethods": [
@@ -2172,17 +2176,17 @@
 				},
 				{
 					"name": "soundLevel",
-					"type": "int",
+					"type": "int32",
 					"ref": false
 				},
 				{
 					"name": "flags",
-					"type": "int",
+					"type": "int32",
 					"ref": false
 				},
 				{
 					"name": "pitch",
-					"type": "int",
+					"type": "int32",
 					"ref": false
 				},
 				{

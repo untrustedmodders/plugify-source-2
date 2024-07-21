@@ -181,7 +181,7 @@ dyno::ReturnAction CEventManager::Hook_OnFireEvent(dyno::IHook& hook)
 
 		if (eventHook.preHook != nullptr)
 		{
-			g_Logger.MessageFormat("Pushing event `%s` pointer: %p, dont broadcast: %d, post: %d\n", pEvent->GetName(), (void*)pEvent, bDontBroadcast, false);
+			g_Logger.DetailedFormat("Pushing event `%s` pointer: %p, dont broadcast: %d, post: %d\n", pEvent->GetName(), (void*)pEvent, bDontBroadcast, false);
 
 			EventInfo eventInfo{pEvent, bDontBroadcast};
 
@@ -235,7 +235,7 @@ dyno::ReturnAction CEventManager::Hook_OnFireEvent_Post(dyno::IHook& hook)
 			if (pHook->postCopy)
 			{
 				auto pEventCopy = m_eventCopies.top();
-				g_Logger.MessageFormat("Pushing event `%s` pointer: %p, dont broadcast: %d, post: %d\n", pEventCopy->GetName(), (void*)pEventCopy, bDontBroadcast, true);
+				g_Logger.DetailedFormat("Pushing event `%s` pointer: %p, dont broadcast: %d, post: %d\n", pEventCopy->GetName(), (void*)pEventCopy, bDontBroadcast, true);
 				EventInfo eventInfo{pEventCopy, bDontBroadcast};
 
 				pHook->postHook->Notify(pHook->name, &eventInfo, bDontBroadcast);

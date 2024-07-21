@@ -25,13 +25,13 @@ IEngineSound* g_pEngineSound = nullptr;
 
 namespace modules
 {
-	DynLibUtils::CModule* engine = nullptr;
-	DynLibUtils::CModule* tier0 = nullptr;
-	DynLibUtils::CModule* server = nullptr;
-	DynLibUtils::CModule* schemasystem = nullptr;
-	DynLibUtils::CModule* filesystem = nullptr;
-	DynLibUtils::CModule* vscript = nullptr;
-	DynLibUtils::CModule* networksystem = nullptr;
+	CModule* engine = nullptr;
+	CModule* tier0 = nullptr;
+	CModule* server = nullptr;
+	CModule* schemasystem = nullptr;
+	CModule* filesystem = nullptr;
+	CModule* vscript = nullptr;
+	CModule* networksystem = nullptr;
 } // namespace modules
 
 IMetamodListener* g_pMetamodListener = nullptr;
@@ -39,7 +39,7 @@ CCoreConfig* g_pCoreConfig = nullptr;
 CGameConfig* g_pGameConfig = nullptr;
 
 template <class T>
-T* FindInterface(const DynLibUtils::CModule* module, const char* name)
+T* FindInterface(const CModule* module, const char* name)
 {
 	auto CreateInterface = module->GetFunctionByName("CreateInterface");
 	if (!CreateInterface)
@@ -85,13 +85,13 @@ namespace globals
 {
 	void Initialize(std::string coreConfig, std::string gameConfig)
 	{
-		modules::engine = new DynLibUtils::CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "engine2").c);
-		modules::tier0 = new DynLibUtils::CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "tier0").c);
-		modules::server = new DynLibUtils::CModule(utils::GameDirectory() + ModulePath(CS2SDK_GAME_BINARY CS2SDK_LIBRARY_PREFIX "server").c);
-		modules::schemasystem = new DynLibUtils::CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "schemasystem").c);
-		modules::filesystem = new DynLibUtils::CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "filesystem_stdio").c);
-		modules::vscript = new DynLibUtils::CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "vscript").c);
-		modules::networksystem = new DynLibUtils::CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "networksystem").c);
+		modules::engine = new CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "engine2").c);
+		modules::tier0 = new CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "tier0").c);
+		modules::server = new CModule(utils::GameDirectory() + ModulePath(CS2SDK_GAME_BINARY CS2SDK_LIBRARY_PREFIX "server").c);
+		modules::schemasystem = new CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "schemasystem").c);
+		modules::filesystem = new CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "filesystem_stdio").c);
+		modules::vscript = new CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "vscript").c);
+		modules::networksystem = new CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "networksystem").c);
 
 		g_pCVar = FindInterface<ICvar>(modules::tier0, CVAR_INTERFACE_VERSION);
 		g_pSchemaSystem2 = FindInterface<CSchemaSystem>(modules::schemasystem, SCHEMASYSTEM_INTERFACE_VERSION);
@@ -109,7 +109,7 @@ namespace globals
 
 		ConVar_Register(FCVAR_RELEASE | FCVAR_SERVER_CAN_EXECUTE | FCVAR_GAMEDLL);
 
-		DynLibUtils::CModule plugify("plugify");
+		CModule plugify("plugify");
 
 		using IMetamodListenerFn = IMetamodListener* (*)();
 		auto Plugify_ImmListener = plugify.GetFunctionByName("Plugify_ImmListener");
@@ -122,7 +122,9 @@ namespace globals
 		}
 
 		g_pCoreConfig = new CCoreConfig(std::move(coreConfig));
+		g_pCoreConfig->Initialize();
 		g_pGameConfig = new CGameConfig("cs2", std::move(gameConfig));
+		g_pGameConfig->Initialize();
 
 		// load more if needed
 		RESOLVE_SIG(g_pGameConfig, "LegacyGameEventListener", addresses::GetLegacyGameEventListener);

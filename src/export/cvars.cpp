@@ -1,9 +1,11 @@
 #pragma once
 
 #include <convar.h>
+#include <core/con_var_manager.h>
 #include <core/game_config.h>
 #include <core/sdk/utils.h>
 #include <core/sdk/virtual.h>
+#include <plugin_export.h>
 
 // CreateConVar()
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <core/game_config.h>
+#include <plugin_export.h>
 
 extern "C" PLUGIN_API void CloseGameConfigFile(CGameConfig* pGameConfig)
 {

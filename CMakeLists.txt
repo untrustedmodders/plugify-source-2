@@ -85,7 +85,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 # Libraries
 target_link_libraries(${PROJECT_NAME} PRIVATE ${CS2SDK_LINK_LIBRARIES})
 
-set(CS2SDK_VERSION "${CMAKE_PROJECT_VERSION}" CACHE STRING "Set version name")
+set(CS2SDK_VERSION "0" CACHE STRING "Set version name")
 set(CS2SDK_PACKAGE "cs2sdk" CACHE STRING "Set package name")
 
 configure_file(

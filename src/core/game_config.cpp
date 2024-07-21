@@ -63,7 +63,7 @@ bool CGameConfig::Initialize()
 					{
 						if (lastIsOffset)
 						{
-							g_Logger.ErrorFormat("Could not read \"%s\": Error parsing Address \"%s\", 'offset' entry must be the last entry\n", m_szPath.c_str(), it->GetName());
+							g_Logger.WarningFormat("Could not read \"%s\": Error parsing Address \"%s\", 'offset' entry must be the last entry\n", m_szPath.c_str(), it->GetName());
 							continue;
 						}
 						read.push_back(it2->GetInt());
@@ -161,22 +161,22 @@ void* CGameConfig::GetAddress(const std::string& name) const
 	return addr;
 }
 
-ModuleRef CGameConfig::GetModule(const std::string& name) const
+CModule* CGameConfig::GetModule(const std::string& name) const
 {
 	const std::string_view library = GetLibrary(name);
 	if (library.empty())
 		return {};
 
 	if (library == "engine")
-		return *modules::engine;
+		return modules::engine;
 	else if (library == "server")
-		return *modules::server;
+		return modules::server;
 	else if (library == "schemasystem")
-		return *modules::schemasystem;
+		return modules::schemasystem;
 	else if (library == "vscript")
-		return *modules::vscript;
+		return modules::vscript;
 	else if (library == "tier0")
-		return *modules::tier0;
+		return modules::tier0;
 
 	return {};
 }
@@ -207,14 +207,13 @@ std::string_view CGameConfig::GetSymbol(const std::string& name) const
 
 CMemory CGameConfig::ResolveSignature(const std::string& name) const
 {
-	auto moduleRef = GetModule(name);
-	if (!moduleRef.has_value())
+	auto module = GetModule(name);
+	if (!module)
 	{
 		g_Logger.WarningFormat("Invalid module: %s\n", name.c_str());
 		return {};
 	}
 
-	auto& module = moduleRef->get();
 	CMemory address;
 
 	if (IsSymbol(name))
@@ -226,7 +225,7 @@ CMemory CGameConfig::ResolveSignature(const std::string& name) const
 			return {};
 		}
 
-		address = module.GetFunctionByName(symbol);
+		address = module->GetFunctionByName(symbol);
 	}
 	else
 	{
@@ -237,7 +236,7 @@ CMemory CGameConfig::ResolveSignature(const std::string& name) const
 			return {};
 		}
 
-		address = module.FindPattern(signature);
+		address = module->FindPattern(signature);
 	}
 
 	if (!address)

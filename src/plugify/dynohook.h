@@ -1,10 +1,10 @@
-// DynoHook
+// dynohook
 // Copyright (C) 2023-2024 qubka
-// https://github.com/qubka/DynoHook/
+// https://github.com/qubka/dynohook/
 
 #pragma once
 
-#include <plugify/cpp_plugin.h>
+#include "cpp_plugin.h"
 
 namespace dyno
 {
@@ -228,19 +228,22 @@ namespace dyno
 			if (!m_class)
 			{
 				using UnhookDetourFn = bool (*)(void*);
-				static auto func = reinterpret_cast<UnhookDetourFn>(plugify::GetMethodPtr("dynohook.UnhookDetour"));
+				static UnhookDetourFn func = nullptr;
+				if (func == nullptr) plugify::GetMethodPtr2("dynhook.UnhookDetour", reinterpret_cast<void**>(&func));
 				func(m_func);
 			}
 			else if (m_func)
 			{
 				using UnhookVirtualByFuncFn = bool (*)(void*, void*);
-				static auto func = reinterpret_cast<UnhookVirtualByFuncFn>(plugify::GetMethodPtr("dynohook.UnhookVirtualByFunc"));
+				static UnhookVirtualByFuncFn func = nullptr;
+				if (func == nullptr) plugify::GetMethodPtr2("dynhook.UnhookVirtualByFunc", reinterpret_cast<void**>(&func));
 				func(m_class, m_func);
 			}
 			else
 			{
 				using UnhookVirtualFn = bool (*)(void*, int);
-				static auto func = reinterpret_cast<UnhookVirtualFn>(plugify::GetMethodPtr("dynohook.UnhookVirtual"));
+				static UnhookVirtualFn func = nullptr;
+				if (func == nullptr) plugify::GetMethodPtr2("dynhook.UnhookVirtual", reinterpret_cast<void**>(&func));
 				func(m_class, m_index);
 			}
 		}
@@ -248,7 +251,8 @@ namespace dyno
 		static std::unique_ptr<CHook> CreateDetourHook(void* pFunc, const std::vector<DataObject>& arguments, DataObject returnType)
 		{
 			using HookDetourFn = IHook* (*)(void*, const std::vector<DataObject>&, DataObject);
-			static auto func = reinterpret_cast<HookDetourFn>(plugify::GetMethodPtr("dynohook.HookDetour"));
+			static HookDetourFn func = nullptr;
+			if (func == nullptr) plugify::GetMethodPtr2("dynhook.HookDetour", reinterpret_cast<void**>(&func));
 			IHook* pHook = func(pFunc, arguments, returnType);
 			if (pHook == nullptr)
 				return nullptr;
@@ -258,7 +262,8 @@ namespace dyno
 		static std::unique_ptr<CHook> CreateVirtualHook(void* pClass, int index, const std::vector<DataObject>& arguments, DataObject returnType)
 		{
 			using HookVirtualFn = IHook* (*)(void*, int, const std::vector<DataObject>&, DataObject);
-			static auto func = reinterpret_cast<HookVirtualFn>(plugify::GetMethodPtr("dynohook.HookVirtual"));
+			static HookVirtualFn func = nullptr;
+			if (func == nullptr) plugify::GetMethodPtr2("dynhook.HookVirtual", reinterpret_cast<void**>(&func));
 			IHook* pHook = func(pClass, index, arguments, returnType);
 			if (pHook == nullptr)
 				return nullptr;
@@ -268,7 +273,8 @@ namespace dyno
 		static std::unique_ptr<CHook> CreateHookVirtualByFunc(void* pClass, void* pFunc, const std::vector<DataObject>& arguments, DataObject returnType)
 		{
 			using HookVirtualByFuncFn = IHook* (*)(void*, void*, const std::vector<DataObject>&, DataObject);
-			static auto func = reinterpret_cast<HookVirtualByFuncFn>(plugify::GetMethodPtr("dynohook.HookVirtualByFunc"));
+			static HookVirtualByFuncFn func = nullptr;
+			if (func == nullptr) plugify::GetMethodPtr2("dynhook.HookVirtualByFunc", reinterpret_cast<void**>(&func));
 			IHook* pHook = func(pClass, pFunc, arguments, returnType);
 			if (pHook == nullptr)
 				return nullptr;
@@ -278,28 +284,32 @@ namespace dyno
 		bool AddCallback(CallbackType type, CallbackHandler handler) const
 		{
 			using AddCallbackFn = bool (*)(IHook*, bool, CallbackHandler);
-			static auto func = reinterpret_cast<AddCallbackFn>(plugify::GetMethodPtr("dynohook.AddCallback"));
+			static AddCallbackFn func = nullptr;
+			if (func == nullptr) plugify::GetMethodPtr2("dynhook.AddCallback", reinterpret_cast<void**>(&func));
 			return func(m_hook, static_cast<bool>(type), handler);
 		}
 
 		bool RemoveCallback(CallbackType type, CallbackHandler handler) const
 		{
 			using RemoveCallbackFn = bool (*)(IHook*, bool, CallbackHandler);
-			static auto func = reinterpret_cast<RemoveCallbackFn>(plugify::GetMethodPtr("dynohook.RemoveCallback"));
+			static RemoveCallbackFn func = nullptr;
+			if (func == nullptr) plugify::GetMethodPtr2("dynhook.RemoveCallback", reinterpret_cast<void**>(&func));
 			return func(m_hook, static_cast<bool>(type), handler);
 		}
 
 		bool IsCallbackRegistered(bool type, CallbackHandler handler) const
 		{
 			using IsCallbackRegisteredFn = bool (*)(IHook*, bool, CallbackHandler);
-			static auto func = reinterpret_cast<IsCallbackRegisteredFn>(plugify::GetMethodPtr("dynohook.IsCallbackRegistered"));
+			static IsCallbackRegisteredFn func = nullptr;
+			if (func == nullptr) plugify::GetMethodPtr2("dynhook.IsCallbackRegistered", reinterpret_cast<void**>(&func));
 			return func(m_hook, type, handler);
 		}
 
 		bool AreCallbacksRegistered() const
 		{
 			using AreCallbacksRegisteredFn = bool (*)(IHook*);
-			static auto func = reinterpret_cast<AreCallbacksRegisteredFn>(plugify::GetMethodPtr("dynohook.AreCallbacksRegistered"));
+			static AreCallbacksRegisteredFn func = nullptr;
+			if (func == nullptr) plugify::GetMethodPtr2("dynhook.AreCallbacksRegistered", reinterpret_cast<void**>(&func));
 			return func(m_hook);
 		}
 
@@ -314,35 +324,35 @@ namespace dyno
 	inline T GetArgument(IHook& hook, size_t index)
 	{
 		using GetArgumentFn = T (*)(IHook*, size_t);
-		static GetArgumentFn func;
+		static GetArgumentFn func = nullptr;
 		if constexpr (std::is_same_v<T, bool>)
-			func = reinterpret_cast<GetArgumentFn>(plugify::GetMethodPtr("dynohook.GetArgumentBool"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetArgumentBool", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, int8_t>)
-			func = reinterpret_cast<GetArgumentFn>(plugify::GetMethodPtr("dynohook.GetArgumentInt8"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetArgumentInt8", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, uint8_t>)
-			func = reinterpret_cast<GetArgumentFn>(plugify::GetMethodPtr("dynohook.GetArgumentUInt8"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetArgumentUInt8", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, int16_t>)
-			func = reinterpret_cast<GetArgumentFn>(plugify::GetMethodPtr("dynohook.GetArgumentInt16"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetArgumentInt16", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, uint16_t>)
-			func = reinterpret_cast<GetArgumentFn>(plugify::GetMethodPtr("dynohook.GetArgumentUInt16"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetArgumentUInt16", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, int32_t>)
-			func = reinterpret_cast<GetArgumentFn>(plugify::GetMethodPtr("dynohook.GetArgumentInt32"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetArgumentInt32", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, uint32_t>)
-			func = reinterpret_cast<GetArgumentFn>(plugify::GetMethodPtr("dynohook.GetArgumentUInt32"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetArgumentUInt32", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, int64_t>)
-			func = reinterpret_cast<GetArgumentFn>(plugify::GetMethodPtr("dynohook.GetArgumentInt64"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetArgumentInt64", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, uint64_t>)
-			func = reinterpret_cast<GetArgumentFn>(plugify::GetMethodPtr("dynohook.GetArgumentUInt64"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetArgumentUInt64", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, float>)
-			func = reinterpret_cast<GetArgumentFn>(plugify::GetMethodPtr("dynohook.GetArgumentFloat"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetArgumentFloat", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, double>)
-			func = reinterpret_cast<GetArgumentFn>(plugify::GetMethodPtr("dynohook.GetArgumentDouble"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetArgumentDouble", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, const char*>)
-			func = reinterpret_cast<GetArgumentFn>(plugify::GetMethodPtr("dynohook.GetArgumentString"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetArgumentString", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, const wchar_t*>)
-			func = reinterpret_cast<GetArgumentFn>(plugify::GetMethodPtr("dynohook.GetArgumentWString"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetArgumentWString", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_pointer<T>::value)
-			func = reinterpret_cast<GetArgumentFn>(plugify::GetMethodPtr("dynohook.GetArgumentPointer"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetArgumentPointer", reinterpret_cast<void**>(&func));
 		else
 		{
 			if (sizeof(T) > sizeof(int64_t))
@@ -351,23 +361,23 @@ namespace dyno
 			}
 			else if constexpr (sizeof(T) > sizeof(int32_t))
 			{
-				func = reinterpret_cast<GetArgumentFn>(plugify::GetMethodPtr("dynohook.GetArgumentInt64"));
+				if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetArgumentInt64", reinterpret_cast<void**>(&func));
 			}
 			else if constexpr (sizeof(T) > sizeof(int16_t))
 			{
-				func = reinterpret_cast<GetArgumentFn>(plugify::GetMethodPtr("dynohook.GetArgumentInt32"));
+				if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetArgumentInt32", reinterpret_cast<void**>(&func));
 			}
 			else if constexpr (sizeof(T) > sizeof(int8_t))
 			{
-				func = reinterpret_cast<GetArgumentFn>(plugify::GetMethodPtr("dynohook.GetArgumentInt16"));
+				if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetArgumentInt16", reinterpret_cast<void**>(&func));
 			}
 			else if constexpr (sizeof(T) > sizeof(bool))
 			{
-				func = reinterpret_cast<GetArgumentFn>(plugify::GetMethodPtr("dynohook.GetArgumentInt8"));
+				if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetArgumentInt8", reinterpret_cast<void**>(&func));
 			}
 			else
 			{
-				func = reinterpret_cast<GetArgumentFn>(plugify::GetMethodPtr("dynohook.GetArgumentBool"));
+				if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetArgumentBool", reinterpret_cast<void**>(&func));
 			}
 		}
 		return func(&hook, index);
@@ -377,35 +387,35 @@ namespace dyno
 	inline void SetArgument(IHook& hook, size_t index, T value)
 	{
 		using SetArgumentFn = void (*)(IHook*, size_t, T);
-		static SetArgumentFn func;
+		static SetArgumentFn func = nullptr;
 		if constexpr (std::is_same_v<T, bool>)
-			func = reinterpret_cast<SetArgumentFn>(plugify::GetMethodPtr("dynohook.SetArgumentBool"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetArgumentBool", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, int8_t>)
-			func = reinterpret_cast<SetArgumentFn>(plugify::GetMethodPtr("dynohook.SetArgumentInt8"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetArgumentInt8", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, uint8_t>)
-			func = reinterpret_cast<SetArgumentFn>(plugify::GetMethodPtr("dynohook.SetArgumentUInt8"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetArgumentUInt8", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, int16_t>)
-			func = reinterpret_cast<SetArgumentFn>(plugify::GetMethodPtr("dynohook.SetArgumentInt16"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetArgumentInt16", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, uint16_t>)
-			func = reinterpret_cast<SetArgumentFn>(plugify::GetMethodPtr("dynohook.SetArgumentUInt16"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetArgumentUInt16", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, int32_t>)
-			func = reinterpret_cast<SetArgumentFn>(plugify::GetMethodPtr("dynohook.SetArgumentInt32"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetArgumentInt32", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, uint32_t>)
-			func = reinterpret_cast<SetArgumentFn>(plugify::GetMethodPtr("dynohook.SetArgumentUInt32"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetArgumentUInt32", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, int64_t>)
-			func = reinterpret_cast<SetArgumentFn>(plugify::GetMethodPtr("dynohook.SetArgumentInt64"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetArgumentInt64", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, uint64_t>)
-			func = reinterpret_cast<SetArgumentFn>(plugify::GetMethodPtr("dynohook.SetArgumentUInt64"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetArgumentUInt64", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, float>)
-			func = reinterpret_cast<SetArgumentFn>(plugify::GetMethodPtr("dynohook.SetArgumentFloat"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetArgumentFloat", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, double>)
-			func = reinterpret_cast<SetArgumentFn>(plugify::GetMethodPtr("dynohook.SetArgumentDouble"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetArgumentDouble", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, const char*>)
-			func = reinterpret_cast<SetArgumentFn>(plugify::GetMethodPtr("dynohook.SetArgumentString"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetArgumentString", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, const wchar_t*>)
-			func = reinterpret_cast<SetArgumentFn>(plugify::GetMethodPtr("dynohook.SetArgumentWString"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetArgumentWString", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_pointer<T>::value)
-			func = reinterpret_cast<SetArgumentFn>(plugify::GetMethodPtr("dynohook.SetArgumentPointer"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetArgumentPointer", reinterpret_cast<void**>(&func));
 		else
 		{
 			if (sizeof(T) > sizeof(int64_t))
@@ -414,23 +424,23 @@ namespace dyno
 			}
 			else if constexpr (sizeof(T) > sizeof(int32_t))
 			{
-				func = reinterpret_cast<SetArgumentFn>(plugify::GetMethodPtr("dynohook.SetArgumentInt64"));
+				if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetArgumentInt64", reinterpret_cast<void**>(&func));
 			}
 			else if constexpr (sizeof(T) > sizeof(int16_t))
 			{
-				func = reinterpret_cast<SetArgumentFn>(plugify::GetMethodPtr("dynohook.SetArgumentInt32"));
+				if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetArgumentInt32", reinterpret_cast<void**>(&func));
 			}
 			else if constexpr (sizeof(T) > sizeof(int8_t))
 			{
-				func = reinterpret_cast<SetArgumentFn>(plugify::GetMethodPtr("dynohook.SetArgumentInt16"));
+				if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetArgumentInt16", reinterpret_cast<void**>(&func));
 			}
 			else if constexpr (sizeof(T) > sizeof(bool))
 			{
-				func = reinterpret_cast<SetArgumentFn>(plugify::GetMethodPtr("dynohook.SetArgumentInt8"));
+				if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetArgumentInt8", reinterpret_cast<void**>(&func));
 			}
 			else
 			{
-				func = reinterpret_cast<SetArgumentFn>(plugify::GetMethodPtr("dynohook.SetArgumentBool"));
+				if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetArgumentBool", reinterpret_cast<void**>(&func));
 			}
 		}
 		func(&hook, index, value);
@@ -440,35 +450,35 @@ namespace dyno
 	inline T GetReturn(IHook& hook)
 	{
 		using GetReturnFn = T (*)(IHook*);
-		static GetReturnFn func;
+		static GetReturnFn func = nullptr;
 		if constexpr (std::is_same_v<T, bool>)
-			func = reinterpret_cast<GetReturnFn>(plugify::GetMethodPtr("dynohook.GetReturnBool"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetReturnBool", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, int8_t>)
-			func = reinterpret_cast<GetReturnFn>(plugify::GetMethodPtr("dynohook.GetReturnInt8"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetReturnInt8", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, uint8_t>)
-			func = reinterpret_cast<GetReturnFn>(plugify::GetMethodPtr("dynohook.GetReturnUInt8"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetReturnUInt8", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, int16_t>)
-			func = reinterpret_cast<GetReturnFn>(plugify::GetMethodPtr("dynohook.GetReturnInt16"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetReturnInt16", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, uint16_t>)
-			func = reinterpret_cast<GetReturnFn>(plugify::GetMethodPtr("dynohook.GetReturnUInt16"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetReturnUInt16", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, int32_t>)
-			func = reinterpret_cast<GetReturnFn>(plugify::GetMethodPtr("dynohook.GetReturnInt32"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetReturnInt32", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, uint32_t>)
-			func = reinterpret_cast<GetReturnFn>(plugify::GetMethodPtr("dynohook.GetReturnUInt32"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetReturnUInt32", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, int64_t>)
-			func = reinterpret_cast<GetReturnFn>(plugify::GetMethodPtr("dynohook.GetReturnInt64"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetReturnInt64", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, uint64_t>)
-			func = reinterpret_cast<GetReturnFn>(plugify::GetMethodPtr("dynohook.GetReturnUInt64"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetReturnUInt64", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, float>)
-			func = reinterpret_cast<GetReturnFn>(plugify::GetMethodPtr("dynohook.GetReturnFloat"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetReturnFloat", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, double>)
-			func = reinterpret_cast<GetReturnFn>(plugify::GetMethodPtr("dynohook.GetReturnDouble"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetReturnDouble", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, const char*>)
-			func = reinterpret_cast<GetReturnFn>(plugify::GetMethodPtr("dynohook.GetReturnString"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetReturnString", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, const wchar_t*>)
-			func = reinterpret_cast<GetReturnFn>(plugify::GetMethodPtr("dynohook.GetReturnWString"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetReturnWString", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_pointer<T>::value )
-			func = reinterpret_cast<GetReturnFn>(plugify::GetMethodPtr("dynohook.GetReturnPointer"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetReturnPointer", reinterpret_cast<void**>(&func));
 		else
 		{
 			/*if (sizeof(T) > sizeof(int64_t))
@@ -477,23 +487,23 @@ namespace dyno
 			}
 			else if constexpr (sizeof(T) > sizeof(int32_t))
 			{
-				func = reinterpret_cast<GetReturnFn>(plugify::GetMethodPtr("dynohook.GetReturnInt64"));
+				if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetReturnInt64", reinterpret_cast<void**>(&func));
 			}
 			else if constexpr (sizeof(T) > sizeof(int16_t))
 			{
-				func = reinterpret_cast<GetReturnFn>(plugify::GetMethodPtr("dynohook.GetReturnInt32"));
+				if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetReturnInt32", reinterpret_cast<void**>(&func));
 			}
 			else if constexpr (sizeof(T) > sizeof(int8_t))
 			{
-				func = reinterpret_cast<GetReturnFn>(plugify::GetMethodPtr("dynohook.GetReturnInt16"));
+				if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetReturnInt16", reinterpret_cast<void**>(&func));
 			}
 			else if constexpr (sizeof(T) > sizeof(bool))
 			{
-				func = reinterpret_cast<GetReturnFn>(plugify::GetMethodPtr("dynohook.GetReturnInt8"));
+				if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetReturnInt8", reinterpret_cast<void**>(&func));
 			}
 			else
 			{
-				func = reinterpret_cast<GetReturnFn>(plugify::GetMethodPtr("dynohook.GetReturnBool"));
+				if (func = nullptr) plugify::GetMethodPtr2("dynhook.GetReturnBool"), reinterpret_cast<void**>(&func));
 			}*/
 			static_assert("Unsupported type");
 		}
@@ -504,35 +514,35 @@ namespace dyno
 	inline void SetReturn(IHook& hook, T value)
 	{
 		using SetReturnFn = void (*)(IHook*, T);
-		static SetReturnFn func;
+		static SetReturnFn func = nullptr;
 		if constexpr (std::is_same_v<T, bool>)
-			func = reinterpret_cast<SetReturnFn>(plugify::GetMethodPtr("dynohook.SetReturnBool"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetReturnBool", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, int8_t>)
-			func = reinterpret_cast<SetReturnFn>(plugify::GetMethodPtr("dynohook.SetReturnInt8"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetReturnInt8", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, uint8_t>)
-			func = reinterpret_cast<SetReturnFn>(plugify::GetMethodPtr("dynohook.SetReturnUInt8"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetReturnUInt8", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, int16_t>)
-			func = reinterpret_cast<SetReturnFn>(plugify::GetMethodPtr("dynohook.SetReturnInt16"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetReturnInt16", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, uint16_t>)
-			func = reinterpret_cast<SetReturnFn>(plugify::GetMethodPtr("dynohook.SetReturnUInt16"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetReturnUInt16", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, int32_t>)
-			func = reinterpret_cast<SetReturnFn>(plugify::GetMethodPtr("dynohook.SetReturnInt32"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetReturnInt32", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, uint32_t>)
-			func = reinterpret_cast<SetReturnFn>(plugify::GetMethodPtr("dynohook.SetReturnUInt32"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetReturnUInt32", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, int64_t>)
-			func = reinterpret_cast<SetReturnFn>(plugify::GetMethodPtr("dynohook.SetReturnInt64"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetReturnInt64", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, uint64_t>)
-			func = reinterpret_cast<SetReturnFn>(plugify::GetMethodPtr("dynohook.SetReturnUInt64"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetReturnUInt64", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, float>)
-			func = reinterpret_cast<SetReturnFn>(plugify::GetMethodPtr("dynohook.SetReturnFloat"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetReturnFloat", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, double>)
-			func = reinterpret_cast<SetReturnFn>(plugify::GetMethodPtr("dynohook.SetReturnDouble"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetReturnDouble", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, const char*>)
-			func = reinterpret_cast<SetReturnFn>(plugify::GetMethodPtr("dynohook.SetReturnString"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetReturnString", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_same_v<T, const wchar_t*>)
-			func = reinterpret_cast<SetReturnFn>(plugify::GetMethodPtr("dynohook.SetReturnWString"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetReturnWString", reinterpret_cast<void**>(&func));
 		else if constexpr (std::is_pointer<T>::value)
-			func = reinterpret_cast<SetReturnFn>(plugify::GetMethodPtr("dynohook.SetReturnPointer"));
+			if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetReturnPointer", reinterpret_cast<void**>(&func));
 		else
 		{
 			/*if (sizeof(T) > sizeof(int64_t))
@@ -541,23 +551,23 @@ namespace dyno
 			}
 			else if constexpr (sizeof(T) > sizeof(int32_t))
 			{
-				func = reinterpret_cast<SetReturnFn>(plugify::GetMethodPtr("dynohook.SetReturnInt64"));
+				if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetReturnInt64", reinterpret_cast<void**>(&func));
 			}
 			else if constexpr (sizeof(T) > sizeof(int16_t))
 			{
-				func = reinterpret_cast<SetReturnFn>(plugify::GetMethodPtr("dynohook.SetReturnInt32"));
+				if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetReturnInt32", reinterpret_cast<void**>(&func));
 			}
 			else if constexpr (sizeof(T) > sizeof(int8_t))
 			{
-				func = reinterpret_cast<SetReturnFn>(plugify::GetMethodPtr("dynohook.SetReturnInt16"));
+				if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetReturnInt16", reinterpret_cast<void**>(&func));
 			}
 			else if constexpr (sizeof(T) > sizeof(bool))
 			{
-				func = reinterpret_cast<SetReturnFn>(plugify::GetMethodPtr("dynohook.SetReturnInt8"));
+				if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetReturnInt8", reinterpret_cast<void**>(&func));
 			}
 			else
 			{
-				func = reinterpret_cast<SetReturnFn>(plugify::GetMethodPtr("dynohook.SetReturnBool"));
+				if (func = nullptr) plugify::GetMethodPtr2("dynhook.SetReturnBool", reinterpret_cast<void**>(&func));
 			}*/
 			static_assert("Unsupported type");
 		}

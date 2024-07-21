@@ -1,8 +1,11 @@
 #pragma once
 
+#include <core/con_command_manager.h>
+#include <plugin_export.h>
+
 extern "C" PLUGIN_API void AddCommand(const std::string& name, const std::string& description, int64_t flags, CommandListenerCallback callback)
 {
-	g_Logger.MessageFormat("Adding command %s, %s, %d, %p\n", name.c_str(), description.c_str(), (int)flags, (void*)callback);
+	g_Logger.DetailedFormat("Adding command %s, %s, %d, %p\n", name.c_str(), description.c_str(), (int)flags, (void*)callback);
 
 	g_CommandManager.AddValveCommand(name, description, flags);
 	g_CommandManager.AddCommandListener(name, callback, HookMode::Pre);

@@ -1,6 +1,7 @@
 #pragma once
 
-#include <core/sdk/entity/cbaseentity.h>
+#include <core/sdk/utils.h>
+#include <plugin_export.h>
 
 extern "C" PLUGIN_API void PrintServer(const std::string& msg)
 {

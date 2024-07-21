@@ -146,7 +146,7 @@ bool CConCommandManager::IsValidValveCommand(const std::string& name) const
 
 ResultType CConCommandManager::ExecuteCommandCallbacks(const std::string& name, const CCommandContext& ctx, const CCommand& args, HookMode mode, CommandCallingContext callingContext)
 {
-	g_Logger.MessageFormat("[ConCommandManager::ExecuteCommandCallbacks][%s]: %s\n", mode == HookMode::Pre ? "Pre" : "Post", name.c_str());
+	g_Logger.DetailedFormat("[ConCommandManager::ExecuteCommandCallbacks][%s]: %s\n", mode == HookMode::Pre ? "Pre" : "Post", name.c_str());
 
 	ResultType result = ResultType::Continue;
 
@@ -216,7 +216,7 @@ dyno::ReturnAction CConCommandManager::Hook_DispatchConCommand(dyno::IHook& hook
 
 	const char* name = args->Arg(0);
 
-	g_Logger.MessageFormat("[ConCommandManager::Hook_DispatchConCommand]: %s\n", name);
+	g_Logger.DetailedFormat("[ConCommandManager::Hook_DispatchConCommand]: %s\n", name);
 
 	auto result = ExecuteCommandCallbacks(name, *ctx, *args, HookMode::Pre, CommandCallingContext::Console);
 	if (result >= ResultType::Handled)

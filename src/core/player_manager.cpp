@@ -161,14 +161,14 @@ void CPlayerManager::RunAuthChecks()
 
 void CPlayerManager::OnClientAuthorized(CPlayer* player) const
 {
-	g_Logger.MessageFormat("[OnClientAuthorized] - %s, %lli\n", player->GetName().c_str(), player->GetSteamId()->ConvertToUint64());
+	g_Logger.DetailedFormat("[OnClientAuthorized] - %s, %lli\n", player->GetName().c_str(), player->GetSteamId()->ConvertToUint64());
 
 	GetOnClientAuthorizedListenerManager().Notify(player->m_iSlot.Get(), player->GetSteamId()->ConvertToUint64());
 }
 
 bool CPlayerManager::OnClientConnect(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, bool unk1, CBufferString* pRejectReason)
 {
-	g_Logger.MessageFormat("[OnClientConnect] - %d, %s, %s\n", slot.Get(), pszName, pszNetworkID);
+	g_Logger.DetailedFormat("[OnClientConnect] - %d, %s, %s\n", slot.Get(), pszName, pszNetworkID);
 
 	int client = slot.Get();
 	CPlayer* pPlayer = &m_players[client];
@@ -193,7 +193,7 @@ bool CPlayerManager::OnClientConnect(CPlayerSlot slot, const char* pszName, uint
 
 bool CPlayerManager::OnClientConnect_Post(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, bool unk1, CBufferString* pRejectReason, bool origRet)
 {
-	g_Logger.MessageFormat("[OnClientConnect_Post] - %d, %s, %s\n", slot.Get(), pszName, pszNetworkID);
+	g_Logger.DetailedFormat("[OnClientConnect_Post] - %d, %s, %s\n", slot.Get(), pszName, pszNetworkID);
 
 	int client = slot.Get();
 	CPlayer* pPlayer = &m_players[client];
@@ -215,7 +215,7 @@ bool CPlayerManager::OnClientConnect_Post(CPlayerSlot slot, const char* pszName,
 
 void CPlayerManager::OnClientConnected(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, const char* pszAddress, bool bFakePlayer)
 {
-	g_Logger.MessageFormat("[OnClientConnected] - %d, %s, %s, %s\n", slot.Get(), pszName, pszNetworkID, pszAddress);
+	g_Logger.DetailedFormat("[OnClientConnected] - %d, %s, %s, %s\n", slot.Get(), pszName, pszNetworkID, pszAddress);
 
 	int client = slot.Get();
 	CPlayer* pPlayer = &m_players[client];
@@ -225,7 +225,7 @@ void CPlayerManager::OnClientConnected(CPlayerSlot slot, const char* pszName, ui
 
 void CPlayerManager::OnClientPutInServer(CPlayerSlot slot, char const* pszName, int type, uint64 xuid)
 {
-	g_Logger.MessageFormat("[OnClientPutInServer] - %d, %s, %d\n", slot.Get(), pszName, type);
+	g_Logger.DetailedFormat("[OnClientPutInServer] - %d, %s, %d\n", slot.Get(), pszName, type);
 
 	int client = slot.Get();
 	CPlayer* pPlayer = &m_players[client];
@@ -254,7 +254,7 @@ void CPlayerManager::OnClientPutInServer(CPlayerSlot slot, char const* pszName, 
 
 void CPlayerManager::OnClientDisconnect(CPlayerSlot slot, ENetworkDisconnectionReason reason, const char* pszName, uint64 xuid, const char* pszNetworkID)
 {
-	g_Logger.MessageFormat("[OnClientDisconnect] - %d, %s, %s\n", slot.Get(), pszName, pszNetworkID);
+	g_Logger.DetailedFormat("[OnClientDisconnect] - %d, %s, %s\n", slot.Get(), pszName, pszNetworkID);
 
 	int client = slot.Get();
 	CPlayer* pPlayer = &m_players[client];
@@ -272,7 +272,7 @@ void CPlayerManager::OnClientDisconnect(CPlayerSlot slot, ENetworkDisconnectionR
 
 void CPlayerManager::OnClientDisconnect_Post(CPlayerSlot slot, ENetworkDisconnectionReason reason, const char* pszName, uint64 xuid, const char* pszNetworkID)
 {
-	g_Logger.MessageFormat("[OnClientDisconnect_Post] - %d, %s, %s\n", slot.Get(), pszName, pszNetworkID);
+	g_Logger.DetailedFormat("[OnClientDisconnect_Post] - %d, %s, %s\n", slot.Get(), pszName, pszNetworkID);
 
 	int client = slot.Get();
 	CPlayer* pPlayer = &m_players[client];
@@ -289,14 +289,14 @@ void CPlayerManager::OnClientDisconnect_Post(CPlayerSlot slot, ENetworkDisconnec
 
 void CPlayerManager::OnClientActive(CPlayerSlot slot, bool bLoadGame) const
 {
-	g_Logger.MessageFormat("[OnClientActive] - %d\n", slot.Get());
+	g_Logger.DetailedFormat("[OnClientActive] - %d\n", slot.Get());
 
 	GetOnClientActiveListenerManager().Notify(slot.Get(), bLoadGame);
 }
 
 void CPlayerManager::OnLevelShutdown()
 {
-	g_Logger.Message("[OnLevelShutdown]\n");
+	g_Logger.Detailed("[OnLevelShutdown]\n");
 
 	for (int i = 0; i <= MaxClients(); ++i)
 	{

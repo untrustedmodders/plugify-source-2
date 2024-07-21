@@ -1,7 +1,9 @@
 #pragma once
 
+#include <core/output_manager.h>
 #include <core/sdk/entity/cbaseentity.h>
 #include <core/sdk/entity/cbasemodelentity.h>
+#include <plugin_export.h>
 
 extern "C" PLUGIN_API CBaseEntity* GetEntityFromIndex(int entityIndex)
 {
@@ -456,7 +458,7 @@ extern "C" PLUGIN_API void GetEntityAbsOrigin(Vector& output, int entityIndex)
 		return;
 	}
 
-	std::construct_at(&output, ent->m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin());
+	output = ent->m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin();
 }
 extern "C" PLUGIN_API void SetEntityAbsOrigin(int entityIndex, const Vector& origin)
 {
@@ -499,7 +501,7 @@ extern "C" PLUGIN_API void GetEntityAbsVelocity(Vector& output, int entityIndex)
 		return;
 	}
 
-	std::construct_at(&output, ent->m_vecAbsVelocity());
+	output = ent->m_vecAbsVelocity();
 
 }
 extern "C" PLUGIN_API void SetEntityAbsVelocity(int entityIndex, const Vector& velocity)

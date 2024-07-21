@@ -4,7 +4,7 @@
 #include <core/sdk/utils.h>
 
 #include <convar.h>
-#include <dynohook/dynohook.h>
+#include <plugify/dynohook.h>
 
 enum CommandCallingContext
 {

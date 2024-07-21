@@ -6,7 +6,7 @@
 #include <module.h>
 
 using CMemory = DynLibUtils::CMemory;
-using ModuleRef = std::optional<std::reference_wrapper<DynLibUtils::CModule>>;
+using CModule = DynLibUtils::CModule;
 
 class CGameConfig
 {
@@ -24,7 +24,7 @@ public:
 	std::string_view GetPatch(const std::string& name) const;
 	int GetOffset(const std::string& name) const;
 	void* GetAddress(const std::string& name) const;
-	ModuleRef GetModule(const std::string& name) const;
+	CModule* GetModule(const std::string& name) const;
 	bool IsSymbol(const std::string& name) const;
 	CMemory ResolveSignature(const std::string& name) const;
 

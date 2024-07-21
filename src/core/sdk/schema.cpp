@@ -57,7 +57,7 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t* tableMap, const char* cla
 		SchemaKeyValueMap_t* map = new SchemaKeyValueMap_t(0, 0, DefLessFunc(uint32_t));
 		tableMap->Insert(classKey, map);
 
-		g_Logger.WarningFormat("InitSchemaFieldsForClass(): '%s' was not found!\n", className);
+		g_Logger.ErrorFormat("InitSchemaFieldsForClass(): '%s' was not found!\n", className);
 		return false;
 	}
 
@@ -73,7 +73,7 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t* tableMap, const char* cla
 		SchemaClassFieldData_t& field = pFields[i];
 
 #ifdef _DEBUG
-		g_Logger.MessageFormat("%s::%s found at -> 0x%X - %llx\n", className, field.m_pszName, field.m_nSingleInheritanceOffset, &field);
+		g_Logger.DetailedFormat("%s::%s found at -> 0x%X - %llx\n", className, field.m_pszName, field.m_nSingleInheritanceOffset, &field);
 #endif
 
 		keyValueMap->Insert(hash_32_fnv1a_const(field.m_pszName), {field.m_nSingleInheritanceOffset, IsFieldNetworked(field)});

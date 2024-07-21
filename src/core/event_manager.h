@@ -3,7 +3,7 @@
 #include "listener_manager.h"
 #include <igameevents.h>
 
-#include <dynohook/dynohook.h>
+#include <plugify/dynohook.h>
 
 struct EventInfo
 {
