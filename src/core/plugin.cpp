@@ -50,18 +50,18 @@ class CEntityListener : public IEntityListener
 
 void Source2SDK::OnPluginStart()
 {
-	g_Logger.Detailed("OnPluginStart!\n");
+	g_Logger.Log(LS_DEBUG, "OnPluginStart!\n");
 
 	auto coreConfig = FindResource("configs/core.txt");
 	if (!coreConfig.has_value())
 	{
-		g_Logger.Error("configs/core.txt not found!");
+		g_Logger.Log(LS_ERROR, "configs/core.txt not found!");
 		return;
 	}
 	auto gameData = FindResource("gamedata/cs2sdk.games.txt");
 	if (!gameData.has_value())
 	{
-		g_Logger.Error("gamedata/cs2sdk.games.txt not found!");
+		g_Logger.Log(LS_ERROR, "gamedata/cs2sdk.games.txt not found!");
 		return;
 	}
 
@@ -111,7 +111,7 @@ void Source2SDK::OnPluginEnd()
 			g_pEntitySystem->m_entityListeners.Remove(iListener);
 		}
 	}
-	g_Logger.Detailed("OnPluginEnd!\n");
+	g_Logger.Log(LS_DEBUG, "OnPluginEnd!\n");
 }
 
 void Source2SDK::OnServerStartup()
@@ -134,13 +134,13 @@ void Source2SDK::OnServerStartup()
 
 dyno::ReturnAction Source2SDK::Hook_StartupServer(dyno::CallbackType type, dyno::IHook& hook)
 {
-	g_Logger.Detailed("Startup server\n");
+	g_Logger.Log(LS_DEBUG, "Startup server\n");
 
 	OnServerStartup();
 	
 	if (gpGlobals == nullptr)
 	{
-		g_Logger.Error("Failed to lookup gpGlobals\n");
+		g_Logger.Log(LS_ERROR, "Failed to lookup gpGlobals\n");
 		return dyno::ReturnAction::Ignored;
 	}
 
@@ -151,13 +151,13 @@ dyno::ReturnAction Source2SDK::Hook_StartupServer(dyno::CallbackType type, dyno:
 
 dyno::ReturnAction Source2SDK::Hook_FireEvent(dyno::CallbackType type, dyno::IHook& hook)
 {
-	// g_Logger.DetailedFormat("FireEvent = %s\n", event->GetName() );
+	// g_Logger.LogFormat(LS_DEBUG, "FireEvent = %s\n", event->GetName() );
 	return type == dyno::CallbackType::Post ? g_EventManager.Hook_OnFireEvent_Post(hook) : g_EventManager.Hook_OnFireEvent(hook);
 }
 
 /*dyno::ReturnAction Source2SDK::Hook_PostEvent(dyno::CallbackType type, dyno::IHook& hook)
 {
-	// g_Logger.DetailedFormat("PostEvent = %d, %d, %d, %lli\n", nSlot, bLocalOnly, nClientCount, clients );
+	// g_Logger.LogFormat(LS_DEBUG, "PostEvent = %d, %d, %d, %lli\n", nSlot, bLocalOnly, nClientCount, clients );
 	return dyno::ReturnAction::Ignored;
 }*/
 
@@ -165,14 +165,14 @@ dyno::ReturnAction Source2SDK::Hook_OnLevelInit(dyno::CallbackType type, dyno::I
 {
 	auto pMapName = dyno::GetArgument<const char*>(hook, 1);
 	auto pMapEntities = dyno::GetArgument<const char*>(hook, 2);
-	g_Logger.DetailedFormat("OnLevelInit = %s\n", pMapName);
+	g_Logger.LogFormat(LS_DEBUG, "OnLevelInit = %s\n", pMapName);
 	GetOnLevelInitListenerManager().Notify(pMapName, pMapEntities);
 	return dyno::ReturnAction::Ignored;
 };
 
 dyno::ReturnAction Source2SDK::Hook_OnLevelShutdown(dyno::CallbackType type, dyno::IHook& hook)
 {
-	g_Logger.Detailed("OnLevelShutdown\n");
+	g_Logger.Log(LS_DEBUG, "OnLevelShutdown\n");
 	g_TimerSystem.OnLevelShutdown();
 	g_PlayerManager.OnLevelShutdown();
 	GetOnLevelShutdownListenerManager().Notify();
@@ -201,7 +201,7 @@ dyno::ReturnAction Source2SDK::Hook_ClientActive(dyno::CallbackType type, dyno::
 	auto bLoadGame = dyno::GetArgument<bool>(hook, 2);
 	// auto pszName = dyno::GetArgument<const char*>(hook, 3);
 	// auto xuid = dyno::GetArgument<uint64>(hook, 4);
-	// g_Logger.DetailedFormat("ClientActive = %d, %d, \"%s\", %lli\n", slot, bLoadGame, pszName, xuid);
+	// g_Logger.LogFormat(LS_DEBUG, "ClientActive = %d, %d, \"%s\", %lli\n", slot, bLoadGame, pszName, xuid);
 
 	g_PlayerManager.OnClientActive(slot, bLoadGame);
 
@@ -216,7 +216,7 @@ dyno::ReturnAction Source2SDK::Hook_ClientDisconnect(dyno::CallbackType type, dy
 	auto pszName = dyno::GetArgument<const char*>(hook, 3);
 	auto xuid = dyno::GetArgument<uint64>(hook, 4);
 	auto pszNetworkID = dyno::GetArgument<const char*>(hook, 5);
-	// g_Logger.DetailedFormat("ClientDisconnect - %d, %d, \"%s\", %lli, \"%s\"\n", slot, reason, pszName, xuid, pszNetworkID);
+	// g_Logger.LogFormat(LS_DEBUG, "ClientDisconnect - %d, %d, \"%s\", %lli, \"%s\"\n", slot, reason, pszName, xuid, pszNetworkID);
 
 	if (type == dyno::CallbackType::Pre)
 	{
@@ -237,7 +237,7 @@ dyno::ReturnAction Source2SDK::Hook_ClientPutInServer(dyno::CallbackType type, d
 	auto pszName = dyno::GetArgument<const char*>(hook, 2);
 	auto conType = dyno::GetArgument<int>(hook, 3);
 	auto xuid = dyno::GetArgument<uint64>(hook, 4);
-	// g_Logger.DetailedFormat("ClientPutInServer - %d, \"%s\", %d, %d, %lli\n", slot, pszName, conType, xuid);
+	// g_Logger.LogFormat(LS_DEBUG, "ClientPutInServer - %d, \"%s\", %d, %d, %lli\n", slot, pszName, conType, xuid);
 
 	g_PlayerManager.OnClientPutInServer(slot, pszName, conType, xuid);
 
@@ -248,7 +248,7 @@ dyno::ReturnAction Source2SDK::Hook_ClientSettingsChanged(dyno::CallbackType typ
 {
 	// CPlayerSlot slot
 	auto slot = (CPlayerSlot)dyno::GetArgument<int>(hook, 1);
-	g_Logger.DetailedFormat("ClientSettingsChanged - %d\n", slot.Get());
+	g_Logger.LogFormat(LS_DEBUG, "ClientSettingsChanged - %d\n", slot.Get());
 	GetOnClientSettingsChangedListenerManager().Notify(slot.Get());
 	return dyno::ReturnAction::Ignored;
 }
@@ -262,7 +262,7 @@ dyno::ReturnAction Source2SDK::Hook_OnClientConnected(dyno::CallbackType type, d
 	auto pszNetworkID = dyno::GetArgument<const char*>(hook, 4);
 	auto pszAddress = dyno::GetArgument<const char*>(hook, 5);
 	auto bFakePlayer = dyno::GetArgument<bool>(hook, 6);
-	// g_Logger.DetailedFormat("OnClientConnected = %d, \"%s\", %lli, \"%s\", \"%s\", %d\n", slot, pszName, xuid, pszNetworkID, pszAddress, bFakePlayer);
+	// g_Logger.LogFormat(LS_DEBUG, "OnClientConnected = %d, \"%s\", %lli, \"%s\", \"%s\", %d\n", slot, pszName, xuid, pszNetworkID, pszAddress, bFakePlayer);
 	g_PlayerManager.OnClientConnected(slot, pszName, xuid, pszNetworkID, pszAddress, bFakePlayer);
 	return dyno::ReturnAction::Ignored;
 }
@@ -271,7 +271,7 @@ dyno::ReturnAction Source2SDK::Hook_ClientFullyConnect(dyno::CallbackType type, 
 {
 	// CPlayerSlot slot
 	auto slot = (CPlayerSlot)dyno::GetArgument<int>(hook, 1);
-	g_Logger.DetailedFormat("ClientFullyConnect = %d\n", slot.Get());
+	g_Logger.LogFormat(LS_DEBUG, "ClientFullyConnect = %d\n", slot.Get());
 	GetOnClientFullyConnectListenerManager().Notify(slot.Get());
 	return dyno::ReturnAction::Ignored;
 }
@@ -286,7 +286,7 @@ dyno::ReturnAction Source2SDK::Hook_ClientConnect(dyno::CallbackType type, dyno:
 	bool unk1 = dyno::GetArgument<bool>(hook, 5);
 	auto pRejectReason = dyno::GetArgument<CBufferString*>(hook, 6);
 
-	// g_Logger.DetailedFormat("ClientConnect = %d, \"%s\", %lli, \"%s\", %d, \"%s\" \n", slot, pszName, xuid, pszNetworkID, unk1, pRejectReason->ToGrowable()->Get());
+	// g_Logger.LogFormat(LS_DEBUG, "ClientConnect = %d, \"%s\", %lli, \"%s\", %d, \"%s\" \n", slot, pszName, xuid, pszNetworkID, unk1, pRejectReason->ToGrowable()->Get());
 
 	if (type == dyno::CallbackType::Pre)
 	{
@@ -312,7 +312,7 @@ dyno::ReturnAction Source2SDK::Hook_ClientCommand(dyno::CallbackType type, dyno:
 	auto slot = (CPlayerSlot)dyno::GetArgument<int>(hook, 1);
 	auto args = dyno::GetArgument<const CCommand*>(hook, 2);
 
-	g_Logger.DetailedFormat("ClientCommand = %d, \"%s\"\n", slot.Get(), args->GetCommandString());
+	g_Logger.LogFormat(LS_DEBUG, "ClientCommand = %d, \"%s\"\n", slot.Get(), args->GetCommandString());
 	const char* cmd = args->Arg(0);
 
 	auto result = g_CommandManager.ExecuteCommandCallbacks(cmd, CCommandContext(CommandTarget_t::CT_NO_TARGET, slot), *args, HookMode::Pre, CommandCallingContext::Console);
@@ -334,21 +334,21 @@ dyno::ReturnAction Source2SDK::Hook_ServerHibernationUpdate(dyno::CallbackType t
 {
 	// bool bHibernating
 	auto bHibernating = dyno::GetArgument<bool>(hook, 1);
-	g_Logger.DetailedFormat("ServerHibernationUpdate = %d\n", bHibernating);
+	g_Logger.LogFormat(LS_DEBUG, "ServerHibernationUpdate = %d\n", bHibernating);
 	GetOnServerHibernationUpdateListenerManager().Notify(bHibernating);
 	return dyno::ReturnAction::Ignored;
 }
 
 dyno::ReturnAction Source2SDK::Hook_GameServerSteamAPIActivated(dyno::CallbackType type, dyno::IHook& hook)
 {
-	g_Logger.Detailed("GameServerSteamAPIActivated\n");
+	g_Logger.Log(LS_DEBUG, "GameServerSteamAPIActivated\n");
 	GetOnGameServerSteamAPIActivatedListenerManager().Notify();
 	return dyno::ReturnAction::Ignored;
 }
 
 dyno::ReturnAction Source2SDK::Hook_GameServerSteamAPIDeactivated(dyno::CallbackType type, dyno::IHook& hook)
 {
-	g_Logger.Detailed("GameServerSteamAPIDeactivated\n");
+	g_Logger.Log(LS_DEBUG, "GameServerSteamAPIDeactivated\n");
 	GetOnGameServerSteamAPIDeactivatedListenerManager().Notify();
 	return dyno::ReturnAction::Ignored;
 }
@@ -357,14 +357,14 @@ dyno::ReturnAction Source2SDK::Hook_OnHostNameChanged(dyno::CallbackType type, d
 {
 	// const char *pHostname
 	auto pHostname = dyno::GetArgument<const char*>(hook, 1);
-	g_Logger.DetailedFormat("OnHostNameChanged = %s\n", pHostname);
+	g_Logger.LogFormat(LS_DEBUG, "OnHostNameChanged = %s\n", pHostname);
 	GetOnHostNameChangedListenerManager().Notify(pHostname);
 	return dyno::ReturnAction::Ignored;
 }
 
 dyno::ReturnAction Source2SDK::Hook_PreFatalShutdown(dyno::CallbackType type, dyno::IHook& hook)
 {
-	g_Logger.Detailed("PreFatalShutdown\n");
+	g_Logger.Log(LS_DEBUG, "PreFatalShutdown\n");
 	GetOnPreFatalShutdownListenerManager().Notify();
 	return dyno::ReturnAction::Ignored;
 }
@@ -373,7 +373,7 @@ dyno::ReturnAction Source2SDK::Hook_UpdateWhenNotInGame(dyno::CallbackType type,
 {
 	// float flFrameTime
 	auto flFrameTime = dyno::GetArgument<float>(hook, 1);
-	// g_Logger.DetailedFormat("UpdateWhenNotInGame = %f\n", flFrameTime);
+	// g_Logger.LogFormat(LS_DEBUG, "UpdateWhenNotInGame = %f\n", flFrameTime);
 	GetOnUpdateWhenNotInGameListenerManager().Notify(flFrameTime);
 	return dyno::ReturnAction::Ignored;
 }
@@ -382,7 +382,7 @@ dyno::ReturnAction Source2SDK::Hook_PreWorldUpdate(dyno::CallbackType type, dyno
 {
 	// bool simulating
 	auto simulating = dyno::GetArgument<bool>(hook, 1);
-	// g_Logger.DetailedFormat("PreWorldUpdate = %d\n", simulating);
+	// g_Logger.LogFormat(LS_DEBUG, "PreWorldUpdate = %d\n", simulating);
 
 	g_ServerManager.OnPreWorldUpdate();
 

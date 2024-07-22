@@ -9,7 +9,7 @@ bool CCoreConfig::Initialize()
 {
 	if (!m_pKeyValues->LoadFromFile(g_pFullFileSystem, m_szPath.c_str(), nullptr))
 	{
-		g_Logger.ErrorFormat("Could not read \"%s\": Failed to load gamedata file\n", m_szPath.c_str());
+		g_Logger.LogFormat(LS_ERROR, "Could not read \"%s\": Failed to load gamedata file\n", m_szPath.c_str());
 		return false;
 	}
 
@@ -53,7 +53,7 @@ bool CCoreConfig::IsTriggerInternal(const std::vector<std::string>& triggers, co
 		if (message.rfind(trigger, 0) == 0)
 		{
 			prefix = trigger;
-			g_Logger.DetailedFormat("Trigger found, prefix is %s\n", prefix.c_str());
+			g_Logger.LogFormat(LS_DEBUG, "Trigger found, prefix is %s\n", prefix.c_str());
 			return true;
 		}
 	}

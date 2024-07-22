@@ -6,7 +6,7 @@ double universalTime = 0.0f;
 double timerNextThink = 0.0f;
 const float engineFixedTickInterval = 0.015625f;
 
-CTimer::CTimer(float interval, float exec_time, TimerCallback callback, int flags) : m_callback(callback), m_interval(interval), m_execTime(exec_time), m_flags(flags)
+CTimer::CTimer(float interval, float execTime, TimerCallback callback, int flags) : m_callback(callback), m_interval(interval), m_execTime(execTime), m_flags(flags)
 {
 }
 

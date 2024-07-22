@@ -6,48 +6,47 @@
 #include <tier0/dbg.h>
 #include <tier0/logging.h>
 
-#include "logger/detailed.hpp"
-#include "logger/error.hpp"
-#include "logger/message.hpp"
-#include "logger/throw_assert.hpp"
-#include "logger/warning.hpp"
-
-class CLogger final : public CLoggingDetailed, public CLoggingMessage, public CLoggingWarning, public CLoggingThrowAssert, public CLoggingError
+class CLogger final
 {
 public:
-	CLogger(const char* pszName, RegisterTagsFunc pfnRegisterTagsFunc, int iFlags = 0, LoggingVerbosity_t eVerbosity = LV_DEFAULT, const Color& aDefault = UNSPECIFIED_LOGGING_COLOR);
+	CLogger(const char* name, RegisterTagsFunc registerTagsFunc, int flags = 0, LoggingVerbosity_t verbosity = LV_DEFAULT, const Color& defaultColor = UNSPECIFIED_LOGGING_COLOR);
 	~CLogger() = default;
 
-	void AddTagToChannel(const char* pTagName) const;
-	bool HasTag(const char* pTag) const;
+	void AddTagToChannel(const char* tagName) const;
+	bool HasTag(const char* tag) const;
 
-	bool IsChannelEnabled(LoggingSeverity_t eSeverity) const;
-	bool IsChannelEnabled(LoggingVerbosity_t eVerbosity) const;
+	bool IsChannelEnabled(LoggingSeverity_t severity) const;
+	bool IsChannelEnabled(LoggingVerbosity_t verbosity) const;
 
 	LoggingVerbosity_t GetChannelVerbosity() const;
-	void SetChannelVerbosity(LoggingVerbosity_t eVerbosity) const;
+	void SetChannelVerbosity(LoggingVerbosity_t verbosity) const;
 	int GetChannelColor() const;
 	void SetChannelColor(int color) const;
 	LoggingChannelFlags_t GetChannelFlags() const;
 	void SetChannelFlags(LoggingChannelFlags_t flags) const;
 
-	static void SetChannelVerbosityByName(const char* pName, LoggingVerbosity_t eVerbosity);
-	static void SetChannelVerbosityByTag(const char* pTag, LoggingVerbosity_t eVerbosity);
+	static void SetChannelVerbosityByName(const char* name, LoggingVerbosity_t verbosity);
+	static void SetChannelVerbosityByTag(const char* tag, LoggingVerbosity_t verbosity);
 	static void RegisterTags(LoggingChannelID_t channelID) {}
 
-protected:
-	LoggingResponse_t InternalMessage(LoggingSeverity_t eSeverity, const char* pszContent) override;
-	LoggingResponse_t InternalMessage(LoggingSeverity_t eSeverity, const Color& aColor, const char* pszContent) override;
-	LoggingResponse_t InternalMessage(LoggingSeverity_t eSeverity, const LeafCodeInfo_t& aCode, const char* pszContent) override;
-	LoggingResponse_t InternalMessage(LoggingSeverity_t eSeverity, const LeafCodeInfo_t& aCode, const Color& aColor, const char* pszContent) override;
+	LoggingResponse_t Log(LoggingSeverity_t severity, const char* content) const;
+	LoggingResponse_t Log(LoggingSeverity_t severity, const Color& color, const char* content) const;
+	LoggingResponse_t Log(LoggingSeverity_t severity, const LeafCodeInfo_t& code, const char* content) const;
+	LoggingResponse_t Log(LoggingSeverity_t severity, const LeafCodeInfo_t& code, const Color& color, const char* content) const;
 
-	LoggingResponse_t InternalMessageFormat(LoggingSeverity_t eSeverity, const char* pszFormat, ...) override;
-	LoggingResponse_t InternalMessageFormat(LoggingSeverity_t eSeverity, const Color& aColor, const char* pszFormat, ...) override;
-	LoggingResponse_t InternalMessageFormat(LoggingSeverity_t eSeverity, const LeafCodeInfo_t& aCode, const char* pszFormat, ...) override;
-	LoggingResponse_t InternalMessageFormat(LoggingSeverity_t eSeverity, const LeafCodeInfo_t& aCode, const Color& aColor, const char* pszFormat, ...) override;
+	LoggingResponse_t LogFormat(LoggingSeverity_t severity, const char* format, ...) const;
+	LoggingResponse_t LogFormat(LoggingSeverity_t severity, const Color& color, const char* format, ...) const;
+	LoggingResponse_t LogFormat(LoggingSeverity_t severity, const LeafCodeInfo_t& code, const char* format, ...) const;
+	LoggingResponse_t LogFormat(LoggingSeverity_t severity, const LeafCodeInfo_t& code, const Color& color, const char* format, ...) const;
 
 private:
-	LoggingChannelID_t m_nChannelID;
+	LoggingChannelID_t m_channelID;
 };
+
+#ifndef NDEBUG
+#define LS_DEBUG LS_MESSAGE
+#else
+#define LS_DEBUG LS_DETAILED
+#endif
 
 extern CLogger g_Logger;

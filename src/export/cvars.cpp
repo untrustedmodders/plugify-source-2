@@ -177,7 +177,7 @@ extern "C" PLUGIN_API void SetConVarBounds(CConVarBaseData* conVar, bool max, co
 				conVar->Cast<QAngle>()->SetStringMaxValue(value.c_str());
 				break;
 			default:
-				g_Logger.Warning("Invalid convar type.\n");
+				g_Logger.Log(LS_WARNING, "Invalid convar type.\n");
 				break;
 		}
 	}
@@ -231,7 +231,7 @@ extern "C" PLUGIN_API void SetConVarBounds(CConVarBaseData* conVar, bool max, co
 				conVar->Cast<QAngle>()->SetStringMinValue(value.c_str());
 				break;
 			default:
-				g_Logger.Warning("Invalid convar type.\n");
+				g_Logger.Log(LS_WARNING, "Invalid convar type.\n");
 				break;
 		}
 	}
@@ -312,7 +312,7 @@ extern "C" PLUGIN_API void GetConVarValue(std::string& output, CConVarBaseData* 
 			break;
 		}
 		default:
-			g_Logger.Warning("Invalid convar type.\n");
+			g_Logger.Log(LS_WARNING, "Invalid convar type.\n");
 			break;
 	}
 }
@@ -367,7 +367,7 @@ extern "C" PLUGIN_API void SetConVarValue(CConVarBaseData* conVar, const std::st
 			conVar->Cast<QAngle>()->SetStringValue(value.c_str());
 			break;
 		default:
-			g_Logger.Warning("Invalid convar type.\n");
+			g_Logger.Log(LS_WARNING, "Invalid convar type.\n");
 			return;
 	}
 }

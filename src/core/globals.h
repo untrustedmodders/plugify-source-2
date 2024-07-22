@@ -58,23 +58,26 @@ namespace globals
 {
 	void Initialize(std::string coreConfig, std::string gameConfig);
 	void Terminate();
-
-} // namespace globals
+}
 
 namespace DynLibUtils
 {
+	class CMemory;
 	class CModule;
 }
 
+using CMemory = DynLibUtils::CMemory;
+using CModule = DynLibUtils::CModule;
+
 namespace modules
 {
-	extern DynLibUtils::CModule* engine;
-	extern DynLibUtils::CModule* tier0;
-	extern DynLibUtils::CModule* server;
-	extern DynLibUtils::CModule* schemasystem;
-	extern DynLibUtils::CModule* filesystem;
-	extern DynLibUtils::CModule* vscript;
-	extern DynLibUtils::CModule* networksystem;
+	extern CModule* engine;
+	extern CModule* tier0;
+	extern CModule* server;
+	extern CModule* schemasystem;
+	extern CModule* filesystem;
+	extern CModule* vscript;
+	extern CModule* networksystem;
 } // namespace modules
 
 class IEntityFindFilter;

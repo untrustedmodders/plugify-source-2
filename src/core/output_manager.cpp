@@ -49,7 +49,7 @@ dyno::ReturnAction CEntityOutputManager::Hook_FireOutputInternal(dyno::IHook& ho
 
 	if (pCaller)
 	{
-		g_Logger.DetailedFormat("[EntityOutputManager][FireOutputHook] - %s, %s\n", pThis->m_pDesc->m_pName, pCaller->GetClassname());
+		g_Logger.LogFormat(LS_DEBUG, "[EntityOutputManager][FireOutputHook] - %s, %s\n", pThis->m_pDesc->m_pName, pCaller->GetClassname());
 
 		std::array<OutputKey, 4> vecSearchKeys{
 			OutputKey{"*", pThis->m_pDesc->m_pName},
@@ -70,7 +70,7 @@ dyno::ReturnAction CEntityOutputManager::Hook_FireOutputInternal(dyno::IHook& ho
 	}
 	else
 	{
-		g_Logger.DetailedFormat("[EntityOutputManager][FireOutputHook] - %s, unknown caller\n", pThis->m_pDesc->m_pName);
+		g_Logger.LogFormat(LS_DEBUG, "[EntityOutputManager][FireOutputHook] - %s, unknown caller\n", pThis->m_pDesc->m_pName);
 	}
 
 	ResultType result = ResultType::Continue;

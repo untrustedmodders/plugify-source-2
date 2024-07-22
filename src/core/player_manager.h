@@ -11,7 +11,8 @@ class CSteamID;
 class CCommand;
 struct edict_t;
 
-enum class ETargetType {
+enum class TargetType
+{
 	NONE,
 	PLAYER,
 	SELF,
@@ -94,7 +95,7 @@ public:
 	CPlayer* GetPlayerFromUserId(uint16 userid) const;
 	CPlayer* GetPlayerFromSteamId(uint64 steamid) const;
 
-	ETargetType TargetPlayerString(int caller, const char* target, std::vector<int>& clients);
+	TargetType TargetPlayerString(int caller, const char* target, std::vector<int>& clients);
 
 private:
 	void InvalidatePlayer(CPlayer* pPlayer);

@@ -75,7 +75,7 @@ inline constexpr uint64_t hash_64_fnv1a_const(const char* const str, const uint6
 
 namespace schema
 {
-	static std::vector<std::string> CS2BadList = {
+	static std::array CS2BadList = {
 		"m_bIsValveDS",
 		"m_bIsQuestEligible",
 		"m_iItemDefinitionIndex", // in unmanaged this cannot be set.

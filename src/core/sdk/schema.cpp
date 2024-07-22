@@ -57,11 +57,11 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t* tableMap, const char* cla
 		SchemaKeyValueMap_t* map = new SchemaKeyValueMap_t(0, 0, DefLessFunc(uint32_t));
 		tableMap->Insert(classKey, map);
 
-		g_Logger.ErrorFormat("InitSchemaFieldsForClass(): '%s' was not found!\n", className);
+		g_Logger.LogFormat(LS_ERROR, "InitSchemaFieldsForClass(): '%s' was not found!\n", className);
 		return false;
 	}
 
-	short fieldsSize = pClassInfo->m_nFieldCount;
+	int fieldsSize = static_cast<int>(pClassInfo->m_nFieldCount);
 	SchemaClassFieldData_t* pFields = pClassInfo->m_pFields;
 
 	SchemaKeyValueMap_t* keyValueMap = new SchemaKeyValueMap_t(0, 0, DefLessFunc(uint32_t));
@@ -72,9 +72,7 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t* tableMap, const char* cla
 	{
 		SchemaClassFieldData_t& field = pFields[i];
 
-#ifdef _DEBUG
-		g_Logger.DetailedFormat("%s::%s found at -> 0x%X - %llx\n", className, field.m_pszName, field.m_nSingleInheritanceOffset, &field);
-#endif
+		g_Logger.LogFormat(LS_DEBUG, "%s::%s found at -> 0x%X - %llx\n", className, field.m_pszName, field.m_nSingleInheritanceOffset, &field);
 
 		keyValueMap->Insert(hash_32_fnv1a_const(field.m_pszName), {field.m_nSingleInheritanceOffset, IsFieldNetworked(field)});
 	}
@@ -125,7 +123,7 @@ SchemaKey schema::GetOffset(const char* className, uint32_t classKey, const char
 	int16_t memberIndex = tableMap->Find(memberKey);
 	if (!tableMap->IsValidIndex(memberIndex))
 	{
-		g_Logger.WarningFormat("schema::GetOffset(): '%s' was not found in '%s'!\n", memberName, className);
+		g_Logger.LogFormat(LS_WARNING, "schema::GetOffset(): '%s' was not found in '%s'!\n", memberName, className);
 		return {0, false};
 	}
 

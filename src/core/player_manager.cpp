@@ -161,14 +161,14 @@ void CPlayerManager::RunAuthChecks()
 
 void CPlayerManager::OnClientAuthorized(CPlayer* player) const
 {
-	g_Logger.DetailedFormat("[OnClientAuthorized] - %s, %lli\n", player->GetName().c_str(), player->GetSteamId()->ConvertToUint64());
+	g_Logger.LogFormat(LS_DEBUG, "[OnClientAuthorized] - %s, %lli\n", player->GetName().c_str(), player->GetSteamId()->ConvertToUint64());
 
 	GetOnClientAuthorizedListenerManager().Notify(player->m_iSlot.Get(), player->GetSteamId()->ConvertToUint64());
 }
 
 bool CPlayerManager::OnClientConnect(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, bool unk1, CBufferString* pRejectReason)
 {
-	g_Logger.DetailedFormat("[OnClientConnect] - %d, %s, %s\n", slot.Get(), pszName, pszNetworkID);
+	g_Logger.LogFormat(LS_DEBUG, "[OnClientConnect] - %d, %s, %s\n", slot.Get(), pszName, pszNetworkID);
 
 	int client = slot.Get();
 	CPlayer* pPlayer = &m_players[client];
@@ -193,7 +193,7 @@ bool CPlayerManager::OnClientConnect(CPlayerSlot slot, const char* pszName, uint
 
 bool CPlayerManager::OnClientConnect_Post(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, bool unk1, CBufferString* pRejectReason, bool origRet)
 {
-	g_Logger.DetailedFormat("[OnClientConnect_Post] - %d, %s, %s\n", slot.Get(), pszName, pszNetworkID);
+	g_Logger.LogFormat(LS_DEBUG, "[OnClientConnect_Post] - %d, %s, %s\n", slot.Get(), pszName, pszNetworkID);
 
 	int client = slot.Get();
 	CPlayer* pPlayer = &m_players[client];
@@ -215,7 +215,7 @@ bool CPlayerManager::OnClientConnect_Post(CPlayerSlot slot, const char* pszName,
 
 void CPlayerManager::OnClientConnected(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, const char* pszAddress, bool bFakePlayer)
 {
-	g_Logger.DetailedFormat("[OnClientConnected] - %d, %s, %s, %s\n", slot.Get(), pszName, pszNetworkID, pszAddress);
+	g_Logger.LogFormat(LS_DEBUG, "[OnClientConnected] - %d, %s, %s, %s\n", slot.Get(), pszName, pszNetworkID, pszAddress);
 
 	int client = slot.Get();
 	CPlayer* pPlayer = &m_players[client];
@@ -225,7 +225,7 @@ void CPlayerManager::OnClientConnected(CPlayerSlot slot, const char* pszName, ui
 
 void CPlayerManager::OnClientPutInServer(CPlayerSlot slot, char const* pszName, int type, uint64 xuid)
 {
-	g_Logger.DetailedFormat("[OnClientPutInServer] - %d, %s, %d\n", slot.Get(), pszName, type);
+	g_Logger.LogFormat(LS_DEBUG, "[OnClientPutInServer] - %d, %s, %d\n", slot.Get(), pszName, type);
 
 	int client = slot.Get();
 	CPlayer* pPlayer = &m_players[client];
@@ -254,7 +254,7 @@ void CPlayerManager::OnClientPutInServer(CPlayerSlot slot, char const* pszName, 
 
 void CPlayerManager::OnClientDisconnect(CPlayerSlot slot, ENetworkDisconnectionReason reason, const char* pszName, uint64 xuid, const char* pszNetworkID)
 {
-	g_Logger.DetailedFormat("[OnClientDisconnect] - %d, %s, %s\n", slot.Get(), pszName, pszNetworkID);
+	g_Logger.LogFormat(LS_DEBUG, "[OnClientDisconnect] - %d, %s, %s\n", slot.Get(), pszName, pszNetworkID);
 
 	int client = slot.Get();
 	CPlayer* pPlayer = &m_players[client];
@@ -272,7 +272,7 @@ void CPlayerManager::OnClientDisconnect(CPlayerSlot slot, ENetworkDisconnectionR
 
 void CPlayerManager::OnClientDisconnect_Post(CPlayerSlot slot, ENetworkDisconnectionReason reason, const char* pszName, uint64 xuid, const char* pszNetworkID)
 {
-	g_Logger.DetailedFormat("[OnClientDisconnect_Post] - %d, %s, %s\n", slot.Get(), pszName, pszNetworkID);
+	g_Logger.LogFormat(LS_DEBUG, "[OnClientDisconnect_Post] - %d, %s, %s\n", slot.Get(), pszName, pszNetworkID);
 
 	int client = slot.Get();
 	CPlayer* pPlayer = &m_players[client];
@@ -289,14 +289,14 @@ void CPlayerManager::OnClientDisconnect_Post(CPlayerSlot slot, ENetworkDisconnec
 
 void CPlayerManager::OnClientActive(CPlayerSlot slot, bool bLoadGame) const
 {
-	g_Logger.DetailedFormat("[OnClientActive] - %d\n", slot.Get());
+	g_Logger.LogFormat(LS_DEBUG, "[OnClientActive] - %d\n", slot.Get());
 
 	GetOnClientActiveListenerManager().Notify(slot.Get(), bLoadGame);
 }
 
 void CPlayerManager::OnLevelShutdown()
 {
-	g_Logger.Detailed("[OnLevelShutdown]\n");
+	g_Logger.Log(LS_DEBUG, "[OnLevelShutdown]\n");
 
 	for (int i = 0; i <= MaxClients(); ++i)
 	{
@@ -365,33 +365,33 @@ CPlayer* CPlayerManager::GetPlayerFromSteamId(uint64 steamid) const
 	return nullptr;
 }
 
-ETargetType CPlayerManager::TargetPlayerString(int caller, const char* target, std::vector<int>& clients)
+TargetType CPlayerManager::TargetPlayerString(int caller, const char* target, std::vector<int>& clients)
 {
-	ETargetType targetType = ETargetType::NONE;
+	TargetType targetType = TargetType::NONE;
 	if (!V_stricmp(target, "@me"))
-		targetType = ETargetType::SELF;
+		targetType = TargetType::SELF;
 	else if (!V_stricmp(target, "@all"))
-		targetType = ETargetType::ALL;
+		targetType = TargetType::ALL;
 	else if (!V_stricmp(target, "@t"))
-		targetType = ETargetType::T;
+		targetType = TargetType::T;
 	else if (!V_stricmp(target, "@ct"))
-		targetType = ETargetType::CT;
+		targetType = TargetType::CT;
 	else if (!V_stricmp(target, "@spec"))
-		targetType = ETargetType::SPECTATOR;
+		targetType = TargetType::SPECTATOR;
 	else if (!V_stricmp(target, "@random"))
-		targetType = ETargetType::RANDOM;
+		targetType = TargetType::RANDOM;
 	else if (!V_stricmp(target, "@randomt"))
-		targetType = ETargetType::RANDOM_T;
+		targetType = TargetType::RANDOM_T;
 	else if (!V_stricmp(target, "@randomct"))
-		targetType = ETargetType::RANDOM_CT;
+		targetType = TargetType::RANDOM_CT;
 
 	clients.clear();
 	
-	if (targetType == ETargetType::SELF && caller != -1)
+	if (targetType == TargetType::SELF && caller != -1)
 	{
 		clients.push_back(caller);
 	}
-	else if (targetType == ETargetType::ALL)
+	else if (targetType == TargetType::ALL)
 	{
 		for (int i = 0; i < gpGlobals->maxClients; i++)
 		{
@@ -406,7 +406,7 @@ ETargetType CPlayerManager::TargetPlayerString(int caller, const char* target, s
 			clients.push_back(i + 1);
 		}
 	}
-	else if (targetType >= ETargetType::SPECTATOR)
+	else if (targetType >= TargetType::SPECTATOR)
 	{
 		for (int i = 0; i < gpGlobals->maxClients; i++)
 		{
@@ -418,13 +418,13 @@ ETargetType CPlayerManager::TargetPlayerString(int caller, const char* target, s
 			if (!player || !player->IsController() || !player->IsConnected())
 				continue;
 
-			if (player->m_iTeamNum() != (targetType == ETargetType::T ? CS_TEAM_T : targetType == ETargetType::CT ? CS_TEAM_CT : CS_TEAM_SPECTATOR))
+			if (player->m_iTeamNum() != (targetType == TargetType::T ? CS_TEAM_T : targetType == TargetType::CT ? CS_TEAM_CT : CS_TEAM_SPECTATOR))
 				continue;
 
 			clients.push_back(i + 1);
 		}
 	}
-	else if (targetType >= ETargetType::RANDOM && targetType <= ETargetType::RANDOM_CT)
+	else if (targetType >= TargetType::RANDOM && targetType <= TargetType::RANDOM_CT)
 	{
 		int attempts = 0;
 
@@ -443,7 +443,7 @@ ETargetType CPlayerManager::TargetPlayerString(int caller, const char* target, s
 			if (!player || !player->IsController() || !player->IsConnected())
 				continue;
 
-			if (targetType >= ETargetType::RANDOM_T && (player->m_iTeamNum() != (targetType == ETargetType::RANDOM_T ? CS_TEAM_T : CS_TEAM_CT)))
+			if (targetType >= TargetType::RANDOM_T && (player->m_iTeamNum() != (targetType == TargetType::RANDOM_T ? CS_TEAM_T : CS_TEAM_CT)))
 				continue;
 
 			clients.push_back(slot + 1);
@@ -455,7 +455,7 @@ ETargetType CPlayerManager::TargetPlayerString(int caller, const char* target, s
 
 		if (userid != -1)
 		{
-			targetType = ETargetType::PLAYER;
+			targetType = TargetType::PLAYER;
 			CBasePlayerController* player = utils::GetController(GetSlotFromUserId(userid).Get());
 			if (player && player->IsController() && player->IsConnected())
 			{
@@ -477,7 +477,7 @@ ETargetType CPlayerManager::TargetPlayerString(int caller, const char* target, s
 
 			if (V_stristr(player->GetPlayerName(), target))
 			{
-				targetType = ETargetType::PLAYER;
+				targetType = TargetType::PLAYER;
 				clients.push_back(i + 1);
 				break;
 			}

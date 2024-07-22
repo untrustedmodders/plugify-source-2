@@ -44,14 +44,14 @@ T* FindInterface(const CModule* module, const char* name)
 	auto CreateInterface = module->GetFunctionByName("CreateInterface");
 	if (!CreateInterface)
 	{
-		g_Logger.ErrorFormat("Could not find CreateInterface in %s at \"%s\"\n", module->GetModuleName().data(), module->GetModulePath().data());
+		g_Logger.LogFormat(LS_ERROR, "Could not find CreateInterface in %s at \"%s\"\n", module->GetModuleName().data(), module->GetModulePath().data());
 		return nullptr;
 	}
 
 	void* pInterface = CreateInterface.CCast<CreateInterfaceFn>()(name, nullptr);
 	if (!pInterface)
 	{
-		g_Logger.ErrorFormat("Could not find interface %s in %s at \"%s\"\n", name, module->GetModuleName().data(), module->GetModulePath().data());
+		g_Logger.LogFormat(LS_ERROR, "Could not find interface %s in %s at \"%s\"\n", name, module->GetModuleName().data(), module->GetModulePath().data());
 		return nullptr;
 	}
 
@@ -118,7 +118,7 @@ namespace globals
 		g_gameEventManager = static_cast<IGameEventManager2*>(CALL_VIRTUAL(void*, int(93), g_pSource2Server));
 		if (g_gameEventManager == nullptr)
 		{
-			g_Logger.Error("GameEventManager not found!");
+			g_Logger.Log(LS_ERROR, "GameEventManager not found!");
 		}
 
 		g_pCoreConfig = new CCoreConfig(std::move(coreConfig));

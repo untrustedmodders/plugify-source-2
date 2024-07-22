@@ -183,7 +183,7 @@ extern "C" PLUGIN_API void SetSchemaValueBoolByName(void* instancePointer, const
 {
 	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
 	{
-		g_Logger.WarningFormat("Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
 		return;
 	}
 
@@ -199,7 +199,7 @@ extern "C" PLUGIN_API void SetSchemaValueInt8ByName(void* instancePointer, const
 {
 	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
 	{
-		g_Logger.WarningFormat("Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
 		return;
 	}
 
@@ -215,7 +215,7 @@ extern "C" PLUGIN_API void SetSchemaValueInt16ByName(void* instancePointer, cons
 {
 	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
 	{
-		g_Logger.WarningFormat("Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
 		return;
 	}
 
@@ -231,7 +231,7 @@ extern "C" PLUGIN_API void SetSchemaValueInt32ByName(void* instancePointer, cons
 {
 	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
 	{
-		g_Logger.WarningFormat("Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
 		return;
 	}
 
@@ -247,7 +247,7 @@ extern "C" PLUGIN_API void SetSchemaValueInt64ByName(void* instancePointer, cons
 {
 	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
 	{
-		g_Logger.WarningFormat("Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
 		return;
 	}
 
@@ -263,7 +263,7 @@ extern "C" PLUGIN_API void SetSchemaValueUInt8ByName(void* instancePointer, cons
 {
 	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
 	{
-		g_Logger.WarningFormat("Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
 		return;
 	}
 
@@ -279,7 +279,7 @@ extern "C" PLUGIN_API void SetSchemaValueUInt16ByName(void* instancePointer, con
 {
 	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
 	{
-		g_Logger.WarningFormat("Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
 		return;
 	}
 
@@ -295,7 +295,7 @@ extern "C" PLUGIN_API void SetSchemaValueUInt32ByName(void* instancePointer, con
 {
 	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
 	{
-		g_Logger.WarningFormat("Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
 		return;
 	}
 
@@ -311,7 +311,7 @@ extern "C" PLUGIN_API void SetSchemaValueUInt64ByName(void* instancePointer, con
 {
 	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
 	{
-		g_Logger.WarningFormat("Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
 		return;
 	}
 
@@ -327,7 +327,7 @@ extern "C" PLUGIN_API void SetSchemaValueFloatByName(void* instancePointer, cons
 {
 	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
 	{
-		g_Logger.WarningFormat("Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
 		return;
 	}
 
@@ -343,7 +343,7 @@ extern "C" PLUGIN_API void SetSchemaValueDoubleByName(void* instancePointer, con
 {
 	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
 	{
-		g_Logger.WarningFormat("Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
 		return;
 	}
 
@@ -359,7 +359,7 @@ extern "C" PLUGIN_API void SetSchemaValueStringByName(void* instancePointer, con
 {
 	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
 	{
-		g_Logger.WarningFormat("Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
 		return;
 	}
 
@@ -375,7 +375,7 @@ extern "C" PLUGIN_API void SetSchemaValueVectorByName(void* instancePointer, con
 {
 	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
 	{
-		g_Logger.WarningFormat("Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
 		return;
 	}
 

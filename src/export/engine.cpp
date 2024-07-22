@@ -30,7 +30,7 @@ extern "C" PLUGIN_API float GetGameTime()
 {
 	if (gpGlobals == nullptr)
 	{
-		g_Logger.Warning("Global Variables not initialized yet.\n");
+		g_Logger.Log(LS_WARNING, "Global Variables not initialized yet.\n");
 		return 0.0f;
 	}
 
@@ -41,7 +41,7 @@ extern "C" PLUGIN_API int GetGameTickCount()
 {
 	if (gpGlobals == nullptr)
 	{
-		g_Logger.Warning("Global Variables not initialized yet.\n");
+		g_Logger.Log(LS_WARNING, "Global Variables not initialized yet.\n");
 		return 0;
 	}
 
@@ -52,7 +52,7 @@ extern "C" PLUGIN_API float GetGameFrameTime()
 {
 	if (gpGlobals == nullptr)
 	{
-		g_Logger.Warning("Global Variables not initialized yet.\n");
+		g_Logger.Log(LS_WARNING, "Global Variables not initialized yet.\n");
 		return 0.0f;
 	}
 
@@ -68,7 +68,7 @@ extern "C" PLUGIN_API int GetMaxClients()
 {
 	if (gpGlobals == nullptr)
 	{
-		g_Logger.Warning("Global Variables not initialized yet.\n");
+		g_Logger.Log(LS_WARNING, "Global Variables not initialized yet.\n");
 		return -1;
 	}
 

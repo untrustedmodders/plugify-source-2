@@ -32,7 +32,7 @@ public:
 		// Is the callable already in the vector?
 		if (IsRegistered(callable))
 		{
-			g_Logger.Warning("Callback already registered.\n");
+			g_Logger.Log(LS_WARNING, "Callback already registered.\n");
 			return false;
 		}
 		else
@@ -49,7 +49,7 @@ public:
 		auto index = Find(callable);
 		if (index == -1)
 		{
-			g_Logger.Warning("Callback not registered.\n");
+			g_Logger.Log(LS_WARNING, "Callback not registered.\n");
 			return false;
 		}
 		else

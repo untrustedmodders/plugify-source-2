@@ -8,9 +8,6 @@ using TaskCallback = void (*)();
 class CServerManager
 {
 public:
-	CServerManager() = default;
-	~CServerManager() = default;
-
 	void AddTaskForNextWorldUpdate(TaskCallback task);
 	void AddTaskForNextFrame(TaskCallback task);
 
