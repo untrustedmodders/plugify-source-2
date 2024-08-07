@@ -2159,11 +2159,11 @@
 					"type": "int32",
 					"ref": false
 				},
-                {
-                    "name": "channel",
-                    "type": "int32",
-                    "ref": false
-                },
+				{
+					"name": "channel",
+					"type": "int32",
+					"ref": false
+				},
 				{
 					"name": "sound",
 					"type": "string",
@@ -5127,6 +5127,82 @@
 			],
 			"retType": {
 				"type": "void"
+			}
+		},
+		{
+			"name": "SetClientListening",
+			"funcName": "SetClientListening",
+			"paramTypes": [
+				{
+					"name": "receiver",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "sender",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "listen",
+					"type": "int8",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "GetClientListening",
+			"funcName": "GetClientListening",
+			"paramTypes": [
+				{
+					"name": "receiver",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "sender",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int8"
+			}
+		},
+		{
+			"name": "SetClientVoiceFlags",
+			"funcName": "SetClientVoiceFlags",
+			"paramTypes": [
+				{
+					"name": "clientIndex",
+					"type": "int32",
+					"ref": false
+				},
+				{
+					"name": "flags",
+					"type": "uint8",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "GetClientVoiceFlags",
+			"funcName": "GetClientVoiceFlags",
+			"paramTypes": [
+				{
+					"name": "clientIndex",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "uint8"
 			}
 		}
 	]

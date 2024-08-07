@@ -35,6 +35,7 @@ public:
 	static dyno::ReturnAction Hook_PreWorldUpdate(dyno::CallbackType type, dyno::IHook& hook);
 	static dyno::ReturnAction Hook_FireOutputInternal(dyno::CallbackType type, dyno::IHook& hook);
 	static dyno::ReturnAction Hook_DispatchConCommand(dyno::CallbackType type, dyno::IHook& hook);
+	static dyno::ReturnAction Hook_SetClientListening(dyno::CallbackType type, dyno::IHook& hook);
 };
 
 extern Source2SDK g_sdk;

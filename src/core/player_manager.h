@@ -11,6 +11,23 @@ class CSteamID;
 class CCommand;
 struct edict_t;
 
+enum ListenOverride : int8_t
+{
+	Listen_Default = 0,
+	Listen_Mute,
+	Listen_Hear
+};
+
+enum VoiceFlagValue
+{
+	Speak_Normal = 0,
+	Speak_Muted = 1 << 0,
+	Speak_All = 1 << 1,
+	Speak_ListenAll = 1 << 2,
+	Speak_Team = 1 << 3,
+	Speak_ListenTeam = 1 << 4,
+};
+
 enum class TargetType
 {
 	NONE,
@@ -24,6 +41,8 @@ enum class TargetType
 	T,
 	CT,
 };
+
+using VoiceFlag_t = uint8_t;
 
 class CPlayer
 {
@@ -54,6 +73,10 @@ public:
 	const std::string& GetIpAddress() const;
 	float GetTimeConnected() const;
 	float GetLatency() const;
+	void SetListen(CPlayerSlot slot, ListenOverride listen);
+	void SetVoiceFlags(VoiceFlag_t flags);
+	VoiceFlag_t GetVoiceFlags();
+	ListenOverride GetListen(CPlayerSlot slot) const;
 	bool IsAuthStringValidated() const;
 
 public:
@@ -66,6 +89,9 @@ public:
 	bool m_bAuthorized{};
 	CPlayerSlot m_iSlot{-1};
 	const CSteamID* m_steamId;
+	VoiceFlag_t m_voiceFlag{};
+	std::array<ListenOverride, MAXPLAYERS + 2> m_listenMap{};
+	CPlayerBitVec m_selfMutes{};
 };
 
 class CPlayerManager

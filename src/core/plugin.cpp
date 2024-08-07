@@ -17,6 +17,7 @@
 #include "player_manager.h"
 #include "server_manager.h"
 #include "timer_system.h"
+#include "voice_manager.h"
 
 #undef FindResource
 
@@ -92,6 +93,7 @@ void Source2SDK::OnPluginStart()
 	g_HookManager.AddHookMemFunc(&ISource2Server::UpdateWhenNotInGame, g_pSource2Server, Hook_UpdateWhenNotInGame, Post);
 	g_HookManager.AddHookMemFunc(&ISource2Server::PreWorldUpdate, g_pSource2Server, Hook_PreWorldUpdate, Post);
 	g_HookManager.AddHookMemFunc(&ICvar::DispatchConCommand, g_pCVar, Hook_DispatchConCommand, Pre, Post);
+	g_HookManager.AddHookMemFunc(&IVEngineServer2::SetClientListening, g_pEngineServer2, Hook_SetClientListening, Pre);
 
 	using FireOutputInternal = void (*)(CEntityIOOutput* const, CEntityInstance*, CEntityInstance*, const CVariant* const, float);
 	g_HookManager.AddHookDetourFunc<FireOutputInternal>("CEntityIOOutput_FireOutputInternal", Hook_FireOutputInternal, Pre);
@@ -398,6 +400,11 @@ dyno::ReturnAction Source2SDK::Hook_FireOutputInternal(dyno::CallbackType type, 
 dyno::ReturnAction Source2SDK::Hook_DispatchConCommand(dyno::CallbackType type, dyno::IHook& hook)
 {
 	return type == dyno::CallbackType::Post ? g_CommandManager.Hook_DispatchConCommand_Post(hook) : g_CommandManager.Hook_DispatchConCommand(hook);
+}
+
+dyno::ReturnAction Source2SDK::Hook_SetClientListening(dyno::CallbackType type, dyno::IHook& hook)
+{
+	return CVoiceManager::Hook_SetClientListening(hook);
 }
 
 EXPOSE_PLUGIN(PLUGIN_API, &g_sdk)
