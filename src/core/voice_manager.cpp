@@ -2,7 +2,7 @@
 #include "player_manager.h"
 
 #include <core/sdk/schema.h>
-#include <entity2/entitysystem.h>
+#include <core/sdk/entity/cbaseentity.h>
 
 dyno::ReturnAction CVoiceManager::Hook_SetClientListening(dyno::IHook& hook)
 {
@@ -51,19 +51,12 @@ dyno::ReturnAction CVoiceManager::Hook_SetClientListening(dyno::IHook& hook)
 
 		if ((senderFlags & Speak_Team) || (receiverFlags & Speak_ListenTeam))
 		{
-			static auto classKey = hash_32_fnv1a_const("CBaseEntity");
-			static auto memberKey = hash_32_fnv1a_const("m_iTeamNum");
-			const static auto m_key = schema::GetOffset("CBaseEntity", classKey, "m_iTeamNum", memberKey);
-
-			auto receiverController = g_pEntitySystem->GetEntityInstance(CEntityIndex(iReceiver.Get() + 1));
-			auto senderController = g_pEntitySystem->GetEntityInstance(CEntityIndex(iSender.Get() + 1));
+			CBaseEntity* receiverController = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(iReceiver.Get() + 1)));
+			CBaseEntity* senderController = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(iSender.Get() + 1)));
 
 			if (receiverController && senderController)
 			{
-				auto receiverTeam = *reinterpret_cast<std::add_pointer_t<unsigned int>>((uintptr_t)(receiverController) + m_key.offset);
-				auto senderTeam = *reinterpret_cast<std::add_pointer_t<unsigned int>>((uintptr_t)(senderController) + m_key.offset);
-
-				dyno::SetArgument<bool>(hook, 3, receiverTeam == senderTeam);
+				dyno::SetArgument<bool>(hook, 3, receiverController->m_iTeamNum() == senderController->m_iTeamNum());
 				return dyno::ReturnAction::Handled;
 			}
 		}

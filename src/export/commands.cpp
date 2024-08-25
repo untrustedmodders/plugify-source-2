@@ -3,7 +3,15 @@
 #include <core/con_command_manager.h>
 #include <plugin_export.h>
 
-extern "C" PLUGIN_API void AddCommand(const std::string& name, const std::string& description, int64_t flags, CommandListenerCallback callback)
+extern "C" PLUGIN_API void AddAdminCommand(const std::string& name, int64_t adminFlags, const std::string& description, int64_t flags, CommandListenerCallback callback)
+{
+	g_Logger.LogFormat(LS_DEBUG, "Adding admin command %s, %d, %s, %d, %p\n", name.c_str(), (int)adminFlags, description.c_str(), (int)flags, (void*)callback);
+
+	g_CommandManager.AddValveCommand(name, description, flags, adminFlags);
+	g_CommandManager.AddCommandListener(name, callback, HookMode::Pre);
+}
+
+extern "C" PLUGIN_API void AddConsoleCommand(const std::string& name, const std::string& description, int64_t flags, CommandListenerCallback callback)
 {
 	g_Logger.LogFormat(LS_DEBUG, "Adding command %s, %s, %d, %p\n", name.c_str(), description.c_str(), (int)flags, (void*)callback);
 

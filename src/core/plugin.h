@@ -34,6 +34,7 @@ public:
 	static dyno::ReturnAction Hook_UpdateWhenNotInGame(dyno::CallbackType type, dyno::IHook& hook);
 	static dyno::ReturnAction Hook_PreWorldUpdate(dyno::CallbackType type, dyno::IHook& hook);
 	static dyno::ReturnAction Hook_FireOutputInternal(dyno::CallbackType type, dyno::IHook& hook);
+	static dyno::ReturnAction Hook_SayText2Filter(dyno::CallbackType type, dyno::IHook& hook); // TODO: TEMP
 	static dyno::ReturnAction Hook_DispatchConCommand(dyno::CallbackType type, dyno::IHook& hook);
 	static dyno::ReturnAction Hook_SetClientListening(dyno::CallbackType type, dyno::IHook& hook);
 };

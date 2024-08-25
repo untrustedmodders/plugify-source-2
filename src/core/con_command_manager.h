@@ -23,6 +23,7 @@ struct ConCommandInfo
 
 	std::string name;
 	std::string description;
+	uint64 adminFlags{};
 	ConCommand* command{};
 	std::unique_ptr<ConCommand> commandRef;
 	CListenerManager<CommandListenerCallback> callbackPre;
@@ -40,7 +41,7 @@ public:
 	void AddCommandListener(const std::string& name, CommandListenerCallback callback, HookMode mode);
 	void RemoveCommandListener(const std::string& name, CommandListenerCallback callback, HookMode mode);
 	bool IsValidValveCommand(const std::string& name) const;
-	bool AddValveCommand(const std::string& name, const std::string& description, int64 flags);
+	bool AddValveCommand(const std::string& name, const std::string& description, int64 flags = 0, uint64 adminFlags = 0);
 	bool RemoveValveCommand(const std::string& name);
 
 	dyno::ReturnAction Hook_DispatchConCommand(dyno::IHook& hook);
@@ -48,7 +49,7 @@ public:
 	ResultType ExecuteCommandCallbacks(const std::string& name, const CCommandContext& ctx, const CCommand& args, HookMode mode, CommandCallingContext callingContext);
 
 private:
-	std::vector<ConCommandInfo*> m_cmdList;
+	//std::vector<ConCommandInfo*> m_cmdList;
 	std::map<std::string, CommandInfoPtr, utils::CaseInsensitiveComparator> m_cmdLookup;
 	CListenerManager<CommandListenerCallback> m_globalPre;
 	CListenerManager<CommandListenerCallback> m_globalPost;

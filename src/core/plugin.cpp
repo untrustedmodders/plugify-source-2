@@ -97,7 +97,10 @@ void Source2SDK::OnPluginStart()
 
 	using FireOutputInternal = void (*)(CEntityIOOutput* const, CEntityInstance*, CEntityInstance*, const CVariant* const, float);
 	g_HookManager.AddHookDetourFunc<FireOutputInternal>("CEntityIOOutput_FireOutputInternal", Hook_FireOutputInternal, Pre);
-	
+
+	using SayText2Filter = void (*)(IRecipientFilter &, CCSPlayerController *, uint64_t, const char *, const char *, const char *, const char *, const char *);
+	g_HookManager.AddHookDetourFunc<SayText2Filter>("UTIL_SayText2Filter", Hook_SayText2Filter, Pre);
+
 	OnServerStartup(); // for late load
 }
 
@@ -216,7 +219,7 @@ dyno::ReturnAction Source2SDK::Hook_ClientDisconnect(dyno::CallbackType type, dy
 	auto slot = (CPlayerSlot)dyno::GetArgument<int>(hook, 1);
 	auto reason = (ENetworkDisconnectionReason)dyno::GetArgument<int>(hook, 2);
 	auto pszName = dyno::GetArgument<const char*>(hook, 3);
-	auto xuid = dyno::GetArgument<uint64>(hook, 4);
+	auto xuid = dyno::GetArgument<uint64_t>(hook, 4);
 	auto pszNetworkID = dyno::GetArgument<const char*>(hook, 5);
 	// g_Logger.LogFormat(LS_DEBUG, "ClientDisconnect - %d, %d, \"%s\", %lli, \"%s\"\n", slot, reason, pszName, xuid, pszNetworkID);
 
@@ -238,7 +241,7 @@ dyno::ReturnAction Source2SDK::Hook_ClientPutInServer(dyno::CallbackType type, d
 	auto slot = (CPlayerSlot)dyno::GetArgument<int>(hook, 1);
 	auto pszName = dyno::GetArgument<const char*>(hook, 2);
 	auto conType = dyno::GetArgument<int>(hook, 3);
-	auto xuid = dyno::GetArgument<uint64>(hook, 4);
+	auto xuid = dyno::GetArgument<uint64_t>(hook, 4);
 	// g_Logger.LogFormat(LS_DEBUG, "ClientPutInServer - %d, \"%s\", %d, %d, %lli\n", slot, pszName, conType, xuid);
 
 	g_PlayerManager.OnClientPutInServer(slot, pszName, conType, xuid);
@@ -260,7 +263,7 @@ dyno::ReturnAction Source2SDK::Hook_OnClientConnected(dyno::CallbackType type, d
 	// CPlayerSlot slot, const cha*r pszName, uint64 xuid, const char* pszNetworkID, const char* pszAddress, bool bFakePlayer
 	auto slot = (CPlayerSlot)dyno::GetArgument<int>(hook, 1);
 	auto pszName = dyno::GetArgument<const char*>(hook, 2);
-	auto xuid = dyno::GetArgument<uint64>(hook, 3);
+	auto xuid = dyno::GetArgument<uint64_t>(hook, 3);
 	auto pszNetworkID = dyno::GetArgument<const char*>(hook, 4);
 	auto pszAddress = dyno::GetArgument<const char*>(hook, 5);
 	auto bFakePlayer = dyno::GetArgument<bool>(hook, 6);
@@ -283,7 +286,7 @@ dyno::ReturnAction Source2SDK::Hook_ClientConnect(dyno::CallbackType type, dyno:
 	// CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, bool unk1, CBufferString *pRejectReason
 	auto slot = (CPlayerSlot)dyno::GetArgument<int>(hook, 1);
 	auto pszName = dyno::GetArgument<const char*>(hook, 2);
-	auto xuid = dyno::GetArgument<uint64>(hook, 3);
+	auto xuid = dyno::GetArgument<uint64_t>(hook, 3);
 	auto pszNetworkID = dyno::GetArgument<const char*>(hook, 4);
 	bool unk1 = dyno::GetArgument<bool>(hook, 5);
 	auto pRejectReason = dyno::GetArgument<CBufferString*>(hook, 6);
@@ -395,6 +398,16 @@ dyno::ReturnAction Source2SDK::Hook_PreWorldUpdate(dyno::CallbackType type, dyno
 dyno::ReturnAction Source2SDK::Hook_FireOutputInternal(dyno::CallbackType type, dyno::IHook& hook)
 {
 	return type == dyno::CallbackType::Post ? g_OutputManager.Hook_FireOutputInternal_Post(hook) : g_OutputManager.Hook_FireOutputInternal(hook);
+}
+
+dyno::ReturnAction Source2SDK::Hook_SayText2Filter(dyno::CallbackType type, dyno::IHook& hook)
+{
+	const char* playername =  dyno::GetArgument<const char*>(hook, 4);
+	const char* message = dyno::GetArgument<const char*>(hook, 5);
+
+	g_Logger.LogFormat(LS_WARNING, "Hook_SayText2Filter - Chat from %s %s\n\n", playername, message);
+
+	return dyno::ReturnAction::Ignored;
 }
 
 dyno::ReturnAction Source2SDK::Hook_DispatchConCommand(dyno::CallbackType type, dyno::IHook& hook)

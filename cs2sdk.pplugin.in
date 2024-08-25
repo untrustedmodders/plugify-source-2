@@ -421,8 +421,62 @@
 			}
 		},
 		{
-			"name": "AddCommand",
-			"funcName": "AddCommand",
+			"name": "AddAdminCommand",
+			"funcName": "AddAdminCommand",
+			"paramTypes": [
+				{
+					"name": "name",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "adminFlags",
+					"type": "int64",
+					"ref": false
+				},
+				{
+					"name": "description",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "flags",
+					"type": "int64",
+					"ref": false
+				},
+				{
+					"name": "callback",
+					"type": "function",
+					"ref": false,
+					"prototype": {
+						"name": "CommandCallback",
+						"paramTypes": [
+							{
+								"name": "caller",
+								"type": "int32"
+							},
+							{
+								"name": "context",
+								"type": "int32"
+							},
+							{
+								"name": "arguments",
+								"type": "string*"
+							}
+						],
+						"retType": {
+							"type": "int32"
+						}
+					}
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "AddConsoleCommand",
+			"funcName": "AddConsoleCommand",
 			"paramTypes": [
 				{
 					"name": "name",

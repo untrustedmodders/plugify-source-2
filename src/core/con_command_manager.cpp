@@ -1,4 +1,5 @@
 #include "con_command_manager.h"
+#include "player_manager.h"
 
 #include <icvar.h>
 
@@ -91,7 +92,7 @@ void CConCommandManager::RemoveCommandListener(const std::string& name, CommandL
 	}
 }
 
-bool CConCommandManager::AddValveCommand(const std::string& name, const std::string& description, int64 flags)
+bool CConCommandManager::AddValveCommand(const std::string& name, const std::string& description, int64 flags, uint64 adminFlags)
 {
 	if (name.empty() || g_pCVar->FindConVar(name.c_str()).IsValid())
 	{
@@ -112,6 +113,7 @@ bool CConCommandManager::AddValveCommand(const std::string& name, const std::str
 	auto& commandInfo = *m_cmdLookup.emplace(name, std::make_unique<ConCommandInfo>(name, description)).first->second;
 	commandInfo.commandRef = std::make_unique<ConCommand>(commandInfo.name.c_str(), CommandCallback, commandInfo.description.c_str(), flags);
 	commandInfo.command = commandInfo.commandRef.get();
+	commandInfo.adminFlags = adminFlags;
 
 	return true;
 }
@@ -144,6 +146,28 @@ bool CConCommandManager::IsValidValveCommand(const std::string& name) const
 	return hFoundCommand.IsValid();
 }
 
+static bool CheckCommandAccess(CPlayerSlot slot, uint64 flags)
+{
+	if (!flags)
+	{
+		return true;
+	}
+
+	auto pPlayer = g_PlayerManager.GetPlayerBySlot(slot);
+	if (pPlayer == nullptr)
+	{
+		return false;
+	}
+
+	if (!pPlayer->IsAdminFlagSet(flags))
+	{
+		utils::PrintChat(slot, "You don't have access to this command.");
+		return false;
+	}
+
+	return true;
+}
+
 ResultType CConCommandManager::ExecuteCommandCallbacks(const std::string& name, const CCommandContext& ctx, const CCommand& args, HookMode mode, CommandCallingContext callingContext)
 {
 	g_Logger.LogFormat(LS_DEBUG, "[ConCommandManager::ExecuteCommandCallbacks][%s]: %s\n", mode == HookMode::Pre ? "Pre" : "Post", name.c_str());
@@ -160,8 +184,10 @@ ResultType CConCommandManager::ExecuteCommandCallbacks(const std::string& name, 
 	{
 		arguments.emplace_back(args.Arg(i));
 	}
-	
-	int caller = ctx.GetPlayerSlot().Get() + 1;
+
+	CPlayerSlot slot = ctx.GetPlayerSlot();
+
+	int caller = slot.Get() + 1;
 
 	for (size_t i = 0; i < globalCallback.GetCount(); ++i)
 	{
@@ -190,6 +216,12 @@ ResultType CConCommandManager::ExecuteCommandCallbacks(const std::string& name, 
 	}
 
 	auto& commandInfo = *std::get<CommandInfoPtr>(*it);
+
+	if (!CheckCommandAccess(slot, commandInfo.adminFlags))
+	{
+		return result;
+	}
+
 	auto callback = mode == HookMode::Pre ? commandInfo.callbackPre : commandInfo.callbackPost;
 
 	for (size_t i = 0; i < callback.GetCount(); ++i)

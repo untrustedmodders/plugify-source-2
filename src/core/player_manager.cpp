@@ -150,6 +150,21 @@ void CPlayer::SetSteamId(const CSteamID* steam_id)
 	m_steamId = steam_id;
 }
 
+uint64 CPlayer::GetAdminFlags() const
+{
+	return m_iAdminFlags;
+}
+
+void CPlayer::SetAdminFlags(uint64 adminFlags)
+{
+	m_iAdminFlags = adminFlags;
+}
+
+bool CPlayer::IsAdminFlagSet(uint64 flag)
+{
+	return !flag || (m_iAdminFlags & flag);
+}
+
 CPlayerManager::CPlayerManager() = default;
 
 void CPlayerManager::RunAuthChecks()
@@ -239,6 +254,7 @@ void CPlayerManager::OnClientConnected(CPlayerSlot slot, const char* pszName, ui
 
 	int client = slot.Get();
 	CPlayer* pPlayer = &m_players[client];
+	//pPlayer->SetUnauthenticatedSteamId(new CSteamID(xuid));
 
 	GetOnClientConnectedListenerManager().Notify(pPlayer->m_iSlot.Get());
 }

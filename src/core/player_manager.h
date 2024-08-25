@@ -64,6 +64,9 @@ public:
 	INetChannelInfo* GetNetInfo() const;
 	const CSteamID* GetSteamId() const;
 	void SetSteamId(const CSteamID* steam_id);
+	uint64 GetAdminFlags() const;
+	void SetAdminFlags(uint64 adminFlags);
+	bool IsAdminFlagSet(uint64 flag);
 	bool IsConnected() const;
 	bool IsFakeClient() const;
 	bool IsAuthorized() const;
@@ -89,6 +92,7 @@ public:
 	bool m_bAuthorized{};
 	CPlayerSlot m_iSlot{-1};
 	const CSteamID* m_steamId;
+	uint64 m_iAdminFlags{};
 	VoiceFlag_t m_voiceFlag{};
 	std::array<ListenOverride, MAXPLAYERS + 2> m_listenMap{};
 	CPlayerBitVec m_selfMutes{};
