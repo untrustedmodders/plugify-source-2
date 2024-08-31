@@ -39,7 +39,7 @@ elseif(WIN32)
 endif()
 
 execute_process(
-        COMMAND ${PROTOC_EXECUTABLE} --proto_path=thirdparty/protobuf-3.21.8/src --proto_path=common --proto_path=game/shared/ --cpp_out=common networkbasetypes.proto network_connection.proto usermessages.proto
+        COMMAND ${PROTOC_EXECUTABLE} --proto_path=thirdparty/protobuf-3.21.8/src --proto_path=common --proto_path=game/shared/ --cpp_out=common networkbasetypes.proto network_connection.proto usermessages.proto netmessages.proto
         WORKING_DIRECTORY ${SOURCESDK_DIR}
 )
 
@@ -47,6 +47,7 @@ set(SOURCE_FILES ${SOURCE_FILES}
         ${SOURCESDK_DIR}/common/networkbasetypes.pb.cc
         ${SOURCESDK_DIR}/common/network_connection.pb.cc
         ${SOURCESDK_DIR}/common/usermessages.pb.cc
+        ${SOURCESDK_DIR}/common/netmessages.pb.cc
 )
 
 # Sources

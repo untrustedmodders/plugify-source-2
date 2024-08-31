@@ -56,7 +56,7 @@ namespace utils
 
 	const std::string& GameDirectory();
 
-	inline std::string Demangle(const char* name)
+	/*inline std::string Demangle(const char* name)
 	{
 #if CS2SDK_PLATFORM_LINUX || CS2SDK_PLATFORM_APPLE
 		int status = 0;
@@ -73,7 +73,7 @@ namespace utils
 			ret.remove_suffix(3);
 
 		return std::string(ret);
-	}
+	}*/
 
 	/**
 	 * Combines a seed into a hash and modifies the seed by the new hash.

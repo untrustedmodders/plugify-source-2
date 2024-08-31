@@ -46,7 +46,7 @@ private:
 #ifndef NDEBUG
 #define LS_DEBUG LS_MESSAGE
 #else
-#define LS_DEBUG LS_DETAILED
+#define LS_DEBUG LS_MESSAGE
 #endif
 
 extern CLogger g_Logger;

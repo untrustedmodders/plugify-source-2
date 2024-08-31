@@ -11,6 +11,7 @@ public:
 	void OnPluginEnd() override;
 	static void OnServerStartup();
 
+	static dyno::ReturnAction Hook_GameEventManagerInit(dyno::CallbackType type, dyno::IHook& hook);
 	static dyno::ReturnAction Hook_StartupServer(dyno::CallbackType type, dyno::IHook& hook);
 	static dyno::ReturnAction Hook_FireEvent(dyno::CallbackType type, dyno::IHook& hook);
 	//static dyno::ReturnAction Hook_PostEvent(dyno::CallbackType type, dyno::IHook& hook);

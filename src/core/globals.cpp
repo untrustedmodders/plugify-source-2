@@ -39,12 +39,12 @@ CCoreConfig* g_pCoreConfig = nullptr;
 CGameConfig* g_pGameConfig = nullptr;
 
 template <class T>
-T* FindInterface(const CModule* module, const char* name)
+static T* FindInterface(const CModule* module, const char* name)
 {
 	auto CreateInterface = module->GetFunctionByName("CreateInterface");
 	if (!CreateInterface)
 	{
-		g_Logger.LogFormat(LS_ERROR, "Could not find CreateInterface in %s at \"%s\"\n", module->GetModuleName().data(), module->GetModulePath().data());
+		g_Logger.LogFormat(LS_ERROR, "Could not find \"%s\"\n", name);
 		return nullptr;
 	}
 
@@ -81,17 +81,28 @@ constexpr auto ModulePath(const char (&str)[N])
 	return result;
 }
 
+static CModule* CreateModule(const char* p)
+{
+	std::string path = utils::GameDirectory() + p;
+	auto* module = new CModule(path);
+	if (!module->GetModuleHandle())
+	{
+		g_Logger.LogFormat(LS_ERROR, "Could not find module at \"%s\"\n", path.c_str());
+	}
+	return module;
+}
+
 namespace globals
 {
 	void Initialize(std::string coreConfig, std::string gameConfig)
 	{
-		modules::engine = new CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "engine2").c);
-		modules::tier0 = new CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "tier0").c);
-		modules::server = new CModule(utils::GameDirectory() + ModulePath(CS2SDK_GAME_BINARY CS2SDK_LIBRARY_PREFIX "server").c);
-		modules::schemasystem = new CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "schemasystem").c);
-		modules::filesystem = new CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "filesystem_stdio").c);
-		modules::vscript = new CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "vscript").c);
-		modules::networksystem = new CModule(utils::GameDirectory() + ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "networksystem").c);
+		modules::engine = CreateModule(ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "engine2").c);
+		modules::tier0 = CreateModule(ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "tier0").c);
+		modules::server = CreateModule(ModulePath(CS2SDK_GAME_BINARY CS2SDK_LIBRARY_PREFIX "server").c);
+		modules::schemasystem = CreateModule(ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "schemasystem").c);
+		modules::filesystem = CreateModule(ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "filesystem_stdio").c);
+		modules::vscript = CreateModule(ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "vscript").c);
+		modules::networksystem = CreateModule(ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "networksystem").c);
 
 		g_pCVar = FindInterface<ICvar>(modules::tier0, CVAR_INTERFACE_VERSION);
 		g_pSchemaSystem2 = FindInterface<CSchemaSystem>(modules::schemasystem, SCHEMASYSTEM_INTERFACE_VERSION);
@@ -114,12 +125,6 @@ namespace globals
 		using IMetamodListenerFn = IMetamodListener* (*)();
 		auto Plugify_ImmListener = plugify.GetFunctionByName("Plugify_ImmListener");
 		g_pMetamodListener = Plugify_ImmListener.CCast<IMetamodListenerFn>()();
-
-		g_gameEventManager = static_cast<IGameEventManager2*>(CALL_VIRTUAL(void*, int(93), g_pSource2Server));
-		if (g_gameEventManager == nullptr)
-		{
-			g_Logger.Log(LS_ERROR, "GameEventManager not found!");
-		}
 
 		g_pCoreConfig = new CCoreConfig(std::move(coreConfig));
 		g_pCoreConfig->Initialize();

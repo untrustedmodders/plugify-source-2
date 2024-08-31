@@ -66,7 +66,8 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
         CS2SDK_PLATFORM="linux"
         CS2SDK_BINARY="linuxsteamrt64"
         CS2SDK_ROOT_BINARY="/bin/linuxsteamrt64/"
-        CS2SDK_GAME_BINARY="/csgo/bin/linuxsteamrt64/"
+        # Metamod hack
+        CS2SDK_GAME_BINARY="/bin/linuxsteamrt64/../../csgo/bin/linuxsteamrt64/"
 )
 
 # TODO: Finish that
