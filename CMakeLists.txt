@@ -38,16 +38,21 @@ elseif(WIN32)
     set(PROTOC_EXECUTABLE ${SOURCESDK_DIR}/devtools/bin/protoc.exe)
 endif()
 
+
+set(PROTOC_OUTPUT ${CMAKE_BINARY_DIR}/protobuf)
+file(MAKE_DIRECTORY ${PROTOC_OUTPUT})
+
 execute_process(
-        COMMAND ${PROTOC_EXECUTABLE} --proto_path=thirdparty/protobuf-3.21.8/src --proto_path=common --proto_path=game/shared/ --cpp_out=common networkbasetypes.proto network_connection.proto usermessages.proto netmessages.proto
+        COMMAND ${PROTOC_EXECUTABLE} --proto_path=thirdparty/protobuf-3.21.8/src --proto_path=common --proto_path=game/shared/
+        --cpp_out=${PROTOC_OUTPUT} networkbasetypes.proto network_connection.proto usermessages.proto netmessages.proto
         WORKING_DIRECTORY ${SOURCESDK_DIR}
 )
 
 set(SOURCE_FILES ${SOURCE_FILES}
-        ${SOURCESDK_DIR}/common/networkbasetypes.pb.cc
-        ${SOURCESDK_DIR}/common/network_connection.pb.cc
-        ${SOURCESDK_DIR}/common/usermessages.pb.cc
-        ${SOURCESDK_DIR}/common/netmessages.pb.cc
+        ${PROTOC_OUTPUT}/networkbasetypes.pb.cc
+        ${PROTOC_OUTPUT}/network_connection.pb.cc
+        ${PROTOC_OUTPUT}/usermessages.pb.cc
+        ${PROTOC_OUTPUT}/netmessages.pb.cc
 )
 
 # Sources
@@ -62,6 +67,8 @@ target_include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/cs2_sdk
         ${CMAKE_CURRENT_SOURCE_DIR}/external/dynlibutils
 )
+
+target_include_directories(${PROJECT_NAME} PRIVATE ${PROTOC_OUTPUT})
 
 include(GenerateExportHeader)
 generate_export_header(${PROJECT_NAME} EXPORT_MACRO_NAME PLUGIN_API EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/exports/plugin_export.h)
