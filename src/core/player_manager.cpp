@@ -270,12 +270,12 @@ void CPlayerManager::OnClientPutInServer(CPlayerSlot slot, char const* pszName, 
 	{
 		pPlayer->m_bFakeClient = true;
 
-		CBufferStringGrowable<255> buffer;
+		/*CBufferStringGrowable<255> buffer;
 		if (!OnClientConnect(slot, pszName, 0, "127.0.0.1", false, &buffer))
 		{
 			pPlayer->Kick();
 			return;
-		}
+		}*/
 
 		GetOnClientConnect_PostListenerManager().Notify(pPlayer->m_iSlot.Get());
 	}

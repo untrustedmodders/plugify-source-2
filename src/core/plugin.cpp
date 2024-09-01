@@ -71,15 +71,15 @@ void Source2SDK::OnPluginStart()
 	using enum dyno::CallbackType;
 	g_HookManager.AddHookMemFunc(&IMetamodListener::OnLevelInit, g_pMetamodListener, Hook_OnLevelInit, Post);
 	g_HookManager.AddHookMemFunc(&IMetamodListener::OnLevelShutdown, g_pMetamodListener, Hook_OnLevelShutdown, Post);
-	//g_HookManager.AddHookMemFunc(&IServerGameDLL::GameFrame, g_pSource2Server, Hook_GameFrame, Post);
-	g_HookManager.AddHookMemFunc(&IServerGameClients::ClientActive, g_pSource2GameClients, Hook_ClientActive, Post);
-	g_HookManager.AddHookMemFunc(&IServerGameClients::ClientDisconnect, g_pSource2GameClients, Hook_ClientDisconnect, Pre, Post);
-	g_HookManager.AddHookMemFunc(&IServerGameClients::ClientPutInServer, g_pSource2GameClients, Hook_ClientPutInServer, Post);
-	g_HookManager.AddHookMemFunc(&IServerGameClients::ClientSettingsChanged, g_pSource2GameClients, Hook_ClientSettingsChanged, Post);
-	g_HookManager.AddHookMemFunc(&IServerGameClients::OnClientConnected, g_pSource2GameClients, Hook_OnClientConnected, Post);
-	g_HookManager.AddHookMemFunc(&IServerGameClients::ClientFullyConnect, g_pSource2GameClients, Hook_ClientFullyConnect, Post);
-	g_HookManager.AddHookMemFunc(&IServerGameClients::ClientConnect, g_pSource2GameClients, Hook_ClientConnect, Pre, Post);
-	g_HookManager.AddHookMemFunc(&IServerGameClients::ClientCommand, g_pSource2GameClients, Hook_ClientCommand, Pre);
+	g_HookManager.AddHookMemFunc(&IServerGameDLL::GameFrame, g_pSource2Server, Hook_GameFrame, Post);
+	//g_HookManager.AddHookMemFunc(&IServerGameClients::ClientActive, g_pSource2GameClients, Hook_ClientActive, Post);
+	//g_HookManager.AddHookMemFunc(&IServerGameClients::ClientDisconnect, g_pSource2GameClients, Hook_ClientDisconnect, Pre, Post);
+	//g_HookManager.AddHookMemFunc(&IServerGameClients::ClientPutInServer, g_pSource2GameClients, Hook_ClientPutInServer, Post);
+	//g_HookManager.AddHookMemFunc(&IServerGameClients::ClientSettingsChanged, g_pSource2GameClients, Hook_ClientSettingsChanged, Post);
+	//g_HookManager.AddHookMemFunc(&IServerGameClients::OnClientConnected, g_pSource2GameClients, Hook_OnClientConnected, Post);
+	//g_HookManager.AddHookMemFunc(&IServerGameClients::ClientFullyConnect, g_pSource2GameClients, Hook_ClientFullyConnect, Post);
+	//g_HookManager.AddHookMemFunc(&IServerGameClients::ClientConnect, g_pSource2GameClients, Hook_ClientConnect, Pre, Post);
+	//g_HookManager.AddHookMemFunc(&IServerGameClients::ClientCommand, g_pSource2GameClients, Hook_ClientCommand, Pre);
 	g_HookManager.AddHookMemFunc(&INetworkServerService::StartupServer, g_pNetworkServerService, Hook_StartupServer, Post);
 	//g_HookManager.AddHookMemFunc(&ISource2GameEntities::CheckTransmit, g_pSource2GameEntities, Hook_CheckTransmit, Post);
 	//using PostEventAbstract = void (IGameEventSystem::*)(CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64* clients, INetworkSerializable* pEvent, const void* pData, unsigned long nSize, NetChannelBufType_t bufType);
@@ -98,11 +98,11 @@ void Source2SDK::OnPluginStart()
 	using GameEventManagerInit = void (*)(IGameEventManager2*);
 	g_HookManager.AddHookDetourFunc<GameEventManagerInit>("CGameEventManager_Init", Hook_GameEventManagerInit, Pre);
 
-	using FireOutputInternal = void (*)(CEntityIOOutput* const, CEntityInstance*, CEntityInstance*, const CVariant* const, float);
-	g_HookManager.AddHookDetourFunc<FireOutputInternal>("CEntityIOOutput_FireOutputInternal", Hook_FireOutputInternal, Pre);
+	//using FireOutputInternal = void (*)(CEntityIOOutput* const, CEntityInstance*, CEntityInstance*, const CVariant* const, float);
+	//g_HookManager.AddHookDetourFunc<FireOutputInternal>("CEntityIOOutput_FireOutputInternal", Hook_FireOutputInternal, Pre);
 
-	using SayText2Filter = void (*)(IRecipientFilter &, CCSPlayerController *, uint64_t, const char *, const char *, const char *, const char *, const char *);
-	g_HookManager.AddHookDetourFunc<SayText2Filter>("UTIL_SayText2Filter", Hook_SayText2Filter, Pre);
+	//using SayText2Filter = void (*)(IRecipientFilter &, CCSPlayerController *, uint64_t, const char *, const char *, const char *, const char *, const char *);
+	//g_HookManager.AddHookDetourFunc<SayText2Filter>("UTIL_SayText2Filter", Hook_SayText2Filter, Pre);
 
 	OnServerStartup(); // for late load
 }

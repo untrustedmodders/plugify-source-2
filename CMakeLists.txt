@@ -15,6 +15,7 @@ include("cmake/shared.cmake")
 file(GLOB_RECURSE SOURCE_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "src/*.cpp")
 
 set(SOURCE_FILES ${SOURCE_FILES}
+        ${SOURCESDK_DIR}/interfaces/interfaces.cpp
         ${SOURCESDK_DIR}/tier1/convar.cpp
         ${SOURCESDK_DIR}/tier1/generichash.cpp
         #${SOURCESDK_DIR}/tier1/keyvalues3.cpp
