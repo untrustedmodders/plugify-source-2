@@ -81,6 +81,10 @@ constexpr auto ModulePath(const char (&str)[N])
 	return result;
 }
 
+#if CS2SDK_PLATFORM_WINDOWS
+#undef GetModuleHandle
+#endif
+
 static CModule* CreateModule(const char* p)
 {
 	std::string path = utils::GameDirectory() + p;
