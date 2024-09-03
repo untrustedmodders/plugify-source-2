@@ -1,5 +1,3 @@
-#pragma once
-
 #include <core/sdk/entity/cbaseentity.h>
 #include <core/sdk/utils.h>
 #include <core/server_manager.h>

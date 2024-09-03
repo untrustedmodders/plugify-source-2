@@ -1,5 +1,3 @@
-#pragma once
-
 #include <plugin_export.h>
 #include <core/player_manager.h>
 

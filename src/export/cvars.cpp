@@ -1,5 +1,3 @@
-#pragma once
-
 #include <convar.h>
 #include <core/con_var_manager.h>
 #include <core/game_config.h>

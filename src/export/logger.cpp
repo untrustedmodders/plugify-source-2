@@ -1,5 +1,3 @@
-#pragma once
-
 #include <plugin_export.h>
 
 extern "C" PLUGIN_API int RegisterLoggingChannel(const std::string& name, int iFlags, int verbosity, int color)

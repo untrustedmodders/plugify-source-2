@@ -1,5 +1,3 @@
-#pragma once
-
 #include <core/con_command_manager.h>
 #include <plugin_export.h>
 

@@ -1,5 +1,3 @@
-#pragma once
-
 #include <core/event_manager.h>
 #include <plugin_export.h>
 

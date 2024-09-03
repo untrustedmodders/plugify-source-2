@@ -1,5 +1,3 @@
-#pragma once
-
 #include <core/player_manager.h>
 #include <core/sdk/entity/cbaseentity.h>
 #include <core/sdk/entity/cbaseplayercontroller.h>

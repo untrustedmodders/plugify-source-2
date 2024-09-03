@@ -1,5 +1,3 @@
-#pragma once
-
 #include <core/sdk/utils.h>
 #include <plugin_export.h>
 

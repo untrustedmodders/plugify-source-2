@@ -1,5 +1,3 @@
-#pragma once
-
 #include <core/game_config.h>
 #include <plugin_export.h>
 

@@ -1,5 +1,3 @@
-#pragma once
-
 #include <core/timer_system.h>
 #include <plugin_export.h>
 

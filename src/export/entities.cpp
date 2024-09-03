@@ -1,5 +1,3 @@
-#pragma once
-
 #include <core/output_manager.h>
 #include <core/sdk/entity/cbaseentity.h>
 #include <core/sdk/entity/cbasemodelentity.h>

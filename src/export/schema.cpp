@@ -1,7 +1,3 @@
-#pragma once
-
-// TODO: Add Vector and QAngle
-
 #include <core/core_config.h>
 #include <core/sdk/entity/cschemasystem.h>
 #include <core/sdk/schema.h>
