@@ -4,3 +4,7 @@
 [submodule "external/dynlibutils"]
 	path = external/dynlibutils
 	url = https://github.com/komashchenko/dynlibutils
+[submodule "external/sourcesdk"]
+	path = external/sourcesdk
+	url = https://github.com/Wend4r/sourcesdk
+	branch = cs2

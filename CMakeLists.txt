@@ -26,9 +26,39 @@ if(WIN32 AND NOT MSVC)
     message(FATAL "MSVC restricted.")
 endif()
 
-add_subdirectory(external/hl2sdk-cs2)
+add_subdirectory(external/sourcesdk)
 
+# Sources
 file(GLOB_RECURSE SOURCE_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "src/*.cpp")
+add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/external/dynlibutils/module.cpp)
+
+set(SOURCESDK_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/sourcesdk)
+set(METAMOD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/metamod-source)
+
+target_include_directories(${PROJECT_NAME} PRIVATE
+        ${SOURCESDK_DIR}
+        ${SOURCESDK_DIR}/thirdparty/protobuf-3.21.8/src
+        ${SOURCESDK_DIR}/common
+        ${SOURCESDK_DIR}/game/shared
+        ${SOURCESDK_DIR}/game/server
+        ${SOURCESDK_DIR}/public
+        ${SOURCESDK_DIR}/public/engine
+        ${SOURCESDK_DIR}/public/mathlib
+        ${SOURCESDK_DIR}/public/tier0
+        ${SOURCESDK_DIR}/public/tier1
+        ${SOURCESDK_DIR}/public/entity2
+        ${SOURCESDK_DIR}/public/game/server
+        ${SOURCESDK_DIR}/public/entity2
+
+        ${METAMOD_DIR}/core
+        ${METAMOD_DIR}/core/sourcehook
+
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/cs2_sdk
+        ${CMAKE_CURRENT_SOURCE_DIR}/external/dynlibutils
+)
+
+target_precompile_headers(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/pch.h)
 
 include(GenerateExportHeader)
 generate_export_header(${PROJECT_NAME} EXPORT_MACRO_NAME PLUGIN_API EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/exports/plugin_export.h)
@@ -47,45 +77,39 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
         CS2SDK_BINARY="linuxsteamrt64"
         CS2SDK_ROOT_BINARY="/bin/linuxsteamrt64/"
         # Metamod hack
-        CS2SDK_GAME_BINARY="/bin/linuxsteamrt64/../../csgo/bin/linuxsteamrt64/")
-
-target_compile_definitions(${TARGET_NAME} PRIVATE
-        META_IS_SOURCE2
-        _LINUX
-        POSIX
-        LINUX
-        GNUC
-        COMPILER_GCC
-        PLATFORM_64BITS
-        _GLIBCXX_USE_CXX11_ABI=0
+        CS2SDK_GAME_BINARY="/bin/linuxsteamrt64/../../csgo/bin/linuxsteamrt64/"
 )
 
-set(SOURCESDK_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/hl2sdk-cs2)
-set(METAMOD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/metamod-source)
+if(LINUX)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE
+            META_IS_SOURCE2
+            _LINUX
+            POSIX
+            LINUX
+            GNUC
+            COMPILER_GCC
+            PLATFORM_64BITS
+            _GLIBCXX_USE_CXX11_ABI=0
+    )
+elseif(WIN32)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE
+            META_IS_SOURCE2
+            COMPILER_MSVC
+            COMPILER_MSVC64
+            _WIN32
+            _WINDOWS
+            _ALLOW_KEYWORD_MACROS
+            __STDC_LIMIT_MACROS
+            _CRT_SECURE_NO_WARNINGS=1
+            _CRT_SECURE_NO_DEPRECATE=1
+            _CRT_NONSTDC_NO_DEPRECATE=1
+    )
+    set_target_properties(${PROJECT_NAME} PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+endif()
 
-set(SOURCESDK ${SOURCESDK_DIR}/${BRANCH})
-set(SOURCESDK_LIB ${SOURCESDK}/lib)
-
-target_include_directories(${TARGET_NAME} PRIVATE
-        ${SOURCESDK}
-        ${SOURCESDK}/thirdparty/protobuf-3.21.8/src
-        ${SOURCESDK}/common
-        ${SOURCESDK}/game/shared
-        ${SOURCESDK}/game/server
-        ${SOURCESDK}/public
-        ${SOURCESDK}/public/engine
-        ${SOURCESDK}/public/mathlib
-        ${SOURCESDK}/public/tier0
-        ${SOURCESDK}/public/tier1
-        ${SOURCESDK}/public/entity2
-        ${SOURCESDK}/public/game/server
-        ${SOURCESDK}/public/entity2
-        ${METAMOD_DIR}/core
-        ${METAMOD_DIR}/core/sourcehook
-)
 
 # Libraries
-target_link_libraries(${PROJECT_NAME} PRIVATE ${CS2SDK_LINK_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PRIVATE sourcesdk)
 
 set(CS2SDK_VERSION "0" CACHE STRING "Set version name")
 set(CS2SDK_PACKAGE "cs2sdk" CACHE STRING "Set package name")
