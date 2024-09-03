@@ -10,76 +10,29 @@ endif()
 
 project(cs2-sdk-plugin VERSION 1.0.0.0 DESCRIPTION "CS2 SDK Plugin" HOMEPAGE_URL "https://github.com/untrustedmodders/cs2-sdk-plugin" LANGUAGES C CXX ASM)
 
-include("cmake/shared.cmake")
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_EXTENSIONS OFF)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+if(UNIX AND NOT APPLE)
+    set(LINUX TRUE)
+endif()
+
+if(WIN32 AND NOT MSVC)
+    message(FATAL "MSVC restricted.")
+endif()
+
+add_subdirectory(external/hl2sdk-cs2)
 
 file(GLOB_RECURSE SOURCE_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "src/*.cpp")
-
-set(SOURCE_FILES ${SOURCE_FILES}
-        ${SOURCESDK_DIR}/interfaces/interfaces.cpp
-        ${SOURCESDK_DIR}/tier1/convar.cpp
-        ${SOURCESDK_DIR}/tier1/generichash.cpp
-        #${SOURCESDK_DIR}/tier1/keyvalues3.cpp
-        ${SOURCESDK_DIR}/entity2/entityidentity.cpp
-        ${SOURCESDK_DIR}/entity2/entitysystem.cpp
-        ${SOURCESDK_DIR}/entity2/entitykeyvalues.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/external/dynlibutils/module.cpp
-)
-
-if(LINUX)
-    # memoverride.cpp is not usable on CMake Windows, because CMake default link libraries always link ucrt.lib
-    set(SOURCE_FILES ${SOURCE_FILES}
-            ${SOURCESDK_DIR}/public/tier0/memoverride.cpp
-    )
-endif()
-
-## Generate protobuf source & headers
-if(LINUX)
-    set(PROTOC_EXECUTABLE ${SOURCESDK_DIR}/devtools/bin/linux/protoc)
-elseif(WIN32)
-    set(PROTOC_EXECUTABLE ${SOURCESDK_DIR}/devtools/bin/protoc.exe)
-endif()
-
-
-set(PROTOC_OUTPUT ${CMAKE_BINARY_DIR}/protobuf)
-file(MAKE_DIRECTORY ${PROTOC_OUTPUT})
-
-execute_process(
-        COMMAND ${PROTOC_EXECUTABLE} --proto_path=thirdparty/protobuf-3.21.8/src --proto_path=common --proto_path=game/shared/
-        --cpp_out=${PROTOC_OUTPUT} networkbasetypes.proto network_connection.proto usermessages.proto netmessages.proto
-        WORKING_DIRECTORY ${SOURCESDK_DIR}
-)
-
-set(SOURCE_FILES ${SOURCE_FILES}
-        ${PROTOC_OUTPUT}/networkbasetypes.pb.cc
-        ${PROTOC_OUTPUT}/network_connection.pb.cc
-        ${PROTOC_OUTPUT}/usermessages.pb.cc
-        ${PROTOC_OUTPUT}/netmessages.pb.cc
-)
-
-# Sources
-add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${NATIVES_SOURCES} ${CONVERSIONS_SOURCES} ${CONVERSIONS_HEADERS})
-
-target_precompile_headers(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/pch.h)
-
-target_include_directories(
-        ${PROJECT_NAME}
-        PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/src
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/cs2_sdk
-        ${CMAKE_CURRENT_SOURCE_DIR}/external/dynlibutils
-)
-
-target_include_directories(${PROJECT_NAME} PRIVATE ${PROTOC_OUTPUT})
 
 include(GenerateExportHeader)
 generate_export_header(${PROJECT_NAME} EXPORT_MACRO_NAME PLUGIN_API EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/exports/plugin_export.h)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_BINARY_DIR}/exports)
-
-if(LINUX)
-    include("cmake/linux.cmake")
-elseif(WIN32)
-    include("cmake/windows.cmake")
-endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "cs2sdk")
 
@@ -89,7 +42,47 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
         CS2SDK_PLATFORM_APPLE=$<BOOL:${APPLE}>
         CS2SDK_PLATFORM_LINUX=$<BOOL:${LINUX}>
         CS2SDK_LIBRARY_SUFFIX="${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        CS2SDK_LIBRARY_PREFIX="${CMAKE_SHARED_LIBRARY_PREFIX}")
+        CS2SDK_LIBRARY_PREFIX="${CMAKE_SHARED_LIBRARY_PREFIX}"
+        CS2SDK_PLATFORM="linux"
+        CS2SDK_BINARY="linuxsteamrt64"
+        CS2SDK_ROOT_BINARY="/bin/linuxsteamrt64/"
+        # Metamod hack
+        CS2SDK_GAME_BINARY="/bin/linuxsteamrt64/../../csgo/bin/linuxsteamrt64/")
+
+target_compile_definitions(${TARGET_NAME} PRIVATE
+        META_IS_SOURCE2
+        _LINUX
+        POSIX
+        LINUX
+        GNUC
+        COMPILER_GCC
+        PLATFORM_64BITS
+        _GLIBCXX_USE_CXX11_ABI=0
+)
+
+set(SOURCESDK_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/hl2sdk-cs2)
+set(METAMOD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/metamod-source)
+
+set(SOURCESDK ${SOURCESDK_DIR}/${BRANCH})
+set(SOURCESDK_LIB ${SOURCESDK}/lib)
+
+target_include_directories(${TARGET_NAME} PRIVATE
+        ${SOURCESDK}
+        ${SOURCESDK}/thirdparty/protobuf-3.21.8/src
+        ${SOURCESDK}/common
+        ${SOURCESDK}/game/shared
+        ${SOURCESDK}/game/server
+        ${SOURCESDK}/public
+        ${SOURCESDK}/public/engine
+        ${SOURCESDK}/public/mathlib
+        ${SOURCESDK}/public/tier0
+        ${SOURCESDK}/public/tier1
+        ${SOURCESDK}/public/entity2
+        ${SOURCESDK}/public/game/server
+        ${SOURCESDK}/public/entity2
+        ${METAMOD_DIR}/core
+        ${METAMOD_DIR}/core/sourcehook
+)
 
 # Libraries
 target_link_libraries(${PROJECT_NAME} PRIVATE ${CS2SDK_LINK_LIBRARIES})
