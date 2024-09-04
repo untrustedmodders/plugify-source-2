@@ -37,7 +37,7 @@ set(METAMOD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/metamod-source)
 
 target_include_directories(${PROJECT_NAME} PRIVATE
         ${SOURCESDK_DIR}
-        ${SOURCESDK_DIR}/thirdparty/protobuf-3.21.8/src
+        ${SOURCESDK_DIR}/thirdparty/protobuf/src
         ${SOURCESDK_DIR}/common
         ${SOURCESDK_DIR}/game/shared
         ${SOURCESDK_DIR}/game/server
@@ -89,6 +89,9 @@ if(LINUX)
             GNUC
             COMPILER_GCC
             PLATFORM_64BITS
+            bswap_16=__bswap_16
+            bswap_32=__bswap_32
+            bswap_64=__bswap_64
             _GLIBCXX_USE_CXX11_ABI=0
     )
 elseif(WIN32)
