@@ -1,10 +1,10 @@
 #include "con_var_manager.h"
 
-ConVarInfo::ConVarInfo(std::string name, std::string description) : name(std::move(name)), description(std::move(description))
+ConVarInfo::ConVarInfo(plg::string name, plg::string description) : name(std::move(name)), description(std::move(description))
 {
 }
 
-bool CConVarManager::RemoveConVar(const std::string& name)
+bool CConVarManager::RemoveConVar(const plg::string& name)
 {
 	auto it = m_cnvLookup.find(name);
 	if (it != m_cnvLookup.end())
@@ -17,7 +17,7 @@ bool CConVarManager::RemoveConVar(const std::string& name)
 	return false;
 }
 
-CConVarBaseData* CConVarManager::FindConVar(const std::string& name)
+CConVarBaseData* CConVarManager::FindConVar(const plg::string& name)
 {
 	auto it = m_cnvLookup.find(name);
 	if (it != m_cnvLookup.end())
@@ -34,13 +34,13 @@ CConVarBaseData* CConVarManager::FindConVar(const std::string& name)
 	return g_pCVar->GetConVar(hCvarHandle);
 }
 
-bool CConVarManager::IsValidConVar(const std::string& name) const
+bool CConVarManager::IsValidConVar(const plg::string& name) const
 {
 	ConVarHandle hFoundConVar = g_pCVar->FindConVar(name.c_str());
 	return hFoundConVar.IsValid();
 }
 
-void CConVarManager::HookConVarChange(const std::string& name, ConVarChangeListenerCallback callback)
+void CConVarManager::HookConVarChange(const plg::string& name, ConVarChangeListenerCallback callback)
 {
 	if (name.empty())
 	{
@@ -60,7 +60,7 @@ void CConVarManager::HookConVarChange(const std::string& name, ConVarChangeListe
 	}
 }
 
-void CConVarManager::UnhookConVarChange(const std::string& name, ConVarChangeListenerCallback callback)
+void CConVarManager::UnhookConVarChange(const plg::string& name, ConVarChangeListenerCallback callback)
 {
 	if (name.empty())
 	{

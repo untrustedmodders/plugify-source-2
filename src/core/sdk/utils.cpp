@@ -216,8 +216,8 @@ bool utils::FindValidSpawn(Vector& origin, QAngle& angles)
 	return foundValidSpawn;
 }
 
-const std::string& utils::GameDirectory()
+const plg::string& utils::GameDirectory()
 {
-	static std::string gameDirectory(Plat_GetGameDirectory());
+	static plg::string gameDirectory(Plat_GetGameDirectory());
 	return gameDirectory;
 }

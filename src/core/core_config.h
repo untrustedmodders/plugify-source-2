@@ -5,26 +5,26 @@
 class CCoreConfig
 {
 public:
-	explicit CCoreConfig(std::string path);
+	explicit CCoreConfig(plg::string path);
 	~CCoreConfig() = default;
 
 	bool Initialize();
 
-	const std::string& GetPath() const;
+	const plg::string& GetPath() const;
 
-	bool IsSilentChatTrigger(const std::string& message, std::string& prefix) const;
-	bool IsPublicChatTrigger(const std::string& message, std::string& prefix) const;
+	bool IsSilentChatTrigger(const plg::string& message, plg::string& prefix) const;
+	bool IsPublicChatTrigger(const plg::string& message, plg::string& prefix) const;
 
 private:
-	bool IsTriggerInternal(const std::vector<std::string>& triggers, const std::string& message, std::string& prefix) const;
+	bool IsTriggerInternal(const std::vector<plg::string>& triggers, const plg::string& message, plg::string& prefix) const;
 
 public:
-	std::vector<std::string> PublicChatTrigger{"!"};
-	std::vector<std::string> SilentChatTrigger{"/"};
+	std::vector<plg::string> PublicChatTrigger{"!"};
+	std::vector<plg::string> SilentChatTrigger{"/"};
 	bool FollowCS2ServerGuidelines{true};
-	std::string ServerLanguage{"en"};
+	plg::string ServerLanguage{"en"};
 
 private:
-	std::string m_szPath;
+	plg::string m_szPath;
 	std::unique_ptr<KeyValues> m_pKeyValues;
 };

@@ -54,7 +54,7 @@ extern "C" PLUGIN_API uint64_t GetClientAccountId(int clientIndex)
 	return pSteamId->ConvertToUint64();
 }
 
-extern "C" PLUGIN_API void GetClientIp(std::string& output, int clientIndex)
+extern "C" PLUGIN_API void GetClientIp(plg::string& output, int clientIndex)
 {
 	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex - 1));
 	if (pPlayer == nullptr)
@@ -65,7 +65,7 @@ extern "C" PLUGIN_API void GetClientIp(std::string& output, int clientIndex)
 	std::construct_at(&output, pPlayer->GetIpAddress());
 }
 
-extern "C" PLUGIN_API void GetClientName(std::string& output, int clientIndex)
+extern "C" PLUGIN_API void GetClientName(plg::string& output, int clientIndex)
 {
 	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex - 1));
 	if (pPlayer == nullptr)
@@ -210,7 +210,7 @@ extern "C" PLUGIN_API void GetClientAbsAngles(QAngle& output, int clientIndex)
 	std::construct_at(&output, client->m_CBodyComponent->m_pSceneNode->m_angRotation());
 }
 
-extern "C" PLUGIN_API void ProcessTargetString(std::vector<int>& output, int caller, const std::string& target)
+extern "C" PLUGIN_API void ProcessTargetString(std::vector<int>& output, int caller, const plg::string& target)
 {
 	g_PlayerManager.TargetPlayerString(caller, target.c_str(), output);
 }

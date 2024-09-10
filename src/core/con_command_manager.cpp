@@ -7,11 +7,11 @@ void CommandCallback(const CCommandContext& context, const CCommand& command)
 {
 }
 
-ConCommandInfo::ConCommandInfo(std::string name, std::string description) : name(std::move(name)), description(std::move(description))
+ConCommandInfo::ConCommandInfo(plg::string name, plg::string description) : name(std::move(name)), description(std::move(description))
 {
 }
 
-void CConCommandManager::AddCommandListener(const std::string& name, CommandListenerCallback callback, HookMode mode)
+void CConCommandManager::AddCommandListener(const plg::string& name, CommandListenerCallback callback, HookMode mode)
 {
 	if (name.empty())
 	{
@@ -60,7 +60,7 @@ void CConCommandManager::AddCommandListener(const std::string& name, CommandList
 	}
 }
 
-void CConCommandManager::RemoveCommandListener(const std::string& name, CommandListenerCallback callback, HookMode mode)
+void CConCommandManager::RemoveCommandListener(const plg::string& name, CommandListenerCallback callback, HookMode mode)
 {
 	if (name.empty())
 	{
@@ -92,7 +92,7 @@ void CConCommandManager::RemoveCommandListener(const std::string& name, CommandL
 	}
 }
 
-bool CConCommandManager::AddValveCommand(const std::string& name, const std::string& description, int64 flags, uint64 adminFlags)
+bool CConCommandManager::AddValveCommand(const plg::string& name, const plg::string& description, int64 flags, uint64 adminFlags)
 {
 	if (name.empty() || g_pCVar->FindConVar(name.c_str()).IsValid())
 	{
@@ -118,7 +118,7 @@ bool CConCommandManager::AddValveCommand(const std::string& name, const std::str
 	return true;
 }
 
-bool CConCommandManager::RemoveValveCommand(const std::string& name)
+bool CConCommandManager::RemoveValveCommand(const plg::string& name)
 {
 	auto hFoundCommand = g_pCVar->FindCommand(name.c_str());
 	if (!hFoundCommand.IsValid())
@@ -140,7 +140,7 @@ bool CConCommandManager::RemoveValveCommand(const std::string& name)
 	return true;
 }
 
-bool CConCommandManager::IsValidValveCommand(const std::string& name) const
+bool CConCommandManager::IsValidValveCommand(const plg::string& name) const
 {
 	ConCommandHandle hFoundCommand = g_pCVar->FindCommand(name.c_str());
 	return hFoundCommand.IsValid();
@@ -168,7 +168,7 @@ static bool CheckCommandAccess(CPlayerSlot slot, uint64 flags)
 	return true;
 }
 
-ResultType CConCommandManager::ExecuteCommandCallbacks(const std::string& name, const CCommandContext& ctx, const CCommand& args, HookMode mode, CommandCallingContext callingContext)
+ResultType CConCommandManager::ExecuteCommandCallbacks(const plg::string& name, const CCommandContext& ctx, const CCommand& args, HookMode mode, CommandCallingContext callingContext)
 {
 	g_Logger.LogFormat(LS_DEBUG, "[ConCommandManager::ExecuteCommandCallbacks][%s]: %s\n", mode == HookMode::Pre ? "Pre" : "Post", name.c_str());
 
@@ -178,7 +178,7 @@ ResultType CConCommandManager::ExecuteCommandCallbacks(const std::string& name, 
 
 	int size = args.ArgC();
 
-	std::vector<std::string> arguments;
+	std::vector<plg::string> arguments;
 	arguments.reserve(static_cast<size_t>(size));
 	for (int i = 0; i < size; ++i)
 	{

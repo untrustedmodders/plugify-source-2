@@ -1,7 +1,7 @@
 #include "core_config.h"
 #include <core/sdk/utils.h>
 
-CCoreConfig::CCoreConfig(std::string path) : m_szPath(std::move(path)), m_pKeyValues(std::make_unique<KeyValues>("Core"))
+CCoreConfig::CCoreConfig(plg::string path) : m_szPath(std::move(path)), m_pKeyValues(std::make_unique<KeyValues>("Core"))
 {
 }
 
@@ -41,14 +41,14 @@ bool CCoreConfig::Initialize()
 	return true;
 }
 
-const std::string& CCoreConfig::GetPath() const
+const plg::string& CCoreConfig::GetPath() const
 {
 	return m_szPath;
 }
 
-bool CCoreConfig::IsTriggerInternal(const std::vector<std::string>& triggers, const std::string& message, std::string& prefix) const
+bool CCoreConfig::IsTriggerInternal(const std::vector<plg::string>& triggers, const plg::string& message, plg::string& prefix) const
 {
-	for (const std::string& trigger : triggers)
+	/*for (const plg::string& trigger : triggers)
 	{
 		if (message.rfind(trigger, 0) == 0)
 		{
@@ -56,17 +56,19 @@ bool CCoreConfig::IsTriggerInternal(const std::vector<std::string>& triggers, co
 			g_Logger.LogFormat(LS_DEBUG, "Trigger found, prefix is %s\n", prefix.c_str());
 			return true;
 		}
-	}
+	}*/
+
+	// TODO: Implement rfind in string
 
 	return false;
 }
 
-bool CCoreConfig::IsSilentChatTrigger(const std::string& message, std::string& prefix) const
+bool CCoreConfig::IsSilentChatTrigger(const plg::string& message, plg::string& prefix) const
 {
 	return IsTriggerInternal(SilentChatTrigger, message, prefix);
 }
 
-bool CCoreConfig::IsPublicChatTrigger(const std::string& message, std::string& prefix) const
+bool CCoreConfig::IsPublicChatTrigger(const plg::string& message, plg::string& prefix) const
 {
 	return IsTriggerInternal(PublicChatTrigger, message, prefix);
 }

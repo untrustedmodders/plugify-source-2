@@ -3,6 +3,7 @@
 #include <playerslot.h>
 #include <tier0/platform.h>
 #include <tier0/utlstring.h>
+#include <plugify/string.h>
 #include <variant.h>
 
 #define CS_TEAM_NONE 0
@@ -56,7 +57,7 @@ extern CGameConfig* g_pGameConfig;
 
 namespace globals
 {
-	void Initialize(std::string coreConfig, std::string gameConfig);
+	void Initialize(plg::string coreConfig, plg::string gameConfig);
 	void Terminate();
 }
 

@@ -7,57 +7,57 @@
 
 // CreateConVar()
 
-extern "C" PLUGIN_API CConVarBaseData* CreateConVarBool(const std::string& name, bool defaultValue, const std::string& description, int flags, bool hasMin, bool min, bool hasMax, bool max)
+extern "C" PLUGIN_API CConVarBaseData* CreateConVarBool(const plg::string& name, bool defaultValue, const plg::string& description, int flags, bool hasMin, bool min, bool hasMax, bool max)
 {
 	return g_ConVarManager.CreateConVar<bool>(name, description, defaultValue, flags, hasMin, min, hasMax, max);
 }
 
-extern "C" PLUGIN_API CConVarBaseData* CreateConVarInt16(const std::string& name, int16_t defaultValue, const std::string& description, int flags, bool hasMin, int16_t min, bool hasMax, int16_t max)
+extern "C" PLUGIN_API CConVarBaseData* CreateConVarInt16(const plg::string& name, int16_t defaultValue, const plg::string& description, int flags, bool hasMin, int16_t min, bool hasMax, int16_t max)
 {
 	return g_ConVarManager.CreateConVar<int16_t>(name, description, defaultValue, flags, hasMin, min, hasMax, max);
 }
 
-extern "C" PLUGIN_API CConVarBaseData* CreateConVarUInt16(const std::string& name, uint16_t defaultValue, const std::string& description, int flags, bool hasMin, uint16_t min, bool hasMax, uint16_t max)
+extern "C" PLUGIN_API CConVarBaseData* CreateConVarUInt16(const plg::string& name, uint16_t defaultValue, const plg::string& description, int flags, bool hasMin, uint16_t min, bool hasMax, uint16_t max)
 {
 	return g_ConVarManager.CreateConVar<uint16_t>(name, description, defaultValue, flags, hasMin, min, hasMax, max);
 }
 
-extern "C" PLUGIN_API CConVarBaseData* CreateConVarInt32(const std::string& name, int32_t defaultValue, const std::string& description, int flags, bool hasMin, int32_t min, bool hasMax, int32_t max)
+extern "C" PLUGIN_API CConVarBaseData* CreateConVarInt32(const plg::string& name, int32_t defaultValue, const plg::string& description, int flags, bool hasMin, int32_t min, bool hasMax, int32_t max)
 {
 	return g_ConVarManager.CreateConVar<int32_t>(name, description, defaultValue, flags, hasMin, min, hasMax, max);
 }
 
-extern "C" PLUGIN_API CConVarBaseData* CreateConVarUInt32(const std::string& name, uint32_t defaultValue, const std::string& description, int flags, bool hasMin, uint32_t min, bool hasMax, uint32_t max)
+extern "C" PLUGIN_API CConVarBaseData* CreateConVarUInt32(const plg::string& name, uint32_t defaultValue, const plg::string& description, int flags, bool hasMin, uint32_t min, bool hasMax, uint32_t max)
 {
 	return g_ConVarManager.CreateConVar<uint32_t>(name, description, defaultValue, flags, hasMin, min, hasMax, max);
 }
 
-extern "C" PLUGIN_API CConVarBaseData* CreateConVarInt64(const std::string& name, int64_t defaultValue, const std::string& description, int flags, bool hasMin, int64_t min, bool hasMax, int64_t max)
+extern "C" PLUGIN_API CConVarBaseData* CreateConVarInt64(const plg::string& name, int64_t defaultValue, const plg::string& description, int flags, bool hasMin, int64_t min, bool hasMax, int64_t max)
 {
 	return g_ConVarManager.CreateConVar<int64_t>(name, description, defaultValue, flags, hasMin, min, hasMax, max);
 }
 
-extern "C" PLUGIN_API CConVarBaseData* CreateConVarUInt64(const std::string& name, uint64_t defaultValue, const std::string& description, int flags, bool hasMin, uint64_t min, bool hasMax, uint64_t max)
+extern "C" PLUGIN_API CConVarBaseData* CreateConVarUInt64(const plg::string& name, uint64_t defaultValue, const plg::string& description, int flags, bool hasMin, uint64_t min, bool hasMax, uint64_t max)
 {
 	return g_ConVarManager.CreateConVar<uint64_t>(name, description, defaultValue, flags, hasMin, min, hasMax, max);
 }
 
-extern "C" PLUGIN_API CConVarBaseData* CreateConVarFloat(const std::string& name, float defaultValue, const std::string& description, int flags, bool hasMin, float min, bool hasMax, float max)
+extern "C" PLUGIN_API CConVarBaseData* CreateConVarFloat(const plg::string& name, float defaultValue, const plg::string& description, int flags, bool hasMin, float min, bool hasMax, float max)
 {
 	return g_ConVarManager.CreateConVar<float>(name, description, defaultValue, flags, hasMin, min, hasMax, max);
 }
 
-extern "C" PLUGIN_API CConVarBaseData* CreateConVarDouble(const std::string& name, double defaultValue, const std::string& description, int flags, bool hasMin, double min, bool hasMax, double max)
+extern "C" PLUGIN_API CConVarBaseData* CreateConVarDouble(const plg::string& name, double defaultValue, const plg::string& description, int flags, bool hasMin, double min, bool hasMax, double max)
 {
 	return g_ConVarManager.CreateConVar<double>(name, description, defaultValue, flags, hasMin, min, hasMax, max);
 }
 
-extern "C" PLUGIN_API CConVarBaseData* CreateConVar(const std::string& name, const std::string& defaultValue, const std::string& description, int flags)
+extern "C" PLUGIN_API CConVarBaseData* CreateConVar(const plg::string& name, const plg::string& defaultValue, const plg::string& description, int flags)
 {
 	return g_ConVarManager.CreateConVar<const char*>(name, description, defaultValue.data(), flags);
 }
 
-extern "C" PLUGIN_API CConVarBaseData* CreateConVarColor(const std::string& name, int defaultValue, const std::string& description, int flags, bool hasMin, int min, bool hasMax, int max)
+extern "C" PLUGIN_API CConVarBaseData* CreateConVarColor(const plg::string& name, int defaultValue, const plg::string& description, int flags, bool hasMin, int min, bool hasMax, int max)
 {
 	Color defaultCol;
 	defaultCol.SetRawColor(defaultValue);
@@ -68,37 +68,37 @@ extern "C" PLUGIN_API CConVarBaseData* CreateConVarColor(const std::string& name
 	return g_ConVarManager.CreateConVar<Color>(name, description, defaultCol, flags, hasMin, minCol, hasMax, maxCol);
 }
 
-extern "C" PLUGIN_API CConVarBaseData* CreateConVarVector2(const std::string& name, const Vector2D& defaultValue, const std::string& description, int flags, bool hasMin, const Vector2D& min, bool hasMax, const Vector2D& max)
+extern "C" PLUGIN_API CConVarBaseData* CreateConVarVector2(const plg::string& name, const Vector2D& defaultValue, const plg::string& description, int flags, bool hasMin, const Vector2D& min, bool hasMax, const Vector2D& max)
 {
 	return g_ConVarManager.CreateConVar<Vector2D>(name, description, defaultValue, flags, hasMin, min, hasMax, max);
 }
 
-extern "C" PLUGIN_API CConVarBaseData* CreateConVarVector3(const std::string& name, const Vector& defaultValue, const std::string& description, int flags, bool hasMin, const Vector& min, bool hasMax, const Vector& max)
+extern "C" PLUGIN_API CConVarBaseData* CreateConVarVector3(const plg::string& name, const Vector& defaultValue, const plg::string& description, int flags, bool hasMin, const Vector& min, bool hasMax, const Vector& max)
 {
 	return g_ConVarManager.CreateConVar<Vector>(name, description, defaultValue, flags, hasMin, min, hasMax, max);
 }
 
-extern "C" PLUGIN_API CConVarBaseData* CreateConVarVector4(const std::string& name, const Vector4D& defaultValue, const std::string& description, int flags, bool hasMin, const Vector4D& min, bool hasMax, const Vector4D& max)
+extern "C" PLUGIN_API CConVarBaseData* CreateConVarVector4(const plg::string& name, const Vector4D& defaultValue, const plg::string& description, int flags, bool hasMin, const Vector4D& min, bool hasMax, const Vector4D& max)
 {
 	return g_ConVarManager.CreateConVar<Vector4D>(name, description, defaultValue, flags, hasMin, min, hasMax, max);
 }
 
-extern "C" PLUGIN_API CConVarBaseData* CreateConVarQangle(const std::string& name, const QAngle& defaultValue, const std::string& description, int flags, bool hasMin, const QAngle& min, bool hasMax, const QAngle& max)
+extern "C" PLUGIN_API CConVarBaseData* CreateConVarQangle(const plg::string& name, const QAngle& defaultValue, const plg::string& description, int flags, bool hasMin, const QAngle& min, bool hasMax, const QAngle& max)
 {
 	return g_ConVarManager.CreateConVar<QAngle>(name, description, defaultValue, flags, hasMin, min, hasMax, max);
 }
 
-extern "C" PLUGIN_API CConVarBaseData* FindConVar(const std::string& name)
+extern "C" PLUGIN_API CConVarBaseData* FindConVar(const plg::string& name)
 {
 	return g_ConVarManager.FindConVar(name);
 }
 
-extern "C" PLUGIN_API void HookConVarChange(const std::string& name, ConVarChangeListenerCallback callback)
+extern "C" PLUGIN_API void HookConVarChange(const plg::string& name, ConVarChangeListenerCallback callback)
 {
 	g_ConVarManager.HookConVarChange(name, callback);
 }
 
-extern "C" PLUGIN_API void UnhookConVarChange(const std::string& name, ConVarChangeListenerCallback callback)
+extern "C" PLUGIN_API void UnhookConVarChange(const plg::string& name, ConVarChangeListenerCallback callback)
 {
 	g_ConVarManager.UnhookConVarChange(name, callback);
 }
@@ -123,7 +123,7 @@ extern "C" PLUGIN_API int64_t GetConVarFlags(CConVarBaseData* conVar)
 	return conVar->GetFlags();
 }
 
-extern "C" PLUGIN_API void SetConVarBounds(CConVarBaseData* conVar, bool max, const std::string& value)
+extern "C" PLUGIN_API void SetConVarBounds(CConVarBaseData* conVar, bool max, const plg::string& value)
 {
 	if (max)
 	{
@@ -235,7 +235,7 @@ extern "C" PLUGIN_API void SetConVarBounds(CConVarBaseData* conVar, bool max, co
 	}
 }
 
-extern "C" PLUGIN_API void GetConVarValue(std::string& output, CConVarBaseData* conVar)
+extern "C" PLUGIN_API void GetConVarValue(plg::string& output, CConVarBaseData* conVar)
 {
 	switch (conVar->GetType())
 	{
@@ -315,7 +315,7 @@ extern "C" PLUGIN_API void GetConVarValue(std::string& output, CConVarBaseData* 
 	}
 }
 
-extern "C" PLUGIN_API void SetConVarValue(CConVarBaseData* conVar, const std::string& value)
+extern "C" PLUGIN_API void SetConVarValue(CConVarBaseData* conVar, const plg::string& value)
 {
 	switch (conVar->GetType())
 	{
@@ -370,17 +370,17 @@ extern "C" PLUGIN_API void SetConVarValue(CConVarBaseData* conVar, const std::st
 	}
 }
 
-extern "C" PLUGIN_API void SendConVarValue(CConVarBaseData* conVar, int clientIndex, const std::string& value)
+extern "C" PLUGIN_API void SendConVarValue(CConVarBaseData* conVar, int clientIndex, const plg::string& value)
 {
 	utils::SendConVarValue(CPlayerSlot(clientIndex - 1), conVar, value.c_str());
 }
 
-extern "C" PLUGIN_API void GetClientConVarValue(std::string& output, int clientIndex, const std::string& convarName)
+extern "C" PLUGIN_API void GetClientConVarValue(plg::string& output, int clientIndex, const plg::string& convarName)
 {
 	std::construct_at(&output, g_pEngineServer2->GetClientConVarValue(CPlayerSlot(clientIndex - 1), convarName.c_str()));
 }
 
-extern "C" PLUGIN_API void SetFakeClientConVarValue(int clientIndex, const std::string& convarName, const std::string& convarValue)
+extern "C" PLUGIN_API void SetFakeClientConVarValue(int clientIndex, const plg::string& convarName, const plg::string& convarValue)
 {
 	g_pEngineServer2->SetFakeClientConVarValue(CPlayerSlot(clientIndex - 1), convarName.c_str(), convarValue.c_str());
 }

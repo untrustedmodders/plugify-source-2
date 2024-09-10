@@ -5,15 +5,15 @@
 
 #include <convar.h>
 
-using ConVarChangeListenerCallback = void (*)(BaseConVar* pConVar, const std::string& newValue, const std::string& oldValue);
+using ConVarChangeListenerCallback = void (*)(BaseConVar* pConVar, const plg::string& newValue, const plg::string& oldValue);
 
 struct ConVarInfo
 {
-	explicit ConVarInfo(std::string name, std::string description = {});
+	explicit ConVarInfo(plg::string name, plg::string description = {});
 	~ConVarInfo() = default;
 
-	std::string name;
-	std::string description;
+	plg::string name;
+	plg::string description;
 	std::unique_ptr<BaseConVar> conVar;
 	CListenerManager<ConVarChangeListenerCallback> hook;
 };
@@ -30,7 +30,7 @@ public:
 	~CConVarManager() = default;
 
 	template<typename T>
-	CConVarBaseData* CreateConVar(const std::string& name, const std::string& description, const T& defaultVal, int flags, bool hasMin = false, T min = {}, bool hasMax = {}, T max = {})
+	CConVarBaseData* CreateConVar(const plg::string& name, const plg::string& description, const T& defaultVal, int flags, bool hasMin = false, T min = {}, bool hasMax = {}, T max = {})
 	{
 		if (name.empty() || g_pCVar->FindCommand(name.c_str()).IsValid())
 		{
@@ -55,11 +55,11 @@ public:
 		return conVarInfo.conVar->GetConVarData();
 	}
 	
-	bool RemoveConVar(const std::string& name);
-	CConVarBaseData* FindConVar(const std::string& name);
-	bool IsValidConVar(const std::string& name) const;
-	void HookConVarChange(const std::string& name, ConVarChangeListenerCallback callback);
-	void UnhookConVarChange(const std::string& name, ConVarChangeListenerCallback callback);
+	bool RemoveConVar(const plg::string& name);
+	CConVarBaseData* FindConVar(const plg::string& name);
+	bool IsValidConVar(const plg::string& name) const;
+	void HookConVarChange(const plg::string& name, ConVarChangeListenerCallback callback);
+	void UnhookConVarChange(const plg::string& name, ConVarChangeListenerCallback callback);
 
 	template<typename T>
 	static void ChangeCallback(ConVar<T>* ref, const CSplitScreenSlot nSlot, const T* pNewValue, const T* pOldValue)
@@ -119,7 +119,7 @@ public:
 	static void ChangeGlobal(BaseConVar* ref, CSplitScreenSlot nSlot, const char *pNewValue, const char *pOldValue);
 	
 private:
-	std::map<std::string, ConVarInfoPtr, utils::CaseInsensitiveComparator> m_cnvLookup;
+	std::map<plg::string, ConVarInfoPtr, utils::CaseInsensitiveComparator> m_cnvLookup;
 	std::map<const BaseConVar*, const ConVarInfo*> m_cnvCache;
 	CListenerManager<ConVarChangeListenerCallback> m_global;
 };

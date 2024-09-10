@@ -1,18 +1,18 @@
 #include <plugin_export.h>
 
-extern "C" PLUGIN_API int RegisterLoggingChannel(const std::string& name, int iFlags, int verbosity, int color)
+extern "C" PLUGIN_API int RegisterLoggingChannel(const plg::string& name, int iFlags, int verbosity, int color)
 {
 	Color spewColor;
 	spewColor.SetRawColor(color);
 	return LoggingSystem_RegisterLoggingChannel(name.c_str(), &CLogger::RegisterTags, iFlags, static_cast<LoggingVerbosity_t>(verbosity), spewColor);
 }
 
-extern "C" PLUGIN_API void AddLoggerTagToChannel(int channelID, const std::string& tagName)
+extern "C" PLUGIN_API void AddLoggerTagToChannel(int channelID, const plg::string& tagName)
 {
 	LoggingSystem_AddTagToChannel(channelID, tagName.c_str());
 }
 
-extern "C" PLUGIN_API bool HasLoggerTag(int channelID, const std::string& tag)
+extern "C" PLUGIN_API bool HasLoggerTag(int channelID, const plg::string& tag)
 {
 	return LoggingSystem_HasTag(channelID, tag.c_str());
 }
@@ -37,12 +37,12 @@ extern "C" PLUGIN_API void SetLoggerChannelVerbosity(int channelID, int verbosit
 	return LoggingSystem_SetChannelVerbosity(channelID, static_cast<LoggingVerbosity_t>(verbosity));
 }
 
-extern "C" PLUGIN_API void SetLoggerChannelVerbosityByName(int channelID, const std::string& name, int verbosity)
+extern "C" PLUGIN_API void SetLoggerChannelVerbosityByName(int channelID, const plg::string& name, int verbosity)
 {
 	return LoggingSystem_SetChannelVerbosityByName(name.c_str(), static_cast<LoggingVerbosity_t>(verbosity));
 }
 
-extern "C" PLUGIN_API void SetLoggerChannelVerbosityByTag(int channelID, const std::string& tag, int verbosity)
+extern "C" PLUGIN_API void SetLoggerChannelVerbosityByTag(int channelID, const plg::string& tag, int verbosity)
 {
 	LoggingSystem_SetChannelVerbosityByTag(tag.c_str(), static_cast<LoggingVerbosity_t>(verbosity));
 }
@@ -67,25 +67,25 @@ extern "C" PLUGIN_API void SetLoggerChannelFlags(int channelID, int eFlags)
 	LoggingSystem_SetChannelFlags(channelID, static_cast<LoggingChannelFlags_t>(eFlags));
 }
 
-extern "C" PLUGIN_API int Log(int channelID, int severity, const std::string& message)
+extern "C" PLUGIN_API int Log(int channelID, int severity, const plg::string& message)
 {
 	return LoggingSystem_LogDirect(channelID, static_cast<LoggingSeverity_t>(severity), message.c_str());
 }
 
-extern "C" PLUGIN_API int LogColored(int channelID, int severity, int color, const std::string& message)
+extern "C" PLUGIN_API int LogColored(int channelID, int severity, int color, const plg::string& message)
 {
 	Color spewColor;
 	spewColor.SetRawColor(color);
 	return LoggingSystem_LogDirect(channelID, static_cast<LoggingSeverity_t>(severity), spewColor, message.c_str());
 }
 
-extern "C" PLUGIN_API int LogFull(int channelID, int severity, const std::string& file, int line, const std::string& function, const std::string& message)
+extern "C" PLUGIN_API int LogFull(int channelID, int severity, const plg::string& file, int line, const plg::string& function, const plg::string& message)
 {
 	LeafCodeInfo_t codeInfo{file.c_str(), line, function.c_str()};
 	return LoggingSystem_LogDirect(channelID, static_cast<LoggingSeverity_t>(severity), codeInfo, message.c_str());
 }
 
-extern "C" PLUGIN_API int LogFullColored(int channelID, int severity, const std::string& file, int line, const std::string& function, int color, const std::string& message)
+extern "C" PLUGIN_API int LogFullColored(int channelID, int severity, const plg::string& file, int line, const plg::string& function, int color, const plg::string& message)
 {
 	LeafCodeInfo_t codeInfo{file.c_str(), line, function.c_str()};
 	Color spewColor;

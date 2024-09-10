@@ -13,16 +13,16 @@ enum CommandCallingContext
 	Chat = 1,
 };
 
-using CommandListenerCallback = ResultType (*)(int caller, int context, const std::vector<std::string>& arguments);
+using CommandListenerCallback = ResultType (*)(int caller, int context, const std::vector<plg::string>& arguments);
 
 struct ConCommandInfo
 {
 	ConCommandInfo() = default;
-	explicit ConCommandInfo(std::string name, std::string description = {});
+	explicit ConCommandInfo(plg::string name, plg::string description = {});
 	~ConCommandInfo() = default;
 
-	std::string name;
-	std::string description;
+	plg::string name;
+	plg::string description;
 	uint64 adminFlags{};
 	ConCommand* command{};
 	std::unique_ptr<ConCommand> commandRef;
@@ -38,19 +38,19 @@ public:
 	CConCommandManager() = default;
 	~CConCommandManager() = default;
 
-	void AddCommandListener(const std::string& name, CommandListenerCallback callback, HookMode mode);
-	void RemoveCommandListener(const std::string& name, CommandListenerCallback callback, HookMode mode);
-	bool IsValidValveCommand(const std::string& name) const;
-	bool AddValveCommand(const std::string& name, const std::string& description, int64 flags = 0, uint64 adminFlags = 0);
-	bool RemoveValveCommand(const std::string& name);
+	void AddCommandListener(const plg::string& name, CommandListenerCallback callback, HookMode mode);
+	void RemoveCommandListener(const plg::string& name, CommandListenerCallback callback, HookMode mode);
+	bool IsValidValveCommand(const plg::string& name) const;
+	bool AddValveCommand(const plg::string& name, const plg::string& description, int64 flags = 0, uint64 adminFlags = 0);
+	bool RemoveValveCommand(const plg::string& name);
 
 	dyno::ReturnAction Hook_DispatchConCommand(dyno::IHook& hook);
 	dyno::ReturnAction Hook_DispatchConCommand_Post(dyno::IHook& hook);
-	ResultType ExecuteCommandCallbacks(const std::string& name, const CCommandContext& ctx, const CCommand& args, HookMode mode, CommandCallingContext callingContext);
+	ResultType ExecuteCommandCallbacks(const plg::string& name, const CCommandContext& ctx, const CCommand& args, HookMode mode, CommandCallingContext callingContext);
 
 private:
 	//std::vector<ConCommandInfo*> m_cmdList;
-	std::map<std::string, CommandInfoPtr, utils::CaseInsensitiveComparator> m_cmdLookup;
+	std::map<plg::string, CommandInfoPtr, utils::CaseInsensitiveComparator> m_cmdLookup;
 	CListenerManager<CommandListenerCallback> m_globalPre;
 	CListenerManager<CommandListenerCallback> m_globalPost;
 };

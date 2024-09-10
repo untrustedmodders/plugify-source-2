@@ -9,7 +9,7 @@
 
 class CEntityIOOutput;
 
-using OutputKey = std::pair<std::string, std::string>;
+using OutputKey = std::pair<plg::string, plg::string>;
 
 using EntityListenerCallback = ResultType (*)(int activator, int caller, float delay);
 
@@ -25,14 +25,14 @@ public:
 	CEntityOutputManager() = default;
 	~CEntityOutputManager() = default;
 
-	void HookEntityOutput(std::string szClassname, std::string szOutput, EntityListenerCallback callback, HookMode mode);
-	void UnhookEntityOutput(std::string szClassname, std::string szOutput, EntityListenerCallback callback, HookMode mode);
+	void HookEntityOutput(plg::string szClassname, plg::string szOutput, EntityListenerCallback callback, HookMode mode);
+	void UnhookEntityOutput(plg::string szClassname, plg::string szOutput, EntityListenerCallback callback, HookMode mode);
 
 	dyno::ReturnAction Hook_FireOutputInternal(dyno::IHook& hook);
 	dyno::ReturnAction Hook_FireOutputInternal_Post(dyno::IHook& hook);
 
 private:
-	std::unordered_map<OutputKey, CallbackPair, utils::PairHash<std::string, std::string>> m_hookMap;
+	std::unordered_map<OutputKey, CallbackPair, utils::PairHash<plg::string, plg::string>> m_hookMap;
 	std::vector<CallbackPair*> m_vecCallbackPairs;
 };
 

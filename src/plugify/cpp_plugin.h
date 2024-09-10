@@ -4,17 +4,20 @@
 #include <cstdint>
 #include <optional>
 #include <filesystem>
+#include <utility>
 #include <vector>
 #include <span>
 
-#undef FindResource
+#include <plugify/string.h>
 
-namespace plugify {
-	constexpr int kApiVersion = 1;
+namespace plg {
+	constexpr int32_t kApiVersion = 1;
 
-	using InitFunc = int (*)(std::span<void*>, int, void*);
-	using StartFunc = void (*)();
-	using EndFunc = void (*)();
+	extern "C"
+	struct PluginResult {
+		int32_t version;
+		bool debug;
+	};
 
 	using GetMethodPtrFn = void* (*)(std::string_view);
 	using GetMethodPtr2Fn = void (*)(std::string_view, void**);
@@ -76,7 +79,7 @@ namespace plugify {
 	IPluginEntry* GetPluginEntry();
 }
 
-#define EXPOSE_PLUGIN(plugin_api, interface_addr) namespace plugify { \
+#define EXPOSE_PLUGIN(plugin_api, interface_addr) namespace plg { \
 	GetMethodPtrFn GetMethodPtr{ nullptr }; \
 	GetMethodPtr2Fn GetMethodPtr2{ nullptr }; \
 	GetBaseDirFn GetBaseDir{ nullptr }; \
@@ -96,9 +99,9 @@ namespace plugify {
 		FindResourceFn FindResource{ nullptr }; \
 	} \
 	extern "C" \
-	plugin_api int Plugify_Init(std::span<void*> api, int version, void* handle) { \
+	plugin_api PluginResult Plugify_Init(std::span<void*> api, int32_t version, void* handle) { \
 		if (version < kApiVersion) { \
-			return kApiVersion; \
+			return { kApiVersion, PLUGIFY_IS_DEBUG }; \
 		} \
 		size_t i = 0; \
 		GetMethodPtr = reinterpret_cast<GetMethodPtrFn>(api[i++]); \
@@ -117,7 +120,7 @@ namespace plugify {
 		plugin::GetDependencies = reinterpret_cast<plugin::GetDependenciesFn>(api[i++]); \
 		plugin::FindResource = reinterpret_cast<plugin::FindResourceFn>(api[i++]); \
 		plugin::handle = handle; \
-		return 0; \
+		return { 0, PLUGIFY_IS_DEBUG }; \
 	} \
 	extern "C" \
 	plugin_api void Plugify_PluginStart() { \
@@ -127,12 +130,12 @@ namespace plugify {
 	plugin_api void Plugify_PluginEnd() { \
 		GetPluginEntry()->OnPluginEnd(); \
 	} \
-	plugify::IPluginEntry* GetPluginEntry() { \
+	plg::IPluginEntry* GetPluginEntry() { \
 		return interface_addr; \
 	} \
 }
 
-namespace plugify {
+namespace plg {
 	struct Vector2 {
 		float x{};
 		float y{};

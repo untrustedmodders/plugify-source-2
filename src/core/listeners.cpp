@@ -16,7 +16,7 @@
 		Get##name##ListenerManager().Unregister(func);          \
 	}
 
-DEFINE_MANAGER_ACCESSOR(OnClientConnect, bool, int, const std::string&, const std::string&)
+DEFINE_MANAGER_ACCESSOR(OnClientConnect, bool, int, const plg::string&, const plg::string&)
 DEFINE_MANAGER_ACCESSOR(OnClientConnect_Post, void, int)
 DEFINE_MANAGER_ACCESSOR(OnClientConnected, void, int)
 DEFINE_MANAGER_ACCESSOR(OnClientPutInServer, void, int)
@@ -27,7 +27,7 @@ DEFINE_MANAGER_ACCESSOR(OnClientFullyConnect, void, int)
 DEFINE_MANAGER_ACCESSOR(OnClientSettingsChanged, void, int)
 DEFINE_MANAGER_ACCESSOR(OnClientAuthorized, void, int, uint64)
 
-DEFINE_MANAGER_ACCESSOR(OnLevelInit, void, const std::string&, const std::string&)
+DEFINE_MANAGER_ACCESSOR(OnLevelInit, void, const plg::string&, const plg::string&)
 DEFINE_MANAGER_ACCESSOR(OnLevelShutdown, void)
 
 DEFINE_MANAGER_ACCESSOR(OnEntitySpawned, void, CEntityInstance*)

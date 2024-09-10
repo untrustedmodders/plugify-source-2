@@ -131,17 +131,17 @@ extern "C" PLUGIN_API void* GetConcreteEntityListPointer()
 	return &g_pEntitySystem->m_EntityList;
 }
 
-extern "C" PLUGIN_API void HookEntityOutput(const std::string& szClassname, const std::string& szOutput, EntityListenerCallback callback, bool post)
+extern "C" PLUGIN_API void HookEntityOutput(const plg::string& szClassname, const plg::string& szOutput, EntityListenerCallback callback, bool post)
 {
 	g_OutputManager.HookEntityOutput(szClassname, szOutput, callback, static_cast<HookMode>(post));
 }
 
-extern "C" PLUGIN_API void UnhookEntityOutput(const std::string& szClassname, const std::string& szOutput, EntityListenerCallback callback, bool post)
+extern "C" PLUGIN_API void UnhookEntityOutput(const plg::string& szClassname, const plg::string& szOutput, EntityListenerCallback callback, bool post)
 {
 	g_OutputManager.UnhookEntityOutput(szClassname, szOutput, callback, static_cast<HookMode>(post));
 }
 
-extern "C" PLUGIN_API int FindEntityByClassname(int startEntity, const std::string& szName)
+extern "C" PLUGIN_API int FindEntityByClassname(int startEntity, const plg::string& szName)
 {
 	CBaseEntity* start = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(startEntity)));
 	if (!start)
@@ -158,7 +158,7 @@ extern "C" PLUGIN_API int FindEntityByClassname(int startEntity, const std::stri
 	return ent->entindex();
 }
 
-extern "C" PLUGIN_API int FindEntityByName(int startEntity, const std::string& szName)
+extern "C" PLUGIN_API int FindEntityByName(int startEntity, const plg::string& szName)
 {
 	CBaseEntity* start = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(startEntity)));
 	if (!start)
@@ -175,7 +175,7 @@ extern "C" PLUGIN_API int FindEntityByName(int startEntity, const std::string& s
 	return ent->entindex();
 }
 
-extern "C" PLUGIN_API int CreateEntityByName(const std::string& className)
+extern "C" PLUGIN_API int CreateEntityByName(const plg::string& className)
 {
 	CBaseEntity* ent = static_cast<CBaseEntity*>(addresses::CreateEntityByName(className.c_str(), -1));
 	if (!ent)
@@ -210,7 +210,7 @@ extern "C" PLUGIN_API void RemoveEntity(int entityIndex)
 
 ///
 
-extern "C" PLUGIN_API void GetEntityClassname(std::string& output, int entityIndex)
+extern "C" PLUGIN_API void GetEntityClassname(plg::string& output, int entityIndex)
 {
 	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
@@ -221,7 +221,7 @@ extern "C" PLUGIN_API void GetEntityClassname(std::string& output, int entityInd
 	std::construct_at(&output, ent->GetClassname());
 }
 
-extern "C" PLUGIN_API void GetEntityName(std::string& output, int entityIndex)
+extern "C" PLUGIN_API void GetEntityName(plg::string& output, int entityIndex)
 {
 	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
@@ -232,7 +232,7 @@ extern "C" PLUGIN_API void GetEntityName(std::string& output, int entityIndex)
 	std::construct_at(&output, ent->GetName());
 }
 
-extern "C" PLUGIN_API void SetEntityName(int entityIndex, const std::string& name)
+extern "C" PLUGIN_API void SetEntityName(int entityIndex, const plg::string& name)
 {
 	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
@@ -513,7 +513,7 @@ extern "C" PLUGIN_API void SetEntityAbsVelocity(int entityIndex, const Vector& v
 	ent->m_vecAbsVelocity = velocity;
 }
 
-extern "C" PLUGIN_API void GetEntityModel(std::string& output, int entityIndex)
+extern "C" PLUGIN_API void GetEntityModel(plg::string& output, int entityIndex)
 {
 	CBaseModelEntity* ent = static_cast<CBaseModelEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)
@@ -524,7 +524,7 @@ extern "C" PLUGIN_API void GetEntityModel(std::string& output, int entityIndex)
 	std::construct_at(&output, ent->GetModelName());
 
 }
-extern "C" PLUGIN_API void SetEntityModel(int entityIndex, const std::string& model)
+extern "C" PLUGIN_API void SetEntityModel(int entityIndex, const plg::string& model)
 {
 	CBaseModelEntity* ent = static_cast<CBaseModelEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
 	if (!ent)

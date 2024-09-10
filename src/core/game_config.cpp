@@ -1,7 +1,7 @@
 #include "game_config.h"
 #include <core/sdk/utils.h>
 
-CGameConfig::CGameConfig(std::string game, std::string path) : m_szGameDir(std::move(game)), m_szPath(std::move(path)), m_pKeyValues(std::make_unique<KeyValues>("Games"))
+CGameConfig::CGameConfig(plg::string game, plg::string path) : m_szGameDir(std::move(game)), m_szPath(std::move(path)), m_pKeyValues(std::make_unique<KeyValues>("Games"))
 {
 }
 
@@ -34,8 +34,8 @@ bool CGameConfig::Initialize()
 		{
 			FOR_EACH_SUBKEY(signatures, it)
 			{
-				m_umLibraries[it->GetName()] = std::string(it->GetString("library"));
-				m_umSignatures[it->GetName()] = std::string(it->GetString(platform));
+				m_umLibraries[it->GetName()] = plg::string(it->GetString("library"));
+				m_umSignatures[it->GetName()] = plg::string(it->GetString(platform));
 			}
 		}
 
@@ -44,7 +44,7 @@ bool CGameConfig::Initialize()
 		{
 			FOR_EACH_SUBKEY(patches, it)
 			{
-				m_umPatches[it->GetName()] = std::string(it->GetString(platform));
+				m_umPatches[it->GetName()] = plg::string(it->GetString(platform));
 			}
 		}
 
@@ -86,28 +86,28 @@ bool CGameConfig::Initialize()
 	return true;
 }
 
-const std::string& CGameConfig::GetPath() const
+const plg::string& CGameConfig::GetPath() const
 {
 	return m_szPath;
 }
 
-std::string_view CGameConfig::GetSignature(const std::string& name) const
+std::string_view CGameConfig::GetSignature(const plg::string& name) const
 {
 	auto it = m_umSignatures.find(name);
 	if (it == m_umSignatures.end())
 		return {};
-	return std::get<std::string>(*it);
+	return std::get<plg::string>(*it);
 }
 
-std::string_view CGameConfig::GetPatch(const std::string& name) const
+std::string_view CGameConfig::GetPatch(const plg::string& name) const
 {
 	auto it = m_umPatches.find(name);
 	if (it == m_umPatches.end())
 		return {};
-	return std::get<std::string>(*it);
+	return std::get<plg::string>(*it);
 }
 
-int CGameConfig::GetOffset(const std::string& name) const
+int CGameConfig::GetOffset(const plg::string& name) const
 {
 	auto it = m_umOffsets.find(name);
 	if (it == m_umOffsets.end())
@@ -115,18 +115,18 @@ int CGameConfig::GetOffset(const std::string& name) const
 	return std::get<int>(*it);
 }
 
-std::string_view CGameConfig::GetLibrary(const std::string& name) const
+std::string_view CGameConfig::GetLibrary(const plg::string& name) const
 {
 	auto it = m_umLibraries.find(name);
 	if (it == m_umLibraries.end())
 		return {};
-	return std::get<std::string>(*it);
+	return std::get<plg::string>(*it);
 }
 
 // memory addresses below 0x10000 are automatically considered invalid for dereferencing
 #define VALID_MINIMUM_MEMORY_ADDRESS ((void*)0x10000)
 
-void* CGameConfig::GetAddress(const std::string& name) const
+void* CGameConfig::GetAddress(const plg::string& name) const
 {
 	auto it = m_umAddresses.find(name);
 	if (it == m_umAddresses.end())
@@ -161,7 +161,7 @@ void* CGameConfig::GetAddress(const std::string& name) const
 	return addr;
 }
 
-CModule* CGameConfig::GetModule(const std::string& name) const
+CModule* CGameConfig::GetModule(const plg::string& name) const
 {
 	const std::string_view library = GetLibrary(name);
 	if (library.empty())
@@ -181,7 +181,7 @@ CModule* CGameConfig::GetModule(const std::string& name) const
 	return {};
 }
 
-bool CGameConfig::IsSymbol(const std::string& name) const
+bool CGameConfig::IsSymbol(const plg::string& name) const
 {
 	const std::string_view sigOrSymbol = GetSignature(name);
 	if (sigOrSymbol.empty())
@@ -192,7 +192,7 @@ bool CGameConfig::IsSymbol(const std::string& name) const
 	return sigOrSymbol[0] == '@';
 }
 
-std::string_view CGameConfig::GetSymbol(const std::string& name) const
+std::string_view CGameConfig::GetSymbol(const plg::string& name) const
 {
 	const std::string_view symbol = GetSignature(name);
 
@@ -205,7 +205,7 @@ std::string_view CGameConfig::GetSymbol(const std::string& name) const
 	return symbol.substr(1);
 }
 
-CMemory CGameConfig::ResolveSignature(const std::string& name) const
+CMemory CGameConfig::ResolveSignature(const plg::string& name) const
 {
 	auto module = GetModule(name);
 	if (!module)
@@ -248,7 +248,7 @@ CMemory CGameConfig::ResolveSignature(const std::string& name) const
 	return address;
 }
 
-CGameConfig* CGameConfigManager::LoadGameConfigFile(std::string path)
+CGameConfig* CGameConfigManager::LoadGameConfigFile(plg::string path)
 {
 	auto it = m_configs.find(path);
 	if (it != m_configs.end())

@@ -1,6 +1,6 @@
 #include "output_manager.h"
 
-void CEntityOutputManager::HookEntityOutput(std::string szClassname, std::string szOutput, EntityListenerCallback callback, HookMode mode)
+void CEntityOutputManager::HookEntityOutput(plg::string szClassname, plg::string szOutput, EntityListenerCallback callback, HookMode mode)
 {
 	OutputKey outputKey{std::move(szClassname), std::move(szOutput)};
 	CallbackPair* pCallbackPair;
@@ -19,7 +19,7 @@ void CEntityOutputManager::HookEntityOutput(std::string szClassname, std::string
 	listener.Register(callback);
 }
 
-void CEntityOutputManager::UnhookEntityOutput(std::string szClassname, std::string szOutput, EntityListenerCallback callback, HookMode mode)
+void CEntityOutputManager::UnhookEntityOutput(plg::string szClassname, plg::string szOutput, EntityListenerCallback callback, HookMode mode)
 {
 	OutputKey outputKey{std::move(szClassname), std::move(szOutput)};
 

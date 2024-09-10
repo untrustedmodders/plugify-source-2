@@ -53,14 +53,14 @@ public:
 	~CPlayer();
 
 public:
-	void Initialize(std::string name, std::string ip, CPlayerSlot slot);
+	void Initialize(plg::string name, plg::string ip, CPlayerSlot slot);
 	void Connect();
 	void Disconnect();
 	void Authorize();
 
 public:
-	const std::string& GetName() const;
-	void SetName(std::string name);
+	const plg::string& GetName() const;
+	void SetName(plg::string name);
 	INetChannelInfo* GetNetInfo() const;
 	const CSteamID* GetSteamId() const;
 	void SetSteamId(const CSteamID* steam_id);
@@ -73,7 +73,7 @@ public:
 	bool IsInGame() const;
 	void Kick();
 	const char* GetKeyValue(const char* key) const;
-	const std::string& GetIpAddress() const;
+	const plg::string& GetIpAddress() const;
 	float GetTimeConnected() const;
 	float GetLatency() const;
 	void SetListen(CPlayerSlot slot, ListenOverride listen);
@@ -83,9 +83,9 @@ public:
 	bool IsAuthStringValidated() const;
 
 public:
-	std::string m_name;
-	std::string m_authId;
-	std::string m_ipAddress;
+	plg::string m_name;
+	plg::string m_authId;
+	plg::string m_ipAddress;
 	bool m_bConnected{};
 	bool m_bFakeClient{};
 	bool m_bInGame{};

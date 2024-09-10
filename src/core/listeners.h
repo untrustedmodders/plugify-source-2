@@ -7,7 +7,7 @@
 	using Fn##name = ret (*)(__VA_ARGS__);     \
 	CListenerManager<Fn##name>& Get##name##ListenerManager();
 
-DEFINE_MANAGER_CREATOR(OnClientConnect, bool, int, const std::string&, const std::string&)
+DEFINE_MANAGER_CREATOR(OnClientConnect, bool, int, const plg::string&, const plg::string&)
 DEFINE_MANAGER_CREATOR(OnClientConnect_Post, void, int)
 DEFINE_MANAGER_CREATOR(OnClientConnected, void, int)
 DEFINE_MANAGER_CREATOR(OnClientPutInServer, void, int)
@@ -18,7 +18,7 @@ DEFINE_MANAGER_CREATOR(OnClientFullyConnect, void, int)
 DEFINE_MANAGER_CREATOR(OnClientSettingsChanged, void, int)
 DEFINE_MANAGER_CREATOR(OnClientAuthorized, void, int, uint64)
 
-DEFINE_MANAGER_CREATOR(OnLevelInit, void, const std::string&, const std::string&)
+DEFINE_MANAGER_CREATOR(OnLevelInit, void, const plg::string&, const plg::string&)
 DEFINE_MANAGER_CREATOR(OnLevelShutdown, void)
 
 DEFINE_MANAGER_CREATOR(OnEntitySpawned, void, CEntityInstance*)

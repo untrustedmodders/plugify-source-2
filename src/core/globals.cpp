@@ -87,7 +87,7 @@ constexpr auto ModulePath(const char (&str)[N])
 
 static CModule* CreateModule(const char* p)
 {
-	std::string path = utils::GameDirectory() + p;
+	plg::string path = utils::GameDirectory() + p;
 	auto* module = new CModule(path);
 	if (!module->GetModuleHandle())
 	{
@@ -98,7 +98,7 @@ static CModule* CreateModule(const char* p)
 
 namespace globals
 {
-	void Initialize(std::string coreConfig, std::string gameConfig)
+	void Initialize(plg::string coreConfig, plg::string gameConfig)
 	{
 		modules::engine = CreateModule(ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "engine2").c);
 		modules::tier0 = CreateModule(ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "tier0").c);

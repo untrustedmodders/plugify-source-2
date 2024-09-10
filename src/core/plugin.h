@@ -4,7 +4,7 @@
 #include <plugify/dynohook.h>
 #include <plugin_export.h>
 
-class Source2SDK : public plugify::IPluginEntry
+class Source2SDK : public plg::IPluginEntry
 {
 public:
 	void OnPluginStart() override;

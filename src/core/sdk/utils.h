@@ -54,9 +54,9 @@ namespace utils
 	bool IsSpawnValid(const Vector& origin);
 	bool FindValidSpawn(Vector& origin, QAngle& angles);
 
-	const std::string& GameDirectory();
+	const plg::string& GameDirectory();
 
-	/*inline std::string Demangle(const char* name)
+	/*inline plg::string Demangle(const char* name)
 	{
 #if CS2SDK_PLATFORM_LINUX || CS2SDK_PLATFORM_APPLE
 		int status = 0;
@@ -72,7 +72,7 @@ namespace utils
 		if (ret.substr(ret.size() - 3) == " ()")
 			ret.remove_suffix(3);
 
-		return std::string(ret);
+		return plg::string(ret);
 	}*/
 
 	/**
@@ -105,7 +105,7 @@ namespace utils
 
 	struct CaseInsensitiveComparator
 	{
-		bool operator()(const std::string& lhs, const std::string& rhs) const
+		bool operator()(const plg::string& lhs, const plg::string& rhs) const
 		{
 			return std::lexicographical_compare(
 				lhs.begin(), lhs.end(),

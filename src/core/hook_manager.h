@@ -27,7 +27,7 @@ public:
 	}
 
 	template <typename F, typename C, typename... T>
-	void AddHookDetourFunc(const std::string& name, C callback, T... types)
+	void AddHookDetourFunc(const plg::string& name, C callback, T... types)
 	{
 		auto addr = g_pGameConfig->ResolveSignature(name);
 		if (!addr)

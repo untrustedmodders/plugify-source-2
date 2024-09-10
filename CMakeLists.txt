@@ -78,6 +78,8 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
         CS2SDK_ROOT_BINARY="/bin/linuxsteamrt64/"
         # Metamod hack
         CS2SDK_GAME_BINARY="/bin/linuxsteamrt64/../../csgo/bin/linuxsteamrt64/"
+
+        PLUGIFY_IS_DEBUG=$<STREQUAL:${CMAKE_BUILD_TYPE},Debug>
 )
 
 if(LINUX)
@@ -94,6 +96,7 @@ if(LINUX)
             bswap_64=__bswap_64
             _GLIBCXX_USE_CXX11_ABI=0
     )
+    target_link_libraries(${PROJECT_NAME} PRIVATE -static-libstdc++ -static-libgcc)
 elseif(WIN32)
     target_compile_definitions(${PROJECT_NAME} PRIVATE
             META_IS_SOURCE2
@@ -109,7 +112,6 @@ elseif(WIN32)
     )
     set_target_properties(${PROJECT_NAME} PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
-
 
 # Libraries
 target_link_libraries(${PROJECT_NAME} PRIVATE sourcesdk)

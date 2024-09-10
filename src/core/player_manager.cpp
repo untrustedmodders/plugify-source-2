@@ -13,7 +13,7 @@
 CPlayer::CPlayer() = default;
 CPlayer::~CPlayer() = default;
 
-void CPlayer::Initialize(std::string name, std::string ip, CPlayerSlot slot)
+void CPlayer::Initialize(plg::string name, plg::string ip, CPlayerSlot slot)
 {
 	m_bConnected = true;
 	m_iSlot = slot;
@@ -21,7 +21,7 @@ void CPlayer::Initialize(std::string name, std::string ip, CPlayerSlot slot)
 	m_ipAddress = std::move(ip);
 }
 
-const std::string& CPlayer::GetName() const
+const plg::string& CPlayer::GetName() const
 {
 	return m_name;
 }
@@ -55,7 +55,7 @@ void CPlayer::Authorize()
 	m_bAuthorized = true;
 }
 
-void CPlayer::SetName(std::string name)
+void CPlayer::SetName(plg::string name)
 {
 	m_name = std::move(name);
 }
@@ -80,7 +80,7 @@ const char* CPlayer::GetKeyValue(const char* key) const
 	return g_pEngineServer2->GetClientConVarValue(m_iSlot, key);
 }
 
-const std::string& CPlayer::GetIpAddress() const
+const plg::string& CPlayer::GetIpAddress() const
 {
 	return m_ipAddress;
 }
