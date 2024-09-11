@@ -26,6 +26,14 @@ if(WIN32 AND NOT MSVC)
     message(FATAL "MSVC restricted.")
 endif()
 
+#
+# Format
+#
+include(cmake/compat_format.cmake)
+
+#
+# SDK
+#
 add_subdirectory(external/sourcesdk)
 
 # Sources
@@ -79,8 +87,13 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
         # Metamod hack
         CS2SDK_GAME_BINARY="/bin/linuxsteamrt64/../../csgo/bin/linuxsteamrt64/"
 
+        PLUGIFY_FORMAT_SUPPORT=$<BOOL:${COMPILER_SUPPORTS_FORMAT}> 
         PLUGIFY_IS_DEBUG=$<STREQUAL:${CMAKE_BUILD_TYPE},Debug>
 )
+
+if(NOT COMPILER_SUPPORTS_FORMAT)
+    target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt-header-only)
+endif()
 
 if(LINUX)
     target_compile_definitions(${PROJECT_NAME} PRIVATE
