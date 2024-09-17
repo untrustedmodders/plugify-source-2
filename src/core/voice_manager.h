@@ -1,6 +1,6 @@
 #pragma once
 
-#include <plugify/dynohook.h>
+#include <plugify/polyhook.h>
 #include <public/eiface.h>
 
 class CVoiceManager
@@ -9,5 +9,5 @@ public:
 	CVoiceManager() = delete;
 	~CVoiceManager() = delete;
 
-	static dyno::ReturnAction Hook_SetClientListening(dyno::IHook& hook);
+	static poly::ReturnAction Hook_SetClientListening(poly::Params& params, int count, poly::Return& ret);
 };

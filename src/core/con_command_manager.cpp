@@ -240,11 +240,11 @@ ResultType CConCommandManager::ExecuteCommandCallbacks(const plg::string& name, 
 	return result;
 }
 
-dyno::ReturnAction CConCommandManager::Hook_DispatchConCommand(dyno::IHook& hook)
+poly::ReturnAction CConCommandManager::Hook_DispatchConCommand(poly::Params& params, int count, poly::Return& ret)
 {
-	// auto cmd = dyno::GetArgument<ConCommandHandle* const>(hook, 1);
-	auto ctx = dyno::GetArgument<const CCommandContext*>(hook, 2);
-	auto args = dyno::GetArgument<const CCommand*>(hook, 3);
+	// auto cmd = poly::GetArgument<ConCommandHandle* const>(params, 1);
+	auto ctx = poly::GetArgument<const CCommandContext*>(params, 2);
+	auto args = poly::GetArgument<const CCommand*>(params, 3);
 
 	const char* name = args->Arg(0);
 
@@ -253,27 +253,27 @@ dyno::ReturnAction CConCommandManager::Hook_DispatchConCommand(dyno::IHook& hook
 	auto result = ExecuteCommandCallbacks(name, *ctx, *args, HookMode::Pre, CommandCallingContext::Console);
 	if (result >= ResultType::Handled)
 	{
-		return dyno::ReturnAction::Supercede;
+		return poly::ReturnAction::Supercede;
 	}
 
-	return dyno::ReturnAction::Ignored;
+	return poly::ReturnAction::Ignored;
 }
 
-dyno::ReturnAction CConCommandManager::Hook_DispatchConCommand_Post(dyno::IHook& hook)
+poly::ReturnAction CConCommandManager::Hook_DispatchConCommand_Post(poly::Params& params, int count, poly::Return& ret)
 {
-	// auto cmd = dyno::GetArgument<ConCommandHandle* const>(hook, 1);
-	auto ctx = dyno::GetArgument<const CCommandContext*>(hook, 2);
-	auto args = dyno::GetArgument<const CCommand*>(hook, 3);
+	// auto cmd = poly::GetArgument<ConCommandHandle* const>(params, 1);
+	auto ctx = poly::GetArgument<const CCommandContext*>(params, 2);
+	auto args = poly::GetArgument<const CCommand*>(params, 3);
 
 	const char* name = args->Arg(0);
 
 	auto result = ExecuteCommandCallbacks(name, *ctx, *args, HookMode::Post, CommandCallingContext::Console);
 	if (result >= ResultType::Handled)
 	{
-		return dyno::ReturnAction::Supercede;
+		return poly::ReturnAction::Supercede;
 	}
 
-	return dyno::ReturnAction::Ignored;
+	return poly::ReturnAction::Ignored;
 }
 
 CConCommandManager g_CommandManager;

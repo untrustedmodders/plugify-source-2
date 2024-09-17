@@ -4,7 +4,7 @@
 #include <core/sdk/utils.h>
 
 #include <convar.h>
-#include <plugify/dynohook.h>
+#include <plugify/polyhook.h>
 
 enum CommandCallingContext
 {
@@ -44,8 +44,8 @@ public:
 	bool AddValveCommand(const plg::string& name, const plg::string& description, int64 flags = 0, uint64 adminFlags = 0);
 	bool RemoveValveCommand(const plg::string& name);
 
-	dyno::ReturnAction Hook_DispatchConCommand(dyno::IHook& hook);
-	dyno::ReturnAction Hook_DispatchConCommand_Post(dyno::IHook& hook);
+	poly::ReturnAction Hook_DispatchConCommand(poly::Params& params, int count, poly::Return& ret);
+	poly::ReturnAction Hook_DispatchConCommand_Post(poly::Params& params, int count, poly::Return& ret);
 	ResultType ExecuteCommandCallbacks(const plg::string& name, const CCommandContext& ctx, const CCommand& args, HookMode mode, CommandCallingContext callingContext);
 
 private:

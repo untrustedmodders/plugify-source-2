@@ -1,7 +1,7 @@
 #pragma once
 
 #include <plugify/cpp_plugin.h>
-#include <plugify/dynohook.h>
+#include <plugify/polyhook.h>
 #include <plugin_export.h>
 
 class Source2SDK : public plg::IPluginEntry
@@ -11,33 +11,36 @@ public:
 	void OnPluginEnd() override;
 	static void OnServerStartup();
 
-	static dyno::ReturnAction Hook_GameEventManagerInit(dyno::CallbackType type, dyno::IHook& hook);
-	static dyno::ReturnAction Hook_StartupServer(dyno::CallbackType type, dyno::IHook& hook);
-	static dyno::ReturnAction Hook_FireEvent(dyno::CallbackType type, dyno::IHook& hook);
-	//static dyno::ReturnAction Hook_PostEvent(dyno::CallbackType type, dyno::IHook& hook);
-	static dyno::ReturnAction Hook_OnLevelInit(dyno::CallbackType type, dyno::IHook& hook);
-	static dyno::ReturnAction Hook_OnLevelShutdown(dyno::CallbackType type, dyno::IHook& hook);
-	static dyno::ReturnAction Hook_GameFrame(dyno::CallbackType type, dyno::IHook& hook);
-	static dyno::ReturnAction Hook_ClientActive(dyno::CallbackType type, dyno::IHook& hook);
-	static dyno::ReturnAction Hook_ClientDisconnect(dyno::CallbackType type, dyno::IHook& hook);
-	static dyno::ReturnAction Hook_ClientPutInServer(dyno::CallbackType type, dyno::IHook& hook);
-	static dyno::ReturnAction Hook_ClientSettingsChanged(dyno::CallbackType type, dyno::IHook& hook);
-	static dyno::ReturnAction Hook_OnClientConnected(dyno::CallbackType type, dyno::IHook& hook);
-	static dyno::ReturnAction Hook_ClientFullyConnect(dyno::CallbackType type, dyno::IHook& hook);
-	static dyno::ReturnAction Hook_ClientConnect(dyno::CallbackType type, dyno::IHook& hook);
-	static dyno::ReturnAction Hook_ClientCommand(dyno::CallbackType type, dyno::IHook& hook);
-	// static dyno::ReturnAction Hook_CheckTransmit(dyno::CallbackType type, dyno::IHook& hook);
-	static dyno::ReturnAction Hook_ServerHibernationUpdate(dyno::CallbackType type, dyno::IHook& hook);
-	static dyno::ReturnAction Hook_GameServerSteamAPIActivated(dyno::CallbackType type, dyno::IHook& hook);
-	static dyno::ReturnAction Hook_GameServerSteamAPIDeactivated(dyno::CallbackType type, dyno::IHook& hook);
-	static dyno::ReturnAction Hook_OnHostNameChanged(dyno::CallbackType type, dyno::IHook& hook);
-	static dyno::ReturnAction Hook_PreFatalShutdown(dyno::CallbackType type, dyno::IHook& hook);
-	static dyno::ReturnAction Hook_UpdateWhenNotInGame(dyno::CallbackType type, dyno::IHook& hook);
-	static dyno::ReturnAction Hook_PreWorldUpdate(dyno::CallbackType type, dyno::IHook& hook);
-	static dyno::ReturnAction Hook_FireOutputInternal(dyno::CallbackType type, dyno::IHook& hook);
-	static dyno::ReturnAction Hook_SayText2Filter(dyno::CallbackType type, dyno::IHook& hook); // TODO: TEMP
-	static dyno::ReturnAction Hook_DispatchConCommand(dyno::CallbackType type, dyno::IHook& hook);
-	static dyno::ReturnAction Hook_SetClientListening(dyno::CallbackType type, dyno::IHook& hook);
+	static poly::ReturnAction Hook_SetupHookLoop_Pre(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	static poly::ReturnAction Hook_SetupHookLoop_Post(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+
+	static poly::ReturnAction Hook_GameEventManagerInit(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	static poly::ReturnAction Hook_StartupServer(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	static poly::ReturnAction Hook_FireEvent(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	//static poly::ReturnAction Hook_PostEvent(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	static poly::ReturnAction Hook_OnLevelInit(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	static poly::ReturnAction Hook_OnLevelShutdown(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	static poly::ReturnAction Hook_GameFrame(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	static poly::ReturnAction Hook_ClientActive(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	static poly::ReturnAction Hook_ClientDisconnect(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	static poly::ReturnAction Hook_ClientPutInServer(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	static poly::ReturnAction Hook_ClientSettingsChanged(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	static poly::ReturnAction Hook_OnClientConnected(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	static poly::ReturnAction Hook_ClientFullyConnect(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	static poly::ReturnAction Hook_ClientConnect(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	static poly::ReturnAction Hook_ClientCommand(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	// static poly::ReturnAction Hook_CheckTransmit(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	static poly::ReturnAction Hook_ServerHibernationUpdate(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	static poly::ReturnAction Hook_GameServerSteamAPIActivated(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	static poly::ReturnAction Hook_GameServerSteamAPIDeactivated(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	static poly::ReturnAction Hook_OnHostNameChanged(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	static poly::ReturnAction Hook_PreFatalShutdown(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	static poly::ReturnAction Hook_UpdateWhenNotInGame(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	static poly::ReturnAction Hook_PreWorldUpdate(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	static poly::ReturnAction Hook_FireOutputInternal(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	static poly::ReturnAction Hook_SayText2Filter(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret); // TODO: TEMP
+	static poly::ReturnAction Hook_DispatchConCommand(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	static poly::ReturnAction Hook_SetClientListening(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 };
 
 extern Source2SDK g_sdk;

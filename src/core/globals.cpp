@@ -34,6 +34,7 @@ namespace modules
 	CModule* networksystem = nullptr;
 } // namespace modules
 
+SourceHook::ISourceHook* g_SHPtr = nullptr;
 IMetamodListener* g_pMetamodListener = nullptr;
 CCoreConfig* g_pCoreConfig = nullptr;
 CGameConfig* g_pGameConfig = nullptr;
@@ -129,6 +130,10 @@ namespace globals
 		using IMetamodListenerFn = IMetamodListener* (*)();
 		auto Plugify_ImmListener = plugify.GetFunctionByName("Plugify_ImmListener");
 		g_pMetamodListener = Plugify_ImmListener.CCast<IMetamodListenerFn>()();
+
+		using ISourceHookFn = SourceHook::ISourceHook* (*)();
+		auto Plugify_SourceHook = plugify.GetFunctionByName("Plugify_SourceHook");
+		g_SHPtr = Plugify_SourceHook.CCast<ISourceHookFn>()();
 
 		g_pCoreConfig = new CCoreConfig(std::move(coreConfig));
 		g_pCoreConfig->Initialize();

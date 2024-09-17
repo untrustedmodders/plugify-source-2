@@ -34,14 +34,23 @@ include(cmake/compat_format.cmake)
 #
 # SDK
 #
+if(LINUX)
+    set(SOURCESDK_MALLOC_OVERRIDE ON CACHE INTERNAL "")
+endif()
 add_subdirectory(external/sourcesdk)
-
-# Sources
-file(GLOB_RECURSE SOURCE_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "src/*.cpp")
-add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/external/dynlibutils/module.cpp)
 
 set(SOURCESDK_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/sourcesdk)
 set(METAMOD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/metamod-source)
+
+# Sources
+file(GLOB_RECURSE SOURCE_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "src/*.cpp")
+add_library(${PROJECT_NAME} SHARED
+        ${SOURCE_FILES}
+        ${CMAKE_CURRENT_SOURCE_DIR}/external/dynlibutils/module.cpp
+        ${METAMOD_DIR}/core/sourcehook/sourcehook.cpp
+        ${METAMOD_DIR}/core/sourcehook/sourcehook_impl_chookmaninfo.cpp
+        ${METAMOD_DIR}/core/sourcehook/sourcehook_impl_cvfnptr.cpp
+)
 
 target_include_directories(${PROJECT_NAME} PRIVATE
         ${SOURCESDK_DIR}

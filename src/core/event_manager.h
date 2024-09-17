@@ -3,7 +3,7 @@
 #include "listener_manager.h"
 #include <igameevents.h>
 
-#include <plugify/dynohook.h>
+#include <plugify/polyhook.h>
 
 struct EventInfo
 {
@@ -46,8 +46,8 @@ public:
 	void FireEventToClient(EventInfo* pInfo, CPlayerSlot slot);
 	void CancelCreatedEvent(EventInfo* pInfo);
 
-	dyno::ReturnAction Hook_OnFireEvent(dyno::IHook& hook);
-	dyno::ReturnAction Hook_OnFireEvent_Post(dyno::IHook& hook);
+	poly::ReturnAction Hook_OnFireEvent(poly::Params& params, int count, poly::Return& ret);
+	poly::ReturnAction Hook_OnFireEvent_Post(poly::Params& params, int count, poly::Return& ret);
 
 private:
 	void FireGameEvent(IGameEvent* event) override;

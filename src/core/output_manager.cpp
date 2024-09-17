@@ -38,14 +38,14 @@ void CEntityOutputManager::UnhookEntityOutput(plg::string szClassname, plg::stri
 	}
 }
 
-dyno::ReturnAction CEntityOutputManager::Hook_FireOutputInternal(dyno::IHook& hook)
+poly::ReturnAction CEntityOutputManager::Hook_FireOutputInternal(poly::Params& params, int count, poly::Return& ret)
 {
 	// CEntityIOOutput* const pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* const value, float flDelay
-	auto pThis = dyno::GetArgument<CEntityIOOutput* const>(hook, 0);
-	auto pActivator = dyno::GetArgument<CEntityInstance*>(hook, 1);
-	auto pCaller = dyno::GetArgument<CEntityInstance*>(hook, 2);
-	//auto value = dyno::GetArgument<const CVariant* const>(hook, 3);
-	auto flDelay = dyno::GetArgument<float>(hook, 4);
+	auto pThis = poly::GetArgument<CEntityIOOutput* const>(params, 0);
+	auto pActivator = poly::GetArgument<CEntityInstance*>(params, 1);
+	auto pCaller = poly::GetArgument<CEntityInstance*>(params, 2);
+	//auto value = poly::GetArgument<const CVariant* const>(params, 3);
+	auto flDelay = poly::GetArgument<float>(params, 4);
 
 	if (pCaller)
 	{
@@ -97,19 +97,19 @@ dyno::ReturnAction CEntityOutputManager::Hook_FireOutputInternal(dyno::IHook& ho
 
 	if (result >= ResultType::Handled)
 	{
-		return dyno::ReturnAction::Supercede;
+		return poly::ReturnAction::Supercede;
 	}
 
-	return dyno::ReturnAction::Ignored;
+	return poly::ReturnAction::Ignored;
 }
 
-dyno::ReturnAction CEntityOutputManager::Hook_FireOutputInternal_Post(dyno::IHook& hook)
+poly::ReturnAction CEntityOutputManager::Hook_FireOutputInternal_Post(poly::Params& params, int count, poly::Return& ret)
 {
-	//auto pThis = dyno::GetArgument<CEntityIOOutput* const>(hook, 0);
-	auto pActivator = dyno::GetArgument<CEntityInstance*>(hook, 1);
-	auto pCaller = dyno::GetArgument<CEntityInstance*>(hook, 2);
-	//auto value = dyno::GetArgument<const CVariant* const>(hook, 3);
-	auto flDelay = dyno::GetArgument<float>(hook, 4);
+	//auto pThis = poly::GetArgument<CEntityIOOutput* const>(params, 0);
+	auto pActivator = poly::GetArgument<CEntityInstance*>(params, 1);
+	auto pCaller = poly::GetArgument<CEntityInstance*>(params, 2);
+	//auto value = poly::GetArgument<const CVariant* const>(params, 3);
+	auto flDelay = poly::GetArgument<float>(params, 4);
 
 	int activator = pActivator != nullptr ? pActivator->GetEntityIndex().Get() : -1;
 	int caller = pCaller != nullptr ? pCaller->GetEntityIndex().Get() : -1;
@@ -119,7 +119,7 @@ dyno::ReturnAction CEntityOutputManager::Hook_FireOutputInternal_Post(dyno::IHoo
 		pCallbackPair->post.Notify(activator, caller, flDelay);
 	}
 
-	return dyno::ReturnAction::Ignored;
+	return poly::ReturnAction::Ignored;
 }
 
 CEntityOutputManager g_OutputManager;

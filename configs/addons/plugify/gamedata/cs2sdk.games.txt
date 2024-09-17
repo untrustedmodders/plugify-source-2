@@ -46,6 +46,7 @@
 				"windows"   "48 8B 15 ? ? ? ? 48 85 D2 74 ? 85 C9 74"
 				"linux"	    "48 8B 05 ? ? ? ? 48 85 C0 74 ? 85 FF"
 			}
+			// String: "resource/core.gameevents", "resource/game.gameevents"
 			"CGameEventManager_Init"
 			{
 				"library"   "server"

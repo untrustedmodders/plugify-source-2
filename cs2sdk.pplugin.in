@@ -20,7 +20,7 @@
 	},
 	"dependencies": [
 	  {
-		"name": "dynhook"
+		"name": "polyhook"
 	  }
 	],
 	"exportedMethods": [

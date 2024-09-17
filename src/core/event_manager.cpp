@@ -161,13 +161,13 @@ void CEventManager::CancelCreatedEvent(EventInfo* pInfo)
 	m_freeEvents.push(pInfo);
 }
 
-dyno::ReturnAction CEventManager::Hook_OnFireEvent(dyno::IHook& hook)
+poly::ReturnAction CEventManager::Hook_OnFireEvent(poly::Params& params, int count, poly::Return& ret)
 {
-	auto pEvent = dyno::GetArgument<IGameEvent*>(hook, 1);
-	auto bDontBroadcast = dyno::GetArgument<bool>(hook, 2);
+	auto pEvent = poly::GetArgument<IGameEvent*>(params, 1);
+	auto bDontBroadcast = poly::GetArgument<bool>(params, 2);
 
 	if (!pEvent)
-		return dyno::ReturnAction::Ignored;
+		return poly::ReturnAction::Ignored;
 
 	bool bLocalDontBroadcast = bDontBroadcast;
 	plg::string name(pEvent->GetName());
@@ -194,7 +194,7 @@ dyno::ReturnAction CEventManager::Hook_OnFireEvent(dyno::IHook& hook)
 				{
 					// m_EventCopies.push(g_gameEventManager->DuplicateEvent(pEvent));
 					g_gameEventManager->FreeEvent(pEvent);
-					return dyno::ReturnAction::Supercede;
+					return poly::ReturnAction::Supercede;
 				}
 			}
 		}
@@ -211,20 +211,20 @@ dyno::ReturnAction CEventManager::Hook_OnFireEvent(dyno::IHook& hook)
 
 	if (bLocalDontBroadcast != bDontBroadcast)
 	{
-		dyno::SetArgument<bool>(hook, 2, bLocalDontBroadcast);
-		return dyno::ReturnAction::Handled;
+		poly::SetArgument<bool>(params, 2, bLocalDontBroadcast);
+		return poly::ReturnAction::Handled;
 	}
 
-	return dyno::ReturnAction::Ignored;
+	return poly::ReturnAction::Ignored;
 }
 
-dyno::ReturnAction CEventManager::Hook_OnFireEvent_Post(dyno::IHook& hook)
+poly::ReturnAction CEventManager::Hook_OnFireEvent_Post(poly::Params& params, int count, poly::Return& ret)
 {
-	auto pEvent = dyno::GetArgument<IGameEvent*>(hook, 1);
-	auto bDontBroadcast = dyno::GetArgument<bool>(hook, 2);
+	auto pEvent = poly::GetArgument<IGameEvent*>(params, 1);
+	auto bDontBroadcast = poly::GetArgument<bool>(params, 2);
 
 	if (!pEvent)
-		return dyno::ReturnAction::Ignored;
+		return poly::ReturnAction::Ignored;
 
 	EventHook* pHook = m_eventStack.top();
 
@@ -261,7 +261,7 @@ dyno::ReturnAction CEventManager::Hook_OnFireEvent_Post(dyno::IHook& hook)
 
 	m_eventStack.pop();
 
-	return dyno::ReturnAction::Ignored;
+	return poly::ReturnAction::Ignored;
 }
 
 CEventManager g_EventManager;

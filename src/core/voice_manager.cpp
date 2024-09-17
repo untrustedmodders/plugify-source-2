@@ -4,12 +4,12 @@
 #include <core/sdk/schema.h>
 #include <core/sdk/entity/cbaseentity.h>
 
-dyno::ReturnAction CVoiceManager::Hook_SetClientListening(dyno::IHook& hook)
+poly::ReturnAction CVoiceManager::Hook_SetClientListening(poly::Params& params, int count, poly::Return& ret)
 {
 	// CPlayerSlot iReceiver, CPlayerSlot iSender, bool bListen
-	auto iReceiver = (CPlayerSlot)dyno::GetArgument<int>(hook, 1);
-	auto iSender = (CPlayerSlot)dyno::GetArgument<int>(hook, 2);
-	//auto bListen = dyno::GetArgument<bool>(hook, 3);
+	auto iReceiver = (CPlayerSlot)poly::GetArgument<int>(params, 1);
+	auto iSender = (CPlayerSlot)poly::GetArgument<int>(params, 2);
+	//auto bListen = poly::GetArgument<bool>(params, 3);
 
 	auto pReceiver = g_PlayerManager.GetPlayerBySlot(iReceiver.Get());
 	auto pSender = g_PlayerManager.GetPlayerBySlot(iSender.Get());
@@ -22,31 +22,31 @@ dyno::ReturnAction CVoiceManager::Hook_SetClientListening(dyno::IHook& hook)
 
 		if (pReceiver->m_selfMutes.Get(iSender.Get()))
 		{
-			dyno::SetArgument<bool>(hook, 3, false);
-			return dyno::ReturnAction::Handled;
+			poly::SetArgument<bool>(params, 3, false);
+			return poly::ReturnAction::Handled;
 		}
 
 		if (senderFlags & Speak_Muted)
 		{
-			dyno::SetArgument<bool>(hook, 3, false);
-			return dyno::ReturnAction::Handled;
+			poly::SetArgument<bool>(params, 3, false);
+			return poly::ReturnAction::Handled;
 		}
 
 		if (listenOverride == Listen_Mute)
 		{
-			dyno::SetArgument<bool>(hook, 3, false);
-			return dyno::ReturnAction::Handled;
+			poly::SetArgument<bool>(params, 3, false);
+			return poly::ReturnAction::Handled;
 		}
 		else if (listenOverride == Listen_Hear)
 		{
-			dyno::SetArgument<bool>(hook, 3, true);
-			return dyno::ReturnAction::Handled;
+			poly::SetArgument<bool>(params, 3, true);
+			return poly::ReturnAction::Handled;
 		}
 
 		if ((senderFlags & Speak_All) || (receiverFlags & Speak_ListenAll))
 		{
-			dyno::SetArgument<bool>(hook, 3, true);
-			return dyno::ReturnAction::Handled;
+			poly::SetArgument<bool>(params, 3, true);
+			return poly::ReturnAction::Handled;
 		}
 
 		if ((senderFlags & Speak_Team) || (receiverFlags & Speak_ListenTeam))
@@ -56,11 +56,11 @@ dyno::ReturnAction CVoiceManager::Hook_SetClientListening(dyno::IHook& hook)
 
 			if (receiverController && senderController)
 			{
-				dyno::SetArgument<bool>(hook, 3, receiverController->m_iTeamNum() == senderController->m_iTeamNum());
-				return dyno::ReturnAction::Handled;
+				poly::SetArgument<bool>(params, 3, receiverController->m_iTeamNum() == senderController->m_iTeamNum());
+				return poly::ReturnAction::Handled;
 			}
 		}
 	}
 
-	return dyno::ReturnAction::Ignored;
+	return poly::ReturnAction::Ignored;
 }

@@ -80,35 +80,27 @@ public:
 		}
 		else if constexpr (std::is_same_v<T, Color>)
 		{
-			std::stringstream newValue;
-			newValue << pNewValue->r() << " " <<  pNewValue->g() << " " << pNewValue->b() << " " << pNewValue->a();
-			std::stringstream oldValue;
-			oldValue << pOldValue->r() << " " <<  pOldValue->g() << " " << pOldValue->b() << " " << pOldValue->a();
-			conVarInfo.hook.Notify(ref, newValue.str(), oldValue.str());
+			plg::string newValue = std::format("{} {} {} {}", pNewValue->r(), pNewValue->g(), pNewValue->b(), pNewValue->a());
+			plg::string oldValue = std::format("{} {} {} {}", pOldValue->r(), pOldValue->g(), pOldValue->b(), pOldValue->a());
+			conVarInfo.hook.Notify(ref, newValue, oldValue);
 		}
 		else if constexpr (std::is_same_v<T, Vector2D>)
 		{
-			std::stringstream newValue;
-			newValue << pNewValue->x << " " <<  pNewValue->y;
-			std::stringstream oldValue;
-			oldValue << pOldValue->x << " " <<  pOldValue->y;
-			conVarInfo.hook.Notify(ref, newValue.str(), oldValue.str());
+			plg::string newValue = std::format("{} {}", pNewValue->x, pNewValue->y);
+			plg::string oldValue = std::format("{} {}", pOldValue->x, pOldValue->y);
+			conVarInfo.hook.Notify(ref, newValue, oldValue);
 		}
 		else if constexpr (std::is_same_v<T, Vector> || std::is_same_v<T, QAngle>)
 		{
-			std::stringstream newValue;
-			newValue << pNewValue->x << " " <<  pNewValue->y << " " << pNewValue->z;
-			std::stringstream oldValue;
-			oldValue << pOldValue->x << " " <<  pOldValue->y << " " << pOldValue->z;
-			conVarInfo.hook.Notify(ref, newValue.str(), oldValue.str());
+			plg::string newValue = std::format("{} {} {}", pNewValue->x, pNewValue->y, pNewValue->z);
+			plg::string oldValue = std::format("{} {} {}", pOldValue->x, pOldValue->y, pOldValue->z);
+			conVarInfo.hook.Notify(ref, newValue, oldValue);
 		}
 		else if constexpr (std::is_same_v<T, Vector4D>)
 		{
-			std::stringstream newValue;
-			newValue << pNewValue->x << " " <<  pNewValue->y << " " << pNewValue->z << " " << pNewValue->w;
-			std::stringstream oldValue;
-			oldValue << pOldValue->x << " " <<  pOldValue->y << " " << pOldValue->z << " " << pOldValue->w;
-			conVarInfo.hook.Notify(ref, newValue.str(), oldValue.str());
+			plg::string newValue = std::format("{} {} {} {}", pNewValue->x, pNewValue->y, pNewValue->z, pNewValue->w);
+			plg::string oldValue = std::format("{} {} {} {}", pOldValue->x, pOldValue->y, pOldValue->z, pOldValue->w);
+			conVarInfo.hook.Notify(ref, newValue, oldValue);
 		}
 		else
 		{

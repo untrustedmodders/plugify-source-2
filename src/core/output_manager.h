@@ -4,7 +4,7 @@
 #include <core/sdk/utils.h>
 
 #include <entity2/entitysystem.h>
-#include <plugify/dynohook.h>
+#include <plugify/polyhook.h>
 #include <variant.h>
 
 class CEntityIOOutput;
@@ -28,8 +28,8 @@ public:
 	void HookEntityOutput(plg::string szClassname, plg::string szOutput, EntityListenerCallback callback, HookMode mode);
 	void UnhookEntityOutput(plg::string szClassname, plg::string szOutput, EntityListenerCallback callback, HookMode mode);
 
-	dyno::ReturnAction Hook_FireOutputInternal(dyno::IHook& hook);
-	dyno::ReturnAction Hook_FireOutputInternal_Post(dyno::IHook& hook);
+	poly::ReturnAction Hook_FireOutputInternal(poly::Params& params, int count, poly::Return& ret);
+	poly::ReturnAction Hook_FireOutputInternal_Post(poly::Params& params, int count, poly::Return& ret);
 
 private:
 	std::unordered_map<OutputKey, CallbackPair, utils::PairHash<plg::string, plg::string>> m_hookMap;

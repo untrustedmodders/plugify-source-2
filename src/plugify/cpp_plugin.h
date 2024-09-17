@@ -10,6 +10,14 @@
 
 #include <plugify/string.h>
 
+namespace std::filesystem {
+#if _WIN32
+	using path_view = std::wstring_view;
+#else
+	using path_view = std::string_view;
+#endif
+}
+
 namespace plg {
 	constexpr int32_t kApiVersion = 1;
 
@@ -21,7 +29,7 @@ namespace plg {
 
 	using GetMethodPtrFn = void* (*)(std::string_view);
 	using GetMethodPtr2Fn = void (*)(std::string_view, void**);
-	using GetBaseDirFn = const std::filesystem::path& (*)();
+	using GetBaseDirFn = std::filesystem::path_view (*)();
 	using IsModuleLoadedFn = bool (*)(std::string_view, std::optional<int32_t>, bool);
 	using IsPluginLoadedFn = bool (*)(std::string_view, std::optional<int32_t>, bool);
 
@@ -39,9 +47,9 @@ namespace plg {
 		using GetVersionFn = std::string_view (*)(void*);
 		using GetAuthorFn = std::string_view (*)(void*);
 		using GetWebsiteFn = std::string_view (*)(void*);
-		using GetBaseDirFn = const std::filesystem::path& (*)(void*);
+		using GetBaseDirFn = std::filesystem::path_view (*)(void*);
 		using GetDependenciesFn = std::vector<std::string_view> (*)(void*);
-		using FindResourceFn = std::optional<std::filesystem::path> (*)(void*, const std::filesystem::path&);
+		using FindResourceFn = std::optional<std::filesystem::path_view> (*)(void*, std::filesystem::path_view);
 		extern void* handle;
 		extern GetIdFn GetId;
 		extern GetNameFn GetName;
@@ -68,9 +76,9 @@ namespace plg {
 		std::string_view GetVersion() const { return plugin::GetVersion(plugin::handle); }
 		std::string_view GetAuthor() const { return plugin::GetAuthor(plugin::handle); }
 		std::string_view GetWebsite() const { return plugin::GetWebsite(plugin::handle); }
-		const std::filesystem::path& GetBaseDir() const { return plugin::GetBaseDir(plugin::handle); }
+		std::filesystem::path_view GetBaseDir() const { return plugin::GetBaseDir(plugin::handle); }
 		std::vector<std::string_view> GetDependencies() const { return plugin::GetDependencies(plugin::handle); }
-		std::optional<std::filesystem::path> FindResource(const std::filesystem::path& path) const { return plugin::FindResource(plugin::handle, path); }
+		std::optional<std::filesystem::path_view> FindResource(std::filesystem::path_view path) const { return plugin::FindResource(plugin::handle, path); }
 
 		virtual void OnPluginStart() {};
 		virtual void OnPluginEnd() {};
