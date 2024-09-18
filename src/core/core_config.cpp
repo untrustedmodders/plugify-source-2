@@ -48,7 +48,7 @@ const plg::string& CCoreConfig::GetPath() const
 
 bool CCoreConfig::IsTriggerInternal(const std::vector<plg::string>& triggers, const plg::string& message, plg::string& prefix) const
 {
-	/*for (const plg::string& trigger : triggers)
+	for (const plg::string& trigger : triggers)
 	{
 		if (message.rfind(trigger, 0) == 0)
 		{
@@ -56,9 +56,7 @@ bool CCoreConfig::IsTriggerInternal(const std::vector<plg::string>& triggers, co
 			g_Logger.LogFormat(LS_DEBUG, "Trigger found, prefix is %s\n", prefix.c_str());
 			return true;
 		}
-	}*/
-
-	// TODO: Implement rfind in string
+	}
 
 	return false;
 }

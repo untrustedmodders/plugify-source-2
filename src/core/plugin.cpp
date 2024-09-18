@@ -81,7 +81,7 @@ void Source2SDK::OnPluginStart()
 	g_HookManager.AddHookMemFunc(&IServerGameClients::ClientCommand, g_pSource2GameClients, Hook_ClientCommand, Pre);
 	g_HookManager.AddHookMemFunc(&IMetamodListener::OnLevelInit, g_pMetamodListener, Hook_OnLevelInit, Post);
 	g_HookManager.AddHookMemFunc(&IMetamodListener::OnLevelShutdown, g_pMetamodListener, Hook_OnLevelShutdown, Post);
-	//g_HookManager.AddHookMemFunc(&IServerGameDLL::GameFrame, g_pSource2Server, Hook_GameFrame, Post);
+	g_HookManager.AddHookMemFunc(&IServerGameDLL::GameFrame, g_pSource2Server, Hook_GameFrame, Post);
 	g_HookManager.AddHookMemFunc(&IServerGameClients::ClientActive, g_pSource2GameClients, Hook_ClientActive, Post);
 	g_HookManager.AddHookMemFunc(&IServerGameClients::ClientDisconnect, g_pSource2GameClients, Hook_ClientDisconnect, Pre, Post);
 	g_HookManager.AddHookMemFunc(&IServerGameClients::ClientPutInServer, g_pSource2GameClients, Hook_ClientPutInServer, Post);
@@ -89,25 +89,25 @@ void Source2SDK::OnPluginStart()
 	g_HookManager.AddHookMemFunc(&IServerGameClients::OnClientConnected, g_pSource2GameClients, Hook_OnClientConnected, Post);
 	g_HookManager.AddHookMemFunc(&IServerGameClients::ClientFullyConnect, g_pSource2GameClients, Hook_ClientFullyConnect, Post);
 	g_HookManager.AddHookMemFunc(&IServerGameClients::ClientConnect, g_pSource2GameClients, Hook_ClientConnect, Pre, Post);
-	//g_HookManager.AddHookMemFunc(&INetworkServerService::StartupServer, g_pNetworkServerService, Hook_StartupServer, Post);
+	g_HookManager.AddHookMemFunc(&INetworkServerService::StartupServer, g_pNetworkServerService, Hook_StartupServer, Post);
 	//g_HookManager.AddHookMemFunc(&ISource2GameEntities::CheckTransmit, g_pSource2GameEntities, Hook_CheckTransmit, Post);*/
 	//using PostEventAbstract = void (IGameEventSystem::*)(CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64* clients, INetworkSerializable* pEvent, const void* pData, unsigned long nSize, NetChannelBufType_t bufType);
 	//g_HookManager.AddHookMemFunc<PostEventAbstract>(&IGameEventSystem::PostEventAbstract, g_gameEventSystem, Hook_PostEvent, Post);
-	/*g_HookManager.AddHookMemFunc(&ISource2Server::ServerHibernationUpdate, g_pSource2Server, Hook_ServerHibernationUpdate, Post);
+	g_HookManager.AddHookMemFunc(&ISource2Server::ServerHibernationUpdate, g_pSource2Server, Hook_ServerHibernationUpdate, Post);
 	g_HookManager.AddHookMemFunc(&ISource2Server::GameServerSteamAPIActivated, g_pSource2Server, Hook_GameServerSteamAPIActivated, Post);
 	g_HookManager.AddHookMemFunc(&ISource2Server::GameServerSteamAPIDeactivated, g_pSource2Server, Hook_GameServerSteamAPIDeactivated, Post);
 	g_HookManager.AddHookMemFunc(&ISource2Server::OnHostNameChanged, g_pSource2Server, Hook_OnHostNameChanged, Post);
 	g_HookManager.AddHookMemFunc(&ISource2Server::PreFatalShutdown, g_pSource2Server, Hook_PreFatalShutdown, Post);
 	g_HookManager.AddHookMemFunc(&ISource2Server::UpdateWhenNotInGame, g_pSource2Server, Hook_UpdateWhenNotInGame, Post);
 	g_HookManager.AddHookMemFunc(&ISource2Server::PreWorldUpdate, g_pSource2Server, Hook_PreWorldUpdate, Post);
-	g_HookManager.AddHookMemFunc(&ICvar::DispatchConCommand, g_pCVar, Hook_DispatchConCommand, Pre, Post);*/
-	//g_HookManager.AddHookMemFunc(&IVEngineServer2::SetClientListening, g_pEngineServer2, Hook_SetClientListening, Pre);
+	g_HookManager.AddHookMemFunc(&ICvar::DispatchConCommand, g_pCVar, Hook_DispatchConCommand, Pre, Post);
+	g_HookManager.AddHookMemFunc(&IVEngineServer2::SetClientListening, g_pEngineServer2, Hook_SetClientListening, Pre);
 
-	//using GameEventManagerInit = void (*)(IGameEventManager2*);
-	//g_HookManager.AddHookDetourFunc<GameEventManagerInit>("CGameEventManager_Init", Hook_GameEventManagerInit, Pre);
+	using GameEventManagerInit = void (*)(IGameEventManager2*);
+	g_HookManager.AddHookDetourFunc<GameEventManagerInit>("CGameEventManager_Init", Hook_GameEventManagerInit, Pre);
 
-	//using FireOutputInternal = void (*)(CEntityIOOutput* const, CEntityInstance*, CEntityInstance*, const CVariant* const, float);
-	//g_HookManager.AddHookDetourFunc<FireOutputInternal>("CEntityIOOutput_FireOutputInternal", Hook_FireOutputInternal, Pre);
+	using FireOutputInternal = void (*)(CEntityIOOutput* const, CEntityInstance*, CEntityInstance*, const CVariant* const, float);
+	g_HookManager.AddHookDetourFunc<FireOutputInternal>("CEntityIOOutput_FireOutputInternal", Hook_FireOutputInternal, Pre);
 
 	//using SayText2Filter = void (*)(IRecipientFilter &, CCSPlayerController *, uint64_t, const char *, const char *, const char *, const char *, const char *);
 	//g_HookManager.AddHookDetourFunc<SayText2Filter>("UTIL_SayText2Filter", Hook_SayText2Filter, Pre);
@@ -127,6 +127,7 @@ void Source2SDK::OnPluginEnd()
 			g_pEntitySystem->m_entityListeners.Remove(iListener);
 		}
 	}
+
 	g_Logger.Log(LS_DEBUG, "OnPluginEnd!\n");
 }
 
@@ -151,15 +152,23 @@ void Source2SDK::OnServerStartup()
 poly::ReturnAction Source2SDK::Hook_GameEventManagerInit(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret)
 {
 	g_gameEventManager = poly::GetArgument<IGameEventManager2*>(params, 0);
-	using enum poly::CallbackType;
-	g_HookManager.AddHookMemFunc(&IGameEventManager2::FireEvent, g_gameEventManager, Hook_FireEvent, Pre, Post);
+
+	if (g_gameEventManager != nullptr)
+	{
+		using enum poly::CallbackType;
+		g_HookManager.AddHookMemFunc(&IGameEventManager2::FireEvent, g_gameEventManager, Hook_FireEvent, Pre, Post);
+	}
 
 	return poly::ReturnAction::Ignored;
 }
 
 poly::ReturnAction Source2SDK::Hook_StartupServer(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret)
 {
-	g_Logger.Log(LS_DEBUG, "Startup server\n");
+	//auto config = poly::GetArgument<const GameSessionConfiguration_t *>(params, 1);
+	//auto pWorldSession = poly::GetArgument<ISource2WorldSession*>(params, 2);
+	auto pMapName = poly::GetArgument<const char *>(params, 3);
+
+	g_Logger.LogFormat(LS_DEBUG, "Startup server: %s\n", pMapName);
 
 	OnServerStartup();
 	
@@ -443,7 +452,8 @@ poly::ReturnAction Source2SDK::Hook_SetClientListening(poly::CallbackType type, 
 template<typename Tag, typename Tag::type M>
 struct Accessor
 {
-	friend typename Tag::type get(Tag) {
+	friend typename Tag::type get(Tag)
+	{
 		return M;
 	}
 };

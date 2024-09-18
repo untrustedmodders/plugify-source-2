@@ -37,7 +37,8 @@ poly::ReturnAction CVoiceManager::Hook_SetClientListening(poly::Params& params, 
 			poly::SetArgument<bool>(params, 3, false);
 			return poly::ReturnAction::Handled;
 		}
-		else if (listenOverride == Listen_Hear)
+
+		if (listenOverride == Listen_Hear)
 		{
 			poly::SetArgument<bool>(params, 3, true);
 			return poly::ReturnAction::Handled;
