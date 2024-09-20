@@ -68,7 +68,7 @@ jobs:
           cp build/${{env.BUILD_TYPE}}/cs2sdk.dll build/output/bin
           cp build/cs2sdk.pplugin build/output
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: cs2sdk-build-windows-${{ env.GITHUB_SHA_SHORT }}
           path: build/output/
@@ -105,7 +105,7 @@ jobs:
           mv build/libcs2sdk.so build/output/bin
           mv build/cs2sdk.pplugin build/output
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: cs2sdk-build-linux-${{ env.GITHUB_SHA_SHORT }}
           path: build/output/
