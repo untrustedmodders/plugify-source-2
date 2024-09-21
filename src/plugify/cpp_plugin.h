@@ -6,7 +6,6 @@
 #include <filesystem>
 #include <utility>
 #include <vector>
-#include <span>
 
 #include <plugify/string.h>
 
@@ -107,7 +106,7 @@ namespace plg {
 		FindResourceFn FindResource{ nullptr }; \
 	} \
 	extern "C" \
-	plugin_api PluginResult Plugify_Init(std::span<void*> api, int32_t version, void* handle) { \
+	plugin_api PluginResult Plugify_Init(void** api, int32_t version, void* handle) { \
 		if (version < kApiVersion) { \
 			return { kApiVersion, PLUGIFY_IS_DEBUG }; \
 		} \
