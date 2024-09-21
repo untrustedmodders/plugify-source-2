@@ -49,6 +49,8 @@ add_library(${PROJECT_NAME} SHARED
         ${CMAKE_CURRENT_SOURCE_DIR}/external/dynlibutils/module.cpp
         ${METAMOD_DIR}/core/sourcehook/sourcehook.cpp
         ${METAMOD_DIR}/core/sourcehook/sourcehook_impl_chookmaninfo.cpp
+        ${METAMOD_DIR}/core/sourcehook/sourcehook_impl_cproto.cpp
+        ${METAMOD_DIR}/core/sourcehook/sourcehook_impl_chookidman.cpp
         ${METAMOD_DIR}/core/sourcehook/sourcehook_impl_cvfnptr.cpp
 )
 

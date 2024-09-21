@@ -5,7 +5,7 @@
 
 #include <plugify/polyhook.h>
 
-class CHookManager
+class CHookHolder
 {
 public:
 	template <typename F>
@@ -92,4 +92,4 @@ private:
 	std::vector<std::unique_ptr<poly::CHook>> m_hooks;
 };
 
-extern CHookManager g_HookManager;
+extern CHookHolder g_PH;
