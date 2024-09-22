@@ -2,7 +2,7 @@
 
 #include <engine/igameeventsystem.h>
 #include <networkbasetypes.pb.h>
-#include <public/networksystem/inetworkmessages.h>
+#include <networksystem/inetworkmessages.h>
 #include <entity2/entitysystem.h>
 
 #include "entity/globaltypes.h"

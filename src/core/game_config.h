@@ -2,8 +2,8 @@
 
 #include <tier0/keyvalues.h>
 
-#include <memaddr.h>
-#include <module.h>
+#include <dynlibutils/memaddr.hpp>
+#include <dynlibutils/module.hpp>
 
 using CMemory = DynLibUtils::CMemory;
 using CModule = DynLibUtils::CModule;

@@ -1,3 +1,7 @@
+# cs2-sdk-plugin
+# Copyright (C) 2024 untrustedmodders
+# Licensed under the MIT license. See LICENSE file in the project root for details.
+
 include(FetchContent)
 
 message(STATUS "Pulling and configuring fmt")

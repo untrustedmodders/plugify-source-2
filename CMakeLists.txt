@@ -1,149 +1,118 @@
 cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
 
-if(POLICY CMP0092)
-    cmake_policy(SET CMP0092 NEW) # Don't add -W3 warning level by default.
-endif()
 if(POLICY CMP0091)
-    cmake_policy(SET CMP0091 NEW)
+	cmake_policy(SET CMP0091 NEW)
 endif()
 
-
-project(cs2-sdk-plugin VERSION 1.0.0.0 DESCRIPTION "CS2 SDK Plugin" HOMEPAGE_URL "https://github.com/untrustedmodders/cs2-sdk-plugin" LANGUAGES C CXX ASM)
-
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_C_STANDARD 11)
-set(CMAKE_C_STANDARD_REQUIRED ON)
-set(CMAKE_C_EXTENSIONS OFF)
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-
-if(UNIX AND NOT APPLE)
-    set(LINUX TRUE)
+if(POLICY CMP0092)
+	cmake_policy(SET CMP0092 NEW) # Don't add -W3 warning level by default.
 endif()
 
-if(WIN32 AND NOT MSVC)
-    message(FATAL "MSVC restricted.")
-endif()
-
-#
-# Format
-#
-include(cmake/compat_format.cmake)
-
-#
-# SDK
-#
-if(LINUX)
-    set(SOURCESDK_MALLOC_OVERRIDE ON CACHE INTERNAL "")
-endif()
-add_subdirectory(external/sourcesdk)
-
-set(SOURCESDK_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/sourcesdk)
-set(METAMOD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/metamod-source)
-
-# Sources
-file(GLOB_RECURSE SOURCE_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "src/*.cpp")
-add_library(${PROJECT_NAME} SHARED
-        ${SOURCE_FILES}
-        ${CMAKE_CURRENT_SOURCE_DIR}/external/dynlibutils/module.cpp
-        ${METAMOD_DIR}/core/sourcehook/sourcehook.cpp
-        ${METAMOD_DIR}/core/sourcehook/sourcehook_impl_chookmaninfo.cpp
-        ${METAMOD_DIR}/core/sourcehook/sourcehook_impl_cproto.cpp
-        ${METAMOD_DIR}/core/sourcehook/sourcehook_impl_chookidman.cpp
-        ${METAMOD_DIR}/core/sourcehook/sourcehook_impl_cvfnptr.cpp
+project(cs2-sdk-plugin
+	VERSION 1.0.0.0
+	DESCRIPTION "CS2 SDK Plugin"
+	HOMEPAGE_URL "https://github.com/untrustedmodders/cs2-sdk-plugin"
+	LANGUAGES C CXX
 )
 
-target_include_directories(${PROJECT_NAME} PRIVATE
-        ${SOURCESDK_DIR}
-        ${SOURCESDK_DIR}/thirdparty/protobuf/src
-        ${SOURCESDK_DIR}/common
-        ${SOURCESDK_DIR}/game/shared
-        ${SOURCESDK_DIR}/game/server
-        ${SOURCESDK_DIR}/public
-        ${SOURCESDK_DIR}/public/engine
-        ${SOURCESDK_DIR}/public/mathlib
-        ${SOURCESDK_DIR}/public/tier0
-        ${SOURCESDK_DIR}/public/tier1
-        ${SOURCESDK_DIR}/public/entity2
-        ${SOURCESDK_DIR}/public/game/server
-        ${SOURCESDK_DIR}/public/entity2
+string(REGEX REPLACE "^[^-]*-" "" PROJECT_NAME_SUBSTRING "${PROJECT_NAME}")
+string(TOLOWER "${PROJECT_NAME_SUBSTRING}" PROJECT_NAME_LOWER)
+string(TOUPPER "${PROJECT_NAME_SUBSTRING}" PROJECT_NAME_UPPER)
 
-        ${METAMOD_DIR}/core
-        ${METAMOD_DIR}/core/sourcehook
+set(PROJECT_OUTPUT_NAME "cs2sdk")
 
-        ${CMAKE_CURRENT_SOURCE_DIR}/src
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/cs2_sdk
-        ${CMAKE_CURRENT_SOURCE_DIR}/external/dynlibutils
-)
+set(PROJECT_AUTHOR "Untrusted Modders Team")
+set(PROJECT_DESCRIPTION_FULL "Source 2 SDK Plugify plugin")
+set(PROJECT_LICENSE "GPLv3")
+string(TIMESTAMP PROJECT_BUILD_DATE "%Y-%m-%d")
+string(TIMESTAMP PROJECT_BUILD_TIME "%H:%M:%S")
 
-target_precompile_headers(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/pch.h)
+set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
+set(SYMBOLS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/sym")
+set(EXTERNAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external")
+set(EXPORTS_BINARY_DIR "${CMAKE_BINARY_DIR}/exports")
+
+function(set_or_external_dir VAR_NAME TARGET)
+	if(${VAR_NAME})
+		file(TO_CMAKE_PATH "${${VAR_NAME}}" ${VAR_NAME})
+	else()
+		set(${VAR_NAME} "${EXTERNAL_DIR}/${TARGET}")
+	endif()
+
+	set(${VAR_NAME} "${${VAR_NAME}}" PARENT_SCOPE)
+endfunction()
+
+set_or_external_dir(DYNLIBUTILS_DIR "dynlibutils")
+set_or_external_dir(LOGGER_DIR "logger")
+set_or_external_dir(METAMOD_DIR "metamod-source")
+set_or_external_dir(PLUGIFY_DIR "plugify")
+set_or_external_dir(SOURCESDK_DIR "sourcesdk")
 
 include(GenerateExportHeader)
-generate_export_header(${PROJECT_NAME} EXPORT_MACRO_NAME PLUGIN_API EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/exports/plugin_export.h)
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_BINARY_DIR}/exports)
 
-set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "cs2sdk")
+include(cmake/platform/shared.cmake)
+include(cmake/compat_format.cmake)
+include(cmake/dynlibutils.cmake)
+include(cmake/logger.cmake)
+include(cmake/metamod.cmake)
+include(cmake/plugify.cmake)
+include(cmake/sourcesdk.cmake)
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE
-        CS2SDK_LOGGING_PREFIX="cs2-sdk"
-        CS2SDK_PLATFORM_WINDOWS=$<BOOL:${WIN32}>
-        CS2SDK_PLATFORM_APPLE=$<BOOL:${APPLE}>
-        CS2SDK_PLATFORM_LINUX=$<BOOL:${LINUX}>
-        CS2SDK_LIBRARY_SUFFIX="${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        CS2SDK_LIBRARY_PREFIX="${CMAKE_SHARED_LIBRARY_PREFIX}"
-        CS2SDK_PLATFORM="linux"
-        CS2SDK_BINARY="linuxsteamrt64"
-        CS2SDK_ROOT_BINARY="/bin/linuxsteamrt64/"
-        # Metamod hack
-        CS2SDK_GAME_BINARY="/bin/linuxsteamrt64/../../csgo/bin/linuxsteamrt64/"
-
-        PLUGIFY_FORMAT_SUPPORT=$<BOOL:${COMPILER_SUPPORTS_FORMAT}> 
-        PLUGIFY_IS_DEBUG=$<STREQUAL:${CMAKE_BUILD_TYPE},Debug>
+set(COMPILE_DEFINITIONS
+	CS2SDK_LOGGING_PREFIX="cs2-sdk"
+	CS2SDK_PLATFORM_WINDOWS=$<BOOL:${WIN32}>
+	CS2SDK_PLATFORM_APPLE=$<BOOL:${APPLE}>
+	CS2SDK_PLATFORM_LINUX=$<BOOL:${LINUX}>
+	CS2SDK_LIBRARY_SUFFIX="${CMAKE_SHARED_LIBRARY_SUFFIX}"
+	CS2SDK_LIBRARY_PREFIX="${CMAKE_SHARED_LIBRARY_PREFIX}"
+	CS2SDK_PLATFORM="linux"
+	CS2SDK_BINARY="linuxsteamrt64"
+	CS2SDK_ROOT_BINARY="/bin/linuxsteamrt64/"
+	CS2SDK_GAME_BINARY="/bin/linuxsteamrt64/../../csgo/bin/linuxsteamrt64/" # Metamod hack
 )
 
-if(NOT COMPILER_SUPPORTS_FORMAT)
-    target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt-header-only)
+file(GLOB_RECURSE SOURCE_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "src/*.cpp")
+
+set(INCLUDE_DIRS
+	${EXPORTS_BINARY_DIR}
+	${SOURCE_DIR}
+)
+
+set(PRECOMPILER_HEADERS
+	${SOURCE_DIR}/pch.h
+)
+
+add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${METAMOD_SOURCESDK_SOURCE_FILES})
+
+set_target_properties(${PROJECT_NAME} PROPERTIES
+	C_STANDARD 11
+	C_STANDARD_REQUIRED ON
+	C_EXTENSIONS OFF
+
+	CXX_STANDARD 20
+	CXX_STANDARD_REQUIRED ON
+	CXX_EXTENSIONS OFF
+)
+
+set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_OUTPUT_NAME})
+
+if(WINDOWS)
+	set_target_properties(${PROJECT_NAME} PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+elseif(MACOS)
+	set_target_properties(${PROJECT_NAME} PROPERTIES OSX_ARCHITECTURES "x86_64")
 endif()
 
-if(LINUX)
-    target_compile_definitions(${PROJECT_NAME} PRIVATE
-            META_IS_SOURCE2
-            _LINUX
-            POSIX
-            LINUX
-            GNUC
-            COMPILER_GCC
-            PLATFORM_64BITS
-            bswap_16=__bswap_16
-            bswap_32=__bswap_32
-            bswap_64=__bswap_64
-            _GLIBCXX_USE_CXX11_ABI=0
-    )
-    target_link_libraries(${PROJECT_NAME} PRIVATE -static-libstdc++ -static-libgcc)
-elseif(WIN32)
-    target_compile_definitions(${PROJECT_NAME} PRIVATE
-            META_IS_SOURCE2
-            COMPILER_MSVC
-            COMPILER_MSVC64
-            _WIN32
-            _WINDOWS
-            _ALLOW_KEYWORD_MACROS
-            __STDC_LIMIT_MACROS
-            _CRT_SECURE_NO_WARNINGS=1
-            _CRT_SECURE_NO_DEPRECATE=1
-            _CRT_NONSTDC_NO_DEPRECATE=1
-    )
-    set_target_properties(${PROJECT_NAME} PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-endif()
+target_compile_options(${PROJECT_NAME} PRIVATE ${COMPILER_OPTIONS} ${SOURCESDK_COMPILE_OPTIONS} ${PLUGIFY_COMPILE_OPTIONS})
 
-# Libraries
-target_link_libraries(${PROJECT_NAME} PRIVATE sourcesdk)
+generate_export_header(${PROJECT_NAME} EXPORT_MACRO_NAME PLUGIN_API EXPORT_FILE_NAME ${EXPORTS_BINARY_DIR}/plugin_export.h)
+target_precompile_headers(${PROJECT_NAME} PRIVATE ${PRECOMPILER_HEADERS})
 
-set(CS2SDK_VERSION "0" CACHE STRING "Set version name")
-set(CS2SDK_PACKAGE "cs2sdk" CACHE STRING "Set package name")
+target_compile_definitions(${PROJECT_NAME} PRIVATE ${COMPILE_DEFINITIONS} ${METAMOD_COMPILE_DEFINITIONS} ${PLUGIFY_COMPILE_DEFINITIONS})
+target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDE_DIRS} ${DYNLIBUTILS_INCLUDE_DIRS} ${METAMOD_INCLUDE_DIRS})
+
+target_link_libraries(${PROJECT_NAME} PRIVATE ${DYNLIBUTILS_BINARY_DIR} ${PLUGIFY_LINK_LIBRARIES} ${SOURCESDK_BINARY_DIR})
 
 configure_file(
-        ${CMAKE_SOURCE_DIR}/cs2sdk.pplugin.in
-        ${CMAKE_BINARY_DIR}/cs2sdk.pplugin
+	${CMAKE_SOURCE_DIR}/cs2sdk.pplugin.in
+	${CMAKE_BINARY_DIR}/cs2sdk.pplugin
 )

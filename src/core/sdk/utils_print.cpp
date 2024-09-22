@@ -2,7 +2,7 @@
 
 #include <usermessages.pb.h>
 #include <igameevents.h>
-#include <public/networksystem/inetworkmessages.h>
+#include <networksystem/inetworkmessages.h>
 #include <engine/igameeventsystem.h>
 #include "entity/recipientfilters.h"
 #include "entity/globaltypes.h"

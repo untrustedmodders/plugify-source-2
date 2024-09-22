@@ -1,7 +1,7 @@
 #pragma once
 
 #include <plugify/polyhook.h>
-#include <public/eiface.h>
+#include <eiface.h>
 
 class CVoiceManager
 {

@@ -2,10 +2,11 @@
 #include "globals.h"
 #include "core_config.h"
 #include "game_config.h"
-#include "module.h"
 
 #include <core/sdk/utils.h>
 #include <core/sdk/virtual.h>
+
+#include <dynlibutils/module.hpp>
 
 #include <ISmmPlugin.h>
 #include <igameevents.h>
