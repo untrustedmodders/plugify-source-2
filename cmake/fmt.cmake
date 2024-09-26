@@ -1,4 +1,4 @@
-# cs2-sdk-plugin
+# plugify-source-2
 # Copyright (C) 2024 untrustedmodders
 # Licensed under the MIT license. See LICENSE file in the project root for details.
 

@@ -6,9 +6,9 @@
 	"description": "Provides functionality for other plugins from Source 2 engine",
 	"createdBy": "untrustedmodders",
 	"createdByURL": "https://github.com/untrustedmodders/",
-	"docsURL": "https://github.com/untrustedmodders/cs2-sdk-plugin",
-	"downloadURL": "https://github.com/untrustedmodders/cs2-sdk-plugin/releases/download/v${CS2SDK_VERSION}/${CS2SDK_PACKAGE}.zip",
-	"updateURL": "https://untrustedmodders.github.io/cs2-sdk-plugin/cs2sdk.json",
+	"docsURL": "https://github.com/untrustedmodders/plugify-source-2",
+	"downloadURL": "https://github.com/untrustedmodders/plugify-source-2/releases/download/v${CS2SDK_VERSION}/${CS2SDK_PACKAGE}.zip",
+	"updateURL": "https://untrustedmodders.github.io/plugify-source-2/cs2sdk.json",
 	"entryPoint": "bin/cs2sdk",
 	"supportedPlatforms": [],
 	"resourceDirectories": [

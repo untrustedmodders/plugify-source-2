@@ -60,7 +60,7 @@ jobs:
           mkdir -p build
           cd build
           cmake -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DCS2SDK_VERSION="${{ needs.setup.outputs.buildnumber }}" -DCS2SDK_PACKAGE="cs2sdk-build-${{ needs.setup.outputs.buildnumber }}-windows-${{ env.GITHUB_SHA_SHORT }}" ..
-          cmake --build . --target cs2-sdk-plugin --config ${{ env.BUILD_TYPE }} -- /m
+          cmake --build . --target plugify-source-2 --config ${{ env.BUILD_TYPE }} -- /m
 
       - name: Clean build directory
         run: |
@@ -97,7 +97,7 @@ jobs:
           mkdir -p build
           cd build
           cmake -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DCS2SDK_VERSION="${{ needs.setup.outputs.buildnumber }}" -DCS2SDK_PACKAGE="cs2sdk-build-${{ needs.setup.outputs.buildnumber }}-linux-${{ env.GITHUB_SHA_SHORT }}" ..
-          cmake --build . --target cs2-sdk-plugin --config ${{ env.BUILD_TYPE }} -- -j
+          cmake --build . --target plugify-source-2 --config ${{ env.BUILD_TYPE }} -- -j
 
       - name: Clean build directory
         run: |
@@ -203,7 +203,7 @@ jobs:
             package_name = 'cs2sdk-build-${{ needs.setup.outputs.buildnumber }}-{}-${{ env.GITHUB_SHA_SHORT }}'
             checksum_linux = '${{ needs.publish.outputs.checksum_linux }}'
             checksum_windows = '${{ needs.publish.outputs.checksum_windows }}'
-            json_url = 'https://untrustedmodders.github.io/cs2-sdk-plugin/cs2sdk.json'
+            json_url = 'https://untrustedmodders.github.io/plugify-source-2/cs2sdk.json'
             
             def load_json_from_url(url):
                 try:
@@ -231,7 +231,7 @@ jobs:
                 new_version = {
                     "version": version,
                     "checksum": f"{checksum}",
-                    "download": f"https://github.com/untrustedmodders/cs2-sdk-plugin/releases/download/v{version}/{package.format(platform)}.zip",
+                    "download": f"https://github.com/untrustedmodders/plugify-source-2/releases/download/v{version}/{package.format(platform)}.zip",
                     "platforms": [f"{platform}"]
                 }
             
