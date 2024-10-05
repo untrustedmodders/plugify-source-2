@@ -138,9 +138,9 @@ extern "C" PLUGIN_API float GetSoundDuration(const plg::string& name)
 	return g_pEngineSound->GetSoundDuration(name.c_str());
 }
 
-extern "C" PLUGIN_API void EmitSound(int entityIndex, const plg::string& sound, int pitch, float volume, float delay)
+extern "C" PLUGIN_API void EmitSound(int entityHandle, const plg::string& sound, int pitch, float volume, float delay)
 {
-	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!ent)
 	{
 		return;

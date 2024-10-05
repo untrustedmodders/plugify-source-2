@@ -86,6 +86,11 @@ extern "C" PLUGIN_API int GetEventEntityIndex(EventInfo* pInfo, const plg::strin
 	return pInfo->pEvent->GetEntityIndex(key.c_str()).Get();
 }
 
+extern "C" PLUGIN_API int GetEventEntityHandle(EventInfo* pInfo, const plg::string& key)
+{
+	return pInfo->pEvent->GetEHandle(key.c_str()).ToInt();
+}
+
 extern "C" PLUGIN_API void GetEventName(plg::string& output, EventInfo* pInfo)
 {
 	std::construct_at(&output, pInfo->pEvent->GetName());
@@ -139,6 +144,11 @@ extern "C" PLUGIN_API void SetEventEntity(EventInfo* pInfo, const plg::string& k
 extern "C" PLUGIN_API void SetEventEntityIndex(EventInfo* pInfo, const plg::string& key, int value)
 {
 	pInfo->pEvent->SetEntity(key.c_str(), CEntityIndex(value));
+}
+
+extern "C" PLUGIN_API void SetEventEntityHandle(EventInfo* pInfo, const plg::string& key, int value)
+{
+	pInfo->pEvent->SetEntity(key.c_str(), CEntityHandle((uint32)value).Get());
 }
 
 extern "C" PLUGIN_API void SetEventBroadcast(EventInfo* pInfo, bool dontBroadcast)

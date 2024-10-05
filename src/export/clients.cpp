@@ -217,7 +217,7 @@ extern "C" PLUGIN_API void ProcessTargetString(std::vector<int>& output, int cal
 
 extern "C" PLUGIN_API void ChangeClientTeam(int clientIndex, int team)
 {
-	auto client = reinterpret_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex - 1)));
+	auto client = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex - 1)));
 	if (!client)
 	{
 		return;

@@ -2175,7 +2175,7 @@
 			"funcName": "EmitSound",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				},
@@ -2259,8 +2259,8 @@
 			}
 		},
 		{
-			"name": "GetEntityFromIndex",
-			"funcName": "GetEntityFromIndex",
+			"name": "EntIndexToEntPointer",
+			"funcName": "EntIndexToEntPointer",
 			"paramTypes": [
 				{
 					"name": "entityIndex",
@@ -2273,8 +2273,8 @@
 			}
 		},
 		{
-			"name": "GetIndexFromEntity",
-			"funcName": "GetIndexFromEntity",
+			"name": "EntPointerToEntIndex",
+			"funcName": "EntPointerToEntIndex",
 			"paramTypes": [
 				{
 					"name": "entity",
@@ -2287,12 +2287,12 @@
 			}
 		},
 		{
-			"name": "GetEntityIndexFromRef",
-			"funcName": "GetEntityIndexFromRef",
+			"name": "EntPointerToEntHandle",
+			"funcName": "EntPointerToEntHandle",
 			"paramTypes": [
 				{
-					"name": "ref",
-					"type": "uint32",
+					"name": "entity",
+					"type": "ptr64",
 					"ref": false
 				}
 			],
@@ -2301,8 +2301,22 @@
 			}
 		},
 		{
-			"name": "GetRefFromEntityIndex",
-			"funcName": "GetRefFromEntityIndex",
+			"name": "EntHandleToEntPointer",
+			"funcName": "EntHandleToEntPointer",
+			"paramTypes": [
+				{
+					"name": "entityHandle",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "ptr64"
+			}
+		},
+		{
+			"name": "EntIndexToEntHandle",
+			"funcName": "EntIndexToEntHandle",
 			"paramTypes": [
 				{
 					"name": "entityIndex",
@@ -2311,58 +2325,16 @@
 				}
 			],
 			"retType": {
-				"type": "uint32"
+				"type": "int32"
 			}
 		},
 		{
-			"name": "GetEntityPointerFromRef",
-			"funcName": "GetEntityPointerFromRef",
+			"name": "EntHandleToEntIndex",
+			"funcName": "EntHandleToEntIndex",
 			"paramTypes": [
 				{
-					"name": "ref",
-					"type": "uint32",
-					"ref": false
-				}
-			],
-			"retType": {
-				"type": "ptr64"
-			}
-		},
-		{
-			"name": "GetRefFromEntityPointer",
-			"funcName": "GetRefFromEntityPointer",
-			"paramTypes": [
-				{
-					"name": "entity",
-					"type": "ptr64",
-					"ref": false
-				}
-			],
-			"retType": {
-				"type": "uint32"
-			}
-		},
-		{
-			"name": "GetEntityPointerFromHandle",
-			"funcName": "GetEntityPointerFromHandle",
-			"paramTypes": [
-				{
-					"name": "handle",
-					"type": "ptr64",
-					"ref": false
-				}
-			],
-			"retType": {
-				"type": "ptr64"
-			}
-		},
-		{
-			"name": "GetEntityIndexFromHandle",
-			"funcName": "GetEntityIndexFromHandle",
-			"paramTypes": [
-				{
-					"name": "handle",
-					"type": "ptr64",
+					"name": "entityHandle",
+					"type": "int32",
 					"ref": false
 				}
 			],
@@ -2371,12 +2343,12 @@
 			}
 		},
 		{
-			"name": "IsRefValidEntity",
-			"funcName": "IsRefValidEntity",
+			"name": "IsValidEntHandle",
+			"funcName": "IsValidEntHandle",
 			"paramTypes": [
 				{
-					"name": "ref",
-					"type": "uint32",
+					"name": "entityHandle",
+					"type": "int32",
 					"ref": false
 				}
 			],
@@ -2555,7 +2527,7 @@
 			"funcName": "DispatchSpawn",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				}
@@ -2569,7 +2541,7 @@
 			"funcName": "RemoveEntity",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				}
@@ -2583,7 +2555,7 @@
 			"funcName": "GetEntityClassname",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				}
@@ -2597,7 +2569,7 @@
 			"funcName": "GetEntityName",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				}
@@ -2611,7 +2583,7 @@
 			"funcName": "SetEntityName",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				},
@@ -2630,7 +2602,7 @@
 			"funcName": "GetEntityMoveType",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				}
@@ -2644,7 +2616,7 @@
 			"funcName": "SetEntityMoveType",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				},
@@ -2663,7 +2635,7 @@
 			"funcName": "GetEntityGravity",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				}
@@ -2677,7 +2649,7 @@
 			"funcName": "SetEntityGravity",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				},
@@ -2696,7 +2668,7 @@
 			"funcName": "GetEntityFlags",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				}
@@ -2710,7 +2682,7 @@
 			"funcName": "SetEntityFlags",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				},
@@ -2729,7 +2701,7 @@
 			"funcName": "GetEntityRenderColor",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				}
@@ -2743,7 +2715,7 @@
 			"funcName": "SetEntityRenderColor",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				},
@@ -2762,7 +2734,7 @@
 			"funcName": "GetEntityRenderMode",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				}
@@ -2776,7 +2748,7 @@
 			"funcName": "SetEntityRenderMode",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				},
@@ -2795,7 +2767,7 @@
 			"funcName": "GetEntityHealth",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				}
@@ -2809,7 +2781,7 @@
 			"funcName": "SetEntityHealth",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				},
@@ -2828,7 +2800,7 @@
 			"funcName": "GetTeamEntity",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				}
@@ -2842,7 +2814,7 @@
 			"funcName": "SetTeamEntity",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				},
@@ -2861,7 +2833,7 @@
 			"funcName": "GetEntityOwner",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				}
@@ -2875,12 +2847,12 @@
 			"funcName": "SetEntityOwner",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				},
 				{
-					"name": "ownerIndex",
+					"name": "ownerHandle",
 					"type": "int32",
 					"ref": false
 				}
@@ -2894,7 +2866,7 @@
 			"funcName": "GetEntityParent",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				}
@@ -2908,12 +2880,12 @@
 			"funcName": "SetEntityParent",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				},
 				{
-					"name": "parentIndex",
+					"name": "parentHandle",
 					"type": "int32",
 					"ref": false
 				}
@@ -2932,7 +2904,7 @@
 					"ref": true
 				},
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				}
@@ -2946,7 +2918,7 @@
 			"funcName": "SetEntityAbsOrigin",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				},
@@ -2970,7 +2942,7 @@
 					"ref": true
 				},
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				}
@@ -2984,7 +2956,7 @@
 			"funcName": "SetEntityAngRotation",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				},
@@ -3008,7 +2980,7 @@
 					"ref": true
 				},
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				}
@@ -3022,7 +2994,7 @@
 			"funcName": "SetEntityAbsVelocity",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				},
@@ -3041,7 +3013,7 @@
 			"funcName": "GetEntityModel",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				}
@@ -3055,7 +3027,7 @@
 			"funcName": "SetEntityModel",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				},
@@ -3074,7 +3046,7 @@
 			"funcName": "GetEntityWaterLevel",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				}
@@ -3088,7 +3060,7 @@
 			"funcName": "GetEntityGroundEntity",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				}
@@ -3102,7 +3074,7 @@
 			"funcName": "GetEntityEffects",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				}
@@ -3116,7 +3088,7 @@
 			"funcName": "TeleportEntity",
 			"paramTypes": [
 				{
-					"name": "entityIndex",
+					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				},
@@ -3509,6 +3481,25 @@
 			}
 		},
 		{
+			"name": "GetEventEntityHandle",
+			"funcName": "GetEventEntityHandle",
+			"paramTypes": [
+				{
+					"name": "pInfo",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "key",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int32"
+			}
+		},
+		{
 			"name": "GetEventName",
 			"funcName": "GetEventName",
 			"paramTypes": [
@@ -3741,6 +3732,30 @@
 		{
 			"name": "SetEventEntityIndex",
 			"funcName": "SetEventEntityIndex",
+			"paramTypes": [
+				{
+					"name": "pInfo",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "key",
+					"type": "string",
+					"ref": false
+				},
+				{
+					"name": "value",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
+			}
+		},
+		{
+			"name": "SetEventEntityHandle",
+			"funcName": "SetEventEntityHandle",
 			"paramTypes": [
 				{
 					"name": "pInfo",
