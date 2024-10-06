@@ -179,6 +179,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install doxygen
+        run: sudo apt install -y doxygen
+
+      - name: Build doxygen
+        run: |
+          mkdir -p build
+          cd build
+          cmake -DCS2SDK_BUILD_DOCS=ON ..
+          cmake --build . --target docs -- -j
+
       - name: Setup python
         uses: actions/setup-python@v4
         with:
@@ -188,7 +198,7 @@ jobs:
         run: python -m pip install requests
 
       - name: Create directory
-        run: mkdir -p build/repo
+        run: mkdir -p build/docs/html
 
       - name: Generate file
         uses: jannekem/run-python-script-action@v1
@@ -197,7 +207,7 @@ jobs:
             import json
             import requests
             
-            add_path("build/repo")
+            add_path("build/docs/html")
             
             version_number = ${{ needs.setup.outputs.buildnumber }}
             package_name = 'cs2sdk-build-${{ needs.setup.outputs.buildnumber }}-{}-${{ env.GITHUB_SHA_SHORT }}'
@@ -246,12 +256,12 @@ jobs:
             data = load_json_from_url(json_url)
             data = append_new_version(data, version_number, checksum_windows, package_name, "windows")
             data = append_new_version(data, version_number, checksum_linux, package_name, "linux")
-            save_json('build/repo/cs2sdk.json', data)
+            save_json('build/docs/html/cs2sdk.json', data)
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          path: build/repo
+          path: build/docs/html
 
       - name: Deploy to GitHub Pages
         id: deployment
