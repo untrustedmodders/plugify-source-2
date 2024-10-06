@@ -335,8 +335,8 @@
 			}
 		},
 		{
-			"name": "CommitSuicide",
-			"funcName": "CommitSuicide",
+			"name": "ForcePlayerSuicide",
+			"funcName": "ForcePlayerSuicide",
 			"paramTypes": [
 				{
 					"name": "clientIndex",

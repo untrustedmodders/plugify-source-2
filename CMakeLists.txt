@@ -15,6 +15,8 @@ project(plugify-source-2
 	LANGUAGES C CXX
 )
 
+option(CS2SDK_BUILD_DOCS "Enable building with documentation." OFF)
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -124,3 +126,13 @@ configure_file(
 	${CMAKE_SOURCE_DIR}/cs2sdk.pplugin.in
 	${CMAKE_BINARY_DIR}/cs2sdk.pplugin
 )
+
+# ------------------------------------------------------------------------------
+# Documentation
+if(CS2SDK_BUILD_DOCS)
+    find_package(Doxygen REQUIRED)
+
+    if(DOXYGEN_FOUND)
+        add_subdirectory(docs)
+    endif()
+endif()
