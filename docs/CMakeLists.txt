@@ -31,5 +31,5 @@ add_custom_target(
         SOURCES
         doxy.in
         # add more here
-        DOXY_SOURCE_DIRECTORY/client.cpp
+        ${DOXY_SOURCE_DIRECTORY}/client.cpp
 )
