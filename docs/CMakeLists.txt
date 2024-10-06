@@ -31,5 +31,5 @@ add_custom_target(
         SOURCES
         doxy.in
         # add more here
-        ../src/export/client.cpp
+        client.cpp
 )
