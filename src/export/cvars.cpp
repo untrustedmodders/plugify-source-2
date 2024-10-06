@@ -823,9 +823,9 @@ extern "C" PLUGIN_API void GetConVarString(plg::string& output, CConVarBaseData*
  * @param conVar Pointer to the console variable data.
  * @return The current Color value of the console variable.
  */
-extern "C" PLUGIN_API Color GetConVarColor(CConVarBaseData* conVar)
+extern "C" PLUGIN_API int GetConVarColor(CConVarBaseData* conVar)
 {
-    return conVar->Cast<Color>()->GetValue();
+    return conVar->Cast<Color>()->GetValue().GetRawColor();
 }
 
 /**
