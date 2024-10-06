@@ -509,7 +509,7 @@ extern "C" PLUGIN_API void GetConVarBounds(const plg::string& output, CConVarBas
 				break;
 		}
 	}
-	std::construct_at(&output, std::move(value));
+	std::construct_at(&output, value);
 }
 
 /**
