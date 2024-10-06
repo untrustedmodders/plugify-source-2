@@ -20,20 +20,12 @@ extern "C" PLUGIN_API int EntPointerToEntHandle(CBaseEntity* entity)
 		return INVALID_EHANDLE_INDEX;
 	}
 
-	auto hndl = entity->GetRefEHandle();
-
-	if (!hndl.IsValid())
-	{
-		return INVALID_EHANDLE_INDEX;
-	}
-
-	return hndl.ToInt();
+	return entity->GetRefEHandle().ToInt();
 }
 
 extern "C" PLUGIN_API void* EntHandleToEntPointer(int entityHandle)
 {
 	CEntityHandle handle((uint32)entityHandle);
-
 	if (!handle.IsValid())
 	{
 		return nullptr;
@@ -50,20 +42,12 @@ extern "C" PLUGIN_API int EntIndexToEntHandle(int entityIndex)
 		return INVALID_EHANDLE_INDEX;
 	}
 
-	auto handle = ent->GetRefEHandle();
-
-	if (!handle.IsValid())
-	{
-		return INVALID_EHANDLE_INDEX;
-	}
-
-	return handle.ToInt();
+	return ent->GetRefEHandle().ToInt();
 }
 
 extern "C" PLUGIN_API int EntHandleToEntIndex(int entityHandle)
 {
 	CEntityHandle handle((uint32)entityHandle);
-
 	if (!handle.IsValid())
 	{
 		return -1;
@@ -81,7 +65,6 @@ extern "C" PLUGIN_API int EntHandleToEntIndex(int entityHandle)
 extern "C" PLUGIN_API bool IsValidEntHandle(int entityHandle)
 {
 	CEntityHandle handle((uint32)entityHandle);
-
 	if (!handle.IsValid())
 	{
 		return false;
