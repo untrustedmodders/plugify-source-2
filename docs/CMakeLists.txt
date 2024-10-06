@@ -26,7 +26,7 @@ configure_file(doxy.in doxy.cfg @ONLY)
 add_custom_target(
         docs ALL
         COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/doxy.cfg
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        WORKING_DIRECTORY ${DOXY_SOURCE_DIRECTORY}
         VERBATIM
         SOURCES
         doxy.in
