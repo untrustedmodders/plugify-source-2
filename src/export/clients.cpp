@@ -1,5 +1,11 @@
 #include "clients.h"
 
+#include <core/player_manager.h>
+#include <core/sdk/entity/cbaseentity.h>
+#include <core/sdk/entity/cbaseplayercontroller.h>
+#include <core/sdk/entity/ccsplayercontroller.h>
+#include <core/sdk/utils.h>
+
 extern "C" {
 
 //! 
