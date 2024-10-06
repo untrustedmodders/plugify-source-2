@@ -33,7 +33,7 @@ jobs:
         run: |
           mkdir -p build
           cd build
-          cmake -DPLUGIFY_BUILD_DOCS=ON ..
+          cmake -DCS2SDK_BUILD_DOCS=ON ..
           cmake --build . --target docs -- -j
 
       - name: Upload artifact

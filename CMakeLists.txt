@@ -60,13 +60,15 @@ set_or_external_dir(SOURCESDK_DIR "sourcesdk")
 
 include(GenerateExportHeader)
 
-include(cmake/platform/shared.cmake)
-include(cmake/compat_format.cmake)
-include(cmake/dynlibutils.cmake)
-include(cmake/logger.cmake)
-include(cmake/metamod.cmake)
-include(cmake/plugify.cmake)
-include(cmake/sourcesdk.cmake)
+if(NOT CS2SDK_BUILD_DOCS)
+	include(cmake/platform/shared.cmake)
+	include(cmake/compat_format.cmake)
+	include(cmake/dynlibutils.cmake)
+	include(cmake/logger.cmake)
+	include(cmake/metamod.cmake)
+	include(cmake/plugify.cmake)
+	include(cmake/sourcesdk.cmake)
+endif()
 
 set(COMPILE_DEFINITIONS
 	CS2SDK_LOGGING_PREFIX="cs2-sdk"
