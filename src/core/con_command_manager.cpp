@@ -70,7 +70,7 @@ void CConCommandManager::RemoveCommandListener(const plg::string& name, CommandL
 		}
 		else
 		{
-			m_globalPre.Unregister(callback);
+			m_globalPost.Unregister(callback);
 		}
 		return;
 	}
