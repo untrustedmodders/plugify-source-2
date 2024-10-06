@@ -398,7 +398,7 @@ extern "C" PLUGIN_API int64_t GetConVarFlags(CConVarBaseData* conVar)
  * @param conVar Pointer to the console variable data.
  * @param max Indicates whether to get the maximum (true) or minimum (false) bound.
  */
-extern "C" PLUGIN_API void GetConVarBounds(const plg::string& output, CConVarBaseData* conVar, bool max)
+extern "C" PLUGIN_API void GetConVarBounds(plg::string& output, CConVarBaseData* conVar, bool max)
 {
 	plg::string value(256, '\0');
 	if (max)
@@ -509,7 +509,7 @@ extern "C" PLUGIN_API void GetConVarBounds(const plg::string& output, CConVarBas
 				break;
 		}
 	}
-	std::construct_at(&output, value);
+	std::construct_at(&output, std::move(value));
 }
 
 /**
