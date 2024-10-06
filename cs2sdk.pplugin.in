@@ -684,8 +684,8 @@
 			}
 		},
 		{
-			"name": "ClientCommandFromServer",
-			"funcName": "ClientCommandFromServer",
+			"name": "FakeClientCommand",
+			"funcName": "FakeClientCommand",
 			"paramTypes": [
 				{
 					"name": "clientIndex",
@@ -703,8 +703,8 @@
 			}
 		},
 		{
-			"name": "PrintServer",
-			"funcName": "PrintServer",
+			"name": "PrintToServer",
+			"funcName": "PrintToServer",
 			"paramTypes": [
 				{
 					"name": "msg",
@@ -717,8 +717,8 @@
 			}
 		},
 		{
-			"name": "PrintConsole",
-			"funcName": "PrintConsole",
+			"name": "PrintToConsole",
+			"funcName": "PrintToConsole",
 			"paramTypes": [
 				{
 					"name": "clientIndex",
@@ -736,8 +736,8 @@
 			}
 		},
 		{
-			"name": "PrintChat",
-			"funcName": "PrintChat",
+			"name": "PrintToChat",
+			"funcName": "PrintToChat",
 			"paramTypes": [
 				{
 					"name": "clientIndex",
@@ -755,8 +755,8 @@
 			}
 		},
 		{
-			"name": "PrintCentre",
-			"funcName": "PrintCentre",
+			"name": "PrintCenterText",
+			"funcName": "PrintCenterText",
 			"paramTypes": [
 				{
 					"name": "clientIndex",
@@ -774,8 +774,8 @@
 			}
 		},
 		{
-			"name": "PrintAlert",
-			"funcName": "PrintAlert",
+			"name": "PrintAlertText",
+			"funcName": "PrintAlertText",
 			"paramTypes": [
 				{
 					"name": "clientIndex",
@@ -793,8 +793,8 @@
 			}
 		},
 		{
-			"name": "PrintHtmlCentre",
-			"funcName": "PrintHtmlCentre",
+			"name": "PrintCentreHtml",
+			"funcName": "PrintCentreHtml",
 			"paramTypes": [
 				{
 					"name": "clientIndex",
@@ -812,8 +812,8 @@
 			}
 		},
 		{
-			"name": "PrintConsoleAll",
-			"funcName": "PrintConsoleAll",
+			"name": "PrintToConsoleAll",
+			"funcName": "PrintToConsoleAll",
 			"paramTypes": [
 				{
 					"name": "message",
@@ -826,8 +826,8 @@
 			}
 		},
 		{
-			"name": "PrintChatAll",
-			"funcName": "PrintChatAll",
+			"name": "PrintToChatAll",
+			"funcName": "PrintToChatAll",
 			"paramTypes": [
 				{
 					"name": "message",
@@ -840,8 +840,8 @@
 			}
 		},
 		{
-			"name": "PrintCentreAll",
-			"funcName": "PrintCentreAll",
+			"name": "PrintCenterTextAll",
+			"funcName": "PrintCenterTextAll",
 			"paramTypes": [
 				{
 					"name": "message",
@@ -854,8 +854,8 @@
 			}
 		},
 		{
-			"name": "PrintAlertAll",
-			"funcName": "PrintAlertAll",
+			"name": "PrintAlertTextToAll",
+			"funcName": "PrintAlertTextToAll",
 			"paramTypes": [
 				{
 					"name": "message",
@@ -868,8 +868,8 @@
 			}
 		},
 		{
-			"name": "PrintHtmlCentreAll",
-			"funcName": "PrintHtmlCentreAll",
+			"name": "PrintCentreHtmlAll",
+			"funcName": "PrintCentreHtmlAll",
 			"paramTypes": [
 				{
 					"name": "message",
@@ -882,8 +882,8 @@
 			}
 		},
 		{
-			"name": "PrintChatColored",
-			"funcName": "PrintChatColored",
+			"name": "PrintToChatColored",
+			"funcName": "PrintToChatColored",
 			"paramTypes": [
 				{
 					"name": "clientIndex",
@@ -901,8 +901,8 @@
 			}
 		},
 		{
-			"name": "PrintChatColoredAll",
-			"funcName": "PrintChatColoredAll",
+			"name": "PrintToChatColoredAll",
+			"funcName": "PrintToChatColoredAll",
 			"paramTypes": [
 				{
 					"name": "message",
@@ -1793,6 +1793,25 @@
 			}
 		},
 		{
+			"name": "GetConVarBounds",
+			"funcName": "GetConVarBounds",
+			"paramTypes": [
+				{
+					"name": "conVar",
+					"type": "ptr64",
+					"ref": false
+				},
+				{
+					"name": "max",
+					"type": "bool",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "string"
+			}
+		},
+		{
 			"name": "SetConVarBounds",
 			"funcName": "SetConVarBounds",
 			"paramTypes": [
@@ -1925,8 +1944,8 @@
 			}
 		},
 		{
-			"name": "GetMapName",
-			"funcName": "GetMapName",
+			"name": "GetCurrentMap",
+			"funcName": "GetCurrentMap",
 			"paramTypes": [],
 			"retType": {
 				"type": "string"
@@ -1987,6 +2006,34 @@
 			}
 		},
 		{
+			"name": "GenericModel",
+			"funcName": "GenericModel",
+			"paramTypes": [
+				{
+					"name": "file",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "int32"
+			}
+		},
+		{
+			"name": "IsGenericPrecache",
+			"funcName": "IsGenericPrecache",
+			"paramTypes": [
+				{
+					"name": "file",
+					"type": "string",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "bool"
+			}
+		},
+		{
 			"name": "PrecacheModel",
 			"funcName": "PrecacheModel",
 			"paramTypes": [
@@ -2011,7 +2058,7 @@
 				}
 			],
 			"retType": {
-				"type": "void"
+				"type": "bool"
 			}
 		},
 		{
