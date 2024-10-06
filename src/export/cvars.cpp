@@ -3,6 +3,7 @@
 #include <core/game_config.h>
 #include <core/sdk/utils.h>
 #include <core/sdk/virtual.h>
+#include <plugify/cpp_plugin.h>
 #include <plugin_export.h>
 
 // CreateConVar()
@@ -833,9 +834,10 @@ extern "C" PLUGIN_API Color GetConVarColor(CConVarBaseData* conVar)
  * @param conVar Pointer to the console variable data.
  * @return The current Vector2D value of the console variable.
  */
-extern "C" PLUGIN_API Vector2D GetConVarVector2(CConVarBaseData* conVar)
+extern "C" PLUGIN_API plg::vec2 GetConVarVector2(CConVarBaseData* conVar)
 {
-    return conVar->Cast<Vector2D>()->GetValue();
+	const Vector2D& vec = conVar->Cast<Vector2D>()->GetValue();
+    return *reinterpret_cast<const plg::vec2*>(&vec);
 }
 
 /**
@@ -844,9 +846,10 @@ extern "C" PLUGIN_API Vector2D GetConVarVector2(CConVarBaseData* conVar)
  * @param conVar Pointer to the console variable data.
  * @return The current Vector value of the console variable.
  */
-extern "C" PLUGIN_API Vector GetConVarVector(CConVarBaseData* conVar)
+extern "C" PLUGIN_API plg::vec3 GetConVarVector(CConVarBaseData* conVar)
 {
-    return conVar->Cast<Vector>()->GetValue();
+	const Vector& vec = conVar->Cast<Vector>()->GetValue();
+    return *reinterpret_cast<const plg::vec3*>(&vec);
 }
 
 /**
@@ -855,9 +858,10 @@ extern "C" PLUGIN_API Vector GetConVarVector(CConVarBaseData* conVar)
  * @param conVar Pointer to the console variable data.
  * @return The current Vector4D value of the console variable.
  */
-extern "C" PLUGIN_API Vector4D GetConVarVector4(CConVarBaseData* conVar)
+extern "C" PLUGIN_API plg::vec4 GetConVarVector4(CConVarBaseData* conVar)
 {
-    return conVar->Cast<Vector4D>()->GetValue();
+	const Vector4D& vec = conVar->Cast<Vector4D>()->GetValue();
+    return *reinterpret_cast<const plg::vec4*>(&vec);
 }
 
 /**
@@ -866,9 +870,10 @@ extern "C" PLUGIN_API Vector4D GetConVarVector4(CConVarBaseData* conVar)
  * @param conVar Pointer to the console variable data.
  * @return The current QAngle value of the console variable.
  */
-extern "C" PLUGIN_API QAngle GetConVarQangle(CConVarBaseData* conVar)
+extern "C" PLUGIN_API plg::vec3 GetConVarQangle(CConVarBaseData* conVar)
 {
-    return conVar->Cast<QAngle>()->GetValue();
+	const QAngle& ang = conVar->Cast<QAngle>()->GetValue();
+    return *reinterpret_cast<const plg::vec3*>(&ang);
 }
 
 /**

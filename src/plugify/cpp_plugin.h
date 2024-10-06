@@ -143,33 +143,35 @@ namespace plg {
 }
 
 namespace plg {
-	struct Vector2 {
-		float x{};
-		float y{};
+	extern "C" {
+		struct vec2 {
+			float x{};
+			float y{};
 
-		bool operator==(const Vector2&) const = default;
-	};
+			bool operator==(const vec2&) const = default;
+		};
 
-	struct Vector3 {
-		float x{};
-		float y{};
-		float z{};
+		struct vec3 {
+			float x{};
+			float y{};
+			float z{};
 
-		bool operator==(const Vector3&) const = default;
-	};
+			bool operator==(const vec3&) const = default;
+		};
 
-	struct Vector4 {
-		float x{};
-		float y{};
-		float z{};
-		float w{};
+		struct vec4 {
+			float x{};
+			float y{};
+			float z{};
+			float w{};
 
-		bool operator==(const Vector4&) const = default;
-	};
+			bool operator==(const vec4&) const = default;
+		};
 
-	struct Matrix4x4 {
-		float m[4][4]{};
+		struct mat4x4 {
+			float m[4][4]{};
 
-		bool operator==(const Matrix4x4&) const = default;
-	};
+			bool operator==(const mat4x4&) const = default;
+		};
+	}
 }

@@ -750,18 +750,19 @@ extern "C" PLUGIN_API void SetEntityParent(int entityHandle, int parentHandle)
  * This function gets the absolute position of the specified entity.
  * If the entity is invalid, the function does nothing.
  *
- * @param output A reference to a Vector where the absolute origin will be stored.
  * @param entityHandle The handle of the entity whose absolute origin is to be retrieved.
+ * @return A vector where the absolute origin will be stored.
  */
-extern "C" PLUGIN_API void GetEntityAbsOrigin(Vector& output, int entityHandle)
+extern "C" PLUGIN_API plg::vec3 GetEntityAbsOrigin(int entityHandle)
 {
 	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!ent)
 	{
-		return;
+		return {};
 	}
 
-	output = ent->m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin();
+	const Vector& vec = ent->m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin();
+	return *reinterpret_cast<const plg::vec3*>(&vec);
 }
 
 /**
@@ -790,18 +791,19 @@ extern "C" PLUGIN_API void SetEntityAbsOrigin(int entityHandle, const Vector& or
  * This function gets the angular rotation of the specified entity.
  * If the entity is invalid, the function does nothing.
  *
- * @param output A reference to a QAngle where the angular rotation will be stored.
  * @param entityHandle The handle of the entity whose angular rotation is to be retrieved.
+ * @return A QAngle where the angular rotation will be stored.
  */
-extern "C" PLUGIN_API void GetEntityAngRotation(QAngle& output, int entityHandle)
+extern "C" PLUGIN_API plg::vec3 GetEntityAngRotation(int entityHandle)
 {
 	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!ent)
 	{
-		return;
+		return {};
 	}
 
-	std::construct_at(&output, ent->m_CBodyComponent->m_pSceneNode->m_angRotation());
+	const QAngle& ang = ent->m_CBodyComponent->m_pSceneNode->m_angRotation();
+    return *reinterpret_cast<const plg::vec3*>(&ang);
 }
 
 /**
@@ -830,18 +832,19 @@ extern "C" PLUGIN_API void SetEntityAngRotation(int entityHandle, const QAngle& 
  * This function gets the absolute velocity of the specified entity.
  * If the entity is invalid, the function does nothing.
  *
- * @param output A reference to a Vector where the absolute velocity will be stored.
  * @param entityHandle The handle of the entity whose absolute velocity is to be retrieved.
+ * @return A vector where the absolute velocity will be stored.
  */
-extern "C" PLUGIN_API void GetEntityAbsVelocity(Vector& output, int entityHandle)
+extern "C" PLUGIN_API plg::vec3 GetEntityAbsVelocity(int entityHandle)
 {
 	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!ent)
 	{
-		return;
+		return {};
 	}
 
-	output = ent->m_vecAbsVelocity();
+	const Vector& vec = ent->m_vecAbsVelocity();
+	return *reinterpret_cast<const plg::vec3*>(&vec);
 }
 
 /**

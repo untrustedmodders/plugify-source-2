@@ -3,9 +3,10 @@
 #include <core/sdk/entity/cbaseplayercontroller.h>
 #include <core/sdk/entity/ccsplayercontroller.h>
 #include <core/sdk/utils.h>
+#include <plugify/cpp_plugin.h>
 #include <plugin_export.h>
 
-//! 
+//!
 extern "C" PLUGIN_API int GetClientIndexFromEntityPointer(CBaseEntity* entity)
 {
 	return utils::GetEntityPlayerSlot(entity).Get() + 1;
@@ -387,32 +388,34 @@ extern "C" PLUGIN_API int GetClientArmor(int clientIndex)
  * @param output Reference to a Vector where the client's origin will be stored.
  * @param clientIndex Index of the client.
  */
-extern "C" PLUGIN_API void GetClientAbsOrigin(Vector& output, int clientIndex)
+extern "C" PLUGIN_API plg::vec3 GetClientAbsOrigin(int clientIndex)
 {
 	auto client = utils::GetController(CPlayerSlot(clientIndex - 1));
 	if (!client)
 	{
-		return;
+		return {};
 	}
 
-	output = client->m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin();
+	const Vector& vec = client->m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin();
+	return *reinterpret_cast<const plg::vec3*>(&vec);
 }
 
 /**
  * @brief Retrieves the client's position angle.
  *
- * @param output Reference to a QAngle where the client's position angle will be stored.
  * @param clientIndex Index of the client.
+ * @return A QAngle where the client's position angle will be stored.
  */
-extern "C" PLUGIN_API void GetClientAbsAngles(QAngle& output, int clientIndex)
+extern "C" PLUGIN_API plg::vec3 GetClientAbsAngles(int clientIndex)
 {
 	auto client = utils::GetController(CPlayerSlot(clientIndex - 1));
 	if (!client)
 	{
-		return;
+		return {};
 	}
 
-	std::construct_at(&output, client->m_CBodyComponent->m_pSceneNode->m_angRotation());
+	const QAngle& ang = client->m_CBodyComponent->m_pSceneNode->m_angRotation();
+    return *reinterpret_cast<const plg::vec3*>(&ang);
 }
 
 /**

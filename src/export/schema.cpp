@@ -1,8 +1,9 @@
 #include <core/core_config.h>
 #include <core/sdk/entity/cschemasystem.h>
 #include <core/sdk/schema.h>
-#include <tier0/utlstring.h>
+#include <plugify/cpp_plugin.h>
 #include <plugin_export.h>
+#include <tier0/utlstring.h>
 
 /**
  * @brief Get the offset of a member in a given schema class.
@@ -331,14 +332,15 @@ extern "C" PLUGIN_API void GetSchemaStringByName(plg::string& output, void* inst
  * @param memberName The name of the member whose value is to be retrieved.
  * @return The value of the member.
  */
-extern "C" PLUGIN_API void GetSchemaVectorByName(Vector& output, void* instancePointer, const plg::string& className, const plg::string& memberName)
+extern "C" PLUGIN_API plg::vec3 GetSchemaVectorByName(void* instancePointer, const plg::string& className, const plg::string& memberName)
 {
 	auto classKey = hash_32_fnv1a_const(className.c_str());
 	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
 
 	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
 
-	output = *reinterpret_cast<std::add_pointer_t<Vector>>((uintptr_t)(instancePointer) + m_key.offset);
+	const Vector& vec = *reinterpret_cast<std::add_pointer_t<Vector>>((uintptr_t)(instancePointer) + m_key.offset);
+	return *reinterpret_cast<const plg::vec3*>(&vec);
 }
 
 /**
