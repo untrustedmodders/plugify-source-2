@@ -78,7 +78,7 @@ public:
 	float GetLatency() const;
 	void SetListen(CPlayerSlot slot, ListenOverride listen);
 	void SetVoiceFlags(VoiceFlag_t flags);
-	VoiceFlag_t GetVoiceFlags();
+	VoiceFlag_t GetVoiceFlags() const;
 	ListenOverride GetListen(CPlayerSlot slot) const;
 	bool IsAuthStringValidated() const;
 

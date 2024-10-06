@@ -110,7 +110,7 @@ void CPlayer::SetVoiceFlags(VoiceFlag_t flags)
 	m_voiceFlag = flags;
 }
 
-VoiceFlag_t CPlayer::GetVoiceFlags()
+VoiceFlag_t CPlayer::GetVoiceFlags() const
 {
 	return m_voiceFlag;
 }
