@@ -64,11 +64,13 @@ jobs:
 
       - name: Clean build directory
         run: |
+          mkdir -p build/output/configs
+          mkdir -p build/output/gamedata
           mkdir -p build/output/bin
+          cp build/core.txt build/output/configs
+          cp build/cs2sdk.games.txt build/output/gamedata
           cp build/${{env.BUILD_TYPE}}/cs2sdk.dll build/output/bin
           cp build/cs2sdk.pplugin build/output
-          cp build/configs build/output
-          cp build/gamedata build/output
 
       - uses: actions/upload-artifact@v4
         with:
@@ -103,11 +105,13 @@ jobs:
 
       - name: Clean build directory
         run: |
+          mkdir -p build/output/configs
+          mkdir -p build/output/gamedata
           mkdir -p build/output/bin
+          mv build/core.txt build/output/configs
+          mv build/cs2sdk.games.txt build/output/gamedata
           mv build/libcs2sdk.so build/output/bin
           mv build/cs2sdk.pplugin build/output
-          mv build/configs build/output
-          mv build/gamedata build/output
 
       - uses: actions/upload-artifact@v4
         with:
