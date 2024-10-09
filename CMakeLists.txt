@@ -129,6 +129,9 @@ configure_file(
 	${CMAKE_BINARY_DIR}/cs2sdk.pplugin
 )
 
+configure_file(${CMAKE_SOURCE_DIR}/configs/core.txt ${CMAKE_BINARY_DIR}/configs COPYONLY) 
+configure_file(${CMAKE_SOURCE_DIR}/gamedata/cs2sdk.games.txt ${CMAKE_BINARY_DIR}/gamedata COPYONLY) 
+
 # ------------------------------------------------------------------------------
 # Documentation
 if(CS2SDK_BUILD_DOCS)
