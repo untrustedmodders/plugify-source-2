@@ -225,18 +225,13 @@
 			"funcName": "GetClientAbsOrigin",
 			"paramTypes": [
 				{
-					"name": "output",
-					"type": "vec3",
-					"ref": true
-				},
-				{
 					"name": "clientIndex",
 					"type": "int32",
 					"ref": false
 				}
 			],
 			"retType": {
-				"type": "void"
+				"type": "vec3"
 			}
 		},
 		{
@@ -244,18 +239,13 @@
 			"funcName": "GetClientAbsAngles",
 			"paramTypes": [
 				{
-					"name": "output",
-					"type": "vec3",
-					"ref": true
-				},
-				{
 					"name": "clientIndex",
 					"type": "int32",
 					"ref": false
 				}
 			],
 			"retType": {
-				"type": "void"
+				"type": "vec3"
 			}
 		},
 		{
@@ -2946,18 +2936,13 @@
 			"funcName": "GetEntityAbsOrigin",
 			"paramTypes": [
 				{
-					"name": "output",
-					"type": "vec3",
-					"ref": true
-				},
-				{
 					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				}
 			],
 			"retType": {
-				"type": "void"
+				"type": "vec3"
 			}
 		},
 		{
@@ -2984,18 +2969,13 @@
 			"funcName": "GetEntityAngRotation",
 			"paramTypes": [
 				{
-					"name": "output",
-					"type": "vec3",
-					"ref": true
-				},
-				{
 					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				}
 			],
 			"retType": {
-				"type": "void"
+				"type": "vec3"
 			}
 		},
 		{
@@ -3022,18 +3002,13 @@
 			"funcName": "GetEntityAbsVelocity",
 			"paramTypes": [
 				{
-					"name": "output",
-					"type": "vec3",
-					"ref": true
-				},
-				{
 					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				}
 			],
 			"retType": {
-				"type": "void"
+				"type": "vec3"
 			}
 		},
 		{
@@ -4794,11 +4769,6 @@
 			"funcName": "GetSchemaVectorByName",
 			"paramTypes": [
 				{
-					"name": "output",
-					"type": "vec3",
-					"ref": true
-				},
-				{
 					"name": "instancePointer",
 					"type": "ptr64",
 					"ref": false
@@ -4815,7 +4785,7 @@
 				}
 			],
 			"retType": {
-				"type": "void"
+				"type": "vec3"
 			}
 		},
 		{
