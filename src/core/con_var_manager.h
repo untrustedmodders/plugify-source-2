@@ -104,7 +104,7 @@ public:
 		}
 		else
 		{
-			conVarInfo.hook.Notify(ref, std::to_string(*pNewValue), std::to_string(*pOldValue));
+			conVarInfo.hook.Notify(ref, plg::to_string(*pNewValue), plg::to_string(*pOldValue));
 		}
 	}
 	

@@ -645,28 +645,28 @@ extern "C" PLUGIN_API void GetConVarValue(plg::string& output, CConVarBaseData* 
 			std::construct_at(&output, conVar->Cast<bool>()->GetValue() ? "1" : "0");
 			break;
 		case EConVarType_Int16:
-			std::construct_at(&output, std::to_string(conVar->Cast<int16_t>()->GetValue()));
+			std::construct_at(&output, plg::to_string(conVar->Cast<int16_t>()->GetValue()));
 			break;
 		case EConVarType_UInt16:
-			std::construct_at(&output, std::to_string(conVar->Cast<uint16_t>()->GetValue()));
+			std::construct_at(&output, plg::to_string(conVar->Cast<uint16_t>()->GetValue()));
 			break;
 		case EConVarType_Int32:
-			std::construct_at(&output, std::to_string(conVar->Cast<int32_t>()->GetValue()));
+			std::construct_at(&output, plg::to_string(conVar->Cast<int32_t>()->GetValue()));
 			break;
 		case EConVarType_UInt32:
-			std::construct_at(&output, std::to_string(conVar->Cast<uint16_t>()->GetValue()));
+			std::construct_at(&output, plg::to_string(conVar->Cast<uint16_t>()->GetValue()));
 			break;
 		case EConVarType_Int64:
-			std::construct_at(&output, std::to_string(conVar->Cast<int64_t>()->GetValue()));
+			std::construct_at(&output, plg::to_string(conVar->Cast<int64_t>()->GetValue()));
 			break;
 		case EConVarType_UInt64:
-			std::construct_at(&output, std::to_string(conVar->Cast<uint64_t>()->GetValue()));
+			std::construct_at(&output, plg::to_string(conVar->Cast<uint64_t>()->GetValue()));
 			break;
 		case EConVarType_Float32:
-			std::construct_at(&output, std::to_string(conVar->Cast<float>()->GetValue()));
+			std::construct_at(&output, plg::to_string(conVar->Cast<float>()->GetValue()));
 			break;
 		case EConVarType_Float64:
-			std::construct_at(&output, std::to_string(conVar->Cast<double>()->GetValue()));
+			std::construct_at(&output, plg::to_string(conVar->Cast<double>()->GetValue()));
 			break;
 		case EConVarType_String:
 			std::construct_at(&output, conVar->Cast<const char*>()->GetValue());
