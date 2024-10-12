@@ -2,18 +2,14 @@
 # Copyright (C) 2024 untrustedmodders
 # Licensed under the MIT license. See LICENSE file in the project root for details.
 
-if(NOT DYNLIBUTILS_DIR)
-	message(FATAL_ERROR "DYNLIBUTILS_DIR is empty")
-endif()
+include(FetchContent)
 
-# GameData already have DynLibUtils library!
+message(STATUS "Pulling and configuring DynLibUtils")
 
-set(DYNLIBUTILS_BINARY_DIR "cpp-memory_utils")
-
-set(DYNLIBUTILS_INCLUDE_DIRS
-	${DYNLIBUTILS_INCLUDE_DIRS}
-
-	${DYNLIBUTILS_DIR}/include
+FetchContent_Declare(
+		dynlibutils
+		GIT_REPOSITORY https://github.com/Wend4r/cpp-memory_utils.git
+		GIT_TAG 59a55a447a5e6951a2b90d598b952d2fb381d295
 )
 
-add_subdirectory(${DYNLIBUTILS_DIR} ${DYNLIBUTILS_BINARY_DIR})
+FetchContent_MakeAvailable(dynlibutils)
