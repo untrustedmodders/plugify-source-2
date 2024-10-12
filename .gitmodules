@@ -1,9 +1,6 @@
 [submodule "external/dynlibutils"]
 	path = external/dynlibutils
 	url = https://github.com/untrustedmodders/cpp-memory_utils.git
-[submodule "external/logger"]
-	path = external/logger
-	url = https://github.com/untrustedmodders/s2u-logger.git
 [submodule "external/metamod-source"]
 	path = external/metamod-source
 	url = https://github.com/alliedmodders/metamod-source
