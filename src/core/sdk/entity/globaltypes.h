@@ -22,6 +22,7 @@
 #include <soundflags.h>
 #include <core/sdk/schema.h>
 #include <platform.h>
+#include <entitysystem.h>
 
 enum InputBitMask_t : uint64_t
 {
@@ -166,14 +167,6 @@ struct EmitSound_t
 	CUtlVector<Vector, int, CUtlMemory<Vector, int>> m_UtlVecSoundOrigin;
 	SoundEventGuid_t m_nForceGuid;
 	gender_t m_SpeakerGender;
-};
-
-struct GameTime_t
-{
-public:
-	DECLARE_SCHEMA_CLASS_INLINE(GameTime_t)
-
-	SCHEMA_FIELD(float, m_Value)
 };
 
 class CNetworkedQuantizedFloat
