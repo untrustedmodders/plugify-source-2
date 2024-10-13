@@ -121,6 +121,9 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDE_DIRS} ${DYNLIBUTILS
 
 target_link_libraries(${PROJECT_NAME} PRIVATE cpp-memory_utils ${PLUGIFY_LINK_LIBRARIES} ${SOURCESDK_BINARY_DIR})
 
+set(CS2SDK_VERSION "0" CACHE STRING "Set version name")
+set(CS2SDK_PACKAGE "cs2sdk" CACHE STRING "Set package name")
+
 configure_file(
 	${CMAKE_SOURCE_DIR}/cs2sdk.pplugin.in
 	${CMAKE_BINARY_DIR}/cs2sdk.pplugin

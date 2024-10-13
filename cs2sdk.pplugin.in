@@ -1996,8 +1996,8 @@
 			}
 		},
 		{
-			"name": "GenericModel",
-			"funcName": "GenericModel",
+			"name": "PrecacheGeneric",
+			"funcName": "PrecacheGeneric",
 			"paramTypes": [
 				{
 					"name": "file",

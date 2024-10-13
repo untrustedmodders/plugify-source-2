@@ -27,17 +27,17 @@ public:
 
 	static void SetChannelVerbosityByName(const char* name, LoggingVerbosity_t verbosity);
 	static void SetChannelVerbosityByTag(const char* tag, LoggingVerbosity_t verbosity);
-	static void RegisterTags(LoggingChannelID_t channelID) {}
+	static void RegisterTags(LoggingChannelID_t) {}
 
-	[[maybe_unused]] LoggingResponse_t Log(LoggingSeverity_t severity, const char* content) const;
-	[[maybe_unused]] LoggingResponse_t Log(LoggingSeverity_t severity, const Color& color, const char* content) const;
-	[[maybe_unused]] LoggingResponse_t Log(LoggingSeverity_t severity, const LeafCodeInfo_t& code, const char* content) const;
-	[[maybe_unused]] LoggingResponse_t Log(LoggingSeverity_t severity, const LeafCodeInfo_t& code, const Color& color, const char* content) const;
+	LoggingResponse_t Log(LoggingSeverity_t severity, const char* content) const;
+	LoggingResponse_t Log(LoggingSeverity_t severity, const Color& color, const char* content) const;
+	LoggingResponse_t Log(LoggingSeverity_t severity, const LeafCodeInfo_t& code, const char* content) const;
+	LoggingResponse_t Log(LoggingSeverity_t severity, const LeafCodeInfo_t& code, const Color& color, const char* content) const;
 
-	[[maybe_unused]] LoggingResponse_t LogFormat(LoggingSeverity_t severity, const char* format, ...) const;
-	[[maybe_unused]] LoggingResponse_t LogFormat(LoggingSeverity_t severity, const Color& color, const char* format, ...) const;
-	[[maybe_unused]] LoggingResponse_t LogFormat(LoggingSeverity_t severity, const LeafCodeInfo_t& code, const char* format, ...) const;
-	[[maybe_unused]] LoggingResponse_t LogFormat(LoggingSeverity_t severity, const LeafCodeInfo_t& code, const Color& color, const char* format, ...) const;
+	LoggingResponse_t LogFormat(LoggingSeverity_t severity, const char* format, ...) const;
+	LoggingResponse_t LogFormat(LoggingSeverity_t severity, const Color& color, const char* format, ...) const;
+	LoggingResponse_t LogFormat(LoggingSeverity_t severity, const LeafCodeInfo_t& code, const char* format, ...) const;
+	LoggingResponse_t LogFormat(LoggingSeverity_t severity, const LeafCodeInfo_t& code, const Color& color, const char* format, ...) const;
 
 private:
 	LoggingChannelID_t m_channelID;
