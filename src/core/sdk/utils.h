@@ -2,16 +2,16 @@
 
 #include <convar.h>
 #include <eiface.h>
-#if CS2SDK_PLATFORM_LINUX || CS2SDK_PLATFORM_APPLE
+#if S2SDK_PLATFORM_LINUX || S2SDK_PLATFORM_APPLE
 #include <cxxabi.h>
 #endif
 
-#if CS2SDK_PLATFORM_WINDOWS
-#define CS2SDK_NSTR(str) L##str
-#define CS2SDK_UTF8(str) utils::ConvertWideToUtf8(str)
+#if S2SDK_PLATFORM_WINDOWS
+#define S2SDK_NSTR(str) L##str
+#define S2SDK_UTF8(str) utils::ConvertWideToUtf8(str)
 #else
-#define CS2SDK_NSTR(str) str
-#define CS2SDK_UTF8(str) str
+#define S2SDK_NSTR(str) str
+#define S2SDK_UTF8(str) str
 #endif
 
 class CBaseEntity;
@@ -66,7 +66,7 @@ namespace utils
 
 	/*inline plg::string Demangle(const char* name)
 	{
-#if CS2SDK_PLATFORM_LINUX || CS2SDK_PLATFORM_APPLE
+#if S2SDK_PLATFORM_LINUX || S2SDK_PLATFORM_APPLE
 		int status = 0;
 
 		std::unique_ptr<char, void (*)(void*)> res(
@@ -83,7 +83,7 @@ namespace utils
 		return plg::string(ret);
 	}*/
 
-#if CS2SDK_PLATFORM_WINDOWS
+#if S2SDK_PLATFORM_WINDOWS
 	/// Converts the specified UTF-8 string to a wide string.
 	plg::wstring ConvertUtf8ToWide(std::string_view str);
 	bool ConvertUtf8ToWide(plg::wstring& dest, std::string_view str);

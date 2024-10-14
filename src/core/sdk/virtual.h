@@ -22,7 +22,7 @@ inline T GetVMethod(uint32_t uIndex, void* pClass)
 template <typename T, typename... Args>
 inline T CallVirtual(uint32_t uIndex, void* pClass, Args... args)
 {
-#if CS2SDK_PLATFORM_WINDOWS
+#if S2SDK_PLATFORM_WINDOWS
 	auto pFunc = GetVMethod<T(__thiscall*)(void*, Args...)>(uIndex, pClass);
 #else
 	auto pFunc = GetVMethod<T (*)(void*, Args...)>(uIndex, pClass);

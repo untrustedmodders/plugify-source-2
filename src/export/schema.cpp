@@ -53,7 +53,7 @@ extern "C" PLUGIN_API bool IsSchemaFieldNetworked(const plg::string& className, 
  */
 extern "C" PLUGIN_API int GetSchemaClassSize(const plg::string& className)
 {
-	CSchemaSystemTypeScope2* pType = g_pSchemaSystem2->FindTypeScopeForModule(CS2SDK_LIBRARY_PREFIX "server" CS2SDK_LIBRARY_SUFFIX);
+	CSchemaSystemTypeScope2* pType = g_pSchemaSystem2->FindTypeScopeForModule(S2SDK_LIBRARY_PREFIX "server" S2SDK_LIBRARY_SUFFIX);
 	SchemaClassInfoData_t* pClassInfo = pType->FindDeclaredClass(className.c_str());
 	if (!pClassInfo)
 		return -1;

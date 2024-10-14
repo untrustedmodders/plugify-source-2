@@ -60,20 +60,20 @@ void Source2SDK::OnPluginStart()
 {
 	g_Logger.Log(LS_DEBUG, "OnPluginStart!\n");
 
-	auto coreConfig = FindResource(CS2SDK_NSTR("configs/core.txt"));
+	auto coreConfig = FindResource(S2SDK_NSTR("configs/core.txt"));
 	if (!coreConfig.has_value())
 	{
 		g_Logger.Log(LS_ERROR, "configs/core.txt not found!");
 		return;
 	}
-	auto gameData = FindResource(CS2SDK_NSTR("gamedata/cs2sdk.games.txt"));
+	auto gameData = FindResource(S2SDK_NSTR("gamedata/s2sdk.games.txt"));
 	if (!gameData.has_value())
 	{
-		g_Logger.Log(LS_ERROR, "gamedata/cs2sdk.games.txt not found!");
+		g_Logger.Log(LS_ERROR, "gamedata/s2sdk.games.txt not found!");
 		return;
 	}
 
-	globals::Initialize(CS2SDK_UTF8(*coreConfig), CS2SDK_UTF8(*gameData));
+	globals::Initialize(S2SDK_UTF8(*coreConfig), S2SDK_UTF8(*gameData));
 
 	using enum poly::CallbackType;
 

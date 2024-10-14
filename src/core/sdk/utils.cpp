@@ -222,7 +222,7 @@ const plg::string& utils::GameDirectory()
 	return gameDirectory;
 }
 
-#if CS2SDK_PLATFORM_WINDOWS
+#if S2SDK_PLATFORM_WINDOWS
 
 #include <Windows.h>
 

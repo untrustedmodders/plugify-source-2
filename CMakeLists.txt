@@ -10,7 +10,7 @@ endif()
 
 project(plugify-source-2
 	VERSION 1.0.0.0
-	DESCRIPTION "CS2 SDK Plugin"
+	DESCRIPTION "Source2 SDK Plugin"
 	HOMEPAGE_URL "https://github.com/untrustedmodders/plugify-source-2"
 	LANGUAGES C CXX
 )
@@ -29,7 +29,7 @@ string(REGEX REPLACE "^[^-]*-" "" PROJECT_NAME_SUBSTRING "${PROJECT_NAME}")
 string(TOLOWER "${PROJECT_NAME_SUBSTRING}" PROJECT_NAME_LOWER)
 string(TOUPPER "${PROJECT_NAME_SUBSTRING}" PROJECT_NAME_UPPER)
 
-set(PROJECT_OUTPUT_NAME "cs2sdk")
+set(PROJECT_OUTPUT_NAME "s2sdk")
 
 set(PROJECT_AUTHOR "Untrusted Modders Team")
 set(PROJECT_DESCRIPTION_FULL "Source 2 SDK Plugify plugin")
@@ -68,16 +68,16 @@ if(NOT CS2SDK_BUILD_DOCS)
 endif()
 
 set(COMPILE_DEFINITIONS
-	CS2SDK_LOGGING_PREFIX="cs2-sdk"
-	CS2SDK_PLATFORM_WINDOWS=$<BOOL:${WIN32}>
-	CS2SDK_PLATFORM_APPLE=$<BOOL:${APPLE}>
-	CS2SDK_PLATFORM_LINUX=$<BOOL:${LINUX}>
-	CS2SDK_LIBRARY_SUFFIX="${CMAKE_SHARED_LIBRARY_SUFFIX}"
-	CS2SDK_LIBRARY_PREFIX="${CMAKE_SHARED_LIBRARY_PREFIX}"
-	CS2SDK_PLATFORM="linux"
-	CS2SDK_BINARY="linuxsteamrt64"
-	CS2SDK_ROOT_BINARY="/bin/linuxsteamrt64/"
-	CS2SDK_GAME_BINARY="/bin/linuxsteamrt64/../../csgo/bin/linuxsteamrt64/" # Metamod hack
+	S2SDK_LOGGING_PREFIX="s2sdk"
+	S2SDK_PLATFORM_WINDOWS=$<BOOL:${WIN32}>
+	S2SDK_PLATFORM_APPLE=$<BOOL:${APPLE}>
+	S2SDK_PLATFORM_LINUX=$<BOOL:${LINUX}>
+	S2SDK_LIBRARY_SUFFIX="${CMAKE_SHARED_LIBRARY_SUFFIX}"
+	S2SDK_LIBRARY_PREFIX="${CMAKE_SHARED_LIBRARY_PREFIX}"
+	S2SDK_PLATFORM="linux"
+	S2SDK_BINARY="linuxsteamrt64"
+	S2SDK_ROOT_BINARY="/bin/linuxsteamrt64/"
+	S2SDK_GAME_BINARY="/bin/linuxsteamrt64/../../csgo/bin/linuxsteamrt64/" # Metamod hack
 )
 
 file(GLOB_RECURSE SOURCE_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "src/*.cpp")
@@ -121,16 +121,16 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDE_DIRS} ${DYNLIBUTILS
 
 target_link_libraries(${PROJECT_NAME} PRIVATE cpp-memory_utils ${PLUGIFY_LINK_LIBRARIES} ${SOURCESDK_BINARY_DIR})
 
-set(CS2SDK_VERSION "0" CACHE STRING "Set version name")
-set(CS2SDK_PACKAGE "cs2sdk" CACHE STRING "Set package name")
+set(S2SDK_VERSION "0" CACHE STRING "Set version name")
+set(S2SDK_PACKAGE "cs2sdk" CACHE STRING "Set package name")
 
 configure_file(
-	${CMAKE_SOURCE_DIR}/cs2sdk.pplugin.in
-	${CMAKE_BINARY_DIR}/cs2sdk.pplugin
+	${CMAKE_SOURCE_DIR}/s2sdk.pplugin.in
+	${CMAKE_BINARY_DIR}/s2sdk.pplugin
 )
 
 configure_file(${CMAKE_SOURCE_DIR}/assets/configs/core.txt ${CMAKE_BINARY_DIR}/core.txt COPYONLY)
-configure_file(${CMAKE_SOURCE_DIR}/assets/gamedata/cs2sdk.games.txt ${CMAKE_BINARY_DIR}/cs2sdk.games.txt COPYONLY)
+configure_file(${CMAKE_SOURCE_DIR}/assets/gamedata/s2sdk.games.txt ${CMAKE_BINARY_DIR}/s2sdk.games.txt COPYONLY)
 
 # ------------------------------------------------------------------------------
 # Documentation

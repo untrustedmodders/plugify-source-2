@@ -21,14 +21,14 @@
 
 #include <cstdint>
 
-#if CS2SDK_PLATFORM_WINDOWS
+#if S2SDK_PLATFORM_WINDOWS
 #pragma warning(push)
 #pragma warning(disable : 4005)
 #endif
 
 #include <type_traits>
 
-#if CS2SDK_PLATFORM_WINDOWS
+#if S2SDK_PLATFORM_WINDOWS
 #pragma warning(pop)
 #endif
 

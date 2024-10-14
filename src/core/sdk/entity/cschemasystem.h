@@ -32,7 +32,7 @@ class CSchemaSystemTypeScope2
 public:
 	SchemaClassInfoData_t* FindDeclaredClass(const char* pClass)
 	{
-#if CS2SDK_PLATFORM_WINDOWS
+#if S2SDK_PLATFORM_WINDOWS
 		SchemaClassInfoData_t* rv = nullptr;
 		CALL_VIRTUAL(void, 2, this, &rv, pClass);
 		return rv;

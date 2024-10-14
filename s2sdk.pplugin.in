@@ -1,15 +1,15 @@
 {
 	"fileVersion": 1,
-	"version": ${CS2SDK_VERSION},
-	"versionName": "v${CS2SDK_VERSION}",
+	"version": ${S2SDK_VERSION},
+	"versionName": "v${S2SDK_VERSION}",
 	"friendlyName": "CS2-SDK",
 	"description": "Provides functionality for other plugins from Source 2 engine",
 	"createdBy": "untrustedmodders",
 	"createdByURL": "https://github.com/untrustedmodders/",
 	"docsURL": "https://github.com/untrustedmodders/plugify-source-2",
-	"downloadURL": "https://github.com/untrustedmodders/plugify-source-2/releases/download/v${CS2SDK_VERSION}/${CS2SDK_PACKAGE}.zip",
-	"updateURL": "https://untrustedmodders.github.io/plugify-source-2/cs2sdk.json",
-	"entryPoint": "bin/cs2sdk",
+	"downloadURL": "https://github.com/untrustedmodders/plugify-source-2/releases/download/v${S2SDK_VERSION}/${S2SDK_PACKAGE}.zip",
+	"updateURL": "https://untrustedmodders.github.io/plugify-source-2/s2sdk.json",
+	"entryPoint": "bin/s2sdk",
 	"supportedPlatforms": [],
 	"resourceDirectories": [
 		"configs",
@@ -225,19 +225,10 @@
 			"funcName": "GetClientAbsOrigin",
 			"paramTypes": [
 				{
-					"name": "clientIndex",
-					"type": "int32",
-					"ref": false
-				}
-			],
-			"retType": {
-				"type": "vec3"
-			}
-		},
-		{
-			"name": "GetClientAbsAngles",
-			"funcName": "GetClientAbsAngles",
-			"paramTypes": [
+					"name": "output",
+					"type": "vec3",
+					"ref": true
+				},
 				{
 					"name": "clientIndex",
 					"type": "int32",
@@ -245,7 +236,26 @@
 				}
 			],
 			"retType": {
-				"type": "vec3"
+				"type": "void"
+			}
+		},
+		{
+			"name": "GetClientAbsAngles",
+			"funcName": "GetClientAbsAngles",
+			"paramTypes": [
+				{
+					"name": "output",
+					"type": "vec3",
+					"ref": true
+				},
+				{
+					"name": "clientIndex",
+					"type": "int32",
+					"ref": false
+				}
+			],
+			"retType": {
+				"type": "void"
 			}
 		},
 		{
@@ -325,8 +335,8 @@
 			}
 		},
 		{
-			"name": "ForcePlayerSuicide",
-			"funcName": "ForcePlayerSuicide",
+			"name": "CommitSuicide",
+			"funcName": "CommitSuicide",
 			"paramTypes": [
 				{
 					"name": "clientIndex",
@@ -674,8 +684,8 @@
 			}
 		},
 		{
-			"name": "FakeClientCommand",
-			"funcName": "FakeClientCommand",
+			"name": "ClientCommandFromServer",
+			"funcName": "ClientCommandFromServer",
 			"paramTypes": [
 				{
 					"name": "clientIndex",
@@ -693,8 +703,8 @@
 			}
 		},
 		{
-			"name": "PrintToServer",
-			"funcName": "PrintToServer",
+			"name": "PrintServer",
+			"funcName": "PrintServer",
 			"paramTypes": [
 				{
 					"name": "msg",
@@ -707,8 +717,8 @@
 			}
 		},
 		{
-			"name": "PrintToConsole",
-			"funcName": "PrintToConsole",
+			"name": "PrintConsole",
+			"funcName": "PrintConsole",
 			"paramTypes": [
 				{
 					"name": "clientIndex",
@@ -726,8 +736,8 @@
 			}
 		},
 		{
-			"name": "PrintToChat",
-			"funcName": "PrintToChat",
+			"name": "PrintChat",
+			"funcName": "PrintChat",
 			"paramTypes": [
 				{
 					"name": "clientIndex",
@@ -745,8 +755,8 @@
 			}
 		},
 		{
-			"name": "PrintCenterText",
-			"funcName": "PrintCenterText",
+			"name": "PrintCentre",
+			"funcName": "PrintCentre",
 			"paramTypes": [
 				{
 					"name": "clientIndex",
@@ -764,8 +774,8 @@
 			}
 		},
 		{
-			"name": "PrintAlertText",
-			"funcName": "PrintAlertText",
+			"name": "PrintAlert",
+			"funcName": "PrintAlert",
 			"paramTypes": [
 				{
 					"name": "clientIndex",
@@ -783,8 +793,8 @@
 			}
 		},
 		{
-			"name": "PrintCentreHtml",
-			"funcName": "PrintCentreHtml",
+			"name": "PrintHtmlCentre",
+			"funcName": "PrintHtmlCentre",
 			"paramTypes": [
 				{
 					"name": "clientIndex",
@@ -802,8 +812,8 @@
 			}
 		},
 		{
-			"name": "PrintToConsoleAll",
-			"funcName": "PrintToConsoleAll",
+			"name": "PrintConsoleAll",
+			"funcName": "PrintConsoleAll",
 			"paramTypes": [
 				{
 					"name": "message",
@@ -816,8 +826,8 @@
 			}
 		},
 		{
-			"name": "PrintToChatAll",
-			"funcName": "PrintToChatAll",
+			"name": "PrintChatAll",
+			"funcName": "PrintChatAll",
 			"paramTypes": [
 				{
 					"name": "message",
@@ -830,8 +840,8 @@
 			}
 		},
 		{
-			"name": "PrintCenterTextAll",
-			"funcName": "PrintCenterTextAll",
+			"name": "PrintCentreAll",
+			"funcName": "PrintCentreAll",
 			"paramTypes": [
 				{
 					"name": "message",
@@ -844,8 +854,8 @@
 			}
 		},
 		{
-			"name": "PrintAlertTextToAll",
-			"funcName": "PrintAlertTextToAll",
+			"name": "PrintAlertAll",
+			"funcName": "PrintAlertAll",
 			"paramTypes": [
 				{
 					"name": "message",
@@ -858,8 +868,8 @@
 			}
 		},
 		{
-			"name": "PrintCentreHtmlAll",
-			"funcName": "PrintCentreHtmlAll",
+			"name": "PrintHtmlCentreAll",
+			"funcName": "PrintHtmlCentreAll",
 			"paramTypes": [
 				{
 					"name": "message",
@@ -872,8 +882,8 @@
 			}
 		},
 		{
-			"name": "PrintToChatColored",
-			"funcName": "PrintToChatColored",
+			"name": "PrintChatColored",
+			"funcName": "PrintChatColored",
 			"paramTypes": [
 				{
 					"name": "clientIndex",
@@ -891,8 +901,8 @@
 			}
 		},
 		{
-			"name": "PrintToChatColoredAll",
-			"funcName": "PrintToChatColoredAll",
+			"name": "PrintChatColoredAll",
+			"funcName": "PrintChatColoredAll",
 			"paramTypes": [
 				{
 					"name": "message",
@@ -1783,25 +1793,6 @@
 			}
 		},
 		{
-			"name": "GetConVarBounds",
-			"funcName": "GetConVarBounds",
-			"paramTypes": [
-				{
-					"name": "conVar",
-					"type": "ptr64",
-					"ref": false
-				},
-				{
-					"name": "max",
-					"type": "bool",
-					"ref": false
-				}
-			],
-			"retType": {
-				"type": "string"
-			}
-		},
-		{
 			"name": "SetConVarBounds",
 			"funcName": "SetConVarBounds",
 			"paramTypes": [
@@ -1934,8 +1925,8 @@
 			}
 		},
 		{
-			"name": "GetCurrentMap",
-			"funcName": "GetCurrentMap",
+			"name": "GetMapName",
+			"funcName": "GetMapName",
 			"paramTypes": [],
 			"retType": {
 				"type": "string"
@@ -1996,34 +1987,6 @@
 			}
 		},
 		{
-			"name": "PrecacheGeneric",
-			"funcName": "PrecacheGeneric",
-			"paramTypes": [
-				{
-					"name": "file",
-					"type": "string",
-					"ref": false
-				}
-			],
-			"retType": {
-				"type": "int32"
-			}
-		},
-		{
-			"name": "IsGenericPrecache",
-			"funcName": "IsGenericPrecache",
-			"paramTypes": [
-				{
-					"name": "file",
-					"type": "string",
-					"ref": false
-				}
-			],
-			"retType": {
-				"type": "bool"
-			}
-		},
-		{
 			"name": "PrecacheModel",
 			"funcName": "PrecacheModel",
 			"paramTypes": [
@@ -2048,7 +2011,7 @@
 				}
 			],
 			"retType": {
-				"type": "bool"
+				"type": "void"
 			}
 		},
 		{
@@ -2936,13 +2899,18 @@
 			"funcName": "GetEntityAbsOrigin",
 			"paramTypes": [
 				{
+					"name": "output",
+					"type": "vec3",
+					"ref": true
+				},
+				{
 					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				}
 			],
 			"retType": {
-				"type": "vec3"
+				"type": "void"
 			}
 		},
 		{
@@ -2969,13 +2937,18 @@
 			"funcName": "GetEntityAngRotation",
 			"paramTypes": [
 				{
+					"name": "output",
+					"type": "vec3",
+					"ref": true
+				},
+				{
 					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				}
 			],
 			"retType": {
-				"type": "vec3"
+				"type": "void"
 			}
 		},
 		{
@@ -3002,13 +2975,18 @@
 			"funcName": "GetEntityAbsVelocity",
 			"paramTypes": [
 				{
+					"name": "output",
+					"type": "vec3",
+					"ref": true
+				},
+				{
 					"name": "entityHandle",
 					"type": "int32",
 					"ref": false
 				}
 			],
 			"retType": {
-				"type": "vec3"
+				"type": "void"
 			}
 		},
 		{
@@ -4769,6 +4747,11 @@
 			"funcName": "GetSchemaVectorByName",
 			"paramTypes": [
 				{
+					"name": "output",
+					"type": "vec3",
+					"ref": true
+				},
+				{
 					"name": "instancePointer",
 					"type": "ptr64",
 					"ref": false
@@ -4785,7 +4768,7 @@
 				}
 			],
 			"retType": {
-				"type": "vec3"
+				"type": "void"
 			}
 		},
 		{

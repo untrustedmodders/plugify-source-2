@@ -18,7 +18,7 @@ bool CGameConfig::Initialize()
 	KeyValues* game = m_pKeyValues->FindKey(m_szGameDir.c_str());
 	if (game)
 	{
-		const char* platform = CS2SDK_PLATFORM;
+		const char* platform = S2SDK_PLATFORM;
 
 		KeyValues* offsets = game->FindKey("Offsets");
 		if (offsets)

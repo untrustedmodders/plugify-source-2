@@ -59,7 +59,7 @@ jobs:
         run: |
           mkdir -p build
           cd build
-          cmake -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DCS2SDK_VERSION="${{ needs.setup.outputs.buildnumber }}" -DCS2SDK_PACKAGE="cs2sdk-build-${{ needs.setup.outputs.buildnumber }}-windows-${{ env.GITHUB_SHA_SHORT }}" ..
+          cmake -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DS2SDK_VERSION="${{ needs.setup.outputs.buildnumber }}" -DS2SDK_PACKAGE="s2sdk-build-${{ needs.setup.outputs.buildnumber }}-windows-${{ env.GITHUB_SHA_SHORT }}" ..
           cmake --build . --target plugify-source-2 --config ${{ env.BUILD_TYPE }} -- /m
 
       - name: Clean build directory
@@ -68,13 +68,13 @@ jobs:
           mkdir -p build/output/gamedata
           mkdir -p build/output/bin
           cp build/core.txt build/output/configs
-          cp build/cs2sdk.games.txt build/output/gamedata
-          cp build/${{env.BUILD_TYPE}}/cs2sdk.dll build/output/bin
-          cp build/cs2sdk.pplugin build/output
+          cp build/s2sdk.games.txt build/output/gamedata
+          cp build/${{env.BUILD_TYPE}}/s2sdk.dll build/output/bin
+          cp build/s2sdk.pplugin build/output
 
       - uses: actions/upload-artifact@v4
         with:
-          name: cs2sdk-build-windows-${{ env.GITHUB_SHA_SHORT }}
+          name: s2sdk-build-windows-${{ env.GITHUB_SHA_SHORT }}
           path: build/output/
 
   build_linux:
@@ -100,7 +100,7 @@ jobs:
         run: |
           mkdir -p build
           cd build
-          cmake -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DCS2SDK_VERSION="${{ needs.setup.outputs.buildnumber }}" -DCS2SDK_PACKAGE="cs2sdk-build-${{ needs.setup.outputs.buildnumber }}-linux-${{ env.GITHUB_SHA_SHORT }}" ..
+          cmake -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DS2SDK_VERSION="${{ needs.setup.outputs.buildnumber }}" -DS2SDK_PACKAGE="s2sdk-build-${{ needs.setup.outputs.buildnumber }}-linux-${{ env.GITHUB_SHA_SHORT }}" ..
           cmake --build . --target plugify-source-2 --config ${{ env.BUILD_TYPE }} -- -j
 
       - name: Clean build directory
@@ -109,13 +109,13 @@ jobs:
           mkdir -p build/output/gamedata
           mkdir -p build/output/bin
           mv build/core.txt build/output/configs
-          mv build/cs2sdk.games.txt build/output/gamedata
-          mv build/libcs2sdk.so build/output/bin
-          mv build/cs2sdk.pplugin build/output
+          mv build/s2sdk.games.txt build/output/gamedata
+          mv build/libs2sdk.so build/output/bin
+          mv build/s2sdk.pplugin build/output
 
       - uses: actions/upload-artifact@v4
         with:
-          name: cs2sdk-build-linux-${{ env.GITHUB_SHA_SHORT }}
+          name: s2sdk-build-linux-${{ env.GITHUB_SHA_SHORT }}
           path: build/output/
 
   publish:
@@ -134,23 +134,23 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: cs2sdk-build-windows-${{ env.GITHUB_SHA_SHORT }}
+          name: s2sdk-build-windows-${{ env.GITHUB_SHA_SHORT }}
           path: build/windows
 
       - uses: actions/download-artifact@v4
         with:
-          name: cs2sdk-build-linux-${{ env.GITHUB_SHA_SHORT }}
+          name: s2sdk-build-linux-${{ env.GITHUB_SHA_SHORT }}
           path: build/linux
 
       - name: Zip Builds
         run: |
-          (cd build/linux && zip -qq -r ../../cs2sdk-build-${{ needs.setup.outputs.buildnumber }}-linux-${{ env.GITHUB_SHA_SHORT }}.zip *)
-          (cd build/windows && zip -qq -r ../../cs2sdk-build-${{ needs.setup.outputs.buildnumber }}-windows-${{ env.GITHUB_SHA_SHORT }}.zip *)
+          (cd build/linux && zip -qq -r ../../s2sdk-build-${{ needs.setup.outputs.buildnumber }}-linux-${{ env.GITHUB_SHA_SHORT }}.zip *)
+          (cd build/windows && zip -qq -r ../../s2sdk-build-${{ needs.setup.outputs.buildnumber }}-windows-${{ env.GITHUB_SHA_SHORT }}.zip *)
 
       - id: linux
-        run: echo "checksum=$(sha256sum cs2sdk-build-${{ needs.setup.outputs.buildnumber }}-linux-${{ env.GITHUB_SHA_SHORT }}.zip | cut -d' ' -f1)" >> $GITHUB_OUTPUT
+        run: echo "checksum=$(sha256sum s2sdk-build-${{ needs.setup.outputs.buildnumber }}-linux-${{ env.GITHUB_SHA_SHORT }}.zip | cut -d' ' -f1)" >> $GITHUB_OUTPUT
       - id: windows
-        run: echo "checksum=$(sha256sum cs2sdk-build-${{ needs.setup.outputs.buildnumber }}-windows-${{ env.GITHUB_SHA_SHORT }}.zip | cut -d' ' -f1)" >> $GITHUB_OUTPUT
+        run: echo "checksum=$(sha256sum s2sdk-build-${{ needs.setup.outputs.buildnumber }}-windows-${{ env.GITHUB_SHA_SHORT }}.zip | cut -d' ' -f1)" >> $GITHUB_OUTPUT
 
       - name: Release
         id: release
@@ -158,8 +158,8 @@ jobs:
         with:
           tag_name: v${{ needs.setup.outputs.buildnumber }}
           files: |
-            cs2sdk-build-${{ needs.setup.outputs.buildnumber }}-windows-${{ env.GITHUB_SHA_SHORT }}.zip
-            cs2sdk-build-${{ needs.setup.outputs.buildnumber }}-linux-${{ env.GITHUB_SHA_SHORT }}.zip
+            s2sdk-build-${{ needs.setup.outputs.buildnumber }}-windows-${{ env.GITHUB_SHA_SHORT }}.zip
+            s2sdk-build-${{ needs.setup.outputs.buildnumber }}-linux-${{ env.GITHUB_SHA_SHORT }}.zip
 
       - name: Send Notification to Discord
         env:
@@ -194,7 +194,7 @@ jobs:
         run: |
           mkdir -p build
           cd build
-          cmake -DCS2SDK_BUILD_DOCS=ON ..
+          cmake -DS2SDK_BUILD_DOCS=ON ..
           cmake --build . --target docs -- -j
 
       - name: Setup python
@@ -218,10 +218,10 @@ jobs:
             add_path("build/docs/html")
             
             version_number = ${{ needs.setup.outputs.buildnumber }}
-            package_name = 'cs2sdk-build-${{ needs.setup.outputs.buildnumber }}-{}-${{ env.GITHUB_SHA_SHORT }}'
+            package_name = 's2sdk-build-${{ needs.setup.outputs.buildnumber }}-{}-${{ env.GITHUB_SHA_SHORT }}'
             checksum_linux = '${{ needs.publish.outputs.checksum_linux }}'
             checksum_windows = '${{ needs.publish.outputs.checksum_windows }}'
-            json_url = 'https://untrustedmodders.github.io/plugify-source-2/cs2sdk.json'
+            json_url = 'https://untrustedmodders.github.io/plugify-source-2/s2sdk.json'
             
             def load_json_from_url(url):
                 try:
@@ -231,8 +231,8 @@ jobs:
                 except requests.RequestException:
                     return {
                         "content": {
-                            "cs2sdk": {
-                                "name": "cs2sdk",
+                            "s2sdk": {
+                                "name": "s2sdk",
                                 "type": "plugin",
                                 "author": "qubka",
                                 "description": "Provides functionality for other plugins from Source 2 engine.",
@@ -253,7 +253,7 @@ jobs:
                     "platforms": [f"{platform}"]
                 }
             
-                versions = data["content"]["cs2sdk"]["versions"]
+                versions = data["content"]["s2sdk"]["versions"]
                 versions.append(new_version)
             
                 if len(versions) > 10:
@@ -264,7 +264,7 @@ jobs:
             data = load_json_from_url(json_url)
             data = append_new_version(data, version_number, checksum_windows, package_name, "windows")
             data = append_new_version(data, version_number, checksum_linux, package_name, "linux")
-            save_json('build/docs/html/cs2sdk.json', data)
+            save_json('build/docs/html/s2sdk.json', data)
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2

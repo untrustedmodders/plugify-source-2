@@ -74,7 +74,7 @@ constexpr auto ModulePath(const char (&str)[N])
 	for (size_t i = 0; i < length; ++i)
 	{
 		result.c[i] = str[i];
-#if CS2SDK_PLATFORM_WINDOWS
+#if S2SDK_PLATFORM_WINDOWS
 		if (result.c[i] == '/')
 			result.c[i] = '\\';
 #endif
@@ -83,7 +83,7 @@ constexpr auto ModulePath(const char (&str)[N])
 	return result;
 }
 
-#if CS2SDK_PLATFORM_WINDOWS
+#if S2SDK_PLATFORM_WINDOWS
 #undef GetModuleHandle
 #endif
 
@@ -102,13 +102,13 @@ namespace globals
 {
 	void Initialize(plg::string coreConfig, plg::string gameConfig)
 	{
-		modules::engine = CreateModule(ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "engine2").c);
-		modules::tier0 = CreateModule(ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "tier0").c);
-		modules::server = CreateModule(ModulePath(CS2SDK_GAME_BINARY CS2SDK_LIBRARY_PREFIX "server").c);
-		modules::schemasystem = CreateModule(ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "schemasystem").c);
-		modules::filesystem = CreateModule(ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "filesystem_stdio").c);
-		modules::vscript = CreateModule(ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "vscript").c);
-		modules::networksystem = CreateModule(ModulePath(CS2SDK_ROOT_BINARY CS2SDK_LIBRARY_PREFIX "networksystem").c);
+		modules::engine = CreateModule(ModulePath(S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "engine2").c);
+		modules::tier0 = CreateModule(ModulePath(S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "tier0").c);
+		modules::server = CreateModule(ModulePath(S2SDK_GAME_BINARY S2SDK_LIBRARY_PREFIX "server").c);
+		modules::schemasystem = CreateModule(ModulePath(S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "schemasystem").c);
+		modules::filesystem = CreateModule(ModulePath(S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "filesystem_stdio").c);
+		modules::vscript = CreateModule(ModulePath(S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "vscript").c);
+		modules::networksystem = CreateModule(ModulePath(S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "networksystem").c);
 
 		g_pCVar = FindInterface<ICvar>(modules::tier0, CVAR_INTERFACE_VERSION);
 		g_pSchemaSystem2 = FindInterface<CSchemaSystem>(modules::schemasystem, SCHEMASYSTEM_INTERFACE_VERSION);

@@ -193,4 +193,4 @@ LoggingResponse_t CLogger::LogFormat(LoggingSeverity_t severity, const LeafCodeI
 	return response;
 }
 
-CLogger g_Logger(CS2SDK_LOGGING_PREFIX, &CLogger::RegisterTags);
+CLogger g_Logger(S2SDK_LOGGING_PREFIX, &CLogger::RegisterTags);
