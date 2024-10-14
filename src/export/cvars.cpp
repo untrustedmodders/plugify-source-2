@@ -1053,9 +1053,11 @@ extern "C" PLUGIN_API void SetConVarString(CConVarBaseData* conVar, const plg::s
  * @param conVar Pointer to the console variable data.
  * @param value The value to set for the console variable.
  */
-extern "C" PLUGIN_API void SetConVarColor(CConVarBaseData* conVar, const Color& value)
+extern "C" PLUGIN_API void SetConVarColor(CConVarBaseData* conVar, int value)
 {
-    conVar->Cast<Color>()->SetValue(value);
+	Color color;
+	color.SetRawColor(value);
+    conVar->Cast<Color>()->SetValue(color);
 }
 
 /**
