@@ -15,7 +15,7 @@ project(plugify-source-2
 	LANGUAGES C CXX
 )
 
-option(CS2SDK_BUILD_DOCS "Enable building with documentation." OFF)
+option(S2SDK_BUILD_DOCS "Enable building with documentation." OFF)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -58,7 +58,7 @@ set_or_external_dir(SOURCESDK_DIR "sourcesdk")
 
 include(GenerateExportHeader)
 
-if(NOT CS2SDK_BUILD_DOCS)
+if(NOT S2SDK_BUILD_DOCS)
 	include(cmake/platform/shared.cmake)
 	include(cmake/compat_format.cmake)
 	include(cmake/dynlibutils.cmake)
@@ -134,7 +134,7 @@ configure_file(${CMAKE_SOURCE_DIR}/assets/gamedata/s2sdk.games.txt ${CMAKE_BINAR
 
 # ------------------------------------------------------------------------------
 # Documentation
-if(CS2SDK_BUILD_DOCS)
+if(S2SDK_BUILD_DOCS)
     find_package(Doxygen REQUIRED)
 
     if(DOXYGEN_FOUND)
