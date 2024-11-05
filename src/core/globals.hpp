@@ -3,7 +3,7 @@
 #include <playerslot.h>
 #include <tier0/platform.h>
 #include <tier0/utlstring.h>
-#include <plugify/string.h>
+#include <plugify/cpp_plugin.hpp>
 #include <variant.h>
 
 #define CS_TEAM_NONE 0

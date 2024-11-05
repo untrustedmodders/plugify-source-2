@@ -16,11 +16,11 @@ public:
 	bool IsPublicChatTrigger(const plg::string& message, plg::string& prefix) const;
 
 private:
-	bool IsTriggerInternal(const std::vector<plg::string>& triggers, const plg::string& message, plg::string& prefix) const;
+	bool IsTriggerInternal(const plg::vector<plg::string>& triggers, const plg::string& message, plg::string& prefix) const;
 
 public:
-	std::vector<plg::string> PublicChatTrigger{"!"};
-	std::vector<plg::string> SilentChatTrigger{"/"};
+	plg::vector<plg::string> PublicChatTrigger{"!"};
+	plg::vector<plg::string> SilentChatTrigger{"/"};
 	bool FollowCS2ServerGuidelines{true};
 	plg::string ServerLanguage{"en"};
 

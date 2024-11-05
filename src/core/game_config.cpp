@@ -1,4 +1,4 @@
-#include "game_config.h"
+#include "game_config.hpp"
 #include <core/sdk/utils.h>
 
 CGameConfig::CGameConfig(plg::string game, plg::string path) : m_szGameDir(std::move(game)), m_szPath(std::move(path)), m_pKeyValues(std::make_unique<KeyValues>("Games"))
@@ -54,7 +54,7 @@ bool CGameConfig::Initialize()
 			FOR_EACH_SUBKEY(addresses, it)
 			{
 				KeyValues* reads = it->FindKey(platform);
-				std::vector<int> read;
+				plg::vector<int> read;
 				bool lastIsOffset = false;
 				FOR_EACH_SUBKEY(reads, it2)
 				{

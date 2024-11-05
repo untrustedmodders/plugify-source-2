@@ -35,9 +35,11 @@ public:
 			g_Logger.Log(LS_WARNING, "Callback already registered.\n");
 			return false;
 		}
-
-		m_Callables.emplace_back(callable);
-		return true;
+		else
+		{
+			m_Callables.emplace_back(callable);
+			return true;
+		}
 	}
 
 	template <typename Callable>
@@ -50,9 +52,11 @@ public:
 			g_Logger.Log(LS_WARNING, "Callback not registered.\n");
 			return false;
 		}
-
-		m_Callables.erase(m_Callables.begin() + index);
-		return true;
+		else
+		{
+			m_Callables.erase(m_Callables.begin() + index);
+			return true;
+		}
 	}
 
 	template <typename Callable>
@@ -71,7 +75,7 @@ public:
 	template <typename Callable>
 	bool IsRegistered(Callable&& callable) const
 	{
-		return Find(callable) != -1;
+		return Find(callable) != 1;
 	}
 
 	void Notify(Args... args) const

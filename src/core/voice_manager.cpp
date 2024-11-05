@@ -1,5 +1,5 @@
-#include "voice_manager.h"
-#include "player_manager.h"
+#include "voice_manager.hpp"
+#include "player_manager.hpp"
 
 #include <core/sdk/schema.h>
 #include <core/sdk/entity/cbaseentity.h>

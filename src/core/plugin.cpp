@@ -1,4 +1,4 @@
-#include "plugin.h"
+#include "plugin.hpp"
 
 #include <eiface.h>
 #include <engine/igameeventsystem.h>
@@ -10,16 +10,16 @@
 #include <sourcehook/sourcehook_impl.h>
 #include <sourcehook/sourcehook_impl_chookmaninfo.h>
 
-#include "con_command_manager.h"
-#include "con_var_manager.h"
-#include "event_manager.h"
-#include "hook_holder.h"
-#include "listeners.h"
-#include "output_manager.h"
-#include "player_manager.h"
-#include "server_manager.h"
-#include "timer_system.h"
-#include "voice_manager.h"
+#include "con_command_manager.hpp"
+#include "con_var_manager.hpp"
+#include "event_manager.hpp"
+#include "hook_holder.hpp"
+#include "listeners.hpp"
+#include "output_manager.hpp"
+#include "player_manager.hpp"
+#include "server_manager.hpp"
+#include "timer_system.hpp"
+#include "voice_manager.hpp"
 
 #undef FindResource
 

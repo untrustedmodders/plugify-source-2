@@ -7,7 +7,8 @@
 #include <utility>
 #include <vector>
 
-#include <plugify/string.h>
+#include <plugify/string.hpp>
+#include <plugify/vector.hpp>
 
 namespace std::filesystem {
 #if _WIN32
@@ -20,8 +21,7 @@ namespace std::filesystem {
 namespace plg {
 	constexpr int32_t kApiVersion = 1;
 
-	extern "C"
-	struct PluginResult {
+	extern "C" struct PluginResult {
 		int32_t version;
 		bool debug;
 	};
@@ -110,7 +110,7 @@ namespace plg {
 		if (version < kApiVersion) { \
 			return { kApiVersion, PLUGIFY_IS_DEBUG }; \
 		} \
-		size_t i = 0; \
+		std::size_t i = 0; \
 		GetMethodPtr = reinterpret_cast<GetMethodPtrFn>(api[i++]); \
 		GetMethodPtr2 = reinterpret_cast<GetMethodPtr2Fn>(api[i++]); \
 		GetBaseDir = reinterpret_cast<GetBaseDirFn>(api[i++]); \
@@ -145,33 +145,68 @@ namespace plg {
 namespace plg {
 	extern "C" {
 		struct vec2 {
-			float x{};
-			float y{};
-
-			bool operator==(const vec2&) const = default;
+			float x;
+			float y;
 		};
 
 		struct vec3 {
-			float x{};
-			float y{};
-			float z{};
-
-			bool operator==(const vec3&) const = default;
+			float x;
+			float y;
+			float z;
 		};
 
 		struct vec4 {
-			float x{};
-			float y{};
-			float z{};
-			float w{};
-
-			bool operator==(const vec4&) const = default;
+			float x;
+			float y;
+			float z;
+			float w;
 		};
 
 		struct mat4x4 {
-			float m[4][4]{};
+			float m[4][4];
+		};
 
-			bool operator==(const mat4x4&) const = default;
+		struct vec {
+			[[maybe_unused]] char padding[sizeof(plg::vector<int>)];
+		};
+
+		struct str {
+			[[maybe_unused]] char padding[sizeof(plg::string)];
 		};
 	}
+
+	bool operator==(const vec2& lhs, const vec2& rhs) {
+		return lhs.x == rhs.x && lhs.y == rhs.y;
+	}
+
+	bool operator==(const vec3& lhs, const vec3& rhs) {
+		return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z;
+	}
+
+	bool operator==(const vec4& lhs, const vec4& rhs) {
+		return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z && lhs.w == rhs.w;
+	}
+
+	bool operator==(const mat4x4& lhs, const mat4x4& rhs) {
+		for (int i = 0; i < 4; ++i) {
+			for (int j = 0; j < 4; ++j) {
+				if (lhs.m[i][j] != rhs.m[i][j])
+					return false;
+			}
+		}
+		return true;
+	}
+
+    plg::str ReturnStr(plg::string str) {
+        plg::str ret{};
+        std::construct_at(reinterpret_cast<plg::string*>(&ret), std::move(str));
+        return ret;
+    }
+
+    template<typename T>
+    plg::vec ReturnVec(plg::vector<T> vec) {
+        plg::vec ret{};
+        std::construct_at(reinterpret_cast<plg::vector<T>*>(&ret), std::move(vec));
+        return ret;
+    }
 }

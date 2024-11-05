@@ -1,4 +1,4 @@
-#include <core/event_manager.h>
+#include <core/event_manager.hpp>
 #include <plugin_export.h>
 
 /**
@@ -115,9 +115,9 @@ extern "C" PLUGIN_API uint64_t GetEventUInt64(EventInfo* pInfo, const plg::strin
  * @param key The key for which to retrieve the string value.
  * @return A string where the result will be stored.
  */
-extern "C" PLUGIN_API void GetEventString(plg::string& output, EventInfo* pInfo, const plg::string& key)
+extern "C" PLUGIN_API plg::str GetEventString(EventInfo* pInfo, const plg::string& key)
 {
-    std::construct_at(&output, pInfo->pEvent->GetString(key.c_str()));
+   return plg::ReturnStr(pInfo->pEvent->GetString(key.c_str()));
 }
 
 /**
@@ -202,9 +202,9 @@ extern "C" PLUGIN_API int GetEventEntityHandle(EventInfo* pInfo, const plg::stri
  * @param pInfo A pointer to the EventInfo structure containing event data.
  * @return A string where the result will be stored.
  */
-extern "C" PLUGIN_API void GetEventName(plg::string& output, EventInfo* pInfo)
+extern "C" PLUGIN_API plg::str GetEventName(EventInfo* pInfo)
 {
-    std::construct_at(&output, pInfo->pEvent->GetName());
+    return plg::ReturnStr(pInfo->pEvent->GetName());
 }
 
 /**

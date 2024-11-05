@@ -1,4 +1,4 @@
-#include <core/output_manager.h>
+#include <core/output_manager.hpp>
 #include <core/sdk/entity/cbaseentity.h>
 #include <core/sdk/entity/cbasemodelentity.h>
 #include <plugin_export.h>
@@ -316,18 +316,18 @@ extern "C" PLUGIN_API void RemoveEntity(int entityHandle)
  * This function gets the class name of the specified entity.
  * If the entity is invalid, the function does nothing.
  *
- * @param output A reference to a string where the class name will be stored.
  * @param entityHandle The handle of the entity whose class name is to be retrieved.
+ * @return A string where the class name will be stored.
  */
-extern "C" PLUGIN_API void GetEntityClassname(plg::string& output, int entityHandle)
+extern "C" PLUGIN_API plg::str GetEntityClassname(int entityHandle)
 {
 	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!ent)
 	{
-		return;
+		return plg::ReturnStr({});
 	}
 
-	std::construct_at(&output, ent->GetClassname());
+	return plg::ReturnStr(ent->GetClassname());
 }
 
 /**
@@ -336,18 +336,18 @@ extern "C" PLUGIN_API void GetEntityClassname(plg::string& output, int entityHan
  * This function gets the name of the specified entity.
  * If the entity is invalid, the function does nothing.
  *
- * @param output A reference to a string where the entity name will be stored.
  * @param entityHandle The handle of the entity whose name is to be retrieved.
+ * @retrun A string where the entity name will be stored.
  */
-extern "C" PLUGIN_API void GetEntityName(plg::string& output, int entityHandle)
+extern "C" PLUGIN_API plg::str GetEntityName(int entityHandle)
 {
 	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!ent)
 	{
-		return;
+		return plg::ReturnStr({});
 	}
 
-	std::construct_at(&output, ent->GetName());
+	return plg::ReturnStr(ent->GetName());
 }
 
 /**
@@ -873,18 +873,18 @@ extern "C" PLUGIN_API void SetEntityAbsVelocity(int entityHandle, const Vector& 
  * This function gets the model name of the specified entity.
  * If the entity is invalid, the function does nothing.
  *
- * @param output A reference to a string where the model name will be stored.
  * @param entityHandle The handle of the entity whose model name is to be retrieved.
+ * @return A string where the model name will be stored.
  */
-extern "C" PLUGIN_API void GetEntityModel(plg::string& output, int entityHandle)
+extern "C" PLUGIN_API void GetEntityModel(int entityHandle)
 {
 	CBaseModelEntity* ent = static_cast<CBaseModelEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!ent)
 	{
-		return;
+		return plg::ReturnStr();
 	}
 
-	std::construct_at(&output, ent->GetModelName());
+	return plg::ReturnStr(ent->GetModelName());
 }
 
 /**

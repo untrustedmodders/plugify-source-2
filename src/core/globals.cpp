@@ -1,7 +1,7 @@
 
-#include "globals.h"
-#include "core_config.h"
-#include "game_config.h"
+#include "globals.hpp"
+#include "core_config.hpp"
+#include "game_config.hpp"
 
 #include <core/sdk/utils.h>
 #include <core/sdk/virtual.h>

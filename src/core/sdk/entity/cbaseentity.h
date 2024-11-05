@@ -19,9 +19,9 @@
 
 #pragma once
 
-#include <ehandle.h>
-#include <core/game_config.h>
+#include <core/game_config.hpp>
 #include <core/sdk/schema.h>
+#include <ehandle.h>
 
 #include "ccollisionproperty.h"
 #include "ctakedamageinfo.h"

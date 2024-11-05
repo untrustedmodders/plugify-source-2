@@ -1,6 +1,6 @@
 #pragma once
 
-#include "listener_manager.h"
+#include "listener_manager.hpp"
 #include <core/sdk/utils.h>
 
 #include <convar.h>

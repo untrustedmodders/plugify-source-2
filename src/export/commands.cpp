@@ -1,4 +1,4 @@
-#include <core/con_command_manager.h>
+#include <core/con_command_manager.hpp>
 #include <plugin_export.h>
 
 /**

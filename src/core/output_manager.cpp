@@ -1,4 +1,4 @@
-#include "output_manager.h"
+#include "output_manager.hpp"
 
 void CEntityOutputManager::HookEntityOutput(plg::string szClassname, plg::string szOutput, EntityListenerCallback callback, HookMode mode)
 {

@@ -1,9 +1,9 @@
 #include <convar.h>
-#include <core/con_var_manager.h>
-#include <core/game_config.h>
+#include <core/con_var_manager.hpp>
+#include <core/game_config.hpp>
 #include <core/sdk/utils.h>
 #include <core/sdk/virtual.h>
-#include <plugify/cpp_plugin.h>
+#include <plugify/cpp_plugin.hpp>
 #include <plugin_export.h>
 
 // CreateConVar()
@@ -394,11 +394,11 @@ extern "C" PLUGIN_API int64_t GetConVarFlags(CConVarBaseData* conVar)
 /**
  * @brief Gets the specified bound (max or min) of a console variable and stores it in the output string.
  *
- * @param output Reference to the output string to store the bound value.
  * @param conVar Pointer to the console variable data.
  * @param max Indicates whether to get the maximum (true) or minimum (false) bound.
+ * @return The bound value.
  */
-extern "C" PLUGIN_API void GetConVarBounds(plg::string& output, CConVarBaseData* conVar, bool max)
+extern "C" PLUGIN_API plg::str GetConVarBounds(CConVarBaseData* conVar, bool max)
 {
 	plg::string value(256, '\0');
 	if (max)
@@ -509,7 +509,7 @@ extern "C" PLUGIN_API void GetConVarBounds(plg::string& output, CConVarBaseData*
 				break;
 		}
 	}
-	std::construct_at(&output, std::move(value));
+	return plg::ReturnStr(std::move(value));
 }
 
 /**
@@ -637,68 +637,68 @@ extern "C" PLUGIN_API void SetConVarBounds(CConVarBaseData* conVar, bool max, co
  * @param conVar Pointer to the console variable data.
  * @return The output value in string format.
  */
-extern "C" PLUGIN_API void GetConVarValue(plg::string& output, CConVarBaseData* conVar)
+extern "C" PLUGIN_API plg::str GetConVarValue(CConVarBaseData* conVar)
 {
 	switch (conVar->GetType())
 	{
 		case EConVarType_Bool:
-			std::construct_at(&output, conVar->Cast<bool>()->GetValue() ? "1" : "0");
+			return plg::ReturnStr(conVar->Cast<bool>()->GetValue() ? "1" : "0");
 			break;
 		case EConVarType_Int16:
-			std::construct_at(&output, plg::to_string(conVar->Cast<int16_t>()->GetValue()));
+			return plg::ReturnStr(plg::to_string(conVar->Cast<int16_t>()->GetValue()));
 			break;
 		case EConVarType_UInt16:
-			std::construct_at(&output, plg::to_string(conVar->Cast<uint16_t>()->GetValue()));
+			return plg::ReturnStr(plg::to_string(conVar->Cast<uint16_t>()->GetValue()));
 			break;
 		case EConVarType_Int32:
-			std::construct_at(&output, plg::to_string(conVar->Cast<int32_t>()->GetValue()));
+			return plg::ReturnStr(plg::to_string(conVar->Cast<int32_t>()->GetValue()));
 			break;
 		case EConVarType_UInt32:
-			std::construct_at(&output, plg::to_string(conVar->Cast<uint16_t>()->GetValue()));
+			return plg::ReturnStr(plg::to_string(conVar->Cast<uint16_t>()->GetValue()));
 			break;
 		case EConVarType_Int64:
-			std::construct_at(&output, plg::to_string(conVar->Cast<int64_t>()->GetValue()));
+			return plg::ReturnStr(plg::to_string(conVar->Cast<int64_t>()->GetValue()));
 			break;
 		case EConVarType_UInt64:
-			std::construct_at(&output, plg::to_string(conVar->Cast<uint64_t>()->GetValue()));
+			return plg::ReturnStr(plg::to_string(conVar->Cast<uint64_t>()->GetValue()));
 			break;
 		case EConVarType_Float32:
-			std::construct_at(&output, plg::to_string(conVar->Cast<float>()->GetValue()));
+			return plg::ReturnStr(plg::to_string(conVar->Cast<float>()->GetValue()));
 			break;
 		case EConVarType_Float64:
-			std::construct_at(&output, plg::to_string(conVar->Cast<double>()->GetValue()));
+			return plg::ReturnStr(plg::to_string(conVar->Cast<double>()->GetValue()));
 			break;
 		case EConVarType_String:
-			std::construct_at(&output, conVar->Cast<const char*>()->GetValue());
+			return plg::ReturnStr(conVar->Cast<const char*>()->GetValue());
 			break;
 		case EConVarType_Color:
 		{
 			const auto& value = conVar->Cast<Color>()->GetValue();
-			std::construct_at(&output, std::format("{} {} {} {}", value.r(), value.g(), value.b(), value.a()));
+			return plg::ReturnStr(std::format("{} {} {} {}", value.r(), value.g(), value.b(), value.a()));
 			break;
 		}
 		case EConVarType_Vector2:
 		{
 			const auto& value = conVar->Cast<Vector2D>()->GetValue();
-			std::construct_at(&output, std::format("{} {}", value.x, value.y));
+			return plg::ReturnStr(std::format("{} {}", value.x, value.y));
 			break;
 		}
 		case EConVarType_Vector3:
 		{
 			const auto& value = conVar->Cast<Vector>()->GetValue();
-			std::construct_at(&output, std::format("{} {} {}", value.x, value.y, value.z));
+			return plg::ReturnStr(std::format("{} {} {}", value.x, value.y, value.z));
 			break;
 		}
 		case EConVarType_Vector4:
 		{
 			const auto& value = conVar->Cast<Vector4D>()->GetValue();
-			std::construct_at(&output, std::format("{} {} {} {}", value.x, value.y, value.z, value.w));
+			return plg::ReturnStr(std::format("{} {} {} {}", value.x, value.y, value.z, value.w));
 			break;
 		}
 		case EConVarType_Qangle:
 		{
 			const auto& value = conVar->Cast<QAngle>()->GetValue();
-			std::construct_at(&output, std::format("{} {} {}", value.x, value.y, value.z));
+			return plg::ReturnStr(std::format("{} {} {}", value.x, value.y, value.z));
 			break;
 		}
 		default:
@@ -812,9 +812,9 @@ extern "C" PLUGIN_API double GetConVarDouble(CConVarBaseData* conVar)
  * @param conVar Pointer to the console variable data.
  * @return The current string value of the console variable.
  */
-extern "C" PLUGIN_API void GetConVarString(plg::string& output, CConVarBaseData* conVar)
+extern "C" PLUGIN_API plg::str GetConVarString(CConVarBaseData* conVar)
 {
-	std::construct_at(&output, conVar->Cast<const char*>()->GetValue());
+	return plg::ReturnStr(conVar->Cast<const char*>()->GetValue());
 }
 
 /**
@@ -1123,9 +1123,9 @@ extern "C" PLUGIN_API void SendConVarValue(CConVarBaseData* conVar, int clientIn
  * @param convarName The name of the console variable to retrieve.
  * @return The output string to store the client's console variable value.
  */
-extern "C" PLUGIN_API void GetClientConVarValue(plg::string& output, int clientIndex, const plg::string& convarName)
+extern "C" PLUGIN_API plg::str GetClientConVarValue(int clientIndex, const plg::string& convarName)
 {
-	std::construct_at(&output, g_pEngineServer2->GetClientConVarValue(CPlayerSlot(clientIndex - 1), convarName.c_str()));
+	return plg::ReturnStr(g_pEngineServer2->GetClientConVarValue(CPlayerSlot(clientIndex - 1), convarName.c_str()));
 }
 
 /**

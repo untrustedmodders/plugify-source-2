@@ -1,4 +1,4 @@
-#include "core_config.h"
+#include "core_config.hpp"
 #include <core/sdk/utils.h>
 
 CCoreConfig::CCoreConfig(plg::string path) : m_szPath(std::move(path)), m_pKeyValues(std::make_unique<KeyValues>("Core"))
@@ -46,7 +46,7 @@ const plg::string& CCoreConfig::GetPath() const
 	return m_szPath;
 }
 
-bool CCoreConfig::IsTriggerInternal(const std::vector<plg::string>& triggers, const plg::string& message, plg::string& prefix) const
+bool CCoreConfig::IsTriggerInternal(const plg::vector<plg::string>& triggers, const plg::string& message, plg::string& prefix) const
 {
 	for (const plg::string& trigger : triggers)
 	{

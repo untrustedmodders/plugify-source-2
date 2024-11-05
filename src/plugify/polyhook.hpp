@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "cpp_plugin.h"
+#include "cpp_plugin.hpp"
 
 namespace poly
 {
@@ -81,9 +81,9 @@ namespace poly
 			}
 		}
 
-		static std::unique_ptr<CHook> CreateDetourHook(void* pFunc, DataType returnType, const std::vector<DataType>& arguments)
+		static std::unique_ptr<CHook> CreateDetourHook(void* pFunc, DataType returnType, const plg::vector<DataType>& arguments)
 		{
-			using HookDetourFn = IHook* (*)(void*, DataType, const std::vector<DataType>&);
+			using HookDetourFn = IHook* (*)(void*, DataType, const plg::vector<DataType>&);
 			static HookDetourFn func = nullptr;
 			if (func == nullptr) plg::GetMethodPtr2("polyhook.HookDetour", reinterpret_cast<void**>(&func));
 			IHook* pHook = func(pFunc, returnType, arguments);
@@ -91,9 +91,9 @@ namespace poly
 			return std::unique_ptr<CHook>(new CHook(pHook, pFunc, nullptr, -1));
 		}
 
-		static std::unique_ptr<CHook> CreateVirtualHook(void* pClass, int index, DataType returnType, const std::vector<DataType>& arguments)
+		static std::unique_ptr<CHook> CreateVirtualHook(void* pClass, int index, DataType returnType, const plg::vector<DataType>& arguments)
 		{
-			using HookVirtualFn = IHook* (*)(void*, int, DataType, const std::vector<DataType>&);
+			using HookVirtualFn = IHook* (*)(void*, int, DataType, const plg::vector<DataType>&);
 			static HookVirtualFn func = nullptr;
 			if (func == nullptr) plg::GetMethodPtr2("polyhook.HookVirtual", reinterpret_cast<void**>(&func));
 			IHook* pHook = func(pClass, index, returnType, arguments);
@@ -101,9 +101,9 @@ namespace poly
 			return std::unique_ptr<CHook>(new CHook(pHook, nullptr, pClass, index));
 		}
 
-		static std::unique_ptr<CHook> CreateHookVirtualByFunc(void* pClass, void* pFunc, DataType returnType, const std::vector<DataType>& arguments)
+		static std::unique_ptr<CHook> CreateHookVirtualByFunc(void* pClass, void* pFunc, DataType returnType, const plg::vector<DataType>& arguments)
 		{
-			using HookVirtualByFuncFn = IHook* (*)(void*, void*, DataType, const std::vector<DataType>&);
+			using HookVirtualByFuncFn = IHook* (*)(void*, void*, DataType, const plg::vector<DataType>&);
 			static HookVirtualByFuncFn func = nullptr;
 			if (func == nullptr) plg::GetMethodPtr2("polyhook.HookVirtualByFunc", reinterpret_cast<void**>(&func));
 			IHook* pHook = func(pClass, pFunc, returnType, arguments);

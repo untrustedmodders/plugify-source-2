@@ -1,7 +1,7 @@
-#include <core/core_config.h>
+#include <core/core_config.hpp>
 #include <core/sdk/entity/cschemasystem.h>
 #include <core/sdk/schema.h>
-#include <plugify/cpp_plugin.h>
+#include <plugify/cpp_plugin.hpp>
 #include <plugin_export.h>
 #include <tier0/utlstring.h>
 
@@ -311,7 +311,7 @@ extern "C" PLUGIN_API void* GetSchemaPointerByName(void* instancePointer, const 
  * @param memberName The name of the member whose value is to be retrieved.
  * @return The value of the member.
  */
-extern "C" PLUGIN_API void GetSchemaStringByName(plg::string& output, void* instancePointer, const plg::string& className, const plg::string& memberName)
+extern "C" PLUGIN_API plg::str GetSchemaStringByName(void* instancePointer, const plg::string& className, const plg::string& memberName)
 {
 	auto classKey = hash_32_fnv1a_const(className.c_str());
 	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
@@ -319,7 +319,7 @@ extern "C" PLUGIN_API void GetSchemaStringByName(plg::string& output, void* inst
 	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
 
 	auto str = reinterpret_cast<std::add_pointer_t<CUtlString>>((uintptr_t)(instancePointer) + m_key.offset);
-	std::construct_at(&output, str != nullptr ? str->Get() : "");
+	return plg::ReturnStr(str != nullptr ? str->Get() : "");
 }
 
 /**

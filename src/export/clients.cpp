@@ -1,9 +1,9 @@
-#include <core/player_manager.h>
+#include <core/player_manager.hpp>
 #include <core/sdk/entity/cbaseentity.h>
 #include <core/sdk/entity/cbaseplayercontroller.h>
 #include <core/sdk/entity/ccsplayercontroller.h>
 #include <core/sdk/utils.h>
-#include <plugify/cpp_plugin.h>
+#include <plugify/cpp_plugin.hpp>
 #include <plugin_export.h>
 
 //!
@@ -47,21 +47,21 @@ extern "C" PLUGIN_API int GetIndexFromClient(CServerSideClient* client)
  * @param clientIndex Index of the client whose authentication string is being retrieved.
  * @return The authentication string.
  */
-extern "C" PLUGIN_API void GetClientAuthId(plg::string& output, int clientIndex)
+extern "C" PLUGIN_API plg::str GetClientAuthId(int clientIndex)
 {
 	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex - 1));
 	if (pPlayer == nullptr || !pPlayer->m_bAuthorized)
 	{
-		return;
+		return plg::ReturnStr({});
 	}
 
 	auto pSteamId = pPlayer->GetSteamId();
 	if (pSteamId == nullptr)
 	{
-		return;
+		return plg::ReturnStr({});
 	}
 
-	std::construct_at(&output, pSteamId->Render());
+	return plg::ReturnStr(pSteamId->Render());
 }
 
 /**
@@ -93,15 +93,15 @@ extern "C" PLUGIN_API uint64_t GetClientAccountId(int clientIndex)
  * @param clientIndex Index of the client.
  * @return The IP address.
  */
-extern "C" PLUGIN_API void GetClientIp(plg::string& output, int clientIndex)
+extern "C" PLUGIN_API plg::str GetClientIp(int clientIndex)
 {
 	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex - 1));
 	if (pPlayer == nullptr)
 	{
-		return;
+		return plg::ReturnStr({});
 	}
 
-	std::construct_at(&output, pPlayer->GetIpAddress());
+	return plg::ReturnStr(pPlayer->GetIpAddress());
 }
 
 /**
@@ -110,15 +110,15 @@ extern "C" PLUGIN_API void GetClientIp(plg::string& output, int clientIndex)
  * @param clientIndex Index of the client.
  * @return The client's name.
  */
-extern "C" PLUGIN_API void GetClientName(plg::string& output, int clientIndex)
+extern "C" PLUGIN_API plg::str GetClientName(int clientIndex)
 {
 	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex - 1));
 	if (pPlayer == nullptr)
 	{
-		return;
+		return plg::ReturnStr({});
 	}
 
-	std::construct_at(&output, pPlayer->GetName());
+	return plg::ReturnStr(pPlayer->GetName());
 }
 
 /**
@@ -385,8 +385,8 @@ extern "C" PLUGIN_API int GetClientArmor(int clientIndex)
 /**
  * @brief Retrieves the client's origin vector.
  *
- * @param output Reference to a Vector where the client's origin will be stored.
  * @param clientIndex Index of the client.
+ * @return A Vector where the client's origin will be stored.
  */
 extern "C" PLUGIN_API plg::vec3 GetClientAbsOrigin(int clientIndex)
 {
@@ -421,13 +421,15 @@ extern "C" PLUGIN_API plg::vec3 GetClientAbsAngles(int clientIndex)
 /**
  * @brief Processes the target string to determine if one user can target another.
  *
- * @param output Reference to a vector where the result of the targeting operation will be stored.
  * @param caller Index of the client making the target request.
  * @param target The target string specifying the player or players to be targeted.
+ * @return A vector where the result of the targeting operation will be stored.
  */
-extern "C" PLUGIN_API void ProcessTargetString(std::vector<int>& output, int caller, const plg::string& target)
+extern "C" PLUGIN_API plg::vec ProcessTargetString(int caller, const plg::string& target)
 {
+	plg::vector<int> output;
 	g_PlayerManager.TargetPlayerString(caller, target.c_str(), output);
+	return plg::ReturnVec(std::move(output));
 }
 
 /**

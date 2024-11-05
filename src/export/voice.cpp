@@ -1,5 +1,5 @@
+#include <core/player_manager.hpp>
 #include <plugin_export.h>
-#include <core/player_manager.h>
 
 /**
  * @brief Sets the listening state of a client with respect to another client.

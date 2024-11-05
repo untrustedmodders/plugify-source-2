@@ -1,6 +1,6 @@
-#include "player_manager.h"
-#include "listeners.h"
-#include "timer_system.h"
+#include "player_manager.hpp"
+#include "listeners.hpp"
+#include "timer_system.hpp"
 
 #include <core/sdk/entity/cbaseplayercontroller.h>
 #include <core/sdk/utils.h>
@@ -401,7 +401,7 @@ CPlayer* CPlayerManager::GetPlayerFromSteamId(uint64 steamid) const
 	return nullptr;
 }
 
-TargetType CPlayerManager::TargetPlayerString(int caller, const char* target, std::vector<int>& clients)
+TargetType CPlayerManager::TargetPlayerString(int caller, const char* target, plg::vector<int>& clients)
 {
 	TargetType targetType = TargetType::NONE;
 	if (!V_stricmp(target, "@me"))

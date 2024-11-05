@@ -1,4 +1,4 @@
-#include "listeners.h"
+#include "listeners.hpp"
 
 #define DEFINE_MANAGER_ACCESSOR(name, ret, ...)                 \
 	using Fn##name = ret (*)(__VA_ARGS__);                      \

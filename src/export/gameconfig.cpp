@@ -1,4 +1,4 @@
-#include <core/game_config.h>
+#include <core/game_config.hpp>
 #include <plugin_export.h>
 
 /**
@@ -32,12 +32,12 @@ extern "C" PLUGIN_API CGameConfig* LoadGameConfigFile(const plg::string& file)
  * This function retrieves the path of the specified game configuration and
  * stores it in the provided output string.
  *
- * @param output A reference to a string where the path will be stored.
  * @param pGameConfig A pointer to the game configuration whose path is to be retrieved.
+ * @return A string where the path will be stored.
  */
-extern "C" PLUGIN_API void GetGameConfigPath(plg::string& output, CGameConfig* pGameConfig)
+extern "C" PLUGIN_API plg::str GetGameConfigPath(CGameConfig* pGameConfig)
 {
-	std::construct_at(&output, pGameConfig->GetPath());
+	return plg::ReturnStr(pGameConfig->GetPath());
 }
 
 /**
@@ -46,13 +46,13 @@ extern "C" PLUGIN_API void GetGameConfigPath(plg::string& output, CGameConfig* p
  * This function retrieves a library by name from the specified game configuration
  * and stores it in the provided output string.
  *
- * @param output A reference to a string where the library will be stored.
  * @param pGameConfig A pointer to the game configuration from which to retrieve the library.
  * @param name The name of the library to be retrieved.
+ * @return A string where the library will be stored.
  */
-extern "C" PLUGIN_API void GetGameConfigLibrary(plg::string& output, CGameConfig* pGameConfig, const plg::string& name)
+extern "C" PLUGIN_API plg::str GetGameConfigLibrary(CGameConfig* pGameConfig, const plg::string& name)
 {
-	std::construct_at(&output, pGameConfig->GetLibrary(name));
+	return plg::ReturnStr(pGameConfig->GetLibrary(name));
 }
 
 /**
@@ -61,13 +61,13 @@ extern "C" PLUGIN_API void GetGameConfigLibrary(plg::string& output, CGameConfig
  * This function retrieves a signature by name from the specified game configuration
  * and stores it in the provided output string.
  *
- * @param output A reference to a string where the signature will be stored.
  * @param pGameConfig A pointer to the game configuration from which to retrieve the signature.
  * @param name The name of the signature to be retrieved.
+ * @return A string where the signature will be stored.
  */
-extern "C" PLUGIN_API void GetGameConfigSignature(plg::string& output, CGameConfig* pGameConfig, const plg::string& name)
+extern "C" PLUGIN_API plg::str GetGameConfigSignature(CGameConfig* pGameConfig, const plg::string& name)
 {
-	std::construct_at(&output, pGameConfig->GetSignature(name));
+	return plg::ReturnStr(pGameConfig->GetSignature(name));
 }
 
 /**
@@ -76,13 +76,13 @@ extern "C" PLUGIN_API void GetGameConfigSignature(plg::string& output, CGameConf
  * This function retrieves a symbol by name from the specified game configuration
  * and stores it in the provided output string.
  *
- * @param output A reference to a string where the symbol will be stored.
  * @param pGameConfig A pointer to the game configuration from which to retrieve the symbol.
  * @param name The name of the symbol to be retrieved.
+ * @return A string where the symbol will be stored.
  */
-extern "C" PLUGIN_API void GetGameConfigSymbol(plg::string& output, CGameConfig* pGameConfig, const plg::string& name)
+extern "C" PLUGIN_API plg::str GetGameConfigSymbol(CGameConfig* pGameConfig, const plg::string& name)
 {
-	std::construct_at(&output, pGameConfig->GetSymbol(name));
+	return plg::ReturnStr(pGameConfig->GetSymbol(name));
 }
 
 /**
@@ -91,13 +91,13 @@ extern "C" PLUGIN_API void GetGameConfigSymbol(plg::string& output, CGameConfig*
  * This function retrieves a patch by name from the specified game configuration
  * and stores it in the provided output string.
  *
- * @param output A reference to a string where the patch will be stored.
  * @param pGameConfig A pointer to the game configuration from which to retrieve the patch.
  * @param name The name of the patch to be retrieved.
+ * @return A string where the patch will be stored.
  */
-extern "C" PLUGIN_API void GetGameConfigPatch(plg::string& output, CGameConfig* pGameConfig, const plg::string& name)
+extern "C" PLUGIN_API plg::str GetGameConfigPatch(CGameConfig* pGameConfig, const plg::string& name)
 {
-	std::construct_at(&output, pGameConfig->GetPatch(name));
+	return plg::ReturnStr(pGameConfig->GetPatch(name));
 }
 
 /**

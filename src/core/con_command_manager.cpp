@@ -1,5 +1,5 @@
-#include "con_command_manager.h"
-#include "player_manager.h"
+#include "con_command_manager.hpp"
+#include "player_manager.hpp"
 
 #include <icvar.h>
 
@@ -178,7 +178,7 @@ ResultType CConCommandManager::ExecuteCommandCallbacks(const plg::string& name, 
 
 	int size = args.ArgC();
 
-	std::vector<plg::string> arguments;
+	plg::vector<plg::string> arguments;
 	arguments.reserve(static_cast<size_t>(size));
 	for (int i = 0; i < size; ++i)
 	{

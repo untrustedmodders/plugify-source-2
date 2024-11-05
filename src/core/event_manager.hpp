@@ -1,9 +1,9 @@
 #pragma once
 
-#include "listener_manager.h"
+#include "listener_manager.hpp"
 #include <igameevents.h>
 
-#include <plugify/polyhook.h>
+#include <plugify/polyhook.hpp>
 
 struct EventInfo
 {

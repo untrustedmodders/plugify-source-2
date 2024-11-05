@@ -1,10 +1,10 @@
 #pragma once
 
-#include "listener_manager.h"
+#include "listener_manager.hpp"
 #include <core/sdk/utils.h>
 
 #include <entity2/entitysystem.h>
-#include <plugify/polyhook.h>
+#include <plugify/polyhook.hpp>
 #include <variant.h>
 
 class CEntityIOOutput;

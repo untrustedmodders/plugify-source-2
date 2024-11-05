@@ -125,7 +125,7 @@ public:
 	CPlayer* GetPlayerFromUserId(uint16 userid) const;
 	CPlayer* GetPlayerFromSteamId(uint64 steamid) const;
 
-	TargetType TargetPlayerString(int caller, const char* target, std::vector<int>& clients);
+	TargetType TargetPlayerString(int caller, const char* target, plg::vector<int>& clients);
 
 private:
 	void InvalidatePlayer(CPlayer* pPlayer);

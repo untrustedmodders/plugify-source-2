@@ -1,4 +1,4 @@
-#include "logger.h"
+#include "logger.hpp"
 
 CLogger::CLogger(const char* name, RegisterTagsFunc registerTagsFunc, int flags, LoggingVerbosity_t verbosity, const Color& defaultColor)
 {

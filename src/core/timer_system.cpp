@@ -1,4 +1,4 @@
-#include "timer_system.h"
+#include "timer_system.hpp"
 
 #include <edict.h>
 

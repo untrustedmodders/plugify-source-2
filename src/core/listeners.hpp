@@ -1,6 +1,6 @@
 #pragma once
 
-#include "listener_manager.h"
+#include "listener_manager.hpp"
 #include <plugin_export.h>
 
 #define DEFINE_MANAGER_CREATOR(name, ret, ...) \

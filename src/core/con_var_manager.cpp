@@ -1,4 +1,4 @@
-#include "con_var_manager.h"
+#include "con_var_manager.hpp"
 
 ConVarInfo::ConVarInfo(plg::string name, plg::string description) : name(std::move(name)), description(std::move(description))
 {

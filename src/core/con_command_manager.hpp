@@ -1,10 +1,10 @@
 #pragma once
 
-#include "listener_manager.h"
+#include "listener_manager.hpp"
 #include <core/sdk/utils.h>
 
 #include <convar.h>
-#include <plugify/polyhook.h>
+#include <plugify/polyhook.hpp>
 
 enum CommandCallingContext
 {
@@ -13,7 +13,7 @@ enum CommandCallingContext
 	Chat = 1,
 };
 
-using CommandListenerCallback = ResultType (*)(int caller, int context, const std::vector<plg::string>& arguments);
+using CommandListenerCallback = ResultType (*)(int caller, int context, const plg::vector<plg::string>& arguments);
 
 struct ConCommandInfo
 {

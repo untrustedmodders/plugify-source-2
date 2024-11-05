@@ -1,4 +1,4 @@
-#include "server_manager.h"
+#include "server_manager.hpp"
 
 #include <edict.h>
 

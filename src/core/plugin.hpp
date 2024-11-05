@@ -1,7 +1,7 @@
 #pragma once
 
-#include <plugify/cpp_plugin.h>
-#include <plugify/polyhook.h>
+#include <plugify/cpp_plugin.hpp>
+#include <plugify/polyhook.hpp>
 #include <plugin_export.h>
 
 class Source2SDK : public plg::IPluginEntry

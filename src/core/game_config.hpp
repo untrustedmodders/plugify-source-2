@@ -32,7 +32,7 @@ private:
 	struct AddressConf
 	{
 		plg::string signature;
-		std::vector<int> read;
+		plg::vector<int> read;
 		bool lastIsOffset;
 	};
 

@@ -18,5 +18,5 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "core/globals.h"
-#include "core/logger.h"
+#include "core/globals.hpp"
+#include "core/logger.hpp"

@@ -1,9 +1,9 @@
 #include <core/sdk/entity/cbaseentity.h>
 #include <core/sdk/utils.h>
-#include <core/server_manager.h>
-#include <core/timer_system.h>
-#include <entity2/entitysystem.h>
+#include <core/server_manager.hpp>
+#include <core/timer_system.hpp>
 #include <engine/IEngineSound.h>
+#include <entity2/entitysystem.h>
 #include <plugin_export.h>
 /**
  * @brief Returns the path of the game's directory.

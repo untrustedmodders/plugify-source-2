@@ -1,9 +1,9 @@
 #pragma once
 
-#include "game_config.h"
+#include "game_config.hpp"
 #include <core/sdk/utils.h>
 
-#include <plugify/polyhook.h>
+#include <plugify/polyhook.hpp>
 
 class CHookHolder
 {
@@ -21,7 +21,7 @@ public:
 			return;
 		}
 
-		ihook = poly::CHook::CreateHookVirtualByFunc(ptr, (void*&)func, ret, std::vector(args.begin(), args.end()));
+		ihook = poly::CHook::CreateHookVirtualByFunc(ptr, (void*&)func, ret, plg::vector(args.begin(), args.end()));
 		if (ihook == nullptr)
 		{
 			g_Logger.LogFormat(LS_WARNING, "Could not hook member function \"%s\".\n", typeid(func).name());
@@ -53,7 +53,7 @@ public:
 		auto args = trait::args();
 		auto ret = trait::ret();
 
-		ihook = poly::CHook::CreateDetourHook(addr, ret, std::vector(args.begin(), args.end()));
+		ihook = poly::CHook::CreateDetourHook(addr, ret, plg::vector(args.begin(), args.end()));
 		if (ihook == nullptr)
 		{
 			g_Logger.LogFormat(LS_WARNING, "Could not hook detour function \"%s\".\n", name.c_str());
