@@ -643,67 +643,52 @@ extern "C" PLUGIN_API plg::str GetConVarValue(CConVarBaseData* conVar)
 	{
 		case EConVarType_Bool:
 			return plg::ReturnStr(conVar->Cast<bool>()->GetValue() ? "1" : "0");
-			break;
 		case EConVarType_Int16:
 			return plg::ReturnStr(plg::to_string(conVar->Cast<int16_t>()->GetValue()));
-			break;
 		case EConVarType_UInt16:
 			return plg::ReturnStr(plg::to_string(conVar->Cast<uint16_t>()->GetValue()));
-			break;
 		case EConVarType_Int32:
 			return plg::ReturnStr(plg::to_string(conVar->Cast<int32_t>()->GetValue()));
-			break;
 		case EConVarType_UInt32:
 			return plg::ReturnStr(plg::to_string(conVar->Cast<uint16_t>()->GetValue()));
-			break;
 		case EConVarType_Int64:
 			return plg::ReturnStr(plg::to_string(conVar->Cast<int64_t>()->GetValue()));
-			break;
 		case EConVarType_UInt64:
 			return plg::ReturnStr(plg::to_string(conVar->Cast<uint64_t>()->GetValue()));
-			break;
 		case EConVarType_Float32:
 			return plg::ReturnStr(plg::to_string(conVar->Cast<float>()->GetValue()));
-			break;
 		case EConVarType_Float64:
 			return plg::ReturnStr(plg::to_string(conVar->Cast<double>()->GetValue()));
-			break;
 		case EConVarType_String:
 			return plg::ReturnStr(conVar->Cast<const char*>()->GetValue());
-			break;
 		case EConVarType_Color:
 		{
 			const auto& value = conVar->Cast<Color>()->GetValue();
 			return plg::ReturnStr(std::format("{} {} {} {}", value.r(), value.g(), value.b(), value.a()));
-			break;
 		}
 		case EConVarType_Vector2:
 		{
 			const auto& value = conVar->Cast<Vector2D>()->GetValue();
 			return plg::ReturnStr(std::format("{} {}", value.x, value.y));
-			break;
 		}
 		case EConVarType_Vector3:
 		{
 			const auto& value = conVar->Cast<Vector>()->GetValue();
 			return plg::ReturnStr(std::format("{} {} {}", value.x, value.y, value.z));
-			break;
 		}
 		case EConVarType_Vector4:
 		{
 			const auto& value = conVar->Cast<Vector4D>()->GetValue();
 			return plg::ReturnStr(std::format("{} {} {} {}", value.x, value.y, value.z, value.w));
-			break;
 		}
 		case EConVarType_Qangle:
 		{
 			const auto& value = conVar->Cast<QAngle>()->GetValue();
 			return plg::ReturnStr(std::format("{} {} {}", value.x, value.y, value.z));
-			break;
 		}
 		default:
 			g_Logger.Log(LS_WARNING, "Invalid convar type.\n");
-			break;
+			return plg::ReturnStr("");
 	}
 }
 

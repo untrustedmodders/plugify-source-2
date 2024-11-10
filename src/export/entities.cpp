@@ -876,12 +876,12 @@ extern "C" PLUGIN_API void SetEntityAbsVelocity(int entityHandle, const Vector& 
  * @param entityHandle The handle of the entity whose model name is to be retrieved.
  * @return A string where the model name will be stored.
  */
-extern "C" PLUGIN_API void GetEntityModel(int entityHandle)
+extern "C" PLUGIN_API plg::str GetEntityModel(int entityHandle)
 {
 	CBaseModelEntity* ent = static_cast<CBaseModelEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!ent)
 	{
-		return plg::ReturnStr();
+		return plg::ReturnStr("");
 	}
 
 	return plg::ReturnStr(ent->GetModelName());

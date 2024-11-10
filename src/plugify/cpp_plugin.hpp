@@ -175,19 +175,19 @@ namespace plg {
 		};
 	}
 
-	bool operator==(const vec2& lhs, const vec2& rhs) {
+	[[nodiscard]] constexpr bool operator==(const vec2& lhs, const vec2& rhs) {
 		return lhs.x == rhs.x && lhs.y == rhs.y;
 	}
 
-	bool operator==(const vec3& lhs, const vec3& rhs) {
+	[[nodiscard]] constexpr bool operator==(const vec3& lhs, const vec3& rhs) {
 		return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z;
 	}
 
-	bool operator==(const vec4& lhs, const vec4& rhs) {
+	[[nodiscard]] constexpr bool operator==(const vec4& lhs, const vec4& rhs) {
 		return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z && lhs.w == rhs.w;
 	}
 
-	bool operator==(const mat4x4& lhs, const mat4x4& rhs) {
+	[[nodiscard]] constexpr bool operator==(const mat4x4& lhs, const mat4x4& rhs) {
 		for (int i = 0; i < 4; ++i) {
 			for (int j = 0; j < 4; ++j) {
 				if (lhs.m[i][j] != rhs.m[i][j])
@@ -197,14 +197,14 @@ namespace plg {
 		return true;
 	}
 
-    plg::str ReturnStr(plg::string str) {
+    [[nodiscard]] inline plg::str ReturnStr(plg::string str) {
         plg::str ret{};
         std::construct_at(reinterpret_cast<plg::string*>(&ret), std::move(str));
         return ret;
     }
 
     template<typename T>
-    plg::vec ReturnVec(plg::vector<T> vec) {
+    [[nodiscard]] inline plg::vec ReturnVec(plg::vector<T> vec) {
         plg::vec ret{};
         std::construct_at(reinterpret_cast<plg::vector<T>*>(&ret), std::move(vec));
         return ret;
