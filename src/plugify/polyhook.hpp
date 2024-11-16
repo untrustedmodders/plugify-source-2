@@ -23,8 +23,7 @@ namespace poly
 		Float,
 		Double,
 		Pointer,
-		String,
-		WString
+		String
 	};
 
 	enum class ReturnAction : int

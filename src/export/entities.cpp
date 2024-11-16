@@ -881,7 +881,7 @@ extern "C" PLUGIN_API plg::str GetEntityModel(int entityHandle)
 	CBaseModelEntity* ent = static_cast<CBaseModelEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!ent)
 	{
-		return plg::ReturnStr("");
+		return plg::ReturnStr({});
 	}
 
 	return plg::ReturnStr(ent->GetModelName());

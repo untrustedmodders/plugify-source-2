@@ -688,7 +688,7 @@ extern "C" PLUGIN_API plg::str GetConVarValue(CConVarBaseData* conVar)
 		}
 		default:
 			g_Logger.Log(LS_WARNING, "Invalid convar type.\n");
-			return plg::ReturnStr("");
+			return plg::ReturnStr({});
 	}
 }
 
