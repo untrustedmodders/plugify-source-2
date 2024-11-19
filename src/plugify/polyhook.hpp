@@ -757,8 +757,6 @@ namespace poly
 				return DataType::Double;
 			else if constexpr (std::is_same_v<T, const char*>)
 				return DataType::String;
-			else if constexpr (std::is_same_v<T, const wchar_t*>)
-				return DataType::WString;
 			else if constexpr (std::is_pointer<T>::value || std::is_reference_v<T>)
 				return DataType::Pointer;
 			else
