@@ -83,6 +83,12 @@ void Source2SDK::OnPluginStart()
 		hook.AddCallback(Post, Hook_SetupHookLoop_Post);
 	});
 
+	p_ppGameEventManager = g_pGameConfig->GetAddress("&s_GameEventManager").RCast<IGameEventManager2**>();
+	if (!p_ppGameEventManager) {
+		g_Logger.Log(LS_ERROR, "s_GameEventManager not found!");
+		return;
+	}
+
 	g_PH.AddHookMemFunc(&IServerGameClients::ClientCommand, g_pSource2GameClients, Hook_ClientCommand, Pre);
 	g_PH.AddHookMemFunc(&IMetamodListener::OnLevelInit, g_pMetamodListener, Hook_OnLevelInit, Post);
 	g_PH.AddHookMemFunc(&IMetamodListener::OnLevelShutdown, g_pMetamodListener, Hook_OnLevelShutdown, Post);
@@ -107,9 +113,7 @@ void Source2SDK::OnPluginStart()
 	g_PH.AddHookMemFunc(&ISource2Server::PreWorldUpdate, g_pSource2Server, Hook_PreWorldUpdate, Post);
 	g_PH.AddHookMemFunc(&ICvar::DispatchConCommand, g_pCVar, Hook_DispatchConCommand, Pre, Post);
 	g_PH.AddHookMemFunc(&IVEngineServer2::SetClientListening, g_pEngineServer2, Hook_SetClientListening, Pre);
-
-	using GameEventManagerInit = void (*)(IGameEventManager2*);
-	g_PH.AddHookDetourFunc<GameEventManagerInit>("CGameEventManager_Init", Hook_GameEventManagerInit, Pre);
+	//g_PH.AddHookMemFunc(&IGameEventManager2::FireEvent, g_pGameEventManager, Hook_FireEvent, Pre, Post);
 
 	using FireOutputInternal = void (*)(CEntityIOOutput* const, CEntityInstance*, CEntityInstance*, const CVariant* const, float);
 	g_PH.AddHookDetourFunc<FireOutputInternal>("CEntityIOOutput_FireOutputInternal", Hook_FireOutputInternal, Pre);
@@ -154,21 +158,16 @@ void Source2SDK::OnServerStartup()
 	}
 }
 
-poly::ReturnAction Source2SDK::Hook_GameEventManagerInit(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret)
-{
-	g_gameEventManager = poly::GetArgument<IGameEventManager2*>(params, 0);
-
-	if (g_gameEventManager != nullptr)
-	{
-		using enum poly::CallbackType;
-		g_PH.AddHookMemFunc(&IGameEventManager2::FireEvent, g_gameEventManager, Hook_FireEvent, Pre, Post);
-	}
-
-	return poly::ReturnAction::Ignored;
-}
-
 poly::ReturnAction Source2SDK::Hook_StartupServer(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret)
 {
+	g_pGameEventManager = *p_ppGameEventManager;
+
+	if (g_pGameEventManager != nullptr)
+	{
+		using enum poly::CallbackType;
+		g_PH.AddHookMemFunc(&IGameEventManager2::FireEvent, g_pGameEventManager, Hook_FireEvent, Pre, Post);
+	}
+
 	//auto config = poly::GetArgument<const GameSessionConfiguration_t *>(params, 1);
 	//auto pWorldSession = poly::GetArgument<ISource2WorldSession*>(params, 2);
 	auto pMapName = poly::GetArgument<const char *>(params, 3);
@@ -432,16 +431,6 @@ poly::ReturnAction Source2SDK::Hook_PreWorldUpdate(poly::CallbackType type, poly
 poly::ReturnAction Source2SDK::Hook_FireOutputInternal(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret)
 {
 	return type == poly::CallbackType::Post ? g_OutputManager.Hook_FireOutputInternal_Post(params, count, ret) : g_OutputManager.Hook_FireOutputInternal(params, count, ret);
-}
-
-poly::ReturnAction Source2SDK::Hook_SayText2Filter(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret)
-{
-	const char* playername =  poly::GetArgument<const char*>(params, 4);
-	const char* message = poly::GetArgument<const char*>(params, 5);
-
-	g_Logger.LogFormat(LS_WARNING, "Hook_SayText2Filter - Chat from %s %s\n\n", playername, message);
-
-	return poly::ReturnAction::Ignored;
 }
 
 poly::ReturnAction Source2SDK::Hook_DispatchConCommand(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret)

@@ -346,5 +346,5 @@ extern "C" PLUGIN_API void SetEventBroadcast(EventInfo* pInfo, bool dontBroadcas
  */
 extern "C" PLUGIN_API int LoadEventsFromFile(const plg::string& path, bool searchAll)
 {
-    return g_gameEventManager->LoadEventsFromFile(path.c_str(), searchAll);
+    return g_pGameEventManager->LoadEventsFromFile(path.c_str(), searchAll);
 }

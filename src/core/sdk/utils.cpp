@@ -136,7 +136,7 @@ void utils::SendConVarValue(CPlayerSlot slot, CConVarBaseData* conVar, const cha
 	cvar->set_name(conVar->GetName());
 	cvar->set_value(value);
 	CSingleRecipientFilter filter(slot.Get());
-	g_gameEventSystem->PostEventAbstract(0, false, &filter, netmsg, reinterpret_cast<const CNetMessage*>(&msg), 0);
+	g_pGameEventSystem->PostEventAbstract(0, false, &filter, netmsg, reinterpret_cast<const CNetMessage*>(&msg), 0);
 }
 
 void utils::SendMultipleConVarValues(CPlayerSlot slot, CConVarBaseData** conVar, const char** value, uint32_t size)
@@ -150,7 +150,7 @@ void utils::SendMultipleConVarValues(CPlayerSlot slot, CConVarBaseData** conVar,
 		cvar->set_value(value[i]);
 	}
 	CSingleRecipientFilter filter(slot.Get());
-	g_gameEventSystem->PostEventAbstract(0, false, &filter, netmsg, reinterpret_cast<const CNetMessage*>(&msg), 0);
+	g_pGameEventSystem->PostEventAbstract(0, false, &filter, netmsg, reinterpret_cast<const CNetMessage*>(&msg), 0);
 }
 
 bool utils::IsSpawnValid(const Vector& origin)

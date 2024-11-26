@@ -34,8 +34,9 @@ class CBasePlayerController;
 class CCSPlayerController;
 class CBaseEntity;
 
-extern IGameEventSystem* g_gameEventSystem;
-extern IGameEventManager2* g_gameEventManager;
+extern IGameEventSystem* g_pGameEventSystem;
+extern IGameEventManager2* g_pGameEventManager;
+extern IGameEventManager2** p_ppGameEventManager;
 extern INetworkGameServer* g_pNetworkGameServer;
 extern CGlobalVars* gpGlobals;
 extern IVEngineServer2* g_pEngineServer2;

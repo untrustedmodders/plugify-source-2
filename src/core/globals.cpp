@@ -12,8 +12,9 @@
 #include <igameevents.h>
 #include <engine/igameeventsystem.h>
 
-IGameEventSystem* g_gameEventSystem = nullptr;
-IGameEventManager2* g_gameEventManager = nullptr;
+IGameEventSystem* g_pGameEventSystem = nullptr;
+IGameEventManager2* g_pGameEventManager = nullptr;
+IGameEventManager2** p_ppGameEventManager = nullptr;
 INetworkGameServer* g_pNetworkGameServer = nullptr;
 CGlobalVars* gpGlobals = nullptr;
 IVEngineServer2* g_pEngineServer2 = nullptr;
@@ -119,7 +120,7 @@ namespace globals
 
 		g_pEngineServer2 = FindInterface<IVEngineServer2>(modules::engine, SOURCE2ENGINETOSERVER_INTERFACE_VERSION);
 		g_pFullFileSystem = FindInterface<IFileSystem>(modules::filesystem, FILESYSTEM_INTERFACE_VERSION);
-		g_gameEventSystem = FindInterface<IGameEventSystem>(modules::engine, GAMEEVENTSYSTEM_INTERFACE_VERSION);
+		g_pGameEventSystem = FindInterface<IGameEventSystem>(modules::engine, GAMEEVENTSYSTEM_INTERFACE_VERSION);
 		g_pNetworkServerService = FindInterface<INetworkServerService>(modules::engine, NETWORKSERVERSERVICE_INTERFACE_VERSION);
 		//g_pEngineSound = FindInterface<IEngineSound>(modules::engine, IENGINESOUND_SERVER_INTERFACE_VERSION);
 		g_pNetworkMessages = FindInterface<INetworkMessages>(modules::networksystem, NETWORKMESSAGES_INTERFACE_VERSION);

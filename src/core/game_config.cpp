@@ -54,19 +54,19 @@ bool CGameConfig::Initialize()
 			FOR_EACH_SUBKEY(addresses, it)
 			{
 				KeyValues* reads = it->FindKey(platform);
-				plg::vector<int> read;
+				plg::vector<std::pair<int, bool>> read;
 				bool lastIsOffset = false;
 				FOR_EACH_SUBKEY(reads, it2)
 				{
-					const char* key = it->GetName();
-					if (!V_strcmp(key, "read") || !V_strcmp(key, "offset"))
+					std::string_view key = it2->GetName();
+					if (key == "read" || key == "offset" || key == "read_offs32")
 					{
 						if (lastIsOffset)
 						{
 							g_Logger.LogFormat(LS_WARNING, "Could not read \"%s\": Error parsing Address \"%s\", 'offset' entry must be the last entry\n", m_szPath.c_str(), it->GetName());
 							continue;
 						}
-						read.push_back(it2->GetInt());
+						read.emplace_back(it2->GetInt(), key.ends_with("_offs32"));
 						if (key[0] == 'o') // offset
 						{
 							lastIsOffset = true;
@@ -126,35 +126,44 @@ std::string_view CGameConfig::GetLibrary(const plg::string& name) const
 // memory addresses below 0x10000 are automatically considered invalid for dereferencing
 #define VALID_MINIMUM_MEMORY_ADDRESS ((void*)0x10000)
 
-void* CGameConfig::GetAddress(const plg::string& name) const
+CMemory CGameConfig::GetAddress(const plg::string& name) const
 {
 	auto it = m_umAddresses.find(name);
 	if (it == m_umAddresses.end())
-		return nullptr;
+		return {};
 
 	const auto& addrConf = std::get<AddressConf>(*it);
 
 	CMemory addr = ResolveSignature(addrConf.signature);
 	if (!addr)
-		return nullptr;
+		return {};
 
 	size_t readCount = addrConf.read.size();
 	for (size_t i = 0; i < readCount; ++i)
 	{
-		int offset = addrConf.read[i];
+		auto& [offset, rel] = addrConf.read[i];
 
 		// NULLs in the middle of an indirection chain are bad, end NULL is ok
 		if (!addr || addr < VALID_MINIMUM_MEMORY_ADDRESS)
 			return nullptr;
 
-		// If lastIsOffset is set and this is the last iteration of the loop, don't deref
-		if (addrConf.lastIsOffset && i == readCount - 1)
+		if (rel)
 		{
-			addr.OffsetSelf(offset);
+			auto target = addr.Offset(offset);
+			if (!target || target < VALID_MINIMUM_MEMORY_ADDRESS)
+				return nullptr;
+
+			addr.OffsetSelf(offset).OffsetSelf(sizeof(int32_t)).OffsetSelf(target.GetValue<int32_t>());
 		}
 		else
 		{
-			addr.OffsetSelf(offset).DerefSelf();
+			addr.OffsetSelf(offset);
+		}
+
+		// If lastIsOffset is set and this is the last iteration of the loop, don't deref
+		if (!addrConf.lastIsOffset || i != readCount - 1)
+		{
+			addr.DerefSelf();
 		}
 	}
 

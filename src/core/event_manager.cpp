@@ -10,15 +10,15 @@ CEventManager::~CEventManager()
 
 	if (!m_eventHooks.empty())
 	{
-		g_gameEventManager->RemoveListener(this);
+		g_pGameEventManager->RemoveListener(this);
 	}
 }
 
 EventHookError CEventManager::HookEvent(const plg::string& name, EventListenerCallback callback, HookMode mode)
 {
-	if (!g_gameEventManager->FindListener(this, name.c_str()))
+	if (!g_pGameEventManager->FindListener(this, name.c_str()))
 	{
-		if (!g_gameEventManager->AddListener(this, name.c_str(), true))
+		if (!g_pGameEventManager->AddListener(this, name.c_str(), true))
 		{
 			return EventHookError::InvalidEvent;
 		}
@@ -116,7 +116,7 @@ void CEventManager::FireGameEvent(IGameEvent* event)
 
 void CEventManager::FireEvent(EventInfo* pInfo, bool bDontBroadcast)
 {
-	g_gameEventManager->FireEvent(pInfo->pEvent, bDontBroadcast);
+	g_pGameEventManager->FireEvent(pInfo->pEvent, bDontBroadcast);
 
 	m_freeEvents.push(pInfo);
 }
@@ -124,7 +124,7 @@ void CEventManager::FireEvent(EventInfo* pInfo, bool bDontBroadcast)
 EventInfo* CEventManager::CreateEvent(const plg::string& name, bool force)
 {
 	EventInfo* pInfo;
-	IGameEvent* pEvent = g_gameEventManager->CreateEvent(name.c_str(), force);
+	IGameEvent* pEvent = g_pGameEventManager->CreateEvent(name.c_str(), force);
 
 	if (pEvent)
 	{
@@ -156,7 +156,7 @@ void CEventManager::FireEventToClient(EventInfo* pInfo, CPlayerSlot slot)
 
 void CEventManager::CancelCreatedEvent(EventInfo* pInfo)
 {
-	g_gameEventManager->FreeEvent(pInfo->pEvent);
+	g_pGameEventManager->FreeEvent(pInfo->pEvent);
 
 	m_freeEvents.push(pInfo);
 }
@@ -193,7 +193,7 @@ poly::ReturnAction CEventManager::Hook_OnFireEvent(poly::Params& params, int cou
 				if (result >= ResultType::Handled)
 				{
 					// m_EventCopies.push(g_gameEventManager->DuplicateEvent(pEvent));
-					g_gameEventManager->FreeEvent(pEvent);
+					g_pGameEventManager->FreeEvent(pEvent);
 					return poly::ReturnAction::Supercede;
 				}
 			}
@@ -201,7 +201,7 @@ poly::ReturnAction CEventManager::Hook_OnFireEvent(poly::Params& params, int cou
 
 		if (eventHook.postCopy)
 		{
-			m_eventCopies.push(g_gameEventManager->DuplicateEvent(pEvent));
+			m_eventCopies.push(g_pGameEventManager->DuplicateEvent(pEvent));
 		}
 	}
 	else
@@ -240,7 +240,7 @@ poly::ReturnAction CEventManager::Hook_OnFireEvent_Post(poly::Params& params, in
 
 				pHook->postHook->Notify(pHook->name, &eventInfo, bDontBroadcast);
 
-				g_gameEventManager->FreeEvent(eventInfo.pEvent);
+				g_pGameEventManager->FreeEvent(eventInfo.pEvent);
 
 				m_eventCopies.pop();
 			}

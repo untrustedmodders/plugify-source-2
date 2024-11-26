@@ -14,7 +14,7 @@ public:
 	static poly::ReturnAction Hook_SetupHookLoop_Pre(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 	static poly::ReturnAction Hook_SetupHookLoop_Post(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 
-	static poly::ReturnAction Hook_GameEventManagerInit(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	//static poly::ReturnAction Hook_GameEventManagerInit(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 	static poly::ReturnAction Hook_StartupServer(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 	static poly::ReturnAction Hook_FireEvent(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 	//static poly::ReturnAction Hook_PostEvent(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
@@ -38,7 +38,7 @@ public:
 	static poly::ReturnAction Hook_UpdateWhenNotInGame(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 	static poly::ReturnAction Hook_PreWorldUpdate(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 	static poly::ReturnAction Hook_FireOutputInternal(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
-	static poly::ReturnAction Hook_SayText2Filter(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret); // TODO: TEMP
+	//static poly::ReturnAction Hook_SayText2Filter(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret); // TODO: TEMP
 	static poly::ReturnAction Hook_DispatchConCommand(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 	static poly::ReturnAction Hook_SetClientListening(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 };

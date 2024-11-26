@@ -23,7 +23,7 @@ public:
 	std::string_view GetSymbol(const plg::string& name) const;
 	std::string_view GetPatch(const plg::string& name) const;
 	int GetOffset(const plg::string& name) const;
-	void* GetAddress(const plg::string& name) const;
+	CMemory GetAddress(const plg::string& name) const;
 	CModule* GetModule(const plg::string& name) const;
 	bool IsSymbol(const plg::string& name) const;
 	CMemory ResolveSignature(const plg::string& name) const;
@@ -32,7 +32,7 @@ private:
 	struct AddressConf
 	{
 		plg::string signature;
-		plg::vector<int> read;
+		plg::vector<std::pair<int, bool>> read;
 		bool lastIsOffset;
 	};
 

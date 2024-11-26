@@ -212,7 +212,7 @@ void utils::ClientPrintFilter(IRecipientFilter* filter, int msg_dest, const char
 	msg.add_param(param3);
 	msg.add_param(param4);
 
-	g_gameEventSystem->PostEventAbstract(0, false, filter, netmsg, reinterpret_cast<const CNetMessage*>(&msg), 0);
+	g_pGameEventSystem->PostEventAbstract(0, false, filter, netmsg, reinterpret_cast<const CNetMessage*>(&msg), 0);
 }
 
 void utils::PrintConsole(CPlayerSlot slot, const char* message)
@@ -241,7 +241,7 @@ void utils::PrintAlert(CPlayerSlot slot, const char* message)
 
 void utils::PrintHtmlCentre(CPlayerSlot slot, const char* message)
 {
-	IGameEvent* event = g_gameEventManager->CreateEvent("show_survival_respawn_status");
+	IGameEvent* event = g_pGameEventManager->CreateEvent("show_survival_respawn_status");
 	if (!event)
 	{
 		return;
@@ -254,7 +254,7 @@ void utils::PrintHtmlCentre(CPlayerSlot slot, const char* message)
 	IGameEventListener2* listener = addresses::GetLegacyGameEventListener(slot);
 	listener->FireGameEvent(event);
 
-	g_gameEventManager->FreeEvent(event);
+	g_pGameEventManager->FreeEvent(event);
 }
 
 void utils::PrintConsoleAll(const char* message)
@@ -283,7 +283,7 @@ void utils::PrintAlertAll(const char* message)
 
 void utils::PrintHtmlCentreAll(const char* message)
 {
-	IGameEvent* event = g_gameEventManager->CreateEvent("show_survival_respawn_status");
+	IGameEvent* event = g_pGameEventManager->CreateEvent("show_survival_respawn_status");
 	if (!event)
 	{
 		return;
@@ -293,7 +293,7 @@ void utils::PrintHtmlCentreAll(const char* message)
 	event->SetInt("duration", 5);
 	event->SetInt("userid", -1);
 
-	g_gameEventManager->FireEvent(event);
+	g_pGameEventManager->FireEvent(event);
 }
 
 void utils::CPrintChat(CPlayerSlot slot, const char* message)
