@@ -158,12 +158,12 @@ CMemory CGameConfig::GetAddress(const plg::string& name) const
 		else
 		{
 			addr.OffsetSelf(offset);
-		}
 
-		// If lastIsOffset is set and this is the last iteration of the loop, don't deref
-		if (!addrConf.lastIsOffset || i != readCount - 1)
-		{
-			addr.DerefSelf();
+			// If lastIsOffset is set and this is the last iteration of the loop, don't deref
+			if (!addrConf.lastIsOffset || i != readCount - 1)
+			{
+				addr.DerefSelf();
+			}
 		}
 	}
 

@@ -88,6 +88,13 @@ void Source2SDK::OnPluginStart()
 		g_Logger.Log(LS_ERROR, "s_GameEventManager not found!");
 		return;
 	}
+	g_pGameEventManager = *p_ppGameEventManager;
+
+	if (g_pGameEventManager != nullptr)
+	{
+		using enum poly::CallbackType;
+		g_PH.AddHookMemFunc(&IGameEventManager2::FireEvent, g_pGameEventManager, Hook_FireEvent, Pre, Post);
+	}
 
 	g_PH.AddHookMemFunc(&IServerGameClients::ClientCommand, g_pSource2GameClients, Hook_ClientCommand, Pre);
 	g_PH.AddHookMemFunc(&IMetamodListener::OnLevelInit, g_pMetamodListener, Hook_OnLevelInit, Post);
@@ -160,14 +167,6 @@ void Source2SDK::OnServerStartup()
 
 poly::ReturnAction Source2SDK::Hook_StartupServer(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret)
 {
-	g_pGameEventManager = *p_ppGameEventManager;
-
-	if (g_pGameEventManager != nullptr)
-	{
-		using enum poly::CallbackType;
-		g_PH.AddHookMemFunc(&IGameEventManager2::FireEvent, g_pGameEventManager, Hook_FireEvent, Pre, Post);
-	}
-
 	//auto config = poly::GetArgument<const GameSessionConfiguration_t *>(params, 1);
 	//auto pWorldSession = poly::GetArgument<ISource2WorldSession*>(params, 2);
 	auto pMapName = poly::GetArgument<const char *>(params, 3);
