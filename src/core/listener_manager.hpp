@@ -75,7 +75,7 @@ public:
 	template <typename Callable>
 	bool IsRegistered(Callable&& callable) const
 	{
-		return Find(callable) != 1;
+		return Find(callable) != -1;
 	}
 
 	void Notify(Args... args) const
