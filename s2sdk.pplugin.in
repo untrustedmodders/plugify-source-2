@@ -7272,6 +7272,1151 @@
         "type": "uint8",
         "description": "The current voice flags for the specified client."
       }
+    },
+
+    {
+      "name": "OnClientConnect_Register",
+      "group": "Listeners",
+      "description": "Register callback to event.",
+      "funcName": "OnClientConnect_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnClientConnectCallback",
+            "description": "Called on client connection. If you return true, the client will be allowed in the server. If you return false (or return nothing), the client will be rejected. If the client is rejected by this forward or any other, OnClientDisconnect will not be called.<br>Note: Do not write to rejectmsg if you plan on returning true. If multiple plugins write to the string buffer, it is not defined which plugin's string will be shown to the client, but it is guaranteed one of them will.",
+            "paramTypes": [
+              {
+                "name": "clientIndex",
+                "type": "int32",
+                "description": "The client index"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "The client name"
+              },
+              {
+                "name": "networkId",
+                "type": "string",
+                "description": "The client id"
+              }
+            ],
+            "retType": {
+              "type": "bool",
+              "description": "True to validate client's connection, false to refuse it."
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnClientConnect_Unregister",
+      "group": "Listeners",
+      "description": "Unregister callback to event.",
+      "funcName": "OnClientConnect_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnClientConnectCallback",
+            "description": "Called on client connection. If you return true, the client will be allowed in the server. If you return false (or return nothing), the client will be rejected. If the client is rejected by this forward or any other, OnClientDisconnect will not be called.<br>Note: Do not write to rejectmsg if you plan on returning true. If multiple plugins write to the string buffer, it is not defined which plugin's string will be shown to the client, but it is guaranteed one of them will.",
+            "paramTypes": [
+              {
+                "name": "clientIndex",
+                "type": "int32",
+                "description": "The client index"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "The client name"
+              },
+              {
+                "name": "networkId",
+                "type": "string",
+                "description": "The client id"
+              }
+            ],
+            "retType": {
+              "type": "bool",
+              "description": "True to validate client's connection, false to refuse it."
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnClientConnect_Post_Register",
+      "group": "Listeners",
+      "description": "Register callback to event.",
+      "funcName": "OnClientConnect_Post_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnClientConnect_PostCallback",
+            "description": "Called on client connection.",
+            "paramTypes": [
+              {
+                "name": "clientIndex",
+                "type": "int32",
+                "description": "The client index"
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnClientConnect_Post_Unregister",
+      "group": "Listeners",
+      "description": "Unregister callback to event.",
+      "funcName": "OnClientConnect_Post_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnClientConnect_PostCallback",
+            "description": "Called on client connection.",
+            "paramTypes": [
+              {
+                "name": "clientIndex",
+                "type": "int32",
+                "description": "The client index"
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnClientConnected_Register",
+      "group": "Listeners",
+      "description": "Register callback to event.",
+      "funcName": "OnClientConnected_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnClientConnectedCallback",
+            "description": "Called once a client successfully connects. This callback is paired with OnClientDisconnect.",
+            "paramTypes": [
+              {
+                "name": "clientIndex",
+                "type": "int32",
+                "description": "The client index"
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnClientConnected_Unregister",
+      "group": "Listeners",
+      "description": "Unregister callback to event.",
+      "funcName": "OnClientConnected_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnClientConnectedCallback",
+            "description": "Called once a client successfully connects. This callback is paired with OnClientDisconnect.",
+            "paramTypes": [
+              {
+                "name": "clientIndex",
+                "type": "int32",
+                "description": "The client index"
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnClientPutInServer_Register",
+      "group": "Listeners",
+      "description": "Register callback to event.",
+      "funcName": "OnClientPutInServer_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnClientPutInServerCallback",
+            "description": "Called when a client is entering the game.",
+            "paramTypes": [
+              {
+                "name": "clientIndex",
+                "type": "int32",
+                "description": "The client index"
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnClientPutInServer_Unregister",
+      "group": "Listeners",
+      "description": "Unregister callback to event.",
+      "funcName": "OnClientPutInServer_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnClientPutInServerCallback",
+            "description": "Called when a client is entering the game.",
+            "paramTypes": [
+              {
+                "name": "clientIndex",
+                "type": "int32",
+                "description": "The client index"
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnClientDisconnect_Register",
+      "group": "Listeners",
+      "description": "Register callback to event.",
+      "funcName": "OnClientDisconnect_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnClientDisconnectCallback",
+            "description": "Called when a client is disconnecting from the server.",
+            "paramTypes": [
+              {
+                "name": "clientIndex",
+                "type": "int32",
+                "description": "The client index"
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnClientDisconnect_Unregister",
+      "group": "Listeners",
+      "description": "Unregister callback to event.",
+      "funcName": "OnClientDisconnect_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnClientDisconnectCallback",
+            "description": "Called when a client is disconnecting from the server.",
+            "paramTypes": [
+              {
+                "name": "clientIndex",
+                "type": "int32",
+                "description": "The client index"
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnClientDisconnect_Post_Register",
+      "group": "Listeners",
+      "description": "Register callback to event.",
+      "funcName": "OnClientDisconnect_Post_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnClientDisconnect_PostCallback",
+            "description": "Called when a client is disconnected from the server.",
+            "paramTypes": [
+              {
+                "name": "clientIndex",
+                "type": "int32",
+                "description": "The client index"
+              },
+              {
+                "name": "reason",
+                "type": "int32",
+                "description": "The reason for disconnect"
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnClientDisconnect_Post_Unregister",
+      "group": "Listeners",
+      "description": "Unregister callback to event.",
+      "funcName": "OnClientDisconnect_Post_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnClientDisconnect_PostCallback",
+            "description": "Called when a client is disconnected from the server.",
+            "paramTypes": [
+              {
+                "name": "clientIndex",
+                "type": "int32",
+                "description": "The client index"
+              },
+              {
+                "name": "reason",
+                "type": "int32",
+                "description": "The reason for disconnect"
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnClientActive_Register",
+      "group": "Listeners",
+      "description": "Register callback to event.",
+      "funcName": "OnClientActive_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnClientActiveCallback",
+            "description": "Called when a client is activated by the game.",
+            "paramTypes": [
+              {
+                "name": "clientIndex",
+                "type": "int32",
+                "description": "The client index"
+              },
+              {
+                "name": "isActive",
+                "type": "bool",
+                "description": "Active state"
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnClientActive_Unregister",
+      "group": "Listeners",
+      "description": "Unregister callback to event.",
+      "funcName": "OnClientActive_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnClientActiveCallback",
+            "description": "Called when a client is activated by the game.",
+            "paramTypes": [
+              {
+                "name": "clientIndex",
+                "type": "int32",
+                "description": "The client index"
+              },
+              {
+                "name": "isActive",
+                "type": "bool",
+                "description": "Active state"
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnClientFullyConnect_Register",
+      "group": "Listeners",
+      "description": "Register callback to event.",
+      "funcName": "OnClientFullyConnect_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnClientFullyConnectCallback",
+            "description": "Called when a client is fully connected to the game.",
+            "paramTypes": [
+              {
+                "name": "clientIndex",
+                "type": "int32",
+                "description": "The client index"
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnClientFullyConnect_Unregister",
+      "group": "Listeners",
+      "description": "Unregister callback to event.",
+      "funcName": "OnClientFullyConnect_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnClientFullyConnectCallback",
+            "description": "Called when a client is fully connected to the game.",
+            "paramTypes": [
+              {
+                "name": "clientIndex",
+                "type": "int32",
+                "description": "The client index"
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnLevelInit_Register",
+      "group": "Listeners",
+      "description": "Register callback to event.",
+      "funcName": "OnLevelInit_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnLevelInitCallback",
+            "description": "Called when the map starts loading.",
+            "paramTypes": [
+              {
+                "name": "mapName",
+                "type": "string",
+                "description": "The name of the map"
+              },
+              {
+                "name": "mapEntities",
+                "type": "string",
+                "description": "The entities of the map"
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnLevelInit_Unregister",
+      "group": "Listeners",
+      "description": "Unregister callback to event.",
+      "funcName": "OnLevelInit_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnLevelInitCallback",
+            "description": "Called when the map starts loading.",
+            "paramTypes": [
+              {
+                "name": "mapName",
+                "type": "string",
+                "description": "The name of the map"
+              },
+              {
+                "name": "mapEntities",
+                "type": "string",
+                "description": "The entities of the map"
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnLevelShutdown_Register",
+      "group": "Listeners",
+      "description": "Register callback to event.",
+      "funcName": "OnLevelShutdown_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnLevelShutdownCallback",
+            "description": "Called right before a map ends.",
+            "paramTypes": [],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnLevelShutdown_Unregister",
+      "group": "Listeners",
+      "description": "Unregister callback to event.",
+      "funcName": "OnLevelShutdown_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnLevelShutdownCallback",
+            "description": "Called right before a map ends.",
+            "paramTypes": [],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnEntitySpawned_Register",
+      "group": "Listeners",
+      "description": "Register callback to event.",
+      "funcName": "OnEntitySpawned_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnEntitySpawnedCallback",
+            "description": "Called when an entity is spawned.",
+            "paramTypes": [
+              {
+                "name": "entity",
+                "type": "ptr64",
+                "description": "The spawned entity instance"
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnEntitySpawned_Unregister",
+      "group": "Listeners",
+      "description": "Unregister callback to event.",
+      "funcName": "OnEntitySpawned_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnEntitySpawnedCallback",
+            "description": "Called when an entity is spawned.",
+            "paramTypes": [
+              {
+                "name": "entity",
+                "type": "ptr64",
+                "description": "The spawned entity instance"
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnEntityCreated_Register",
+      "group": "Listeners",
+      "description": "Register callback to event.",
+      "funcName": "OnEntityCreated_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnEntityCreatedCallback",
+            "description": "Called when an entity is created.",
+            "paramTypes": [
+              {
+                "name": "entity",
+                "type": "ptr64",
+                "description": "The created entity instance"
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnEntityCreated_Unregister",
+      "group": "Listeners",
+      "description": "Unregister callback to event.",
+      "funcName": "OnEntityCreated_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnEntityCreatedCallback",
+            "description": "Called when an entity is created.",
+            "paramTypes": [
+              {
+                "name": "entity",
+                "type": "ptr64",
+                "description": "The created entity instance"
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnEntityDeleted_Register",
+      "group": "Listeners",
+      "description": "Register callback to event.",
+      "funcName": "OnEntityDeleted_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnEntityDeletedCallback",
+            "description": "Called when when an entity is destroyed.",
+            "paramTypes": [
+              {
+                "name": "entity",
+                "type": "ptr64",
+                "description": "The deleted entity instance"
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnEntityDeleted_Unregister",
+      "group": "Listeners",
+      "description": "Unregister callback to event.",
+      "funcName": "OnEntityDeleted_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnEntityDeletedCallback",
+            "description": "Called when when an entity is destroyed.",
+            "paramTypes": [
+              {
+                "name": "entity",
+                "type": "ptr64",
+                "description": "The deleted entity instance"
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnEntityParentChanged_Register",
+      "group": "Listeners",
+      "description": "Register callback to event.",
+      "funcName": "OnEntityParentChanged_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnEntityParentChangedCallback",
+            "description": "When an entity is reparented to another entity.",
+            "paramTypes": [
+              {
+                "name": "entity",
+                "type": "ptr64",
+                "description": "The entity whose parent changed"
+              },
+              {
+                "name": "newParent",
+                "type": "ptr64",
+                "description": "The new parent entity instance"
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnEntityParentChanged_Unregister",
+      "group": "Listeners",
+      "description": "Unregister callback to event.",
+      "funcName": "OnEntityParentChanged_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnEntityParentChangedCallback",
+            "description": "When an entity is reparented to another entity.",
+            "paramTypes": [
+              {
+                "name": "entity",
+                "type": "ptr64",
+                "description": "The entity whose parent changed"
+              },
+              {
+                "name": "newParent",
+                "type": "ptr64",
+                "description": "The new parent entity instance"
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnServerStartup_Register",
+      "group": "Listeners",
+      "description": "Register callback to event.",
+      "funcName": "OnServerStartup_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnServerStartupCallback",
+            "description": "Called on every server startup.",
+            "paramTypes": [],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnServerStartup_Unregister",
+      "group": "Listeners",
+      "description": "Unregister callback to event.",
+      "funcName": "OnServerStartup_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnServerStartupCallback",
+            "description": "Called on every server startup.",
+            "paramTypes": [],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnGameFrame_Register",
+      "group": "Listeners",
+      "description": "Register callback to event.",
+      "funcName": "OnGameFrame_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnGameFrameCallback",
+            "description": "Called before every server frame. Note that you should avoid doing expensive computations or declaring large local arrays.",
+            "paramTypes": [
+              {
+                "name": "simulating",
+                "type": "bool",
+                "description": ""
+              },
+              {
+                "name": "firstTick",
+                "type": "bool",
+                "description": ""
+              },
+              {
+                "name": "lastTick",
+                "type": "bool",
+                "description": ""
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnGameFrame_Unregister",
+      "group": "Listeners",
+      "description": "Unregister callback to event.",
+      "funcName": "OnGameFrame_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnGameFrameCallback",
+            "description": "Called before every server frame. Note that you should avoid doing expensive computations or declaring large local arrays.",
+            "paramTypes": [
+              {
+                "name": "simulating",
+                "type": "bool",
+                "description": ""
+              },
+              {
+                "name": "firstTick",
+                "type": "bool",
+                "description": ""
+              },
+              {
+                "name": "lastTick",
+                "type": "bool",
+                "description": ""
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnUpdateWhenNotInGame_Register",
+      "group": "Listeners",
+      "description": "Register callback to event.",
+      "funcName": "OnUpdateWhenNotInGame_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnUpdateWhenNotInGameCallback",
+            "description": "",
+            "paramTypes": [
+              {
+                "name": "deltaTime",
+                "type": "float",
+                "description": "Time elapsed since last update"
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnUpdateWhenNotInGame_Unregister",
+      "group": "Listeners",
+      "description": "Unregister callback to event.",
+      "funcName": "OnUpdateWhenNotInGame_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnUpdateWhenNotInGameCallback",
+            "description": "",
+            "paramTypes": [
+              {
+                "name": "deltaTime",
+                "type": "float",
+                "description": "Time elapsed since last update"
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
     }
   ]
 }
