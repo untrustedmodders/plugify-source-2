@@ -145,13 +145,3 @@ configure_file(
 
 configure_file(${CMAKE_SOURCE_DIR}/assets/configs/core.txt ${CMAKE_BINARY_DIR}/core.txt COPYONLY)
 configure_file(${CMAKE_SOURCE_DIR}/assets/gamedata/s2sdk.games.txt ${CMAKE_BINARY_DIR}/s2sdk.games.txt COPYONLY)
-
-# ------------------------------------------------------------------------------
-# Documentation
-if(S2SDK_BUILD_DOCS)
-    find_package(Doxygen REQUIRED)
-
-    if(DOXYGEN_FOUND)
-        add_subdirectory(docs)
-    endif()
-endif()
