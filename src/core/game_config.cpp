@@ -141,7 +141,7 @@ CMemory CGameConfig::GetAddress(const plg::string& name) const
 	size_t readCount = addrConf.read.size();
 	for (size_t i = 0; i < readCount; ++i)
 	{
-		auto& [offset, rel] = addrConf.read[i];
+		const auto& [offset, rel] = addrConf.read[i];
 
 		// NULLs in the middle of an indirection chain are bad, end NULL is ok
 		if (!addr || addr < VALID_MINIMUM_MEMORY_ADDRESS)
@@ -153,7 +153,9 @@ CMemory CGameConfig::GetAddress(const plg::string& name) const
 			if (!target || target < VALID_MINIMUM_MEMORY_ADDRESS)
 				return nullptr;
 
-			addr.OffsetSelf(offset).OffsetSelf(sizeof(int32_t)).OffsetSelf(target.GetValue<int32_t>());
+			addr.OffsetSelf(offset)
+				.OffsetSelf(sizeof(int32_t))
+				.OffsetSelf(target.GetValue<int32_t>());
 		}
 		else
 		{

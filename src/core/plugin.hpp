@@ -16,6 +16,7 @@ public:
 
 	//static poly::ReturnAction Hook_GameEventManagerInit(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 	static poly::ReturnAction Hook_StartupServer(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	static poly::ReturnAction Hook_ActivateServer(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 	static poly::ReturnAction Hook_FireEvent(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 	//static poly::ReturnAction Hook_PostEvent(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 	static poly::ReturnAction Hook_OnLevelInit(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);

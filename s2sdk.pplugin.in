@@ -8271,6 +8271,58 @@
       }
     },
     {
+      "name": "OnServerActivate_Register",
+      "group": "Listeners",
+      "description": "Register callback to event.",
+      "funcName": "OnServerActivate_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnServerActivateCallback",
+            "description": "Called on every server activate.",
+            "paramTypes": [],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnServerActivate_Unregister",
+      "group": "Listeners",
+      "description": "Unregister callback to event.",
+      "funcName": "OnServerActivate_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnServerActivateCallback",
+            "description": "Called on every server activate.",
+            "paramTypes": [],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
       "name": "OnGameFrame_Register",
       "group": "Listeners",
       "description": "Register callback to event.",

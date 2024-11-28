@@ -157,11 +157,16 @@ void Source2SDK::OnServerStartup()
 			g_pEntitySystem->m_entityListeners.AddToTail(&g_pEntityListener);
 		}
 	}
-	
+
+	if (g_pNetworkGameServer != nullptr)
+	{
+		g_PH.RemoveHookMemFunc(&INetworkGameServer::ActivateServer, g_pNetworkGameServer);
+	}
 	g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
 	if (g_pNetworkGameServer != nullptr)
 	{
 		gpGlobals = g_pNetworkGameServer->GetGlobals();
+		g_PH.AddHookMemFunc(&INetworkGameServer::ActivateServer, g_pNetworkGameServer, Hook_ActivateServer, poly::CallbackType::Post);
 	}
 }
 
@@ -182,6 +187,15 @@ poly::ReturnAction Source2SDK::Hook_StartupServer(poly::CallbackType type, poly:
 	}
 
 	GetOnServerStartupListenerManager().Notify();
+
+	return poly::ReturnAction::Ignored;
+}
+
+poly::ReturnAction Source2SDK::Hook_ActivateServer(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret)
+{
+	g_Logger.LogFormat(LS_DEBUG, "Activate server\n");
+
+	GetOnServerActivateListenerManager().Notify();
 
 	return poly::ReturnAction::Ignored;
 }
