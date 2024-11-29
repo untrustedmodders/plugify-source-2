@@ -73,7 +73,7 @@ extern "C" PLUGIN_API void CancelCreatedEvent(EventInfo* pInfo)
  */
 extern "C" PLUGIN_API bool GetEventBool(EventInfo* pInfo, const plg::string& key)
 {
-    return pInfo->pEvent->GetBool(key.c_str());
+    return pInfo->pEvent->GetBool(CKV3MemberName::Make(key.c_str()));
 }
 
 /**
@@ -84,7 +84,7 @@ extern "C" PLUGIN_API bool GetEventBool(EventInfo* pInfo, const plg::string& key
  */
 extern "C" PLUGIN_API float GetEventFloat(EventInfo* pInfo, const plg::string& key)
 {
-    return pInfo->pEvent->GetFloat(key.c_str());
+    return pInfo->pEvent->GetFloat(CKV3MemberName::Make(key.c_str()));
 }
 
 /**
@@ -95,7 +95,7 @@ extern "C" PLUGIN_API float GetEventFloat(EventInfo* pInfo, const plg::string& k
  */
 extern "C" PLUGIN_API int GetEventInt(EventInfo* pInfo, const plg::string& key)
 {
-    return pInfo->pEvent->GetInt(key.c_str());
+    return pInfo->pEvent->GetInt(CKV3MemberName::Make(key.c_str()));
 }
 
 /**
@@ -106,7 +106,7 @@ extern "C" PLUGIN_API int GetEventInt(EventInfo* pInfo, const plg::string& key)
  */
 extern "C" PLUGIN_API uint64_t GetEventUInt64(EventInfo* pInfo, const plg::string& key)
 {
-    return pInfo->pEvent->GetUint64(key.c_str());
+    return pInfo->pEvent->GetUint64(CKV3MemberName::Make(key.c_str()));
 }
 
 /**
@@ -117,7 +117,7 @@ extern "C" PLUGIN_API uint64_t GetEventUInt64(EventInfo* pInfo, const plg::strin
  */
 extern "C" PLUGIN_API plg::str GetEventString(EventInfo* pInfo, const plg::string& key)
 {
-   return plg::ReturnStr(pInfo->pEvent->GetString(key.c_str()));
+   return plg::ReturnStr(pInfo->pEvent->GetString(CKV3MemberName::Make(key.c_str())));
 }
 
 /**
@@ -128,7 +128,7 @@ extern "C" PLUGIN_API plg::str GetEventString(EventInfo* pInfo, const plg::strin
  */
 extern "C" PLUGIN_API void* GetEventPtr(EventInfo* pInfo, const plg::string& key)
 {
-    return pInfo->pEvent->GetPtr(key.c_str());
+    return pInfo->pEvent->GetPtr(CKV3MemberName::Make(key.c_str()));
 }
 
 /**
@@ -139,7 +139,7 @@ extern "C" PLUGIN_API void* GetEventPtr(EventInfo* pInfo, const plg::string& key
  */
 extern "C" PLUGIN_API CEntityInstance* GetEventPlayerController(EventInfo* pInfo, const plg::string& key)
 {
-    return pInfo->pEvent->GetPlayerController(key.c_str());
+    return pInfo->pEvent->GetPlayerController(CKV3MemberName::Make(key.c_str()));
 }
 
 /**
@@ -150,7 +150,7 @@ extern "C" PLUGIN_API CEntityInstance* GetEventPlayerController(EventInfo* pInfo
  */
 extern "C" PLUGIN_API int GetEventPlayerIndex(EventInfo* pInfo, const plg::string& key)
 {
-    return pInfo->pEvent->GetPlayerSlot(key.c_str()).Get();
+    return pInfo->pEvent->GetPlayerSlot(CKV3MemberName::Make(key.c_str())).Get();
 }
 
 /**
@@ -161,7 +161,7 @@ extern "C" PLUGIN_API int GetEventPlayerIndex(EventInfo* pInfo, const plg::strin
  */
 extern "C" PLUGIN_API CEntityInstance* GetEventPlayerPawn(EventInfo* pInfo, const plg::string& key)
 {
-    return pInfo->pEvent->GetPlayerPawn(key.c_str());
+    return pInfo->pEvent->GetPlayerPawn(CKV3MemberName::Make(key.c_str()));
 }
 
 /**
@@ -172,7 +172,7 @@ extern "C" PLUGIN_API CEntityInstance* GetEventPlayerPawn(EventInfo* pInfo, cons
  */
 extern "C" PLUGIN_API CEntityInstance* GetEventEntity(EventInfo* pInfo, const plg::string& key)
 {
-    return pInfo->pEvent->GetEntity(key.c_str());
+    return pInfo->pEvent->GetEntity(CKV3MemberName::Make(key.c_str()));
 }
 
 /**
@@ -183,7 +183,7 @@ extern "C" PLUGIN_API CEntityInstance* GetEventEntity(EventInfo* pInfo, const pl
  */
 extern "C" PLUGIN_API int GetEventEntityIndex(EventInfo* pInfo, const plg::string& key)
 {
-    return pInfo->pEvent->GetEntityIndex(key.c_str()).Get();
+    return pInfo->pEvent->GetEntityIndex(CKV3MemberName::Make(key.c_str())).Get();
 }
 
 /**
@@ -194,7 +194,7 @@ extern "C" PLUGIN_API int GetEventEntityIndex(EventInfo* pInfo, const plg::strin
  */
 extern "C" PLUGIN_API int GetEventEntityHandle(EventInfo* pInfo, const plg::string& key)
 {
-    return pInfo->pEvent->GetEHandle(key.c_str()).ToInt();
+    return pInfo->pEvent->GetEHandle(CKV3MemberName::Make(key.c_str())).ToInt();
 }
 
 /**
@@ -215,7 +215,7 @@ extern "C" PLUGIN_API plg::str GetEventName(EventInfo* pInfo)
  */
 extern "C" PLUGIN_API void SetEventBool(EventInfo* pInfo, const plg::string& key, bool value)
 {
-    pInfo->pEvent->SetBool(key.c_str(), value);
+    pInfo->pEvent->SetBool(CKV3MemberName::Make(key.c_str()), value);
 }
 
 /**
@@ -226,7 +226,7 @@ extern "C" PLUGIN_API void SetEventBool(EventInfo* pInfo, const plg::string& key
  */
 extern "C" PLUGIN_API void SetEventFloat(EventInfo* pInfo, const plg::string& key, float value)
 {
-    pInfo->pEvent->SetFloat(key.c_str(), value);
+    pInfo->pEvent->SetFloat(CKV3MemberName::Make(key.c_str()), value);
 }
 
 /**
@@ -237,7 +237,7 @@ extern "C" PLUGIN_API void SetEventFloat(EventInfo* pInfo, const plg::string& ke
  */
 extern "C" PLUGIN_API void SetEventInt(EventInfo* pInfo, const plg::string& key, int value)
 {
-    pInfo->pEvent->SetInt(key.c_str(), value);
+    pInfo->pEvent->SetInt(CKV3MemberName::Make(key.c_str()), value);
 }
 
 /**
@@ -248,7 +248,7 @@ extern "C" PLUGIN_API void SetEventInt(EventInfo* pInfo, const plg::string& key,
  */
 extern "C" PLUGIN_API void SetEventUInt64(EventInfo* pInfo, const plg::string& key, uint64_t value)
 {
-    pInfo->pEvent->SetUint64(key.c_str(), value);
+    pInfo->pEvent->SetUint64(CKV3MemberName::Make(key.c_str()), value);
 }
 
 /**
@@ -259,7 +259,7 @@ extern "C" PLUGIN_API void SetEventUInt64(EventInfo* pInfo, const plg::string& k
  */
 extern "C" PLUGIN_API void SetEventString(EventInfo* pInfo, const plg::string& key, const plg::string& value)
 {
-    pInfo->pEvent->SetString(key.c_str(), value.c_str());
+    pInfo->pEvent->SetString(CKV3MemberName::Make(key.c_str()), value.c_str());
 }
 
 /**
@@ -270,7 +270,7 @@ extern "C" PLUGIN_API void SetEventString(EventInfo* pInfo, const plg::string& k
  */
 extern "C" PLUGIN_API void SetEventPtr(EventInfo* pInfo, const plg::string& key, void* value)
 {
-    pInfo->pEvent->SetPtr(key.c_str(), value);
+    pInfo->pEvent->SetPtr(CKV3MemberName::Make(key.c_str()), value);
 }
 
 /**
@@ -281,7 +281,7 @@ extern "C" PLUGIN_API void SetEventPtr(EventInfo* pInfo, const plg::string& key,
  */
 extern "C" PLUGIN_API void SetEventPlayerController(EventInfo* pInfo, const plg::string& key, CEntityInstance* value)
 {
-    pInfo->pEvent->SetPlayer(key.c_str(), value);
+    pInfo->pEvent->SetPlayer(CKV3MemberName::Make(key.c_str()), value);
 }
 
 /**
@@ -292,7 +292,7 @@ extern "C" PLUGIN_API void SetEventPlayerController(EventInfo* pInfo, const plg:
  */
 extern "C" PLUGIN_API void SetEventPlayerIndex(EventInfo* pInfo, const plg::string& key, int value)
 {
-    pInfo->pEvent->SetPlayer(key.c_str(), CPlayerSlot(value));
+    pInfo->pEvent->SetPlayer(CKV3MemberName::Make(key.c_str()), CPlayerSlot(value));
 }
 
 /**
@@ -303,7 +303,7 @@ extern "C" PLUGIN_API void SetEventPlayerIndex(EventInfo* pInfo, const plg::stri
  */
 extern "C" PLUGIN_API void SetEventEntity(EventInfo* pInfo, const plg::string& key, CEntityInstance* value)
 {
-    pInfo->pEvent->SetEntity(key.c_str(), value);
+    pInfo->pEvent->SetEntity(CKV3MemberName::Make(key.c_str()), value);
 }
 
 /**
@@ -314,7 +314,7 @@ extern "C" PLUGIN_API void SetEventEntity(EventInfo* pInfo, const plg::string& k
  */
 extern "C" PLUGIN_API void SetEventEntityIndex(EventInfo* pInfo, const plg::string& key, int value)
 {
-    pInfo->pEvent->SetEntity(key.c_str(), CEntityIndex(value));
+    pInfo->pEvent->SetEntity(CKV3MemberName::Make(key.c_str()), CEntityIndex(value));
 }
 
 /**
@@ -325,7 +325,7 @@ extern "C" PLUGIN_API void SetEventEntityIndex(EventInfo* pInfo, const plg::stri
  */
 extern "C" PLUGIN_API void SetEventEntityHandle(EventInfo* pInfo, const plg::string& key, int value)
 {
-    pInfo->pEvent->SetEntity(key.c_str(), CEntityHandle((uint32)value).Get());
+    pInfo->pEvent->SetEntity(CKV3MemberName::Make(key.c_str()), CEntityHandle((uint32)value).Get());
 }
 
 /**
