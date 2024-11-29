@@ -642,7 +642,7 @@ extern "C" PLUGIN_API plg::str GetConVarDefault(CConVarBaseData* conVar)
 	switch (conVar->GetType())
 	{
 		case EConVarType_Bool:
-			return plg::ReturnStr(conVar->Cast<bool>()->GetDefaultValue() ? "1" : "0");
+			return plg::ReturnStr(conVar->Cast<bool>()->GetDefaultValue() ? "true" : "false");
 		case EConVarType_Int16:
 			return plg::ReturnStr(plg::to_string(conVar->Cast<int16_t>()->GetDefaultValue()));
 		case EConVarType_UInt16:
@@ -703,7 +703,7 @@ extern "C" PLUGIN_API plg::str GetConVarValue(CConVarBaseData* conVar)
 	switch (conVar->GetType())
 	{
 		case EConVarType_Bool:
-			return plg::ReturnStr(conVar->Cast<bool>()->GetValue() ? "1" : "0");
+			return plg::ReturnStr(conVar->Cast<bool>()->GetValue() ? "true" : "false");
 		case EConVarType_Int16:
 			return plg::ReturnStr(plg::to_string(conVar->Cast<int16_t>()->GetValue()));
 		case EConVarType_UInt16:
