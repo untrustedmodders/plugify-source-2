@@ -22,14 +22,14 @@ extern "C" PLUGIN_API void SetClientListening(int receiverIndex, int senderIndex
         return;
     }
 
-    auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(receiverIndex - 1));
+    auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(receiverIndex));
     if (pPlayer == nullptr)
     {
         g_Logger.Log(LS_WARNING, "Invalid receiver\n");
         return;
     }
 
-    pPlayer->SetListen(CPlayerSlot(senderIndex - 1), static_cast<ListenOverride>(listen));
+    pPlayer->SetListen(CPlayerSlot(senderIndex), static_cast<ListenOverride>(listen));
 }
 
 /**
@@ -51,14 +51,14 @@ extern "C" PLUGIN_API int8_t GetClientListening(int receiverIndex, int senderInd
         return Listen_Default;
     }
 
-    auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(receiverIndex - 1));
+    auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(receiverIndex));
     if (pPlayer == nullptr)
     {
         g_Logger.Log(LS_WARNING, "Invalid receiver\n");
         return Listen_Default;
     }
 
-    return pPlayer->GetListen(CPlayerSlot(senderIndex - 1));
+    return pPlayer->GetListen(CPlayerSlot(senderIndex));
 }
 
 /**
@@ -73,7 +73,7 @@ extern "C" PLUGIN_API int8_t GetClientListening(int receiverIndex, int senderInd
  */
 extern "C" PLUGIN_API void SetClientVoiceFlags(int clientIndex, uint8_t flags)
 {
-    auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex - 1));
+    auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex));
     if (pPlayer == nullptr)
     {
         g_Logger.Log(LS_WARNING, "Invalid receiver\n");
@@ -94,7 +94,7 @@ extern "C" PLUGIN_API void SetClientVoiceFlags(int clientIndex, uint8_t flags)
  */
 extern "C" PLUGIN_API uint8_t GetClientVoiceFlags(int clientIndex)
 {
-    auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex - 1));
+    auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex));
     if (pPlayer == nullptr)
     {
         g_Logger.Log(LS_WARNING, "Invalid receiver\n");

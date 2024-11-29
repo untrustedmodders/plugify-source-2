@@ -95,7 +95,7 @@ extern "C" PLUGIN_API void ClientCommand(int clientIndex, const plg::string& com
 {
 	auto cleanCommand = command;
 	cleanCommand.append("\n\0");
-	g_pEngineServer2->ClientCommand(CPlayerSlot(clientIndex - 1), "%s", cleanCommand.c_str());
+	g_pEngineServer2->ClientCommand(CPlayerSlot(clientIndex), "%s", cleanCommand.c_str());
 }
 
 /**
@@ -113,7 +113,7 @@ extern "C" PLUGIN_API void FakeClientCommand(int clientIndex, const plg::string&
 	if (!handle.IsValid())
 		return;
 
-	CCommandContext context(CommandTarget_t::CT_NO_TARGET, CPlayerSlot(clientIndex - 1));
+	CCommandContext context(CommandTarget_t::CT_NO_TARGET, CPlayerSlot(clientIndex));
 
 	g_pCVar->DispatchConCommand(handle, context, args);
 }

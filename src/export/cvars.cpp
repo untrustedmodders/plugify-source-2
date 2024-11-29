@@ -1054,6 +1054,7 @@ extern "C" PLUGIN_API void SetConVarInt64(CConVarBaseData* conVar, int64_t value
  *
  * @param conVar Pointer to the console variable data.
  * @param value The value to set for the console variable.
+ * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  */
 extern "C" PLUGIN_API void SetConVarUInt64(CConVarBaseData* conVar, uint64_t value)
 {
@@ -1159,7 +1160,7 @@ extern "C" PLUGIN_API void SetConVarQangle(CConVarBaseData* conVar, const QAngle
  */
 extern "C" PLUGIN_API void SendConVarValue(CConVarBaseData* conVar, int clientIndex, const plg::string& value)
 {
-	utils::SendConVarValue(CPlayerSlot(clientIndex - 1), conVar, value.c_str());
+	utils::SendConVarValue(CPlayerSlot(clientIndex), conVar, value.c_str());
 }
 
 /**
@@ -1171,7 +1172,7 @@ extern "C" PLUGIN_API void SendConVarValue(CConVarBaseData* conVar, int clientIn
  */
 extern "C" PLUGIN_API plg::str GetClientConVarValue(int clientIndex, const plg::string& convarName)
 {
-	return plg::ReturnStr(g_pEngineServer2->GetClientConVarValue(CPlayerSlot(clientIndex - 1), convarName.c_str()));
+	return plg::ReturnStr(g_pEngineServer2->GetClientConVarValue(CPlayerSlot(clientIndex), convarName.c_str()));
 }
 
 /**
@@ -1183,5 +1184,5 @@ extern "C" PLUGIN_API plg::str GetClientConVarValue(int clientIndex, const plg::
  */
 extern "C" PLUGIN_API void SetFakeClientConVarValue(int clientIndex, const plg::string& convarName, const plg::string& convarValue)
 {
-	g_pEngineServer2->SetFakeClientConVarValue(CPlayerSlot(clientIndex - 1), convarName.c_str(), convarValue.c_str());
+	g_pEngineServer2->SetFakeClientConVarValue(CPlayerSlot(clientIndex), convarName.c_str(), convarValue.c_str());
 }

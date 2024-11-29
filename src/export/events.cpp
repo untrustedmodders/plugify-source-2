@@ -53,7 +53,7 @@ extern "C" PLUGIN_API void FireEvent(EventInfo* pInfo, bool bDontBroadcast)
  */
 extern "C" PLUGIN_API void FireEventToClient(EventInfo* pInfo, int clientIndex)
 {
-    g_EventManager.FireEventToClient(pInfo, CPlayerSlot(clientIndex - 1));
+    g_EventManager.FireEventToClient(pInfo, CPlayerSlot(clientIndex));
 }
 
 /**

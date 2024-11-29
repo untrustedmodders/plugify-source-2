@@ -21,7 +21,7 @@ extern "C" PLUGIN_API void* GetClientFromIndex(int clientIndex)
 		return nullptr;
 	}
 	
-	return pClients->Element(clientIndex - 1);
+	return pClients->Element(clientIndex);
 }
 
 //! 
@@ -49,7 +49,7 @@ extern "C" PLUGIN_API int GetIndexFromClient(CServerSideClient* client)
  */
 extern "C" PLUGIN_API plg::str GetClientAuthId(int clientIndex)
 {
-	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex - 1));
+	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex));
 	if (pPlayer == nullptr || !pPlayer->m_bAuthorized)
 	{
 		return plg::ReturnStr({});
@@ -72,7 +72,7 @@ extern "C" PLUGIN_API plg::str GetClientAuthId(int clientIndex)
  */
 extern "C" PLUGIN_API uint64_t GetClientAccountId(int clientIndex)
 {
-	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex - 1));
+	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex));
 	if (pPlayer == nullptr || !pPlayer->m_bAuthorized)
 	{
 		return 0;
@@ -95,7 +95,7 @@ extern "C" PLUGIN_API uint64_t GetClientAccountId(int clientIndex)
  */
 extern "C" PLUGIN_API plg::str GetClientIp(int clientIndex)
 {
-	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex - 1));
+	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex));
 	if (pPlayer == nullptr)
 	{
 		return plg::ReturnStr({});
@@ -112,7 +112,7 @@ extern "C" PLUGIN_API plg::str GetClientIp(int clientIndex)
  */
 extern "C" PLUGIN_API plg::str GetClientName(int clientIndex)
 {
-	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex - 1));
+	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex));
 	if (pPlayer == nullptr)
 	{
 		return plg::ReturnStr({});
@@ -129,7 +129,7 @@ extern "C" PLUGIN_API plg::str GetClientName(int clientIndex)
  */
 extern "C" PLUGIN_API float GetClientTime(int clientIndex)
 {
-	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex - 1));
+	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex));
 	if (pPlayer == nullptr)
 	{
 		return -1.0f;
@@ -146,7 +146,7 @@ extern "C" PLUGIN_API float GetClientTime(int clientIndex)
  */
 extern "C" PLUGIN_API float GetClientLatency(int clientIndex)
 {
-	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex - 1));
+	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex));
 	if (pPlayer == nullptr)
 	{
 		return 0.0f;
@@ -163,7 +163,7 @@ extern "C" PLUGIN_API float GetClientLatency(int clientIndex)
  */
 extern "C" PLUGIN_API uint64 GetUserFlagBits(int clientIndex)
 {
-	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex - 1));
+	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex));
 	if (pPlayer == nullptr)
 	{
 		return false;
@@ -180,7 +180,7 @@ extern "C" PLUGIN_API uint64 GetUserFlagBits(int clientIndex)
  */
 extern "C" PLUGIN_API void SetUserFlagBits(int clientIndex, uint64 flags)
 {
-	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex - 1));
+	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex));
 	if (pPlayer == nullptr)
 	{
 		return;
@@ -199,7 +199,7 @@ extern "C" PLUGIN_API void SetUserFlagBits(int clientIndex, uint64 flags)
  */
 extern "C" PLUGIN_API void AddUserFlags(int clientIndex, uint64 flags)
 {
-	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex - 1));
+	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex));
 	if (pPlayer == nullptr)
 	{
 		return;
@@ -218,7 +218,7 @@ extern "C" PLUGIN_API void AddUserFlags(int clientIndex, uint64 flags)
  */
 extern "C" PLUGIN_API void RemoveUserFlags(int clientIndex, uint64 flags)
 {
-	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex - 1));
+	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex));
 	if (pPlayer == nullptr)
 	{
 		return;
@@ -235,7 +235,7 @@ extern "C" PLUGIN_API void RemoveUserFlags(int clientIndex, uint64 flags)
  */
 extern "C" PLUGIN_API bool IsClientAuthorized(int clientIndex)
 {
-	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex - 1));
+	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex));
 	if (pPlayer == nullptr)
 	{
 		return false;
@@ -252,7 +252,7 @@ extern "C" PLUGIN_API bool IsClientAuthorized(int clientIndex)
  */
 extern "C" PLUGIN_API bool IsClientConnected(int clientIndex)
 {
-	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex - 1));
+	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex));
 	if (pPlayer == nullptr)
 	{
 		return false;
@@ -269,7 +269,7 @@ extern "C" PLUGIN_API bool IsClientConnected(int clientIndex)
  */
 extern "C" PLUGIN_API bool IsClientInGame(int clientIndex)
 {
-	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex - 1));
+	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex));
 	if (pPlayer == nullptr)
 	{
 		return false;
@@ -286,7 +286,7 @@ extern "C" PLUGIN_API bool IsClientInGame(int clientIndex)
  */
 extern "C" PLUGIN_API bool IsClientSourceTV(int clientIndex)
 {
-	auto client = utils::GetController(CPlayerSlot(clientIndex - 1));
+	auto client = utils::GetController(CPlayerSlot(clientIndex));
 	if (!client)
 	{
 		return false;
@@ -303,7 +303,7 @@ extern "C" PLUGIN_API bool IsClientSourceTV(int clientIndex)
  */
 extern "C" PLUGIN_API bool IsClientAlive(int clientIndex)
 {
-	auto client = utils::GetController(CPlayerSlot(clientIndex - 1));
+	auto client = utils::GetController(CPlayerSlot(clientIndex));
 	if (!client)
 	{
 		return false;
@@ -320,7 +320,7 @@ extern "C" PLUGIN_API bool IsClientAlive(int clientIndex)
  */
 extern "C" PLUGIN_API bool IsFakeClient(int clientIndex)
 {
-	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex - 1));
+	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex));
 	if (pPlayer == nullptr)
 	{
 		return false;
@@ -339,7 +339,7 @@ extern "C" PLUGIN_API bool IsFakeClient(int clientIndex)
  */
 extern "C" PLUGIN_API int GetClientTeam(int clientIndex)
 {
-	auto client = utils::GetController(CPlayerSlot(clientIndex - 1));
+	auto client = utils::GetController(CPlayerSlot(clientIndex));
 	if (!client)
 	{
 		return 0;
@@ -356,7 +356,7 @@ extern "C" PLUGIN_API int GetClientTeam(int clientIndex)
  */
 extern "C" PLUGIN_API int GetClientHealth(int clientIndex)
 {
-	auto client = utils::GetController(CPlayerSlot(clientIndex - 1));
+	auto client = utils::GetController(CPlayerSlot(clientIndex));
 	if (!client)
 	{
 		return 0;
@@ -373,7 +373,7 @@ extern "C" PLUGIN_API int GetClientHealth(int clientIndex)
  */
 extern "C" PLUGIN_API int GetClientArmor(int clientIndex)
 {
-	auto client = utils::GetController(CPlayerSlot(clientIndex - 1));
+	auto client = utils::GetController(CPlayerSlot(clientIndex));
 	if (!client)
 	{
 		return 0;
@@ -390,7 +390,7 @@ extern "C" PLUGIN_API int GetClientArmor(int clientIndex)
  */
 extern "C" PLUGIN_API plg::vec3 GetClientAbsOrigin(int clientIndex)
 {
-	auto client = utils::GetController(CPlayerSlot(clientIndex - 1));
+	auto client = utils::GetController(CPlayerSlot(clientIndex));
 	if (!client)
 	{
 		return {};
@@ -408,7 +408,7 @@ extern "C" PLUGIN_API plg::vec3 GetClientAbsOrigin(int clientIndex)
  */
 extern "C" PLUGIN_API plg::vec3 GetClientAbsAngles(int clientIndex)
 {
-	auto client = utils::GetController(CPlayerSlot(clientIndex - 1));
+	auto client = utils::GetController(CPlayerSlot(clientIndex));
 	if (!client)
 	{
 		return {};
@@ -440,7 +440,7 @@ extern "C" PLUGIN_API plg::vec ProcessTargetString(int caller, const plg::string
  */
 extern "C" PLUGIN_API void ChangeClientTeam(int clientIndex, int team)
 {
-	auto client = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex - 1)));
+	auto client = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex)));
 	if (!client)
 	{
 		return;
@@ -457,7 +457,7 @@ extern "C" PLUGIN_API void ChangeClientTeam(int clientIndex, int team)
  */
 extern "C" PLUGIN_API void SwitchClientTeam(int clientIndex, int team)
 {
-	auto client = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex - 1)));
+	auto client = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex)));
 	if (!client)
 	{
 		return;
@@ -473,7 +473,7 @@ extern "C" PLUGIN_API void SwitchClientTeam(int clientIndex, int team)
  */
 extern "C" PLUGIN_API void RespawnClient(int clientIndex)
 {
-	auto client = utils::GetController(CPlayerSlot(clientIndex - 1));
+	auto client = utils::GetController(CPlayerSlot(clientIndex));
 	if (!client)
 	{
 		return;
@@ -499,7 +499,7 @@ extern "C" PLUGIN_API void RespawnClient(int clientIndex)
  */
 extern "C" PLUGIN_API void ForcePlayerSuicide(int clientIndex, bool explode, bool force)
 {
-	auto client = utils::GetController(CPlayerSlot(clientIndex - 1));
+	auto client = utils::GetController(CPlayerSlot(clientIndex));
 	if (!client)
 	{
 		return;
@@ -515,7 +515,7 @@ extern "C" PLUGIN_API void ForcePlayerSuicide(int clientIndex, bool explode, boo
  */
 extern "C" PLUGIN_API void KickClient(int clientIndex)
 {
-	g_pEngineServer2->DisconnectClient(CPlayerSlot(clientIndex - 1), NETWORK_DISCONNECT_KICKED);
+	g_pEngineServer2->DisconnectClient(CPlayerSlot(clientIndex), NETWORK_DISCONNECT_KICKED);
 }
 
 /**
@@ -527,7 +527,7 @@ extern "C" PLUGIN_API void KickClient(int clientIndex)
  */
 extern "C" PLUGIN_API void BanClient(int clientIndex, float duration, bool kick)
 {
-	g_pEngineServer2->BanClient(CPlayerSlot(clientIndex - 1), duration, kick);
+	g_pEngineServer2->BanClient(CPlayerSlot(clientIndex), duration, kick);
 }
 
 /**

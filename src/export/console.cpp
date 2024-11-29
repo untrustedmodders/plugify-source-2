@@ -17,7 +17,7 @@ extern "C" PLUGIN_API void PrintToServer(const plg::string& msg)
  */
 extern "C" PLUGIN_API void PrintToConsole(int clientIndex, const plg::string& message)
 {
-	utils::PrintConsole(CPlayerSlot(clientIndex - 1), message.c_str());
+	utils::PrintConsole(CPlayerSlot(clientIndex), message.c_str());
 }
 
 /**
@@ -27,7 +27,7 @@ extern "C" PLUGIN_API void PrintToConsole(int clientIndex, const plg::string& me
  */
 extern "C" PLUGIN_API void PrintToChat(int clientIndex, const plg::string& message)
 {
-	utils::PrintChat(CPlayerSlot(clientIndex - 1), message.c_str());
+	utils::PrintChat(CPlayerSlot(clientIndex), message.c_str());
 }
 
 /**
@@ -37,7 +37,7 @@ extern "C" PLUGIN_API void PrintToChat(int clientIndex, const plg::string& messa
  */
 extern "C" PLUGIN_API void PrintCenterText(int clientIndex, const plg::string& message)
 {
-	utils::PrintCentre(CPlayerSlot(clientIndex - 1), message.c_str());
+	utils::PrintCentre(CPlayerSlot(clientIndex), message.c_str());
 }
 
 /**
@@ -47,7 +47,7 @@ extern "C" PLUGIN_API void PrintCenterText(int clientIndex, const plg::string& m
  */
 extern "C" PLUGIN_API void PrintAlertText(int clientIndex, const plg::string& message)
 {
-	utils::PrintAlert(CPlayerSlot(clientIndex - 1), message.c_str());
+	utils::PrintAlert(CPlayerSlot(clientIndex), message.c_str());
 }
 
 /**
@@ -57,7 +57,7 @@ extern "C" PLUGIN_API void PrintAlertText(int clientIndex, const plg::string& me
  */
 extern "C" PLUGIN_API void PrintCentreHtml(int clientIndex, const plg::string& message)
 {
-	utils::PrintHtmlCentre(CPlayerSlot(clientIndex - 1), message.c_str());
+	utils::PrintHtmlCentre(CPlayerSlot(clientIndex), message.c_str());
 }
 
 /**
@@ -112,7 +112,7 @@ extern "C" PLUGIN_API void PrintCentreHtmlAll(const plg::string& message)
  */
 extern "C" PLUGIN_API void PrintToChatColored(int clientIndex, const plg::string& message)
 {
-	utils::CPrintChat(CPlayerSlot(clientIndex - 1), message.c_str());
+	utils::CPrintChat(CPlayerSlot(clientIndex), message.c_str());
 }
 
 /**

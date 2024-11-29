@@ -287,5 +287,5 @@ extern "C" PLUGIN_API void EmitSound(int entityHandle, const plg::string& sound,
  */
 extern "C" PLUGIN_API void EmitSoundToClient(int clientIndex, int channel, const plg::string& sound, float volume, int soundLevel, int flags, int pitch, const Vector& origin, float soundTime)
 {
-	utils::PlaySoundToClient(CPlayerSlot(clientIndex - 1), channel, sound.c_str(), volume, static_cast<soundlevel_t>(soundLevel), flags, pitch, origin, soundTime);
+	utils::PlaySoundToClient(CPlayerSlot(clientIndex), channel, sound.c_str(), volume, static_cast<soundlevel_t>(soundLevel), flags, pitch, origin, soundTime);
 }
