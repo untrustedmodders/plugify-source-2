@@ -632,6 +632,67 @@ extern "C" PLUGIN_API void SetConVarBounds(CConVarBaseData* conVar, bool max, co
 }
 
 /**
+ * @brief Retrieves the current default value of a console variable and stores it in the output string.
+ *
+ * @param conVar Pointer to the console variable data.
+ * @return The output value in string format.
+ */
+extern "C" PLUGIN_API plg::str GetConVarDefault(CConVarBaseData* conVar)
+{
+	switch (conVar->GetType())
+	{
+		case EConVarType_Bool:
+			return plg::ReturnStr(conVar->Cast<bool>()->GetDefaultValue() ? "1" : "0");
+		case EConVarType_Int16:
+			return plg::ReturnStr(plg::to_string(conVar->Cast<int16_t>()->GetDefaultValue()));
+		case EConVarType_UInt16:
+			return plg::ReturnStr(plg::to_string(conVar->Cast<uint16_t>()->GetDefaultValue()));
+		case EConVarType_Int32:
+			return plg::ReturnStr(plg::to_string(conVar->Cast<int32_t>()->GetDefaultValue()));
+		case EConVarType_UInt32:
+			return plg::ReturnStr(plg::to_string(conVar->Cast<uint16_t>()->GetDefaultValue()));
+		case EConVarType_Int64:
+			return plg::ReturnStr(plg::to_string(conVar->Cast<int64_t>()->GetDefaultValue()));
+		case EConVarType_UInt64:
+			return plg::ReturnStr(plg::to_string(conVar->Cast<uint64_t>()->GetDefaultValue()));
+		case EConVarType_Float32:
+			return plg::ReturnStr(plg::to_string(conVar->Cast<float>()->GetDefaultValue()));
+		case EConVarType_Float64:
+			return plg::ReturnStr(plg::to_string(conVar->Cast<double>()->GetDefaultValue()));
+		case EConVarType_String:
+			return plg::ReturnStr(conVar->Cast<const char*>()->GetDefaultValue());
+		case EConVarType_Color:
+		{
+			const auto& value = conVar->Cast<Color>()->GetDefaultValue();
+			return plg::ReturnStr(std::format("{} {} {} {}", value.r(), value.g(), value.b(), value.a()));
+		}
+		case EConVarType_Vector2:
+		{
+			const auto& value = conVar->Cast<Vector2D>()->GetDefaultValue();
+			return plg::ReturnStr(std::format("{} {}", value.x, value.y));
+		}
+		case EConVarType_Vector3:
+		{
+			const auto& value = conVar->Cast<Vector>()->GetDefaultValue();
+			return plg::ReturnStr(std::format("{} {} {}", value.x, value.y, value.z));
+		}
+		case EConVarType_Vector4:
+		{
+			const auto& value = conVar->Cast<Vector4D>()->GetDefaultValue();
+			return plg::ReturnStr(std::format("{} {} {} {}", value.x, value.y, value.z, value.w));
+		}
+		case EConVarType_Qangle:
+		{
+			const auto& value = conVar->Cast<QAngle>()->GetDefaultValue();
+			return plg::ReturnStr(std::format("{} {} {}", value.x, value.y, value.z));
+		}
+		default:
+			g_Logger.Log(LS_WARNING, "Invalid convar type.\n");
+			return plg::ReturnStr({});
+	}
+}
+
+/**
  * @brief Retrieves the current value of a console variable and stores it in the output string.
  *
  * @param conVar Pointer to the console variable data.

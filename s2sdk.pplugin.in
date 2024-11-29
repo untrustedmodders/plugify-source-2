@@ -2342,6 +2342,24 @@
       }
     },
     {
+      "name": "GetConVarDefault",
+      "group": "Cvars",
+      "description": "Retrieves the default value of a console variable and stores it in the output string.",
+      "funcName": "GetConVarDefault",
+      "paramTypes": [
+        {
+          "name": "conVar",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the console variable data."
+        }
+      ],
+      "retType": {
+        "type": "string",
+        "description": "The output value in string format."
+      }
+    },
+    {
       "name": "GetConVarValue",
       "group": "Cvars",
       "description": "Retrieves the current value of a console variable and stores it in the output string.",
