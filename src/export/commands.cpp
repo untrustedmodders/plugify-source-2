@@ -106,9 +106,14 @@ extern "C" PLUGIN_API void ClientCommand(int clientIndex, const plg::string& com
  */
 extern "C" PLUGIN_API void FakeClientCommand(int clientIndex, const plg::string& command)
 {
-	CCommand args;
-	args.Tokenize(command.c_str(), CCommand::DefaultBreakSet());
+	std::vector<const char*> a;
+	auto tokens = utils::Split(command, " ");
+	a.reserve(tokens.size());
+	for (const auto& token : tokens) {
+		a.emplace_back(token.c_str());
+	}
 
+	CCommand args(static_cast<int>(a.size()), a.data());
 	auto handle = g_pCVar->FindCommand(args.Arg(0));
 	if (!handle.IsValid())
 		return;

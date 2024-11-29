@@ -16,7 +16,7 @@
  */
 extern "C" PLUGIN_API void SetClientListening(int receiverIndex, int senderIndex, int8_t listen)
 {
-    if (senderIndex < 0 || senderIndex >= gpGlobals->maxClients)
+    if (senderIndex < 0 || senderIndex >= CPlayerManager::MaxClients())
     {
         g_Logger.Log(LS_WARNING, "Invalid sender\n");
         return;
@@ -45,7 +45,7 @@ extern "C" PLUGIN_API void SetClientListening(int receiverIndex, int senderIndex
  */
 extern "C" PLUGIN_API int8_t GetClientListening(int receiverIndex, int senderIndex)
 {
-    if (senderIndex < 0 || senderIndex >= gpGlobals->maxClients)
+    if (senderIndex < 0 || senderIndex >= CPlayerManager::MaxClients())
     {
         g_Logger.Log(LS_WARNING, "Invalid sender\n");
         return Listen_Default;

@@ -121,7 +121,6 @@ namespace schema
 
 
 class CBaseEntity;
-void SetStateChanged(CBaseEntity* pEntity, int offset);
 
 #define SCHEMA_FIELD_OFFSET(type, varName, extra_offset)                                                                 \
 	class varName##_prop                                                                                                 \

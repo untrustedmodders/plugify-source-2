@@ -38,8 +38,8 @@ public:
 
 		for (int i = 0; i <= gpGlobals->maxClients; ++i)
 		{
-			CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(i)));
-			if (ent)
+			CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(i)));
+			if (pEntity)
 			{
 				m_Recipients.AddToTail(i);
 			}

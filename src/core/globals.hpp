@@ -128,6 +128,8 @@ namespace addresses
 
 	inline void (*CEntityInstance_AcceptInput)(CEntityInstance* pThis, const char* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID);
 
+	inline void (*CEntityInstance_StateChanged)(void* networkTransmitComponent, CEntityInstance* ent, int64 offset, int16 a4, int16 a5);
+
 	inline void (*CGameRules_TerminateRound)(CGameRules* pGameRules, float delay, unsigned int reason, int64 a4, unsigned int a5);
 
 	inline void (*CEntityIdentity_SetEntityName)(CEntityIdentity* pEntity, const char* pName);

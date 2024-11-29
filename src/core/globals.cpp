@@ -154,6 +154,7 @@ namespace globals
 		RESOLVE_SIG(g_pGameConfig, "UTIL_Remove", addresses::UTIL_Remove);
 		//RESOLVE_SIG(g_pGameConfig, "CEntitySystem_AddEntityIOEvent", addresses::CEntitySystem_AddEntityIOEvent);
 		//RESOLVE_SIG(g_pGameConfig, "CEntityInstance_AcceptInput", addresses::CEntityInstance_AcceptInput);
+		RESOLVE_SIG(g_pGameConfig, "CEntityInstance_StateChanged", addresses::CEntityInstance_StateChanged);
 		//RESOLVE_SIG(g_pGameConfig, "CGameRules_TerminateRound", addresses::CGameRules_TerminateRound);
 		RESOLVE_SIG(g_pGameConfig, "CEntityIdentity_SetEntityName", addresses::CEntityIdentity_SetEntityName);
 		RESOLVE_SIG(g_pGameConfig, "CBaseEntity_EmitSoundParams", addresses::CBaseEntity_EmitSoundParams);

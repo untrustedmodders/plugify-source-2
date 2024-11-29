@@ -36,6 +36,9 @@ CBasePlayerController* utils::GetController(CBaseEntity* entity)
 		CBasePlayerPawn* pawn = static_cast<CBasePlayerPawn*>(entity);
 		if (!pawn->m_hController().IsValid() || pawn->m_hController.Get() == nullptr)
 		{
+			if (!gpGlobals)
+				return nullptr;
+
 			// Seems like the pawn lost its controller, we can try looping through the controllers to find this pawn instead.
 			for (int i = 0; i <= gpGlobals->maxClients; ++i)
 			{
@@ -130,8 +133,7 @@ float utils::GetAngleDifference(float source, float target, float c, bool relati
 	return fmod(fabs(target - source) + c, 2 * c) - c;
 }
 
-template<typename T>
-void NotifyConVar(CConVarData<T>* conVar)
+void utils::NotifyConVar(CConVarBaseData* conVar, const char* value)
 {
 	IGameEvent* event = g_pGameEventManager->CreateEvent("server_cvar");
 	event->SetString("cvarname", conVar->GetName());
@@ -141,20 +143,20 @@ void NotifyConVar(CConVarData<T>* conVar)
 	}
 	else
 	{
-		char value[512];
-		conVar->GetStringValue(value, sizeof(value));
 		event->SetString("cvarvalue", value);
 	}
 
 	g_pGameEventManager->FireEvent(event);
 }
 
-template<typename T>
-void ReplicateConVar(CConVarData<T>* conVar)
+void utils::ReplicateConVar(CConVarBaseData* conVar, const char* value)
 {
+	if (!gpGlobals)
+		return;
+
 	for (int i = 0; i <= gpGlobals->maxClients; ++i)
 	{
-		utils::SendConVarValue(CPlayerSlot(i), conVar, value.c_str());
+		utils::SendConVarValue(CPlayerSlot(i), conVar, value);
 	}
 }
 
@@ -250,6 +252,26 @@ const plg::string& utils::GameDirectory()
 {
 	static plg::string gameDirectory(Plat_GetGameDirectory());
 	return gameDirectory;
+}
+
+std::vector<plg::string> utils::Split(std::string_view strv, std::string_view delims)
+{
+	std::vector<plg::string> output;
+	size_t first = 0;
+
+	while (first < strv.size()) {
+		const size_t second = strv.find_first_of(delims, first);
+
+		if (first != second)
+			output.emplace_back(strv.substr(first, second-first));
+
+		if (second == std::string_view::npos)
+			break;
+
+		first = second + 1;
+	}
+
+	return output;
 }
 
 #if S2SDK_PLATFORM_WINDOWS

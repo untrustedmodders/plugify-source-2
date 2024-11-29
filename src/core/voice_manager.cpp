@@ -52,12 +52,12 @@ poly::ReturnAction CVoiceManager::Hook_SetClientListening(poly::Params& params, 
 
 		if ((senderFlags & Speak_Team) || (receiverFlags & Speak_ListenTeam))
 		{
-			CBaseEntity* receiverController = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(iReceiver.Get() + 1)));
-			CBaseEntity* senderController = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(iSender.Get() + 1)));
+			CBaseEntity* pReceiverController = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(iReceiver.Get() + 1)));
+			CBaseEntity* pSenderController = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(iSender.Get() + 1)));
 
-			if (receiverController && senderController)
+			if (pReceiverController && pSenderController)
 			{
-				poly::SetArgument<bool>(params, 3, receiverController->m_iTeamNum() == senderController->m_iTeamNum());
+				poly::SetArgument<bool>(params, 3, pReceiverController->m_iTeamNum() == pSenderController->m_iTeamNum());
 				return poly::ReturnAction::Handled;
 			}
 		}

@@ -118,7 +118,7 @@ public:
 	void RunAuthChecks();
 
 	int NumPlayers() const;
-	int MaxClients() const;
+	static int MaxClients();
 
 	CPlayer* GetPlayerBySlot(CPlayerSlot slot) const;
 	CPlayerSlot GetSlotFromUserId(uint16 userid) const;

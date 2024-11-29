@@ -6453,6 +6453,12 @@
           "type": "string",
           "ref": false,
           "description": "The name of the member whose value is to be retrieved."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
         }
       ],
       "retType": {
@@ -6483,6 +6489,12 @@
           "type": "string",
           "ref": false,
           "description": "The name of the member whose value is to be retrieved."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
         }
       ],
       "retType": {
@@ -6513,6 +6525,12 @@
           "type": "string",
           "ref": false,
           "description": "The name of the member whose value is to be retrieved."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
         }
       ],
       "retType": {
@@ -6543,6 +6561,12 @@
           "type": "string",
           "ref": false,
           "description": "The name of the member whose value is to be retrieved."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
         }
       ],
       "retType": {
@@ -6573,6 +6597,12 @@
           "type": "string",
           "ref": false,
           "description": "The name of the member whose value is to be retrieved."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
         }
       ],
       "retType": {
@@ -6603,6 +6633,12 @@
           "type": "string",
           "ref": false,
           "description": "The name of the member whose value is to be retrieved."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
         }
       ],
       "retType": {
@@ -6633,6 +6669,12 @@
           "type": "string",
           "ref": false,
           "description": "The name of the member whose value is to be retrieved."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
         }
       ],
       "retType": {
@@ -6663,6 +6705,12 @@
           "type": "string",
           "ref": false,
           "description": "The name of the member whose value is to be retrieved."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
         }
       ],
       "retType": {
@@ -6693,6 +6741,12 @@
           "type": "string",
           "ref": false,
           "description": "The name of the member whose value is to be retrieved."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
         }
       ],
       "retType": {
@@ -6723,6 +6777,12 @@
           "type": "string",
           "ref": false,
           "description": "The name of the member whose value is to be retrieved."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
         }
       ],
       "retType": {
@@ -6753,6 +6813,12 @@
           "type": "string",
           "ref": false,
           "description": "The name of the member whose value is to be retrieved."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
         }
       ],
       "retType": {
@@ -6783,6 +6849,12 @@
           "type": "string",
           "ref": false,
           "description": "The name of the member whose value is to be retrieved."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
         }
       ],
       "retType": {
@@ -6813,6 +6885,12 @@
           "type": "string",
           "ref": false,
           "description": "The name of the member whose value is to be retrieved."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
         }
       ],
       "retType": {
@@ -6843,6 +6921,12 @@
           "type": "string",
           "ref": false,
           "description": "The name of the member whose value is to be retrieved."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
         }
       ],
       "retType": {
@@ -6879,6 +6963,12 @@
           "type": "bool",
           "ref": false,
           "description": "The value to assign to the member."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
         }
       ],
       "retType": {
@@ -6914,6 +7004,12 @@
           "type": "int8",
           "ref": false,
           "description": "The value to assign to the member."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
         }
       ],
       "retType": {
@@ -6949,6 +7045,12 @@
           "type": "int16",
           "ref": false,
           "description": "The value to assign to the member."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
         }
       ],
       "retType": {
@@ -6984,6 +7086,12 @@
           "type": "int32",
           "ref": false,
           "description": "The value to assign to the member."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
         }
       ],
       "retType": {
@@ -7019,6 +7127,12 @@
           "type": "int64",
           "ref": false,
           "description": "The value to assign to the member."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
         }
       ],
       "retType": {
@@ -7054,6 +7168,12 @@
           "type": "uint8",
           "ref": false,
           "description": "The value to assign to the member."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
         }
       ],
       "retType": {
@@ -7089,6 +7209,12 @@
           "type": "uint16",
           "ref": false,
           "description": "The value to assign to the member."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
         }
       ],
       "retType": {
@@ -7124,6 +7250,12 @@
           "type": "uint32",
           "ref": false,
           "description": "The value to assign to the member."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
         }
       ],
       "retType": {
@@ -7159,6 +7291,12 @@
           "type": "uint64",
           "ref": false,
           "description": "The value to assign to the member."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
         }
       ],
       "retType": {
@@ -7194,6 +7332,12 @@
           "type": "float",
           "ref": false,
           "description": "The value to assign to the member."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
         }
       ],
       "retType": {
@@ -7229,6 +7373,12 @@
           "type": "double",
           "ref": false,
           "description": "The value to assign to the member."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
         }
       ],
       "retType": {
@@ -7264,6 +7414,12 @@
           "type": "string",
           "ref": false,
           "description": "The value to assign to the member."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
         }
       ],
       "retType": {
@@ -7299,6 +7455,47 @@
           "type": "vec3",
           "ref": false,
           "description": "The value to assign to the member."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "SetSchemaStateChanged",
+      "group": "Schema",
+      "description": "Updates the networked state of a schema field for a given entity instance.",
+      "funcName": "SetSchemaStateChanged",
+      "paramTypes": [
+        {
+          "name": "instancePointer",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance of the class where the value was changed."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class that contains the member."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the member to be set."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
         }
       ],
       "retType": {

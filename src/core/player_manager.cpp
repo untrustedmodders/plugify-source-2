@@ -352,9 +352,9 @@ int CPlayerManager::NumPlayers() const
 	return m_playerCount;
 }
 
-int CPlayerManager::MaxClients() const
+int CPlayerManager::MaxClients()
 {
-	return gpGlobals->maxClients;
+	return gpGlobals ? gpGlobals->maxClients : -1;
 }
 
 CPlayer* CPlayerManager::GetPlayerBySlot(CPlayerSlot slot) const
@@ -429,7 +429,7 @@ TargetType CPlayerManager::TargetPlayerString(int caller, const char* target, pl
 	}
 	else if (targetType == TargetType::ALL)
 	{
-		for (int i = 0; i < gpGlobals->maxClients; ++i)
+		for (int i = 0; i < MaxClients(); ++i)
 		{
 			if (!m_players[i].IsConnected())
 				continue;
@@ -444,7 +444,7 @@ TargetType CPlayerManager::TargetPlayerString(int caller, const char* target, pl
 	}
 	else if (targetType >= TargetType::SPECTATOR)
 	{
-		for (int i = 0; i < gpGlobals->maxClients; ++i)
+		for (int i = 0; i < MaxClients(); ++i)
 		{
 			if (!m_players[i].IsConnected())
 				continue;
@@ -466,7 +466,7 @@ TargetType CPlayerManager::TargetPlayerString(int caller, const char* target, pl
 
 		while (clients.empty() == 0 && attempts < 10000)
 		{
-			int slot = rand() % (gpGlobals->maxClients - 1);
+			int slot = rand() % (MaxClients() - 1);
 
 			// Prevent infinite loop
 			attempts++;
@@ -501,7 +501,7 @@ TargetType CPlayerManager::TargetPlayerString(int caller, const char* target, pl
 	}
 	else
 	{
-		for (int i = 0; i < gpGlobals->maxClients; ++i)
+		for (int i = 0; i < MaxClients(); ++i)
 		{
 			if (!m_players[i].IsConnected())
 				continue;

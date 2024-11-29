@@ -37,18 +37,28 @@ namespace utils
 	// c can be PI (for radians) or 180.0 (for degrees);
 	float GetAngleDifference(float x, float y, float c, bool relative = false);
 
-	template<typename T>
-	void NotifyConVar(CConVarData<T>* conVar);
-	template<typename T>
-	void ReplicateConVar(CConVarData<T>* conVar);
+	void NotifyConVar(CConVarBaseData* conVar, const char* value);
+	void ReplicateConVar(CConVarBaseData* conVar, const char* value);
 
 	template<typename T>
 	void SetConVar(CConVarBaseData* conVar, const T& value, bool replicate, bool notify)
 	{
 		auto* cv = conVar->Cast<T>();
 		cv->SetValue(value);
-		if (replicate) utils::ReplicateConVar(cv);
-		if (notify) utils::NotifyConVar(cv);
+		if constexpr (std::same_as<T, const char*>)
+		{
+			if (replicate) ReplicateConVar(cv, value);
+			if (notify) NotifyConVar(cv, value);
+		}
+		else
+		{
+			if (replicate || notify) {
+				char val[512];
+				cv->GetStringValue(val, sizeof(val));
+				if (replicate) ReplicateConVar(cv, val);
+				if (notify) NotifyConVar(cv, val);
+			}
+		}
 	}
 
 	template<typename T>
@@ -56,8 +66,8 @@ namespace utils
 	{
 		auto* cv = conVar->Cast<T>();
 		cv->SetStringValue(value);
-		if (replicate) utils::ReplicateConVar(cv);
-		if (notify) utils::NotifyConVar(cv);
+		if (replicate) ReplicateConVar(cv, value);
+		if (notify) NotifyConVar(cv, value);
 	}
 
 	// Print functions
@@ -86,6 +96,8 @@ namespace utils
 	bool FindValidSpawn(Vector& origin, QAngle& angles);
 
 	const plg::string& GameDirectory();
+
+	std::vector<plg::string> Split(std::string_view strv, std::string_view delims);
 
 	/*inline plg::string Demangle(const char* name)
 	{
