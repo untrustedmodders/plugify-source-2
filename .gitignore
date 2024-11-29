@@ -1,6 +1,5 @@
 # IDEs
 .idea
-.vscode
 .vs
 
 # CMake
