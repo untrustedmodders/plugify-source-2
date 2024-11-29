@@ -201,42 +201,41 @@ bool utils::CFormat(char* buffer, uint64_t buffer_size, const char* text)
 	return true;
 }
 
-void utils::ClientPrintFilter(IRecipientFilter* filter, int msg_dest, const char* msg_name, const char* param1, const char* param2, const char* param3, const char* param4)
+void utils::ClientPrintFilter(IRecipientFilter* filter, int msg_dest, const char* msg_name)
 {
-	INetworkMessageInternal* netmsg = g_pNetworkMessages->FindNetworkMessagePartial("TextMsg");
-	CUserMessageTextMsg msg;
-	msg.set_dest(msg_dest);
-	msg.add_param(msg_name);
-	msg.add_param(param1);
-	msg.add_param(param2);
-	msg.add_param(param3);
-	msg.add_param(param4);
+	INetworkMessageInternal* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("TextMsg");
+	auto data = pNetMsg->AllocateMessage()->ToPB<CUserMessageTextMsg>();
 
-	g_pGameEventSystem->PostEventAbstract(0, false, filter, netmsg, reinterpret_cast<const CNetMessage*>(&msg), 0);
+	data->set_dest(msg_dest);
+	data->add_param(msg_name);
+
+	g_pGameEventSystem->PostEventAbstract(-1, false, filter, pNetMsg, data, 0);
+
+	delete data;
 }
 
 void utils::PrintConsole(CPlayerSlot slot, const char* message)
 {
-	CSingleRecipientFilter filter(slot.Get());
-	ClientPrintFilter(&filter, HUD_PRINTCONSOLE, message, "", "", "", "");
+	CSingleRecipientFilter filter(slot);
+	ClientPrintFilter(&filter, HUD_PRINTCONSOLE, message);
 }
 
 void utils::PrintChat(CPlayerSlot slot, const char* message)
 {
-	CSingleRecipientFilter filter(slot.Get());
-	ClientPrintFilter(&filter, HUD_PRINTTALK, message, "", "", "", "");
+	CSingleRecipientFilter filter(slot);
+	ClientPrintFilter(&filter, HUD_PRINTTALK, message);
 }
 
 void utils::PrintCentre(CPlayerSlot slot, const char* message)
 {
-	CSingleRecipientFilter filter(slot.Get());
-	ClientPrintFilter(&filter, HUD_PRINTCENTER, message, "", "", "", "");
+	CSingleRecipientFilter filter(slot);
+	ClientPrintFilter(&filter, HUD_PRINTCENTER, message);
 }
 
 void utils::PrintAlert(CPlayerSlot slot, const char* message)
 {
-	CSingleRecipientFilter filter(slot.Get());
-	ClientPrintFilter(&filter, HUD_PRINTALERT, message, "", "", "", "");
+	CSingleRecipientFilter filter(slot);
+	ClientPrintFilter(&filter, HUD_PRINTALERT, message);
 }
 
 void utils::PrintHtmlCentre(CPlayerSlot slot, const char* message)
@@ -259,26 +258,30 @@ void utils::PrintHtmlCentre(CPlayerSlot slot, const char* message)
 
 void utils::PrintConsoleAll(const char* message)
 {
-	CBroadcastRecipientFilter filter;
-	ClientPrintFilter(&filter, HUD_PRINTCONSOLE, message, "", "", "", "");
+	CRecipientFilter filter;
+	filter.AddAllPlayers();
+	ClientPrintFilter(&filter, HUD_PRINTCONSOLE, message);
 }
 
 void utils::PrintChatAll(const char* message)
 {
-	CBroadcastRecipientFilter filter;
-	ClientPrintFilter(&filter, HUD_PRINTTALK, message, "", "", "", "");
+	CRecipientFilter filter;
+	filter.AddAllPlayers();
+	ClientPrintFilter(&filter, HUD_PRINTTALK, message);
 }
 
 void utils::PrintCentreAll(const char* message)
 {
-	CBroadcastRecipientFilter filter;
-	ClientPrintFilter(&filter, HUD_PRINTCENTER, message, "", "", "", "");
+	CRecipientFilter filter;
+	filter.AddAllPlayers();
+	ClientPrintFilter(&filter, HUD_PRINTCENTER, message);
 }
 
 void utils::PrintAlertAll(const char* message)
 {
-	CBroadcastRecipientFilter filter;
-	ClientPrintFilter(&filter, HUD_PRINTALERT, message, "", "", "", "");
+	CRecipientFilter filter;
+	filter.AddAllPlayers();
+	ClientPrintFilter(&filter, HUD_PRINTALERT, message);
 }
 
 void utils::PrintHtmlCentreAll(const char* message)
@@ -288,7 +291,7 @@ void utils::PrintHtmlCentreAll(const char* message)
 	{
 		return;
 	}
-	
+
 	event->SetString("loc_token", message);
 	event->SetInt("duration", 5);
 	event->SetInt("userid", -1);
@@ -298,11 +301,11 @@ void utils::PrintHtmlCentreAll(const char* message)
 
 void utils::CPrintChat(CPlayerSlot slot, const char* message)
 {
-	CSingleRecipientFilter filter(slot.Get());
+	CSingleRecipientFilter filter(slot);
 	char coloredBuffer[512];
 	if (CFormat(coloredBuffer, sizeof(coloredBuffer), message))
 	{
-		ClientPrintFilter(&filter, HUD_PRINTTALK, coloredBuffer, "", "", "", "");
+		ClientPrintFilter(&filter, HUD_PRINTTALK, coloredBuffer);
 	}
 	else
 	{
@@ -312,11 +315,12 @@ void utils::CPrintChat(CPlayerSlot slot, const char* message)
 
 void utils::CPrintChatAll(const char* message)
 {
-	CBroadcastRecipientFilter filter;
+	CRecipientFilter filter;
+	filter.AddAllPlayers();
 	char coloredBuffer[512];
 	if (CFormat(coloredBuffer, sizeof(coloredBuffer), message))
 	{
-		ClientPrintFilter(&filter, HUD_PRINTTALK, coloredBuffer, "", "", "", "");
+		ClientPrintFilter(&filter, HUD_PRINTTALK, coloredBuffer);
 	}
 	else
 	{

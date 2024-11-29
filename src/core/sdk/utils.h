@@ -72,7 +72,7 @@ namespace utils
 
 	// Print functions
 	bool CFormat(char* buffer, uint64_t buffer_size, const char* text);
-	void ClientPrintFilter(IRecipientFilter* filter, int msg_dest, const char* msg_name, const char* param1, const char* param2, const char* param3, const char* param4);
+	void ClientPrintFilter(IRecipientFilter* filter, int msg_dest, const char* msg_name);
 	void PrintConsole(CPlayerSlot slot, const char* message);
 	void PrintChat(CPlayerSlot slot, const char* message);
 	void PrintCentre(CPlayerSlot slot, const char* message);
