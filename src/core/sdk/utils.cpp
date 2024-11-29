@@ -2,6 +2,7 @@
 
 #include <engine/igameeventsystem.h>
 #include <networkbasetypes.pb.h>
+#include <igameevents.h>
 #include <networksystem/inetworkmessages.h>
 #include <entity2/entitysystem.h>
 
@@ -11,6 +12,7 @@
 #include "entity/recipientfilters.h"
 
 #include <tier0/memdbgon.h>
+#undef CreateEvent
 
 CBaseEntity* utils::FindEntityByClassname(CEntityInstance* start, const char* name)
 {
@@ -35,7 +37,7 @@ CBasePlayerController* utils::GetController(CBaseEntity* entity)
 		if (!pawn->m_hController().IsValid() || pawn->m_hController.Get() == nullptr)
 		{
 			// Seems like the pawn lost its controller, we can try looping through the controllers to find this pawn instead.
-			for (int i = 0; i <= gpGlobals->maxClients; i++)
+			for (int i = 0; i <= gpGlobals->maxClients; ++i)
 			{
 				controller = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(i)));
 				if (controller && controller->m_hPlayerPawn() && controller->m_hPlayerPawn().Get() == entity)
@@ -128,6 +130,34 @@ float utils::GetAngleDifference(float source, float target, float c, bool relati
 	return fmod(fabs(target - source) + c, 2 * c) - c;
 }
 
+template<typename T>
+void NotifyConVar(CConVarData<T>* conVar)
+{
+	IGameEvent* event = g_pGameEventManager->CreateEvent("server_cvar");
+	event->SetString("cvarname", conVar->GetName());
+	if (conVar->IsFlagSet(FCVAR_PROTECTED))
+	{
+		event->SetString("cvarvalue", "***PROTECTED***");
+	}
+	else
+	{
+		char value[512];
+		conVar->GetStringValue(value, sizeof(value));
+		event->SetString("cvarvalue", value);
+	}
+
+	g_pGameEventManager->FireEvent(event);
+}
+
+template<typename T>
+void ReplicateConVar(CConVarData<T>* conVar)
+{
+	for (int i = 0; i <= gpGlobals->maxClients; ++i)
+	{
+		utils::SendConVarValue(CPlayerSlot(i), conVar, value.c_str());
+	}
+}
+
 void utils::SendConVarValue(CPlayerSlot slot, CConVarBaseData* conVar, const char* value)
 {
 	INetworkMessageInternal* netmsg = g_pNetworkMessages->FindNetworkMessagePartial("SetConVar");
@@ -143,7 +173,7 @@ void utils::SendMultipleConVarValues(CPlayerSlot slot, CConVarBaseData** conVar,
 {
 	INetworkMessageInternal* netmsg = g_pNetworkMessages->FindNetworkMessagePartial("SetConVar");
 	CNETMsg_SetConVar msg;
-	for (uint32_t i = 0; i < size; i++)
+	for (uint32_t i = 0; i < size; ++i)
 	{
 		CMsg_CVars_CVar* cvar = msg.mutable_convars()->add_cvars();
 		cvar->set_name(conVar[i]->GetName());

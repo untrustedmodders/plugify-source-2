@@ -2664,6 +2664,18 @@
           "type": "string",
           "ref": false,
           "description": "The value to set for the console variable."
+        },
+        {
+          "name": "replicate",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients."
+        },
+        {
+          "name": "notify",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag."
         }
       ],
       "retType": {
@@ -2687,6 +2699,18 @@
           "type": "bool",
           "ref": false,
           "description": "The value to set for the console variable."
+        },
+        {
+          "name": "replicate",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients."
+        },
+        {
+          "name": "notify",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag."
         }
       ],
       "retType": {
@@ -2710,6 +2734,18 @@
           "type": "int16",
           "ref": false,
           "description": "The value to set for the console variable."
+        },
+        {
+          "name": "replicate",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients."
+        },
+        {
+          "name": "notify",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag."
         }
       ],
       "retType": {
@@ -2733,6 +2769,18 @@
           "type": "uint16",
           "ref": false,
           "description": "The value to set for the console variable."
+        },
+        {
+          "name": "replicate",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients."
+        },
+        {
+          "name": "notify",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag."
         }
       ],
       "retType": {
@@ -2756,6 +2804,18 @@
           "type": "int32",
           "ref": false,
           "description": "The value to set for the console variable."
+        },
+        {
+          "name": "replicate",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients."
+        },
+        {
+          "name": "notify",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag."
         }
       ],
       "retType": {
@@ -2779,6 +2839,18 @@
           "type": "uint32",
           "ref": false,
           "description": "The value to set for the console variable."
+        },
+        {
+          "name": "replicate",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients."
+        },
+        {
+          "name": "notify",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag."
         }
       ],
       "retType": {
@@ -2802,6 +2874,18 @@
           "type": "int64",
           "ref": false,
           "description": "The value to set for the console variable."
+        },
+        {
+          "name": "replicate",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients."
+        },
+        {
+          "name": "notify",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag."
         }
       ],
       "retType": {
@@ -2825,6 +2909,18 @@
           "type": "uint64",
           "ref": false,
           "description": "The value to set for the console variable."
+        },
+        {
+          "name": "replicate",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients."
+        },
+        {
+          "name": "notify",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag."
         }
       ],
       "retType": {
@@ -2848,6 +2944,18 @@
           "type": "float",
           "ref": false,
           "description": "The value to set for the console variable."
+        },
+        {
+          "name": "replicate",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients."
+        },
+        {
+          "name": "notify",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag."
         }
       ],
       "retType": {
@@ -2871,6 +2979,18 @@
           "type": "double",
           "ref": false,
           "description": "The value to set for the console variable."
+        },
+        {
+          "name": "replicate",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients."
+        },
+        {
+          "name": "notify",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag."
         }
       ],
       "retType": {
@@ -2894,6 +3014,18 @@
           "type": "string",
           "ref": false,
           "description": "The value to set for the console variable."
+        },
+        {
+          "name": "replicate",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients."
+        },
+        {
+          "name": "notify",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag."
         }
       ],
       "retType": {
@@ -2917,6 +3049,18 @@
           "type": "int32",
           "ref": false,
           "description": "The value to set for the console variable."
+        },
+        {
+          "name": "replicate",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients."
+        },
+        {
+          "name": "notify",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag."
         }
       ],
       "retType": {
@@ -2940,6 +3084,18 @@
           "type": "vec2",
           "ref": false,
           "description": "The value to set for the console variable."
+        },
+        {
+          "name": "replicate",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients."
+        },
+        {
+          "name": "notify",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag."
         }
       ],
       "retType": {
@@ -2963,6 +3119,18 @@
           "type": "vec3",
           "ref": false,
           "description": "The value to set for the console variable."
+        },
+        {
+          "name": "replicate",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients."
+        },
+        {
+          "name": "notify",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag."
         }
       ],
       "retType": {
@@ -2986,6 +3154,18 @@
           "type": "vec4",
           "ref": false,
           "description": "The value to set for the console variable."
+        },
+        {
+          "name": "replicate",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients."
+        },
+        {
+          "name": "notify",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag."
         }
       ],
       "retType": {
@@ -3009,6 +3189,18 @@
           "type": "vec3",
           "ref": false,
           "description": "The value to set for the console variable."
+        },
+        {
+          "name": "replicate",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients."
+        },
+        {
+          "name": "notify",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag."
         }
       ],
       "retType": {

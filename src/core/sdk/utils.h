@@ -37,6 +37,29 @@ namespace utils
 	// c can be PI (for radians) or 180.0 (for degrees);
 	float GetAngleDifference(float x, float y, float c, bool relative = false);
 
+	template<typename T>
+	void NotifyConVar(CConVarData<T>* conVar);
+	template<typename T>
+	void ReplicateConVar(CConVarData<T>* conVar);
+
+	template<typename T>
+	void SetConVar(CConVarBaseData* conVar, const T& value, bool replicate, bool notify)
+	{
+		auto* cv = conVar->Cast<T>();
+		cv->SetValue(value);
+		if (replicate) utils::ReplicateConVar(cv);
+		if (notify) utils::NotifyConVar(cv);
+	}
+
+	template<typename T>
+	void SetConVarString(CConVarBaseData* conVar, const char* value, bool replicate, bool notify)
+	{
+		auto* cv = conVar->Cast<T>();
+		cv->SetStringValue(value);
+		if (replicate) utils::ReplicateConVar(cv);
+		if (notify) utils::NotifyConVar(cv);
+	}
+
 	// Print functions
 	bool CFormat(char* buffer, uint64_t buffer_size, const char* text);
 	void ClientPrintFilter(IRecipientFilter* filter, int msg_dest, const char* msg_name, const char* param1, const char* param2, const char* param3, const char* param4);

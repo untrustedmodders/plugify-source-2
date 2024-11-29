@@ -33,7 +33,7 @@ using SchemaTableMap_t = CUtlMap<uint32_t, SchemaKeyValueMap_t*>;
 
 static bool IsFieldNetworked(SchemaClassFieldData_t& field)
 {
-	for (int i = 0; i < field.m_nStaticMetadataCount; i++)
+	for (int i = 0; i < field.m_nStaticMetadataCount; ++i)
 	{
 		static auto networkEnabled = hash_32_fnv1a_const("MNetworkEnable");
 		if (networkEnabled == hash_32_fnv1a_const(field.m_pStaticMetadata[i].m_pszName))

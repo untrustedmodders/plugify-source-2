@@ -36,7 +36,7 @@ public:
 			return;
 		}
 
-		for (int i = 0; i <= gpGlobals->maxClients; i++)
+		for (int i = 0; i <= gpGlobals->maxClients; ++i)
 		{
 			CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(i)));
 			if (ent)
@@ -89,7 +89,7 @@ public:
 		m_bInitMessage = source->IsInitMessage();
 		m_Recipients.RemoveAll();
 
-		for (int i = 0; i < source->GetRecipientCount(); i++)
+		for (int i = 0; i < source->GetRecipientCount(); ++i)
 		{
 			if (source->GetRecipientIndex(i) != iExcept)
 				m_Recipients.AddToTail(source->GetRecipientIndex(i));

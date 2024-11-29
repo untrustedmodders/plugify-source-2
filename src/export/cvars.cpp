@@ -927,55 +927,57 @@ extern "C" PLUGIN_API plg::vec3 GetConVarQangle(CConVarBaseData* conVar)
  *
  * @param conVar Pointer to the console variable data.
  * @param value The value to set for the console variable.
+ * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
+ * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarValue(CConVarBaseData* conVar, const plg::string& value)
+extern "C" PLUGIN_API void SetConVarValue(CConVarBaseData* conVar, const plg::string& value, bool replicate, bool notify)
 {
 	switch (conVar->GetType())
 	{
 		case EConVarType_Bool:
-			conVar->Cast<bool>()->SetStringValue(value.c_str());
+			utils::SetConVarString<bool>(conVar, value.c_str(), replicate, notify);
 			break;
 		case EConVarType_Int16:
-			conVar->Cast<int16_t>()->SetStringValue(value.c_str());
+			utils::SetConVarString<int16_t>(conVar, value.c_str(), replicate, notify);
 			break;
 		case EConVarType_UInt16:
-			conVar->Cast<uint16_t>()->SetStringValue(value.c_str());
+			utils::SetConVarString<uint16_t>(conVar, value.c_str(), replicate, notify);
 			break;
 		case EConVarType_Int32:
-			conVar->Cast<int32_t>()->SetStringValue(value.c_str());
+			utils::SetConVarString<int32_t>(conVar, value.c_str(), replicate, notify);
 			break;
 		case EConVarType_UInt32:
-			conVar->Cast<uint16_t>()->SetStringValue(value.c_str());
+			utils::SetConVarString<uint32_t>(conVar, value.c_str(), replicate, notify);
 			break;
 		case EConVarType_Int64:
-			conVar->Cast<int64_t>()->SetStringValue(value.c_str());
+			utils::SetConVarString<int64_t>(conVar, value.c_str(), replicate, notify);
 			break;
 		case EConVarType_UInt64:
-			conVar->Cast<uint64_t>()->SetStringValue(value.c_str());
+			utils::SetConVarString<uint64_t>(conVar, value.c_str(), replicate, notify);
 			break;
 		case EConVarType_Float32:
-			conVar->Cast<float>()->SetStringValue(value.c_str());
+			utils::SetConVarString<float>(conVar, value.c_str(), replicate, notify);
 			break;
 		case EConVarType_Float64:
-			conVar->Cast<double>()->SetStringValue(value.c_str());
+			utils::SetConVarString<double>(conVar, value.c_str(), replicate, notify);
 			break;
 		case EConVarType_String:
-			conVar->Cast<const char*>()->SetStringValue(value.c_str());
+			utils::SetConVarString<const char*>(conVar, value.c_str(), replicate, notify);
 			break;
 		case EConVarType_Color:
-			conVar->Cast<Color>()->SetStringValue(value.c_str());
+			utils::SetConVarString<Color>(conVar, value.c_str(), replicate, notify);
 			break;
 		case EConVarType_Vector2:
-			conVar->Cast<Vector2D>()->SetStringValue(value.c_str());
+			utils::SetConVarString<Vector2D>(conVar, value.c_str(), replicate, notify);
 			break;
 		case EConVarType_Vector3:
-			conVar->Cast<Vector>()->SetStringValue(value.c_str());
+			utils::SetConVarString<Vector>(conVar, value.c_str(), replicate, notify);
 			break;
 		case EConVarType_Vector4:
-			conVar->Cast<Vector4D>()->SetStringValue(value.c_str());
+			utils::SetConVarString<Vector4D>(conVar, value.c_str(), replicate, notify);
 			break;
 		case EConVarType_Qangle:
-			conVar->Cast<QAngle>()->SetStringValue(value.c_str());
+			utils::SetConVarString<QAngle>(conVar, value.c_str(), replicate, notify);
 			break;
 		default:
 			g_Logger.Log(LS_WARNING, "Invalid convar type.\n");
@@ -988,10 +990,12 @@ extern "C" PLUGIN_API void SetConVarValue(CConVarBaseData* conVar, const plg::st
  *
  * @param conVar Pointer to the console variable data.
  * @param value The value to set for the console variable.
+ * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
+ * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarBool(CConVarBaseData* conVar, bool value)
+extern "C" PLUGIN_API void SetConVarBool(CConVarBaseData* conVar, bool value, bool replicate, bool notify)
 {
-    conVar->Cast<bool>()->SetValue(value);
+	utils::SetConVar(conVar, value, replicate, notify);
 }
 
 /**
@@ -999,10 +1003,12 @@ extern "C" PLUGIN_API void SetConVarBool(CConVarBaseData* conVar, bool value)
  *
  * @param conVar Pointer to the console variable data.
  * @param value The value to set for the console variable.
+ * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
+ * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarInt16(CConVarBaseData* conVar, int16_t value)
+extern "C" PLUGIN_API void SetConVarInt16(CConVarBaseData* conVar, int16_t value, bool replicate, bool notify)
 {
-    conVar->Cast<int16_t>()->SetValue(value);
+	utils::SetConVar(conVar, value, replicate, notify);
 }
 
 /**
@@ -1010,10 +1016,12 @@ extern "C" PLUGIN_API void SetConVarInt16(CConVarBaseData* conVar, int16_t value
  *
  * @param conVar Pointer to the console variable data.
  * @param value The value to set for the console variable.
+ * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
+ * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarUInt16(CConVarBaseData* conVar, uint16_t value)
+extern "C" PLUGIN_API void SetConVarUInt16(CConVarBaseData* conVar, uint16_t value, bool replicate, bool notify)
 {
-    conVar->Cast<uint16_t>()->SetValue(value);
+	utils::SetConVar(conVar, value, replicate, notify);
 }
 
 /**
@@ -1021,10 +1029,12 @@ extern "C" PLUGIN_API void SetConVarUInt16(CConVarBaseData* conVar, uint16_t val
  *
  * @param conVar Pointer to the console variable data.
  * @param value The value to set for the console variable.
+ * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
+ * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarInt32(CConVarBaseData* conVar, int32_t value)
+extern "C" PLUGIN_API void SetConVarInt32(CConVarBaseData* conVar, int32_t value, bool replicate, bool notify)
 {
-    conVar->Cast<int32_t>()->SetValue(value);
+	utils::SetConVar(conVar, value, replicate, notify);
 }
 
 /**
@@ -1032,10 +1042,12 @@ extern "C" PLUGIN_API void SetConVarInt32(CConVarBaseData* conVar, int32_t value
  *
  * @param conVar Pointer to the console variable data.
  * @param value The value to set for the console variable.
+ * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
+ * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarUInt32(CConVarBaseData* conVar, uint32_t value)
+extern "C" PLUGIN_API void SetConVarUInt32(CConVarBaseData* conVar, uint32_t value, bool replicate, bool notify)
 {
-    conVar->Cast<uint32_t>()->SetValue(value);
+	utils::SetConVar(conVar, value, replicate, notify);
 }
 
 /**
@@ -1043,10 +1055,12 @@ extern "C" PLUGIN_API void SetConVarUInt32(CConVarBaseData* conVar, uint32_t val
  *
  * @param conVar Pointer to the console variable data.
  * @param value The value to set for the console variable.
+ * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
+ * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarInt64(CConVarBaseData* conVar, int64_t value)
+extern "C" PLUGIN_API void SetConVarInt64(CConVarBaseData* conVar, int64_t value, bool replicate, bool notify)
 {
-    conVar->Cast<int64_t>()->SetValue(value);
+	utils::SetConVar(conVar, value, replicate, notify);
 }
 
 /**
@@ -1055,10 +1069,11 @@ extern "C" PLUGIN_API void SetConVarInt64(CConVarBaseData* conVar, int64_t value
  * @param conVar Pointer to the console variable data.
  * @param value The value to set for the console variable.
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
+ * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarUInt64(CConVarBaseData* conVar, uint64_t value)
+extern "C" PLUGIN_API void SetConVarUInt64(CConVarBaseData* conVar, uint64_t value, bool replicate, bool notify)
 {
-    conVar->Cast<uint64_t>()->SetValue(value);
+	utils::SetConVar(conVar, value, replicate, notify);
 }
 
 /**
@@ -1066,10 +1081,12 @@ extern "C" PLUGIN_API void SetConVarUInt64(CConVarBaseData* conVar, uint64_t val
  *
  * @param conVar Pointer to the console variable data.
  * @param value The value to set for the console variable.
+ * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
+ * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarFloat(CConVarBaseData* conVar, float value)
+extern "C" PLUGIN_API void SetConVarFloat(CConVarBaseData* conVar, float value, bool replicate, bool notify)
 {
-    conVar->Cast<float>()->SetValue(value);
+	utils::SetConVar(conVar, value, replicate, notify);
 }
 
 /**
@@ -1077,10 +1094,12 @@ extern "C" PLUGIN_API void SetConVarFloat(CConVarBaseData* conVar, float value)
  *
  * @param conVar Pointer to the console variable data.
  * @param value The value to set for the console variable.
+ * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
+ * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarDouble(CConVarBaseData* conVar, double value)
+extern "C" PLUGIN_API void SetConVarDouble(CConVarBaseData* conVar, double value, bool replicate, bool notify)
 {
-    conVar->Cast<double>()->SetValue(value);
+	utils::SetConVar(conVar, value, replicate, notify);
 }
 
 /**
@@ -1088,10 +1107,12 @@ extern "C" PLUGIN_API void SetConVarDouble(CConVarBaseData* conVar, double value
  *
  * @param conVar Pointer to the console variable data.
  * @param value The value to set for the console variable.
+ * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
+ * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarString(CConVarBaseData* conVar, const plg::string& value)
+extern "C" PLUGIN_API void SetConVarString(CConVarBaseData* conVar, const plg::string& value, bool replicate, bool notify)
 {
-    conVar->Cast<const char*>()->SetValue(value.c_str());
+	utils::SetConVar(conVar, value.c_str(), replicate, notify);
 }
 
 /**
@@ -1099,12 +1120,14 @@ extern "C" PLUGIN_API void SetConVarString(CConVarBaseData* conVar, const plg::s
  *
  * @param conVar Pointer to the console variable data.
  * @param value The value to set for the console variable.
+ * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
+ * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarColor(CConVarBaseData* conVar, int value)
+extern "C" PLUGIN_API void SetConVarColor(CConVarBaseData* conVar, int value, bool replicate, bool notify)
 {
 	Color color;
 	color.SetRawColor(value);
-    conVar->Cast<Color>()->SetValue(color);
+	utils::SetConVar(conVar, color, replicate, notify);
 }
 
 /**
@@ -1112,10 +1135,12 @@ extern "C" PLUGIN_API void SetConVarColor(CConVarBaseData* conVar, int value)
  *
  * @param conVar Pointer to the console variable data.
  * @param value The value to set for the console variable.
+ * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
+ * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarVector2(CConVarBaseData* conVar, const Vector2D& value)
+extern "C" PLUGIN_API void SetConVarVector2(CConVarBaseData* conVar, const Vector2D& value, bool replicate, bool notify)
 {
-    conVar->Cast<Vector2D>()->SetValue(value);
+	utils::SetConVar(conVar, value, replicate, notify);
 }
 
 /**
@@ -1123,10 +1148,12 @@ extern "C" PLUGIN_API void SetConVarVector2(CConVarBaseData* conVar, const Vecto
  *
  * @param conVar Pointer to the console variable data.
  * @param value The value to set for the console variable.
+ * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
+ * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarVector3(CConVarBaseData* conVar, const Vector& value)
+extern "C" PLUGIN_API void SetConVarVector3(CConVarBaseData* conVar, const Vector& value, bool replicate, bool notify)
 {
-    conVar->Cast<Vector>()->SetValue(value);
+	utils::SetConVar(conVar, value, replicate, notify);
 }
 
 /**
@@ -1134,10 +1161,12 @@ extern "C" PLUGIN_API void SetConVarVector3(CConVarBaseData* conVar, const Vecto
  *
  * @param conVar Pointer to the console variable data.
  * @param value The value to set for the console variable.
+ * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
+ * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarVector4(CConVarBaseData* conVar, const Vector4D& value)
+extern "C" PLUGIN_API void SetConVarVector4(CConVarBaseData* conVar, const Vector4D& value, bool replicate, bool notify)
 {
-    conVar->Cast<Vector4D>()->SetValue(value);
+	utils::SetConVar(conVar, value, replicate, notify);
 }
 
 /**
@@ -1145,10 +1174,12 @@ extern "C" PLUGIN_API void SetConVarVector4(CConVarBaseData* conVar, const Vecto
  *
  * @param conVar Pointer to the console variable data.
  * @param value The value to set for the console variable.
+ * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
+ * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarQangle(CConVarBaseData* conVar, const QAngle& value)
+extern "C" PLUGIN_API void SetConVarQangle(CConVarBaseData* conVar, const QAngle& value, bool replicate, bool notify)
 {
-    conVar->Cast<QAngle>()->SetValue(value);
+	utils::SetConVar(conVar, value, replicate, notify);
 }
 
 /**

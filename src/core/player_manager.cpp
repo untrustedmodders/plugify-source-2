@@ -176,7 +176,7 @@ void CPlayerManager::RunAuthChecks()
 
 	m_lastAuthCheckTime = static_cast<float>(CTimerSystem::GetTickedTime());
 
-	for (int i = 0; i <= MaxClients(); i++)
+	for (int i = 0; i <= MaxClients(); ++i)
 	{
 		auto& player = m_players[i];
 		if (player.IsConnected())
@@ -429,7 +429,7 @@ TargetType CPlayerManager::TargetPlayerString(int caller, const char* target, pl
 	}
 	else if (targetType == TargetType::ALL)
 	{
-		for (int i = 0; i < gpGlobals->maxClients; i++)
+		for (int i = 0; i < gpGlobals->maxClients; ++i)
 		{
 			if (!m_players[i].IsConnected())
 				continue;
@@ -444,7 +444,7 @@ TargetType CPlayerManager::TargetPlayerString(int caller, const char* target, pl
 	}
 	else if (targetType >= TargetType::SPECTATOR)
 	{
-		for (int i = 0; i < gpGlobals->maxClients; i++)
+		for (int i = 0; i < gpGlobals->maxClients; ++i)
 		{
 			if (!m_players[i].IsConnected())
 				continue;
@@ -501,7 +501,7 @@ TargetType CPlayerManager::TargetPlayerString(int caller, const char* target, pl
 	}
 	else
 	{
-		for (int i = 0; i < gpGlobals->maxClients; i++)
+		for (int i = 0; i < gpGlobals->maxClients; ++i)
 		{
 			if (!m_players[i].IsConnected())
 				continue;

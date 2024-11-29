@@ -30,7 +30,7 @@ public:
 
 	void GetButtons(uint64 buttons[3])
 	{
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < 3; ++i)
 		{
 			buttons[i] = this->m_pButtonStates[i];
 		}
