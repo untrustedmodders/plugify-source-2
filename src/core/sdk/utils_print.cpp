@@ -211,7 +211,9 @@ void utils::ClientPrintFilter(IRecipientFilter* filter, int msg_dest, const char
 
 	g_pGameEventSystem->PostEventAbstract(-1, false, filter, pNetMsg, data, 0);
 
+#ifndef _WIN32
 	delete data;
+#endif
 }
 
 void utils::PrintConsole(CPlayerSlot slot, const char* message)
