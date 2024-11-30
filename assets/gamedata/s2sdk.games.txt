@@ -94,7 +94,7 @@
 			"CEntityIOOutput_FireOutputInternal"
 			{
 				"library"   "server"
-				"windows"   "55 8B EC 83 EC 14 33 D2 53"
+				"windows"   "4C 89 4C 24 20 53 55 57 41 54 41 56 48 81 EC"
 				"linux"	    "55 48 89 E5 41 57 41 56 41 55 41 54 49 89 D4 53 48 89 F3 48 83 EC 58"
 			}
 			// this is called in CTriggerPush::Touch, using IDA pseudocode look in an `if ( ( v & 0x80 ) != 0 )` and then `if ( v > 0.0 ) SetGroundEntity()`
@@ -182,8 +182,8 @@
 			"CBaseEntity_SetMoveType"
 			{
 				"library"	"server"
-				"windows"	"48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 0F B6 81"
-				"linux"		"55 48 89 E5 41 57 41 56 41 55 41 89 D5 41 54 49 89 FC 53 48 83 EC 08"
+				"windows"	"48 89 5C 24 2A 48 89 6C 24 2A 48 89 74 24 2A 57 48 83 EC 2A 41 0F B6 F0"
+				"linux"		"55 48 89 E5 41 57 41 56 41 55 41 89 D5 41 54 49 89 FC 53 48 83 EC"
 			}
 			"CTakeDamageInfo"
 			{
