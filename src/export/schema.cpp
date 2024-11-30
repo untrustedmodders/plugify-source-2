@@ -956,8 +956,5 @@ extern "C" PLUGIN_API void SetSchemaStateChanged(int entityHandle, const plg::st
 		return;
 	}
 
-	addresses::CEntityInstance_StateChanged(pEntity->m_NetworkTransmitComponent(), pEntity, m_key.offset + extraOffset, -1, -1);
-
-	if (gpGlobals) pEntity->m_lastNetworkChange = gpGlobals->curtime;
-	pEntity->m_isSteadyState().ClearAll();
+	pEntity->NetworkStateChanged(m_key.offset + extraOffset);
 }
