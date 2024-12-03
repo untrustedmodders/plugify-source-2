@@ -8876,6 +8876,18 @@
       "retType": {
         "type": "void"
       }
+    },
+    {
+      "name": "GetGameRules",
+      "group": "Gamerules",
+      "description": "Retrieves the pointer of a game rules entity.",
+      "funcName": "GetGameRules",
+      "paramTypes": [
+      ],
+      "retType": {
+        "type": "ptr64",
+        "description": "A pointer of game entity."
+      }
     }
   ]
 }
