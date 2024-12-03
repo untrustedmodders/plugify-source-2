@@ -1137,10 +1137,10 @@
       }
     },
     {
-      "name": "PrintAlertTextToAll",
+      "name": "PrintAlertTextAll",
       "group": "Console",
       "description": "Prints a message to all clients with an alert box.",
-      "funcName": "PrintAlertTextToAll",
+      "funcName": "PrintAlertTextAll",
       "paramTypes": [
         {
           "name": "message",
@@ -6437,10 +6437,10 @@
       "funcName": "GetSchemaBoolByName",
       "paramTypes": [
         {
-          "name": "instancePointer",
-          "type": "ptr64",
+          "name": "entityHandle",
+          "type": "int32",
           "ref": false,
-          "description": "Pointer to the instance from which the value is to be retrieved."
+          "description": "The handle of the entity from which the value is to be retrieved."
         },
         {
           "name": "className",
@@ -6473,10 +6473,10 @@
       "funcName": "GetSchemaInt8ByName",
       "paramTypes": [
         {
-          "name": "instancePointer",
-          "type": "ptr64",
+          "name": "entityHandle",
+          "type": "int32",
           "ref": false,
-          "description": "Pointer to the instance from which the value is to be retrieved."
+          "description": "The handle of the entity from which the value is to be retrieved."
         },
         {
           "name": "className",
@@ -6509,10 +6509,10 @@
       "funcName": "GetSchemaInt16ByName",
       "paramTypes": [
         {
-          "name": "instancePointer",
-          "type": "ptr64",
+          "name": "entityHandle",
+          "type": "int32",
           "ref": false,
-          "description": "Pointer to the instance from which the value is to be retrieved."
+          "description": "The handle of the entity from which the value is to be retrieved."
         },
         {
           "name": "className",
@@ -6545,10 +6545,10 @@
       "funcName": "GetSchemaInt32ByName",
       "paramTypes": [
         {
-          "name": "instancePointer",
-          "type": "ptr64",
+          "name": "entityHandle",
+          "type": "int32",
           "ref": false,
-          "description": "Pointer to the instance from which the value is to be retrieved."
+          "description": "The handle of the entity from which the value is to be retrieved."
         },
         {
           "name": "className",
@@ -6581,10 +6581,10 @@
       "funcName": "GetSchemaInt64ByName",
       "paramTypes": [
         {
-          "name": "instancePointer",
-          "type": "ptr64",
+          "name": "entityHandle",
+          "type": "int32",
           "ref": false,
-          "description": "Pointer to the instance from which the value is to be retrieved."
+          "description": "The handle of the entity from which the value is to be retrieved."
         },
         {
           "name": "className",
@@ -6617,10 +6617,10 @@
       "funcName": "GetSchemaUInt8ByName",
       "paramTypes": [
         {
-          "name": "instancePointer",
-          "type": "ptr64",
+          "name": "entityHandle",
+          "type": "int32",
           "ref": false,
-          "description": "Pointer to the instance from which the value is to be retrieved."
+          "description": "The handle of the entity from which the value is to be retrieved."
         },
         {
           "name": "className",
@@ -6653,10 +6653,10 @@
       "funcName": "GetSchemaUInt16ByName",
       "paramTypes": [
         {
-          "name": "instancePointer",
-          "type": "ptr64",
+          "name": "entityHandle",
+          "type": "int32",
           "ref": false,
-          "description": "Pointer to the instance from which the value is to be retrieved."
+          "description": "The handle of the entity from which the value is to be retrieved."
         },
         {
           "name": "className",
@@ -6689,10 +6689,10 @@
       "funcName": "GetSchemaUInt32ByName",
       "paramTypes": [
         {
-          "name": "instancePointer",
-          "type": "ptr64",
+          "name": "entityHandle",
+          "type": "int32",
           "ref": false,
-          "description": "Pointer to the instance from which the value is to be retrieved."
+          "description": "The handle of the entity from which the value is to be retrieved."
         },
         {
           "name": "className",
@@ -6725,10 +6725,10 @@
       "funcName": "GetSchemaUInt64ByName",
       "paramTypes": [
         {
-          "name": "instancePointer",
-          "type": "ptr64",
+          "name": "entityHandle",
+          "type": "int32",
           "ref": false,
-          "description": "Pointer to the instance from which the value is to be retrieved."
+          "description": "The handle of the entity from which the value is to be retrieved."
         },
         {
           "name": "className",
@@ -6761,10 +6761,10 @@
       "funcName": "GetSchemaFloatByName",
       "paramTypes": [
         {
-          "name": "instancePointer",
-          "type": "ptr64",
+          "name": "entityHandle",
+          "type": "int32",
           "ref": false,
-          "description": "Pointer to the instance from which the value is to be retrieved."
+          "description": "The handle of the entity from which the value is to be retrieved."
         },
         {
           "name": "className",
@@ -6797,10 +6797,10 @@
       "funcName": "GetSchemaDoubleByName",
       "paramTypes": [
         {
-          "name": "instancePointer",
-          "type": "ptr64",
+          "name": "entityHandle",
+          "type": "int32",
           "ref": false,
-          "description": "Pointer to the instance from which the value is to be retrieved."
+          "description": "The handle of the entity from which the value is to be retrieved."
         },
         {
           "name": "className",
@@ -6833,10 +6833,10 @@
       "funcName": "GetSchemaPointerByName",
       "paramTypes": [
         {
-          "name": "instancePointer",
-          "type": "ptr64",
+          "name": "entityHandle",
+          "type": "int32",
           "ref": false,
-          "description": "Pointer to the instance from which the value is to be retrieved."
+          "description": "The handle of the entity from which the value is to be retrieved."
         },
         {
           "name": "className",
@@ -6869,10 +6869,10 @@
       "funcName": "GetSchemaStringByName",
       "paramTypes": [
         {
-          "name": "instancePointer",
-          "type": "ptr64",
+          "name": "entityHandle",
+          "type": "int32",
           "ref": false,
-          "description": "Pointer to the instance from which the value is to be retrieved."
+          "description": "The handle of the entity from which the value is to be retrieved."
         },
         {
           "name": "className",
@@ -6905,10 +6905,10 @@
       "funcName": "GetSchemaVectorByName",
       "paramTypes": [
         {
-          "name": "instancePointer",
-          "type": "ptr64",
+          "name": "entityHandle",
+          "type": "int32",
           "ref": false,
-          "description": "Pointer to the instance from which the value is to be retrieved."
+          "description": "The handle of the entity from which the value is to be retrieved."
         },
         {
           "name": "className",
@@ -6941,10 +6941,10 @@
       "funcName": "SetSchemaValueBoolByName",
       "paramTypes": [
         {
-          "name": "instancePointer",
-          "type": "ptr64",
+          "name": "entityHandle",
+          "type": "int32",
           "ref": false,
-          "description": "Pointer to the instance of the class where the value is to be set."
+          "description": "The handle of the entity where the value is to be set."
         },
         {
           "name": "className",
@@ -6982,10 +6982,10 @@
       "funcName": "SetSchemaValueInt8ByName",
       "paramTypes": [
         {
-          "name": "instancePointer",
-          "type": "ptr64",
+          "name": "entityHandle",
+          "type": "int32",
           "ref": false,
-          "description": "Pointer to the instance of the class where the value is to be set."
+          "description": "The handle of the entity where the value is to be set."
         },
         {
           "name": "className",
@@ -7023,10 +7023,10 @@
       "funcName": "SetSchemaValueInt16ByName",
       "paramTypes": [
         {
-          "name": "instancePointer",
-          "type": "ptr64",
+          "name": "entityHandle",
+          "type": "int32",
           "ref": false,
-          "description": "Pointer to the instance of the class where the value is to be set."
+          "description": "The handle of the entity where the value is to be set."
         },
         {
           "name": "className",
@@ -7064,10 +7064,10 @@
       "funcName": "SetSchemaValueInt32ByName",
       "paramTypes": [
         {
-          "name": "instancePointer",
-          "type": "ptr64",
+          "name": "entityHandle",
+          "type": "int32",
           "ref": false,
-          "description": "Pointer to the instance of the class where the value is to be set."
+          "description": "The handle of the entity where the value is to be set."
         },
         {
           "name": "className",
@@ -7105,10 +7105,10 @@
       "funcName": "SetSchemaValueInt64ByName",
       "paramTypes": [
         {
-          "name": "instancePointer",
-          "type": "ptr64",
+          "name": "entityHandle",
+          "type": "int32",
           "ref": false,
-          "description": "Pointer to the instance of the class where the value is to be set."
+          "description": "The handle of the entity where the value is to be set."
         },
         {
           "name": "className",
@@ -7146,10 +7146,10 @@
       "funcName": "SetSchemaValueUInt8ByName",
       "paramTypes": [
         {
-          "name": "instancePointer",
-          "type": "ptr64",
+          "name": "entityHandle",
+          "type": "int32",
           "ref": false,
-          "description": "Pointer to the instance of the class where the value is to be set."
+          "description": "The handle of the entity where the value is to be set."
         },
         {
           "name": "className",
@@ -7187,10 +7187,10 @@
       "funcName": "SetSchemaValueUInt16ByName",
       "paramTypes": [
         {
-          "name": "instancePointer",
-          "type": "ptr64",
+          "name": "entityHandle",
+          "type": "int32",
           "ref": false,
-          "description": "Pointer to the instance of the class where the value is to be set."
+          "description": "The handle of the entity where the value is to be set."
         },
         {
           "name": "className",
@@ -7228,10 +7228,10 @@
       "funcName": "SetSchemaValueUInt32ByName",
       "paramTypes": [
         {
-          "name": "instancePointer",
-          "type": "ptr64",
+          "name": "entityHandle",
+          "type": "int32",
           "ref": false,
-          "description": "Pointer to the instance of the class where the value is to be set."
+          "description": "The handle of the entity where the value is to be set."
         },
         {
           "name": "className",
@@ -7269,10 +7269,10 @@
       "funcName": "SetSchemaValueUInt64ByName",
       "paramTypes": [
         {
-          "name": "instancePointer",
-          "type": "ptr64",
+          "name": "entityHandle",
+          "type": "int32",
           "ref": false,
-          "description": "Pointer to the instance of the class where the value is to be set."
+          "description": "The handle of the entity where the value is to be set."
         },
         {
           "name": "className",
@@ -7310,10 +7310,10 @@
       "funcName": "SetSchemaValueFloatByName",
       "paramTypes": [
         {
-          "name": "instancePointer",
-          "type": "ptr64",
+          "name": "entityHandle",
+          "type": "int32",
           "ref": false,
-          "description": "Pointer to the instance of the class where the value is to be set."
+          "description": "The handle of the entity where the value is to be set."
         },
         {
           "name": "className",
@@ -7351,10 +7351,10 @@
       "funcName": "SetSchemaValueDoubleByName",
       "paramTypes": [
         {
-          "name": "instancePointer",
-          "type": "ptr64",
+          "name": "entityHandle",
+          "type": "int32",
           "ref": false,
-          "description": "Pointer to the instance of the class where the value is to be set."
+          "description": "The handle of the entity where the value is to be set."
         },
         {
           "name": "className",
@@ -7392,10 +7392,10 @@
       "funcName": "SetSchemaValueStringByName",
       "paramTypes": [
         {
-          "name": "instancePointer",
-          "type": "ptr64",
+          "name": "entityHandle",
+          "type": "int32",
           "ref": false,
-          "description": "Pointer to the instance of the class where the value is to be set."
+          "description": "The handle of the entity where the value is to be set."
         },
         {
           "name": "className",
@@ -7433,10 +7433,10 @@
       "funcName": "SetSchemaValueVectorByName",
       "paramTypes": [
         {
-          "name": "instancePointer",
-          "type": "ptr64",
+          "name": "entityHandle",
+          "type": "int32",
           "ref": false,
-          "description": "Pointer to the instance of the class where the value is to be set."
+          "description": "The handle of the entity where the value is to be set."
         },
         {
           "name": "className",
@@ -7474,8 +7474,8 @@
       "funcName": "SetSchemaStateChanged",
       "paramTypes": [
         {
-          "name": "instancePointer",
-          "type": "ptr64",
+          "name": "entityHandle",
+          "type": "int32",
           "ref": false,
           "description": "Pointer to the instance of the class where the value was changed."
         },

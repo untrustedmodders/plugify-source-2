@@ -91,7 +91,7 @@ extern "C" PLUGIN_API void PrintCenterTextAll(const plg::string& message)
  * @brief Prints a message to all clients with an alert box.
  * @param message The message to be printed in an alert box for all clients.
  */
-extern "C" PLUGIN_API void PrintAlertTextToAll(const plg::string& message)
+extern "C" PLUGIN_API void PrintAlertTextAll(const plg::string& message)
 {
 	utils::PrintAlertAll(message.c_str());
 }
