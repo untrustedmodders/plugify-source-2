@@ -21,6 +21,8 @@
 #include "timer_system.hpp"
 #include "voice_manager.hpp"
 
+#include "sdk/entity/cgamerules.h"
+
 #undef FindResource
 
 Source2SDK g_sdk;
@@ -44,6 +46,8 @@ class CEntityListener : public IEntityListener
 	}
 	void OnEntityCreated(CEntityInstance* pEntity) override
 	{
+		if (!V_strcmp("cs_gamerules", pEntity->GetClassname()))
+			g_pGameRules = ((CCSGameRulesProxy*)pEntity)->m_pGameRules;
 		GetOnEntityCreatedListenerManager().Notify(pEntity);
 	}
 	void OnEntityDeleted(CEntityInstance* pEntity) override

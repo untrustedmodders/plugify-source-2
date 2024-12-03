@@ -28,6 +28,7 @@ class IVEngineServer2;
 class CSchemaSystem;
 class CGameEntitySystem;
 class IGameEventListener2;
+class CCSGameRules;
 
 class CEntityInstance;
 class CBasePlayerController;
@@ -43,6 +44,7 @@ extern IVEngineServer2* g_pEngineServer2;
 extern CSchemaSystem* g_pSchemaSystem2;
 extern CGameEntitySystem* g_pEntitySystem;
 extern IEngineSound* g_pEngineSound;
+extern CCSGameRules* g_pGameRules;
 
 class CCoreConfig;
 class CGameConfig;

@@ -21,6 +21,7 @@ IVEngineServer2* g_pEngineServer2 = nullptr;
 CSchemaSystem* g_pSchemaSystem2 = nullptr;
 CGameEntitySystem* g_pEntitySystem = nullptr;
 IEngineSound* g_pEngineSound = nullptr;
+CCSGameRules* g_pGameRules = nullptr;
 
 #define RESOLVE_SIG(gameConfig, name, variable) \
 	variable = (decltype(variable))(void*)(gameConfig)->ResolveSignature(name)
