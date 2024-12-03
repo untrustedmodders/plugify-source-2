@@ -27,7 +27,7 @@ class CConVarManager
 {
 public:
 	CConVarManager() = default;
-	~CConVarManager() = default;
+	~CConVarManager();
 
 	template<typename T>
 	CConVarBaseData* CreateConVar(const plg::string& name, const plg::string& description, const T& defaultVal, int flags, bool hasMin = false, T min = {}, bool hasMax = {}, T max = {})

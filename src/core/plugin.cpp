@@ -26,6 +26,7 @@
 #undef FindResource
 
 Source2SDK g_sdk;
+EXPOSE_PLUGIN(PLUGIN_API, &g_sdk)
 
 CGameEntitySystem* GameEntitySystem()
 {
@@ -87,13 +88,6 @@ void Source2SDK::OnPluginStart()
 		hook.AddCallback(Post, Hook_SetupHookLoop_Post);
 	});
 
-	p_ppGameEventManager = g_pGameConfig->GetAddress("&s_GameEventManager").RCast<IGameEventManager2**>();
-	if (!p_ppGameEventManager) {
-		g_Logger.Log(LS_ERROR, "s_GameEventManager not found!");
-		return;
-	}
-	g_pGameEventManager = *p_ppGameEventManager;
-
 	if (g_pGameEventManager != nullptr)
 	{
 		using enum poly::CallbackType;
@@ -103,7 +97,7 @@ void Source2SDK::OnPluginStart()
 	g_PH.AddHookMemFunc(&IServerGameClients::ClientCommand, g_pSource2GameClients, Hook_ClientCommand, Pre);
 	g_PH.AddHookMemFunc(&IMetamodListener::OnLevelInit, g_pMetamodListener, Hook_OnLevelInit, Post);
 	g_PH.AddHookMemFunc(&IMetamodListener::OnLevelShutdown, g_pMetamodListener, Hook_OnLevelShutdown, Post);
-	g_PH.AddHookMemFunc(&IServerGameDLL::GameFrame, g_pSource2Server, Hook_GameFrame, Post);
+	//g_PH.AddHookMemFunc(&IServerGameDLL::GameFrame, g_pSource2Server, Hook_GameFrame, Post);
 	g_PH.AddHookMemFunc(&IServerGameClients::ClientActive, g_pSource2GameClients, Hook_ClientActive, Post);
 	g_PH.AddHookMemFunc(&IServerGameClients::ClientDisconnect, g_pSource2GameClients, Hook_ClientDisconnect, Pre, Post);
 	g_PH.AddHookMemFunc(&IServerGameClients::ClientPutInServer, g_pSource2GameClients, Hook_ClientPutInServer, Post);
@@ -132,6 +126,8 @@ void Source2SDK::OnPluginStart()
 	//using SayText2Filter = void (*)(IRecipientFilter &, CCSPlayerController *, uint64_t, const char *, const char *, const char *, const char *, const char *);
 	//g_HookManager.AddHookDetourFunc<SayText2Filter>("UTIL_SayText2Filter", Hook_SayText2Filter, Pre);
 
+	//m_pFactory = new CGameSystemStaticFactory<Source2SDK>("Plugify", this);
+
 	OnServerStartup(); // for late load
 }
 
@@ -139,26 +135,33 @@ void Source2SDK::OnPluginEnd()
 {
 	globals::Terminate();
 	g_PH.UnhookAll();
-	if (g_pEntitySystem != nullptr)
+	if (g_pGameEntitySystem != nullptr)
 	{
-		int iListener = g_pEntitySystem->m_entityListeners.Find(&g_pEntityListener);
+		int iListener = g_pGameEntitySystem->m_entityListeners.Find(&g_pEntityListener);
 		if (iListener != -1)
 		{
-			g_pEntitySystem->m_entityListeners.Remove(iListener);
+			g_pGameEntitySystem->m_entityListeners.Remove(iListener);
 		}
 	}
+	/*CBaseGameSystemFactory::sm_pFirst = NULL;
+
+	if (m_pFactory)
+	{
+		m_pFactory->Shutdown();
+		m_pFactory->DestroyGameSystem(this);
+	}*/
 
 	g_Logger.Log(LS_DEBUG, "OnPluginEnd!\n");
 }
 
 void Source2SDK::OnServerStartup()
 {
-	g_pEntitySystem = GameEntitySystem();
-	if (g_pEntitySystem != nullptr)
+	g_pGameEntitySystem = GameEntitySystem();
+	if (g_pGameEntitySystem != nullptr)
 	{
-		if (g_pEntitySystem->m_entityListeners.Find(&g_pEntityListener) == -1)
+		if (g_pGameEntitySystem->m_entityListeners.Find(&g_pEntityListener) == -1)
 		{
-			g_pEntitySystem->m_entityListeners.AddToTail(&g_pEntityListener);
+			g_pGameEntitySystem->m_entityListeners.AddToTail(&g_pEntityListener);
 		}
 	}
 
@@ -631,4 +634,123 @@ poly::ReturnAction Source2SDK::Hook_SetupHookLoop_Post(poly::CallbackType type, 
 	return poly::ReturnAction::Handled;
 }
 
-EXPOSE_PLUGIN(PLUGIN_API, &g_sdk)
+/*
+GS_EVENT_MEMBER(Source2SDK, GameInit)
+{
+}
+
+GS_EVENT_MEMBER(Source2SDK, GameShutdown)
+{
+}
+
+GS_EVENT_MEMBER(Source2SDK, GamePostInit)
+{
+}
+
+GS_EVENT_MEMBER(Source2SDK, GamePreShutdown)
+{
+}
+
+GS_EVENT_MEMBER(Source2SDK, BuildGameSessionManifest)
+{
+}
+
+GS_EVENT_MEMBER(Source2SDK, GameActivate)
+{
+}
+
+GS_EVENT_MEMBER(Source2SDK, ClientFullySignedOn)
+{
+}
+
+GS_EVENT_MEMBER(Source2SDK, Disconnect)
+{
+}
+
+GS_EVENT_MEMBER(Source2SDK, GameDeactivate)
+{
+}
+
+GS_EVENT_MEMBER(Source2SDK, SpawnGroupPrecache)
+{
+}
+
+GS_EVENT_MEMBER(Source2SDK, SpawnGroupUncache)
+{
+}
+
+GS_EVENT_MEMBER(Source2SDK, PreSpawnGroupLoad)
+{
+}
+
+GS_EVENT_MEMBER(Source2SDK, PostSpawnGroupLoad)
+{
+}
+
+GS_EVENT_MEMBER(Source2SDK, PreSpawnGroupUnload)
+{
+}
+
+GS_EVENT_MEMBER(Source2SDK, PostSpawnGroupUnload)
+{
+}
+
+GS_EVENT_MEMBER(Source2SDK, ActiveSpawnGroupChanged)
+{
+}
+
+GS_EVENT_MEMBER(Source2SDK, ClientPostDataUpdate)
+{
+}
+
+GS_EVENT_MEMBER(Source2SDK, ClientPreRender)
+{
+}
+
+GS_EVENT_MEMBER(Source2SDK, ClientPreEntityThink)
+{
+}
+
+GS_EVENT_MEMBER(Source2SDK, ClientUpdate)
+{
+}
+
+GS_EVENT_MEMBER(Source2SDK, ClientPostRender)
+{
+}
+
+GS_EVENT_MEMBER(Source2SDK, ServerPreEntityThink)
+{
+}
+
+GS_EVENT_MEMBER(Source2SDK, ServerPostEntityThink)
+{
+}
+
+GS_EVENT_MEMBER(Source2SDK, ServerPreClientUpdate)
+{
+}
+
+GS_EVENT_MEMBER(Source2SDK, ServerGamePostSimulate)
+{
+}
+
+GS_EVENT_MEMBER(Source2SDK, ClientGamePostSimulate)
+{
+}
+
+GS_EVENT_MEMBER(Source2SDK, GameFrameBoundary)
+{
+}
+
+GS_EVENT_MEMBER(Source2SDK, OutOfGameFrameBoundary)
+{
+}
+
+GS_EVENT_MEMBER(Source2SDK, SaveGame)
+{
+}
+
+GS_EVENT_MEMBER(Source2SDK, RestoreGame)
+{
+}*/

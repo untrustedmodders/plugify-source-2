@@ -1,9 +1,9 @@
 #pragma once
 
 #include <playerslot.h>
+#include <plugify/cpp_plugin.hpp>
 #include <tier0/platform.h>
 #include <tier0/utlstring.h>
-#include <plugify/cpp_plugin.hpp>
 #include <variant.h>
 
 #define CS_TEAM_NONE 0
@@ -29,6 +29,7 @@ class CSchemaSystem;
 class CGameEntitySystem;
 class IGameEventListener2;
 class CCSGameRules;
+class CEntitySystem;
 
 class CEntityInstance;
 class CBasePlayerController;
@@ -42,7 +43,8 @@ extern INetworkGameServer* g_pNetworkGameServer;
 extern CGlobalVars* gpGlobals;
 extern IVEngineServer2* g_pEngineServer2;
 extern CSchemaSystem* g_pSchemaSystem2;
-extern CGameEntitySystem* g_pEntitySystem;
+extern CEntitySystem* g_pEntitySystem;
+extern CGameEntitySystem* g_pGameEntitySystem;
 extern IEngineSound* g_pEngineSound;
 extern CCSGameRules* g_pGameRules;
 

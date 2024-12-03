@@ -242,20 +242,20 @@ void utils::PrintAlert(CPlayerSlot slot, const char* message)
 
 void utils::PrintHtmlCentre(CPlayerSlot slot, const char* message)
 {
-	IGameEvent* event = g_pGameEventManager->CreateEvent("show_survival_respawn_status");
-	if (!event)
+	IGameEvent* pEvent = g_pGameEventManager->CreateEvent("show_survival_respawn_status");
+	if (!pEvent)
 	{
 		return;
 	}
 
-	event->SetString("loc_token", message);
-	event->SetInt("duration", 5);
-	event->SetInt("userid", -1);
+	pEvent->SetString("loc_token", message);
+	pEvent->SetInt("duration", 5);
+	pEvent->SetInt("userid", slot.Get());
 
 	IGameEventListener2* listener = addresses::GetLegacyGameEventListener(slot);
-	listener->FireGameEvent(event);
+	listener->FireGameEvent(pEvent);
 
-	g_pGameEventManager->FreeEvent(event);
+	g_pGameEventManager->FreeEvent(pEvent);
 }
 
 void utils::PrintConsoleAll(const char* message)
@@ -288,17 +288,17 @@ void utils::PrintAlertAll(const char* message)
 
 void utils::PrintHtmlCentreAll(const char* message)
 {
-	IGameEvent* event = g_pGameEventManager->CreateEvent("show_survival_respawn_status");
-	if (!event)
+	IGameEvent* pEvent = g_pGameEventManager->CreateEvent("show_survival_respawn_status", true);
+	if (!pEvent)
 	{
 		return;
 	}
 
-	event->SetString("loc_token", message);
-	event->SetInt("duration", 5);
-	event->SetInt("userid", -1);
+	pEvent->SetString("loc_token", message);
+	pEvent->SetInt("duration", 5);
+	pEvent->SetInt("userid", -1);
 
-	g_pGameEventManager->FireEvent(event);
+	g_pGameEventManager->FireEvent(pEvent);
 }
 
 void utils::CPrintChat(CPlayerSlot slot, const char* message)

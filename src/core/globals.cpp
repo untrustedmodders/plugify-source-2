@@ -9,8 +9,9 @@
 #include <dynlibutils/module.hpp>
 
 #include <ISmmPlugin.h>
-#include <igameevents.h>
 #include <engine/igameeventsystem.h>
+#include <igameevents.h>
+#include <igamesystemfactory.h>
 
 IGameEventSystem* g_pGameEventSystem = nullptr;
 IGameEventManager2* g_pGameEventManager = nullptr;
@@ -19,9 +20,11 @@ INetworkGameServer* g_pNetworkGameServer = nullptr;
 CGlobalVars* gpGlobals = nullptr;
 IVEngineServer2* g_pEngineServer2 = nullptr;
 CSchemaSystem* g_pSchemaSystem2 = nullptr;
-CGameEntitySystem* g_pEntitySystem = nullptr;
+CEntitySystem* g_pEntitySystem = nullptr;
+CGameEntitySystem* g_pGameEntitySystem = nullptr;
 IEngineSound* g_pEngineSound = nullptr;
 CCSGameRules* g_pGameRules = nullptr;
+CBaseGameSystemFactory** CBaseGameSystemFactory::sm_pFirst = nullptr;
 
 #define RESOLVE_SIG(gameConfig, name, variable) \
 	variable = (decltype(variable))(void*)(gameConfig)->ResolveSignature(name)
@@ -143,6 +146,19 @@ namespace globals
 		g_pGameConfig = new CGameConfig("cs2", std::move(gameConfig));
 		g_pGameConfig->Initialize();
 
+		p_ppGameEventManager = g_pGameConfig->GetAddress("&s_GameEventManager").RCast<IGameEventManager2**>();
+		if (!p_ppGameEventManager) {
+			g_Logger.Log(LS_ERROR, "s_GameEventManager not found!");
+			return;
+		}
+		g_pGameEventManager = *p_ppGameEventManager;
+
+		using RegisterFirstGameSystemFn = void* (*)(CBaseGameSystemFactory**);
+		auto Plugify_RegisterFirstGameSystem = plugify.GetFunctionByName("Plugify_RegisterFirstGameSystem");
+		CBaseGameSystemFactory **ppFactory = g_pGameConfig->GetAddress("CBaseGameSystemFactory::sm_pFirst").CCast<CBaseGameSystemFactory**>();
+		CBaseGameSystemFactory::sm_pFirst = ppFactory;
+		Plugify_RegisterFirstGameSystem.CCast<RegisterFirstGameSystemFn>()(ppFactory);
+
 		// load more if needed
 		RESOLVE_SIG(g_pGameConfig, "LegacyGameEventListener", addresses::GetLegacyGameEventListener);
 		RESOLVE_SIG(g_pGameConfig, "CCSPlayerController_SwitchTeam", addresses::CCSPlayerController_SwitchTeam);
@@ -155,7 +171,7 @@ namespace globals
 		RESOLVE_SIG(g_pGameConfig, "UTIL_Remove", addresses::UTIL_Remove);
 		//RESOLVE_SIG(g_pGameConfig, "CEntitySystem_AddEntityIOEvent", addresses::CEntitySystem_AddEntityIOEvent);
 		//RESOLVE_SIG(g_pGameConfig, "CEntityInstance_AcceptInput", addresses::CEntityInstance_AcceptInput);
-		//RESOLVE_SIG(g_pGameConfig, "CGameRules_TerminateRound", addresses::CGameRules_TerminateRound);
+		RESOLVE_SIG(g_pGameConfig, "CGameRules_TerminateRound", addresses::CGameRules_TerminateRound);
 		RESOLVE_SIG(g_pGameConfig, "CEntityIdentity_SetEntityName", addresses::CEntityIdentity_SetEntityName);
 		RESOLVE_SIG(g_pGameConfig, "CBaseEntity_EmitSoundParams", addresses::CBaseEntity_EmitSoundParams);
 		RESOLVE_SIG(g_pGameConfig, "CBaseEntity_SetParent", addresses::CBaseEntity_SetParent);

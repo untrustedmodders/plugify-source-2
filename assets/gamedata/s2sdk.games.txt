@@ -62,6 +62,16 @@
 				"windows"   "40 57 48 83 EC 20 48 83 3D ? ? ? ? ? 74 07 33 C9 E8 ? ? ? ? FF 15"
 				"linux"	    "55 48 89 E5 41 55 41 54 53 48 83 EC 08 48 8D 05 ? ? ? ? 48 83 38 00 74 07 31 FF E8"
 			}
+			// String: "Game System %s is defined twice!\n"
+            //          "System %s failed to init\n"
+            //          "IGameSystem::Init( %-80s ) %8.3f msec"
+            //          "IGameSystem::PostInit( %-80s ) %8.3f msec"
+			"IGameSystem::InitAllSystems"
+            {
+                "library"   "server"
+                "windows"   "40 53 56 57 41 55 48 83 EC 68"
+                "linux"	    "55 48 8D 05 ? ? ? ? 48 89 E5 41 57 41 56 41 55 41 BD 00 00 00 80"
+            }
 			// Called right after "Removed %s(%s)\n"
 			"UTIL_Remove"
 			{
@@ -313,6 +323,18 @@
 					"read_offs32" "106"
 				}
 			}
+			"CBaseGameSystemFactory::sm_pFirst"
+            {
+                "signature" "IGameSystem::InitAllSystems"
+                "windows"
+                {
+                    "read_offs32" "53"
+                }
+                "linux"
+                {
+                    "read_offs32" "72"
+                }
+            }
 		}
 	}
 }

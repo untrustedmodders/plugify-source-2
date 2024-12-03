@@ -16,7 +16,7 @@ extern "C" PLUGIN_API int RegisterLoggingChannel(const plg::string& name, int iF
 {
 	Color spewColor;
 	spewColor.SetRawColor(color);
-	return LoggingSystem_RegisterLoggingChannel(name.c_str(), &CLogger::RegisterTags, iFlags, static_cast<LoggingVerbosity_t>(verbosity), spewColor);
+	return LoggingSystem_RegisterLoggingChannel(name.c_str(), nullptr, iFlags, static_cast<LoggingVerbosity_t>(verbosity), spewColor);
 }
 
 /**

@@ -135,18 +135,23 @@ float utils::GetAngleDifference(float source, float target, float c, bool relati
 
 void utils::NotifyConVar(CConVarBaseData* conVar, const char* value)
 {
-	IGameEvent* event = g_pGameEventManager->CreateEvent("server_cvar");
-	event->SetString("cvarname", conVar->GetName());
+	IGameEvent* pEvent = g_pGameEventManager->CreateEvent("server_cvar");
+	if (pEvent == nullptr)
+	{
+		return;
+	}
+
+	pEvent->SetString("cvarname", conVar->GetName());
 	if (conVar->IsFlagSet(FCVAR_PROTECTED))
 	{
-		event->SetString("cvarvalue", "***PROTECTED***");
+		pEvent->SetString("cvarvalue", "***PROTECTED***");
 	}
 	else
 	{
-		event->SetString("cvarvalue", value);
+		pEvent->SetString("cvarvalue", value);
 	}
 
-	g_pGameEventManager->FireEvent(event);
+	g_pGameEventManager->FireEvent(pEvent);
 }
 
 void utils::ReplicateConVar(CConVarBaseData* conVar, const char* value)

@@ -1,5 +1,14 @@
 #include "con_var_manager.hpp"
 
+CConVarManager::~CConVarManager()
+{
+	g_pCVar->RemoveGlobalChangeCallback(&ChangeGlobal);
+	for (const auto& [cv, _] : m_cnvCache)
+	{
+		g_pCVar->UnregisterConVar(cv->GetHandle());
+	}
+}
+
 ConVarInfo::ConVarInfo(plg::string name, plg::string description) : name(std::move(name)), description(std::move(description))
 {
 }

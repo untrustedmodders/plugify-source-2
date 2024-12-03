@@ -4,7 +4,11 @@
 #include <plugify/polyhook.hpp>
 #include <plugin_export.h>
 
-class Source2SDK : public plg::IPluginEntry
+#include <igamesystem.h>
+#include <igamesystemfactory.h>
+#include <networksystem/inetworkmessages.h>
+
+class Source2SDK : public plg::IPluginEntry, public CBaseGameSystem
 {
 public:
 	void OnPluginStart() override;
@@ -42,6 +46,41 @@ public:
 	//static poly::ReturnAction Hook_SayText2Filter(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret); // TODO: TEMP
 	static poly::ReturnAction Hook_DispatchConCommand(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 	static poly::ReturnAction Hook_SetClientListening(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+
+/*public: // CBaseGameSystem
+	GS_EVENT(GameInit);
+	GS_EVENT(GameShutdown);
+	GS_EVENT(GamePostInit);
+	GS_EVENT(GamePreShutdown);
+	GS_EVENT(BuildGameSessionManifest);
+	GS_EVENT(GameActivate);
+	GS_EVENT(ClientFullySignedOn);
+	GS_EVENT(Disconnect);
+	GS_EVENT(GameDeactivate);
+	GS_EVENT(SpawnGroupPrecache);
+	GS_EVENT(SpawnGroupUncache);
+	GS_EVENT(PreSpawnGroupLoad);
+	GS_EVENT(PostSpawnGroupLoad);
+	GS_EVENT(PreSpawnGroupUnload);
+	GS_EVENT(PostSpawnGroupUnload);
+	GS_EVENT(ActiveSpawnGroupChanged);
+	GS_EVENT(ClientPostDataUpdate);
+	GS_EVENT(ClientPreRender);
+	GS_EVENT(ClientPreEntityThink);
+	GS_EVENT(ClientUpdate);
+	GS_EVENT(ClientPostRender);
+	GS_EVENT(ServerPreEntityThink);
+	GS_EVENT(ServerPostEntityThink);
+	GS_EVENT(ServerPreClientUpdate);
+	GS_EVENT(ServerGamePostSimulate);
+	GS_EVENT(ClientGamePostSimulate);
+	GS_EVENT(GameFrameBoundary);
+	GS_EVENT(OutOfGameFrameBoundary);
+	GS_EVENT(SaveGame);
+	GS_EVENT(RestoreGame);*/
+
+private:
+	IGameSystemFactory *m_pFactory = NULL;
 };
 
 extern Source2SDK g_sdk;

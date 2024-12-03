@@ -3,6 +3,14 @@
 
 #include <icvar.h>
 
+CConCommandManager::~CConCommandManager()
+{
+	for (const auto& [_, command] : m_cmdLookup)
+	{
+		g_pCVar->UnregisterConCommand(command->commandRef->GetHandle());
+	}
+}
+
 void CommandCallback(const CCommandContext& context, const CCommand& command)
 {
 }
@@ -29,13 +37,15 @@ void CConCommandManager::AddCommandListener(const plg::string& name, CommandList
 	auto it = m_cmdLookup.find(name);
 	if (it == m_cmdLookup.end())
 	{
-		auto& commandInfo = *m_cmdLookup.emplace(name, std::make_unique<ConCommandInfo>(name)).first->second;
-
-		ConCommandHandle hExistingCommand = g_pCVar->FindCommand(name.c_str());
-		if (hExistingCommand.IsValid())
+		ConCommandHandle hFoundCommand = g_pCVar->FindCommand(name.c_str());
+		if (!hFoundCommand.IsValid())
 		{
-			commandInfo.command = g_pCVar->GetCommand(hExistingCommand);
+			return;
 		}
+
+		auto& commandInfo = *m_cmdLookup.emplace(name, std::make_unique<ConCommandInfo>(name)).first->second;
+		commandInfo.command = g_pCVar->GetCommand(hFoundCommand);
+		commandInfo.defaultCommand = true;
 
 		if (mode == HookMode::Pre)
 		{

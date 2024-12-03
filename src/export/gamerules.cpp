@@ -8,7 +8,7 @@ extern "C" PLUGIN_API void* GetGameRules()
 	return g_pGameRules;
 }
 
-/*extern "C" PLUGIN_API void TerminateRound(float flDelay, CSRoundEndReason reason)
+extern "C" PLUGIN_API void TerminateRound(float flDelay, CSRoundEndReason reason)
 {
 	g_pGameRules->TerminateRound(flDelay, reason);
-}*/
+}

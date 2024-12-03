@@ -20,7 +20,7 @@
 #pragma once
 
 #include "irecipientfilter.h"
-#include "../player_manager.hpp"
+#include "core/player_manager.hpp"
 
 // Simple filter for when only 1 recipient is needed
 class CSingleRecipientFilter : public IRecipientFilter

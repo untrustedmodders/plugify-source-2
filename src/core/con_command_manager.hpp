@@ -28,6 +28,7 @@ struct ConCommandInfo
 	std::unique_ptr<ConCommand> commandRef;
 	CListenerManager<CommandListenerCallback> callbackPre;
 	CListenerManager<CommandListenerCallback> callbackPost;
+	bool defaultCommand{};
 };
 
 using CommandInfoPtr = std::unique_ptr<ConCommandInfo>;
@@ -36,7 +37,7 @@ class CConCommandManager
 {
 public:
 	CConCommandManager() = default;
-	~CConCommandManager() = default;
+	~CConCommandManager();
 
 	void AddCommandListener(const plg::string& name, CommandListenerCallback callback, HookMode mode);
 	void RemoveCommandListener(const plg::string& name, CommandListenerCallback callback, HookMode mode);
