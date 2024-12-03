@@ -383,7 +383,7 @@ extern "C" PLUGIN_API void* GetSchemaPointerByName(int entityHandle, const plg::
 
 	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
 
-	return *reinterpret_cast<std::add_pointer_t<void*>>(reinterpret_cast<uintptr_t>(pEntity) + m_key.offset + extraOffset);
+	return reinterpret_cast<std::add_pointer_t<void>>(reinterpret_cast<uintptr_t>(pEntity) + m_key.offset + extraOffset);
 }
 
 /**
