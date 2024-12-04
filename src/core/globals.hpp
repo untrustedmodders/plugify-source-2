@@ -43,7 +43,6 @@ extern INetworkGameServer* g_pNetworkGameServer;
 extern CGlobalVars* gpGlobals;
 extern IVEngineServer2* g_pEngineServer2;
 extern CSchemaSystem* g_pSchemaSystem2;
-extern CEntitySystem* g_pEntitySystem;
 extern CGameEntitySystem* g_pGameEntitySystem;
 extern IEngineSound* g_pEngineSound;
 extern CCSGameRules* g_pGameRules;

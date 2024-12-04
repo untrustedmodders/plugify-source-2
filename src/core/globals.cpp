@@ -20,7 +20,6 @@ INetworkGameServer* g_pNetworkGameServer = nullptr;
 CGlobalVars* gpGlobals = nullptr;
 IVEngineServer2* g_pEngineServer2 = nullptr;
 CSchemaSystem* g_pSchemaSystem2 = nullptr;
-CEntitySystem* g_pEntitySystem = nullptr;
 CGameEntitySystem* g_pGameEntitySystem = nullptr;
 IEngineSound* g_pEngineSound = nullptr;
 CCSGameRules* g_pGameRules = nullptr;

@@ -16,7 +16,7 @@
 
 CBaseEntity* utils::FindEntityByClassname(CEntityInstance* start, const char* name)
 {
-	if (!g_pEntitySystem)
+	if (!g_pGameEntitySystem)
 	{
 		return NULL;
 	}
@@ -64,12 +64,12 @@ CBasePlayerController* utils::GetController(CBaseEntity* entity)
 
 CBasePlayerController* utils::GetController(CPlayerSlot slot)
 {
-	if (!g_pEntitySystem || slot.Get() < 0 || slot.Get() > MAXPLAYERS)
+	if (!g_pGameEntitySystem || slot.Get() < 0 || slot.Get() > MAXPLAYERS)
 	{
 		return nullptr;
 	}
 	
-	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityIndex(slot.Get() + 1)));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityIndex(slot.Get() + 1)));
 	if (!ent)
 	{
 		return nullptr;
