@@ -22,7 +22,7 @@ CBaseEntity* utils::FindEntityByClassname(CEntityInstance* start, const char* na
 	}
 	EntityInstanceByClassIter_t iter(start, name);
 
-	return static_cast<CBaseEntity*>(iter.Next());
+	return dynamic_cast<CBaseEntity*>(iter.Next());
 }
 
 #define FCVAR_FLAGS_TO_REMOVE (FCVAR_HIDDEN | FCVAR_DEVELOPMENTONLY | FCVAR_MISSING0 | FCVAR_MISSING1 | FCVAR_MISSING2 | FCVAR_MISSING3)
@@ -33,7 +33,7 @@ CBasePlayerController* utils::GetController(CBaseEntity* entity)
 
 	if (entity->IsPawn())
 	{
-		CBasePlayerPawn* pawn = static_cast<CBasePlayerPawn*>(entity);
+		CBasePlayerPawn* pawn = dynamic_cast<CBasePlayerPawn*>(entity);
 		if (!pawn->m_hController().IsValid() || pawn->m_hController.Get() == nullptr)
 		{
 			if (!gpGlobals)
@@ -42,7 +42,7 @@ CBasePlayerController* utils::GetController(CBaseEntity* entity)
 			// Seems like the pawn lost its controller, we can try looping through the controllers to find this pawn instead.
 			for (int i = 0; i <= gpGlobals->maxClients; ++i)
 			{
-				controller = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(i)));
+				controller = dynamic_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(i)));
 				if (controller && controller->m_hPlayerPawn() && controller->m_hPlayerPawn().Get() == entity)
 				{
 					return controller;
@@ -54,7 +54,7 @@ CBasePlayerController* utils::GetController(CBaseEntity* entity)
 	}
 	else if (entity->IsController())
 	{
-		return static_cast<CBasePlayerController*>(entity);
+		return dynamic_cast<CBasePlayerController*>(entity);
 	}
 	else
 	{
@@ -69,13 +69,13 @@ CBasePlayerController* utils::GetController(CPlayerSlot slot)
 		return nullptr;
 	}
 	
-	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityIndex(slot.Get() + 1)));
+	CBaseEntity* ent = dynamic_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityIndex(slot.Get() + 1)));
 	if (!ent)
 	{
 		return nullptr;
 	}
 	
-	return ent->IsController() ? static_cast<CBasePlayerController*>(ent) : nullptr;
+	return ent->IsController() ? dynamic_cast<CBasePlayerController*>(ent) : nullptr;
 }
 
 CPlayerSlot utils::GetEntityPlayerSlot(CBaseEntity* entity)

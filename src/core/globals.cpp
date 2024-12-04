@@ -23,6 +23,7 @@ CSchemaSystem* g_pSchemaSystem2 = nullptr;
 CGameEntitySystem* g_pGameEntitySystem = nullptr;
 IEngineSound* g_pEngineSound = nullptr;
 CCSGameRules* g_pGameRules = nullptr;
+
 CBaseGameSystemFactory** CBaseGameSystemFactory::sm_pFirst = nullptr;
 
 #define RESOLVE_SIG(gameConfig, name, variable) \
@@ -152,11 +153,12 @@ namespace globals
 		}
 		g_pGameEventManager = *p_ppGameEventManager;
 
-		using RegisterFirstGameSystemFn = void* (*)(CBaseGameSystemFactory**);
-		auto Plugify_RegisterFirstGameSystem = plugify.GetFunctionByName("Plugify_RegisterFirstGameSystem");
-		CBaseGameSystemFactory **ppFactory = g_pGameConfig->GetAddress("CBaseGameSystemFactory::sm_pFirst").CCast<CBaseGameSystemFactory**>();
-		CBaseGameSystemFactory::sm_pFirst = ppFactory;
-		Plugify_RegisterFirstGameSystem.CCast<RegisterFirstGameSystemFn>()(ppFactory);
+		using RegisterGameSystemFn = void* (*)(CBaseGameSystemFactory**, CGameSystemEventDispatcher**);
+		auto Plugify_RegisterGameSystem = plugify.GetFunctionByName("Plugify_RegisterGameSystem");
+		CBaseGameSystemFactory** ppGameFactory = g_pGameConfig->GetAddress("CBaseGameSystemFactory::sm_pFirst").CCast<CBaseGameSystemFactory**>();
+		CBaseGameSystemFactory::sm_pFirst = ppGameFactory;
+		CGameSystemEventDispatcher** ppEventDispatcher = g_pGameConfig->GetAddress("&IGameSystem::sm_pEventDispatcher").RCast<CGameSystemEventDispatcher**>();
+		Plugify_RegisterGameSystem.CCast<RegisterGameSystemFn>()(ppGameFactory, ppEventDispatcher);
 
 		// load more if needed
 		RESOLVE_SIG(g_pGameConfig, "LegacyGameEventListener", addresses::GetLegacyGameEventListener);

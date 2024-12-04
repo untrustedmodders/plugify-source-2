@@ -62,6 +62,14 @@
 				"windows"   "40 57 48 83 EC 20 48 83 3D ? ? ? ? ? 74 07 33 C9 E8 ? ? ? ? FF 15"
 				"linux"	    "55 48 89 E5 41 55 41 54 53 48 83 EC 08 48 8D 05 ? ? ? ? 48 83 38 00 74 07 31 FF E8"
 			}
+			// String: "%s:  IGameSystem::LoopInitAllSystems(start)\n", "SV"
+			//         "%s:  IGameSystem::LoopInitAllSystems(finish)\n", "SV"
+            "IGameSystem::LoopInitAllSystems"
+            {
+                "library"   "server"
+                "windows"   "48 89 5C 24 ? 57 48 83 EC ? 48 8B FA 48 8B D9 48 8D 15 ? ? ? ? 48 8D 0D"
+                "linux"     "55 31 C0 48 89 E5 41 57 41 56 41 55 41 54 53 31 DB"
+            }
 			// String: "Game System %s is defined twice!\n"
             //          "System %s failed to init\n"
             //          "IGameSystem::Init( %-80s ) %8.3f msec"
@@ -333,6 +341,18 @@
                 "linux"
                 {
                     "read_offs32" "72"
+                }
+            }
+            "&IGameSystem::sm_pEventDispatcher"
+            {
+                "signature" "IGameSystem::LoopInitAllSystems"
+                "windows"
+                {
+                    "read_offs32" "152"
+                }
+                "linux"
+                {
+                    "read_offs32" "586"
                 }
             }
 		}

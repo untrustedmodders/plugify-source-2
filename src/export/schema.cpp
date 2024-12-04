@@ -75,7 +75,7 @@ extern "C" PLUGIN_API int GetSchemaClassSize(const plg::string& className)
  */
 extern "C" PLUGIN_API bool GetSchemaBoolByName(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
 {
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CBaseEntity* pEntity = dynamic_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		return {};
@@ -102,7 +102,7 @@ extern "C" PLUGIN_API bool GetSchemaBoolByName(int entityHandle, const plg::stri
  */
 extern "C" PLUGIN_API int8_t GetSchemaInt8ByName(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
 {
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CBaseEntity* pEntity = dynamic_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		return {};
@@ -129,7 +129,7 @@ extern "C" PLUGIN_API int8_t GetSchemaInt8ByName(int entityHandle, const plg::st
  */
 extern "C" PLUGIN_API int16_t GetSchemaInt16ByName(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
 {
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CBaseEntity* pEntity = dynamic_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		return {};
@@ -156,7 +156,7 @@ extern "C" PLUGIN_API int16_t GetSchemaInt16ByName(int entityHandle, const plg::
  */
 extern "C" PLUGIN_API int32_t GetSchemaInt32ByName(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
 {
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CBaseEntity* pEntity = dynamic_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		return {};
@@ -183,7 +183,7 @@ extern "C" PLUGIN_API int32_t GetSchemaInt32ByName(int entityHandle, const plg::
  */
 extern "C" PLUGIN_API int64_t GetSchemaInt64ByName(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
 {
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CBaseEntity* pEntity = dynamic_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		return {};
@@ -210,7 +210,7 @@ extern "C" PLUGIN_API int64_t GetSchemaInt64ByName(int entityHandle, const plg::
  */
 extern "C" PLUGIN_API uint8_t GetSchemaUInt8ByName(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
 {
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CBaseEntity* pEntity = dynamic_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		return {};
@@ -237,7 +237,7 @@ extern "C" PLUGIN_API uint8_t GetSchemaUInt8ByName(int entityHandle, const plg::
  */
 extern "C" PLUGIN_API uint16_t GetSchemaUInt16ByName(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
 {
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CBaseEntity* pEntity = dynamic_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		return {};
@@ -264,7 +264,7 @@ extern "C" PLUGIN_API uint16_t GetSchemaUInt16ByName(int entityHandle, const plg
  */
 extern "C" PLUGIN_API uint32_t GetSchemaUInt32ByName(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
 {
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CBaseEntity* pEntity = dynamic_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		return {};
@@ -291,7 +291,7 @@ extern "C" PLUGIN_API uint32_t GetSchemaUInt32ByName(int entityHandle, const plg
  */
 extern "C" PLUGIN_API uint64_t GetSchemaUInt64ByName(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
 {
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CBaseEntity* pEntity = dynamic_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		return {};
@@ -318,7 +318,7 @@ extern "C" PLUGIN_API uint64_t GetSchemaUInt64ByName(int entityHandle, const plg
  */
 extern "C" PLUGIN_API float GetSchemaFloatByName(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
 {
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CBaseEntity* pEntity = dynamic_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		return {};
@@ -345,7 +345,7 @@ extern "C" PLUGIN_API float GetSchemaFloatByName(int entityHandle, const plg::st
  */
 extern "C" PLUGIN_API double GetSchemaDoubleByName(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
 {
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CBaseEntity* pEntity = dynamic_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		return {};
@@ -372,7 +372,7 @@ extern "C" PLUGIN_API double GetSchemaDoubleByName(int entityHandle, const plg::
  */
 extern "C" PLUGIN_API void* GetSchemaPointerByName(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
 {
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CBaseEntity* pEntity = dynamic_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		return {};
@@ -399,7 +399,7 @@ extern "C" PLUGIN_API void* GetSchemaPointerByName(int entityHandle, const plg::
  */
 extern "C" PLUGIN_API plg::str GetSchemaStringByName(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
 {
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CBaseEntity* pEntity = dynamic_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		return {};
@@ -427,7 +427,7 @@ extern "C" PLUGIN_API plg::str GetSchemaStringByName(int entityHandle, const plg
  */
 extern "C" PLUGIN_API plg::vec3 GetSchemaVectorByName(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
 {
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CBaseEntity* pEntity = dynamic_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		return {};
@@ -457,7 +457,7 @@ extern "C" PLUGIN_API plg::vec3 GetSchemaVectorByName(int entityHandle, const pl
  */
 extern "C" PLUGIN_API void SetSchemaValueBoolByName(int entityHandle, const plg::string& className, const plg::string& memberName, bool value, int extraOffset)
 {
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CBaseEntity* pEntity = dynamic_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		return;
@@ -492,7 +492,7 @@ extern "C" PLUGIN_API void SetSchemaValueBoolByName(int entityHandle, const plg:
  */
 extern "C" PLUGIN_API void SetSchemaValueInt8ByName(int entityHandle, const plg::string& className, const plg::string& memberName, int8_t value, int extraOffset)
 {
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CBaseEntity* pEntity = dynamic_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		return;
@@ -527,7 +527,7 @@ extern "C" PLUGIN_API void SetSchemaValueInt8ByName(int entityHandle, const plg:
  */
 extern "C" PLUGIN_API void SetSchemaValueInt16ByName(int entityHandle, const plg::string& className, const plg::string& memberName, int16_t value, int extraOffset)
 {
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CBaseEntity* pEntity = dynamic_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		return;
@@ -562,7 +562,7 @@ extern "C" PLUGIN_API void SetSchemaValueInt16ByName(int entityHandle, const plg
  */
 extern "C" PLUGIN_API void SetSchemaValueInt32ByName(int entityHandle, const plg::string& className, const plg::string& memberName, int32_t value, int extraOffset)
 {
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CBaseEntity* pEntity = dynamic_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		return;
@@ -597,7 +597,7 @@ extern "C" PLUGIN_API void SetSchemaValueInt32ByName(int entityHandle, const plg
  */
 extern "C" PLUGIN_API void SetSchemaValueInt64ByName(int entityHandle, const plg::string& className, const plg::string& memberName, int64_t value, int extraOffset)
 {
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CBaseEntity* pEntity = dynamic_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		return;
@@ -632,7 +632,7 @@ extern "C" PLUGIN_API void SetSchemaValueInt64ByName(int entityHandle, const plg
  */
 extern "C" PLUGIN_API void SetSchemaValueUInt8ByName(int entityHandle, const plg::string& className, const plg::string& memberName, uint8_t value, int extraOffset)
 {
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CBaseEntity* pEntity = dynamic_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		return;
@@ -667,7 +667,7 @@ extern "C" PLUGIN_API void SetSchemaValueUInt8ByName(int entityHandle, const plg
  */
 extern "C" PLUGIN_API void SetSchemaValueUInt16ByName(int entityHandle, const plg::string& className, const plg::string& memberName, uint16_t value, int extraOffset)
 {
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CBaseEntity* pEntity = dynamic_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		return;
@@ -702,7 +702,7 @@ extern "C" PLUGIN_API void SetSchemaValueUInt16ByName(int entityHandle, const pl
  */
 extern "C" PLUGIN_API void SetSchemaValueUInt32ByName(int entityHandle, const plg::string& className, const plg::string& memberName, uint32_t value, int extraOffset)
 {
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CBaseEntity* pEntity = dynamic_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		return;
@@ -737,7 +737,7 @@ extern "C" PLUGIN_API void SetSchemaValueUInt32ByName(int entityHandle, const pl
  */
 extern "C" PLUGIN_API void SetSchemaValueUInt64ByName(int entityHandle, const plg::string& className, const plg::string& memberName, uint64_t value, int extraOffset)
 {
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CBaseEntity* pEntity = dynamic_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		return;
@@ -772,7 +772,7 @@ extern "C" PLUGIN_API void SetSchemaValueUInt64ByName(int entityHandle, const pl
  */
 extern "C" PLUGIN_API void SetSchemaValueFloatByName(int entityHandle, const plg::string& className, const plg::string& memberName, float value, int extraOffset)
 {
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CBaseEntity* pEntity = dynamic_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		return;
@@ -807,7 +807,7 @@ extern "C" PLUGIN_API void SetSchemaValueFloatByName(int entityHandle, const plg
  */
 extern "C" PLUGIN_API void SetSchemaValueDoubleByName(int entityHandle, const plg::string& className, const plg::string& memberName, double value, int extraOffset)
 {
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CBaseEntity* pEntity = dynamic_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		return;
@@ -842,7 +842,7 @@ extern "C" PLUGIN_API void SetSchemaValueDoubleByName(int entityHandle, const pl
  */
 extern "C" PLUGIN_API void SetSchemaValueStringByName(int entityHandle, const plg::string& className, const plg::string& memberName, const plg::string& value, int extraOffset)
 {
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CBaseEntity* pEntity = dynamic_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		return;
@@ -877,7 +877,7 @@ extern "C" PLUGIN_API void SetSchemaValueStringByName(int entityHandle, const pl
  */
 extern "C" PLUGIN_API void SetSchemaValueVectorByName(int entityHandle, const plg::string& className, const plg::string& memberName, const Vector& value, int extraOffset)
 {
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CBaseEntity* pEntity = dynamic_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		return;
@@ -925,7 +925,7 @@ extern "C" PLUGIN_API void SetSchemaValueVectorByName(int entityHandle, const pl
  */
 extern "C" PLUGIN_API void SetSchemaStateChanged(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
 {
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CBaseEntity* pEntity = dynamic_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		return;
