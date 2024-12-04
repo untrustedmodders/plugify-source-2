@@ -67,7 +67,7 @@
             "IGameSystem::LoopInitAllSystems"
             {
                 "library"   "server"
-                "windows"   "48 89 5C 24 ? 57 48 83 EC ? 48 8B FA 48 8B D9 48 8D 15 ? ? ? ? 48 8D 0D"
+                "windows"   "48 8B C4 48 89 50 10 48 89 48 08 53 48 83 EC 70 "
                 "linux"     "55 31 C0 48 89 E5 41 57 41 56 41 55 41 54 53 31 DB"
             }
 			// String: "Game System %s is defined twice!\n"
@@ -348,7 +348,7 @@
                 "signature" "IGameSystem::LoopInitAllSystems"
                 "windows"
                 {
-                    "read_offs32" "152"
+                    "read_offs32" "671"
                 }
                 "linux"
                 {
