@@ -8888,6 +8888,40 @@
         "type": "ptr64",
         "description": "A pointer of game entity."
       }
+    },
+    {
+      "name": "GetGameRules",
+      "group": "Gamerules",
+      "description": "Retrieves the pointer to the current game rules instance.",
+      "funcName": "GetGameRules",
+      "paramTypes": [],
+      "retType": {
+        "type": "ptr64",
+        "description": "A pointer to the game rules object."
+      }
+    },
+    {
+      "name": "TerminateRound",
+      "group": "Gamerules",
+      "description": "Forces the round to end with a specified reason and delay.",
+      "funcName": "TerminateRound",
+      "paramTypes": [
+        {
+          "name": "delay",
+          "type": "float",
+          "ref": false,
+          "description": "Time (in seconds) to delay before the next round starts."
+        },
+        {
+          "name": "reason",
+          "type": "int32",
+          "ref": false,
+          "description": "The reason for ending the round, defined by the CSRoundEndReason enum."
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
     }
   ]
 }

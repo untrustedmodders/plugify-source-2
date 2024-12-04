@@ -263,7 +263,7 @@ extern "C" PLUGIN_API float GetSoundDuration(const plg::string& name)
  */
 extern "C" PLUGIN_API void EmitSound(int entityHandle, const plg::string& sound, int pitch, float volume, float delay)
 {
-	CBaseEntity* pEntity = dynamic_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		return;

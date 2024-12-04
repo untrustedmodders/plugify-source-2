@@ -440,7 +440,7 @@ extern "C" PLUGIN_API plg::vec ProcessTargetString(int caller, const plg::string
  */
 extern "C" PLUGIN_API void ChangeClientTeam(int clientIndex, int team)
 {
-	auto client = dynamic_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex)));
+	auto client = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex)));
 	if (!client)
 	{
 		return;
@@ -457,7 +457,7 @@ extern "C" PLUGIN_API void ChangeClientTeam(int clientIndex, int team)
  */
 extern "C" PLUGIN_API void SwitchClientTeam(int clientIndex, int team)
 {
-	auto client = dynamic_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex)));
+	auto client = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex)));
 	if (!client)
 	{
 		return;
@@ -482,11 +482,11 @@ extern "C" PLUGIN_API void RespawnClient(int clientIndex)
 	if (client->GetPawn()->IsAlive())
 	{
 		// TODO: Fix players spawning under spawn positions
-		dynamic_cast<CCSPlayerPawn*>(client->GetPawn())->Respawn();
+		static_cast<CCSPlayerPawn*>(client->GetPawn())->Respawn();
 	}
 	else
 	{
-		dynamic_cast<CCSPlayerController*>(client)->Respawn();
+		static_cast<CCSPlayerController*>(client)->Respawn();
 	}
 }
 
