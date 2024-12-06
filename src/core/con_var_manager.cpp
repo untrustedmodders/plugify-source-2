@@ -26,27 +26,18 @@ bool CConVarManager::RemoveConVar(const plg::string& name)
 	return false;
 }
 
-CConVarBaseData* CConVarManager::FindConVar(const plg::string& name)
+BaseConVar* CConVarManager::FindConVar(const plg::string& name)
 {
 	auto it = m_cnvLookup.find(name);
 	if (it != m_cnvLookup.end())
 	{
-		return std::get<ConVarInfoPtr>(*it)->conVar->GetConVarData();
+		return std::get<ConVarInfoPtr>(*it)->conVar.get();
 	}
 
-	ConVarHandle hCvarHandle = g_pCVar->FindConVar(name.c_str());
-	if (!hCvarHandle.IsValid())
-	{
-		return nullptr;
-	}
-
-	return g_pCVar->GetConVar(hCvarHandle);
-}
-
-bool CConVarManager::IsValidConVar(const plg::string& name) const
-{
-	ConVarHandle hFoundConVar = g_pCVar->FindConVar(name.c_str());
-	return hFoundConVar.IsValid();
+	auto& conVarInfo = *m_cnvLookup.emplace(name, std::make_unique<ConVarInfo>(name, "")).first->second;
+	conVarInfo.conVar = std::make_unique<ConVarRef<bool>>(name.c_str());
+	m_cnvCache.emplace(conVarInfo.conVar.get(), &conVarInfo);
+	return conVarInfo.conVar.get();
 }
 
 void CConVarManager::HookConVarChange(const plg::string& name, ConVarChangeListenerCallback callback)

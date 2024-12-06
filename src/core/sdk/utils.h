@@ -20,8 +20,8 @@ class CServerSideClient;
 namespace utils
 {
 	// ConVars
-	void SendConVarValue(CPlayerSlot slot, CConVarBaseData* cvar, const char* value);
-	void SendMultipleConVarValues(CPlayerSlot slot, CConVarBaseData** cvars, const char** values, uint32_t size);
+	void SendConVarValue(CPlayerSlot slot, BaseConVar* cvar, const char* value);
+	void SendMultipleConVarValues(CPlayerSlot slot, BaseConVar** cvars, const char** values, uint32_t size);
 
 	CBaseEntity* FindEntityByClassname(CEntityInstance* start, const char* name);
 
@@ -37,37 +37,114 @@ namespace utils
 	// c can be PI (for radians) or 180.0 (for degrees);
 	float GetAngleDifference(float x, float y, float c, bool relative = false);
 
-	void NotifyConVar(CConVarBaseData* conVar, const char* value);
-	void ReplicateConVar(CConVarBaseData* conVar, const char* value);
+	void NotifyConVar(BaseConVar* conVar, const char* value);
+	void ReplicateConVar(BaseConVar* conVar, const char* value);
 
 	template<typename T>
-	void SetConVar(CConVarBaseData* conVar, const T& value, bool replicate, bool notify)
+	void SetConVar(BaseConVar* conVar, const T& value, bool replicate, bool notify)
 	{
-		auto* cv = conVar->Cast<T>();
+		if (conVar == nullptr)
+		{
+			g_Logger.Log(LS_WARNING, "Invalid cvar pointer\n");
+			return;
+		}
+
+		auto* conVarData = conVar->GetConVarData();
+		if (conVarData == nullptr)
+		{
+			g_Logger.Log(LS_WARNING, "Invalid cvar data\n");
+			return;
+		}
+
+		if (conVarData->GetType() != TranslateConVarType<T>())
+		{
+			g_Logger.Log(LS_WARNING, "Invalid cvar type\n");
+			return;
+		}
+
+		auto* cv = conVarData->Cast<T>();
 		cv->SetValue(value);
 		if constexpr (std::same_as<T, const char*>)
 		{
-			if (replicate) ReplicateConVar(cv, value);
-			if (notify) NotifyConVar(cv, value);
+			if (replicate) ReplicateConVar(conVar, value);
+			if (notify) NotifyConVar(conVar, value);
 		}
 		else
 		{
-			if (replicate || notify) {
+			if (replicate || notify)
+			{
 				char val[512];
 				cv->GetStringValue(val, sizeof(val));
-				if (replicate) ReplicateConVar(cv, val);
-				if (notify) NotifyConVar(cv, val);
+				if (replicate) ReplicateConVar(conVar, val);
+				if (notify) NotifyConVar(conVar, val);
 			}
 		}
 	}
 
 	template<typename T>
-	void SetConVarString(CConVarBaseData* conVar, const char* value, bool replicate, bool notify)
+	void SetConVarString(BaseConVar* conVar, const char* value, bool replicate, bool notify)
 	{
-		auto* cv = conVar->Cast<T>();
+		if (conVar == nullptr)
+		{
+			g_Logger.Log(LS_WARNING, "Invalid cvar pointer\n");
+			return;
+		}
+
+		auto* conVarData = conVar->GetConVarData();
+		if (conVarData == nullptr)
+		{
+			g_Logger.Log(LS_WARNING, "Invalid cvar data\n");
+			return;
+		}
+
+		if (conVarData->GetType() != TranslateConVarType<T>())
+		{
+			g_Logger.Log(LS_WARNING, "Invalid cvar type\n");
+			return;
+		}
+
+		auto* cv = conVarData->Cast<T>();
 		cv->SetStringValue(value);
-		if (replicate) ReplicateConVar(cv, value);
-		if (notify) NotifyConVar(cv, value);
+		if (replicate) ReplicateConVar(conVar, value);
+		if (notify) NotifyConVar(conVar, value);
+	}
+
+	template<typename T>
+	void SetConVarValue(BaseConVar* conVar, const T& value)
+	{
+		if (conVar == nullptr)
+		{
+			g_Logger.Log(LS_WARNING, "Invalid convar pointer.\n");
+			return;
+		}
+
+		auto* conVarData = conVar->GetConVarData();
+		if (conVarData == nullptr)
+		{
+			g_Logger.Log(LS_WARNING, "Invalid convar data.\n");
+			return;
+		}
+
+		conVarData->Cast<T>()->SetValue(value);
+	}
+
+	template<typename T>
+	T GetConVarValue(BaseConVar* conVar)
+	{
+		if (conVar == nullptr)
+		{
+			g_Logger.Log(LS_WARNING, "Invalid convar pointer.\n");
+			return {};
+		}
+
+		auto* conVarData = conVar->GetConVarData();
+		if (conVarData == nullptr)
+		{
+			g_Logger.Log(LS_WARNING, "Invalid convar data.\n");
+			return {};
+		}
+
+		return conVarData->Cast<T>()->GetValue();
 	}
 
 	// Print functions

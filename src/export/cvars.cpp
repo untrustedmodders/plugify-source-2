@@ -16,7 +16,7 @@
  * @param flags Additional flags for the console variable.
  * @return A pointer to the created console variable.
  */
-extern "C" PLUGIN_API CConVarBaseData* CreateConVar(const plg::string& name, const plg::string& defaultValue, const plg::string& description, int flags)
+extern "C" PLUGIN_API BaseConVar* CreateConVar(const plg::string& name, const plg::string& defaultValue, const plg::string& description, int flags)
 {
 	return g_ConVarManager.CreateConVar<const char*>(name, description, defaultValue.data(), flags);
 }
@@ -37,7 +37,7 @@ extern "C" PLUGIN_API CConVarBaseData* CreateConVar(const plg::string& name, con
  * @param max The maximum value if hasMax is true.
  * @return A pointer to the created console variable data.
  */
-extern "C" PLUGIN_API CConVarBaseData* CreateConVarBool(const plg::string& name, bool defaultValue, const plg::string& description, int flags, bool hasMin, bool min, bool hasMax, bool max)
+extern "C" PLUGIN_API BaseConVar* CreateConVarBool(const plg::string& name, bool defaultValue, const plg::string& description, int flags, bool hasMin, bool min, bool hasMax, bool max)
 {
 	return g_ConVarManager.CreateConVar<bool>(name, description, defaultValue, flags, hasMin, min, hasMax, max);
 }
@@ -57,7 +57,7 @@ extern "C" PLUGIN_API CConVarBaseData* CreateConVarBool(const plg::string& name,
  * @param max The maximum value if hasMax is true.
  * @return A pointer to the created console variable data.
  */
-extern "C" PLUGIN_API CConVarBaseData* CreateConVarInt16(const plg::string& name, int16_t defaultValue, const plg::string& description, int flags, bool hasMin, int16_t min, bool hasMax, int16_t max)
+extern "C" PLUGIN_API BaseConVar* CreateConVarInt16(const plg::string& name, int16_t defaultValue, const plg::string& description, int flags, bool hasMin, int16_t min, bool hasMax, int16_t max)
 {
 	return g_ConVarManager.CreateConVar<int16_t>(name, description, defaultValue, flags, hasMin, min, hasMax, max);
 }
@@ -77,7 +77,7 @@ extern "C" PLUGIN_API CConVarBaseData* CreateConVarInt16(const plg::string& name
  * @param max The maximum value if hasMax is true.
  * @return A pointer to the created console variable data.
  */
-extern "C" PLUGIN_API CConVarBaseData* CreateConVarUInt16(const plg::string& name, uint16_t defaultValue, const plg::string& description, int flags, bool hasMin, uint16_t min, bool hasMax, uint16_t max)
+extern "C" PLUGIN_API BaseConVar* CreateConVarUInt16(const plg::string& name, uint16_t defaultValue, const plg::string& description, int flags, bool hasMin, uint16_t min, bool hasMax, uint16_t max)
 {
 	return g_ConVarManager.CreateConVar<uint16_t>(name, description, defaultValue, flags, hasMin, min, hasMax, max);
 }
@@ -97,7 +97,7 @@ extern "C" PLUGIN_API CConVarBaseData* CreateConVarUInt16(const plg::string& nam
  * @param max The maximum value if hasMax is true.
  * @return A pointer to the created console variable data.
  */
-extern "C" PLUGIN_API CConVarBaseData* CreateConVarInt32(const plg::string& name, int32_t defaultValue, const plg::string& description, int flags, bool hasMin, int32_t min, bool hasMax, int32_t max)
+extern "C" PLUGIN_API BaseConVar* CreateConVarInt32(const plg::string& name, int32_t defaultValue, const plg::string& description, int flags, bool hasMin, int32_t min, bool hasMax, int32_t max)
 {
 	return g_ConVarManager.CreateConVar<int32_t>(name, description, defaultValue, flags, hasMin, min, hasMax, max);
 }
@@ -117,7 +117,7 @@ extern "C" PLUGIN_API CConVarBaseData* CreateConVarInt32(const plg::string& name
  * @param max The maximum value if hasMax is true.
  * @return A pointer to the created console variable data.
  */
-extern "C" PLUGIN_API CConVarBaseData* CreateConVarUInt32(const plg::string& name, uint32_t defaultValue, const plg::string& description, int flags, bool hasMin, uint32_t min, bool hasMax, uint32_t max)
+extern "C" PLUGIN_API BaseConVar* CreateConVarUInt32(const plg::string& name, uint32_t defaultValue, const plg::string& description, int flags, bool hasMin, uint32_t min, bool hasMax, uint32_t max)
 {
 	return g_ConVarManager.CreateConVar<uint32_t>(name, description, defaultValue, flags, hasMin, min, hasMax, max);
 }
@@ -138,7 +138,7 @@ extern "C" PLUGIN_API CConVarBaseData* CreateConVarUInt32(const plg::string& nam
  * @param max The maximum value if hasMax is true.
  * @return A pointer to the created console variable data.
  */
-extern "C" PLUGIN_API CConVarBaseData* CreateConVarInt64(const plg::string& name, int64_t defaultValue, const plg::string& description, int flags, bool hasMin, int64_t min, bool hasMax, int64_t max)
+extern "C" PLUGIN_API BaseConVar* CreateConVarInt64(const plg::string& name, int64_t defaultValue, const plg::string& description, int flags, bool hasMin, int64_t min, bool hasMax, int64_t max)
 {
 	return g_ConVarManager.CreateConVar<int64_t>(name, description, defaultValue, flags, hasMin, min, hasMax, max);
 }
@@ -158,7 +158,7 @@ extern "C" PLUGIN_API CConVarBaseData* CreateConVarInt64(const plg::string& name
  * @param max The maximum value if hasMax is true.
  * @return A pointer to the created console variable data.
  */
-extern "C" PLUGIN_API CConVarBaseData* CreateConVarUInt64(const plg::string& name, uint64_t defaultValue, const plg::string& description, int flags, bool hasMin, uint64_t min, bool hasMax, uint64_t max)
+extern "C" PLUGIN_API BaseConVar* CreateConVarUInt64(const plg::string& name, uint64_t defaultValue, const plg::string& description, int flags, bool hasMin, uint64_t min, bool hasMax, uint64_t max)
 {
 	return g_ConVarManager.CreateConVar<uint64_t>(name, description, defaultValue, flags, hasMin, min, hasMax, max);
 }
@@ -178,7 +178,7 @@ extern "C" PLUGIN_API CConVarBaseData* CreateConVarUInt64(const plg::string& nam
  * @param max The maximum value if hasMax is true.
  * @return A pointer to the created console variable data.
  */
-extern "C" PLUGIN_API CConVarBaseData* CreateConVarFloat(const plg::string& name, float defaultValue, const plg::string& description, int flags, bool hasMin, float min, bool hasMax, float max)
+extern "C" PLUGIN_API BaseConVar* CreateConVarFloat(const plg::string& name, float defaultValue, const plg::string& description, int flags, bool hasMin, float min, bool hasMax, float max)
 {
 	return g_ConVarManager.CreateConVar<float>(name, description, defaultValue, flags, hasMin, min, hasMax, max);
 }
@@ -198,7 +198,7 @@ extern "C" PLUGIN_API CConVarBaseData* CreateConVarFloat(const plg::string& name
  * @param max The maximum value if hasMax is true.
  * @return A pointer to the created console variable data.
  */
-extern "C" PLUGIN_API CConVarBaseData* CreateConVarDouble(const plg::string& name, double defaultValue, const plg::string& description, int flags, bool hasMin, double min, bool hasMax, double max)
+extern "C" PLUGIN_API BaseConVar* CreateConVarDouble(const plg::string& name, double defaultValue, const plg::string& description, int flags, bool hasMin, double min, bool hasMax, double max)
 {
 	return g_ConVarManager.CreateConVar<double>(name, description, defaultValue, flags, hasMin, min, hasMax, max);
 }
@@ -219,7 +219,7 @@ extern "C" PLUGIN_API CConVarBaseData* CreateConVarDouble(const plg::string& nam
  * @param max The maximum color value if hasMax is true.
  * @return A pointer to the created console variable data.
  */
-extern "C" PLUGIN_API CConVarBaseData* CreateConVarColor(const plg::string& name, int defaultValue, const plg::string& description, int flags, bool hasMin, int min, bool hasMax, int max)
+extern "C" PLUGIN_API BaseConVar* CreateConVarColor(const plg::string& name, int defaultValue, const plg::string& description, int flags, bool hasMin, int min, bool hasMax, int max)
 {
 	Color defaultCol;
 	defaultCol.SetRawColor(defaultValue);
@@ -245,7 +245,7 @@ extern "C" PLUGIN_API CConVarBaseData* CreateConVarColor(const plg::string& name
  * @param max The maximum value if hasMax is true.
  * @return A pointer to the created console variable data.
  */
-extern "C" PLUGIN_API CConVarBaseData* CreateConVarVector2(const plg::string& name, const Vector2D& defaultValue, const plg::string& description, int flags, bool hasMin, const Vector2D& min, bool hasMax, const Vector2D& max)
+extern "C" PLUGIN_API BaseConVar* CreateConVarVector2(const plg::string& name, const Vector2D& defaultValue, const plg::string& description, int flags, bool hasMin, const Vector2D& min, bool hasMax, const Vector2D& max)
 {
 	return g_ConVarManager.CreateConVar<Vector2D>(name, description, defaultValue, flags, hasMin, min, hasMax, max);
 }
@@ -265,7 +265,7 @@ extern "C" PLUGIN_API CConVarBaseData* CreateConVarVector2(const plg::string& na
  * @param max The maximum value if hasMax is true.
  * @return A pointer to the created console variable data.
  */
-extern "C" PLUGIN_API CConVarBaseData* CreateConVarVector3(const plg::string& name, const Vector& defaultValue, const plg::string& description, int flags, bool hasMin, const Vector& min, bool hasMax, const Vector& max)
+extern "C" PLUGIN_API BaseConVar* CreateConVarVector3(const plg::string& name, const Vector& defaultValue, const plg::string& description, int flags, bool hasMin, const Vector& min, bool hasMax, const Vector& max)
 {
 	return g_ConVarManager.CreateConVar<Vector>(name, description, defaultValue, flags, hasMin, min, hasMax, max);
 }
@@ -285,7 +285,7 @@ extern "C" PLUGIN_API CConVarBaseData* CreateConVarVector3(const plg::string& na
  * @param max The maximum value if hasMax is true.
  * @return A pointer to the created console variable data.
  */
-extern "C" PLUGIN_API CConVarBaseData* CreateConVarVector4(const plg::string& name, const Vector4D& defaultValue, const plg::string& description, int flags, bool hasMin, const Vector4D& min, bool hasMax, const Vector4D& max)
+extern "C" PLUGIN_API BaseConVar* CreateConVarVector4(const plg::string& name, const Vector4D& defaultValue, const plg::string& description, int flags, bool hasMin, const Vector4D& min, bool hasMax, const Vector4D& max)
 {
 	return g_ConVarManager.CreateConVar<Vector4D>(name, description, defaultValue, flags, hasMin, min, hasMax, max);
 }
@@ -305,7 +305,7 @@ extern "C" PLUGIN_API CConVarBaseData* CreateConVarVector4(const plg::string& na
  * @param max The maximum value if hasMax is true.
  * @return A pointer to the created console variable data.
  */
-extern "C" PLUGIN_API CConVarBaseData* CreateConVarQangle(const plg::string& name, const QAngle& defaultValue, const plg::string& description, int flags, bool hasMin, const QAngle& min, bool hasMax, const QAngle& max)
+extern "C" PLUGIN_API BaseConVar* CreateConVarQangle(const plg::string& name, const QAngle& defaultValue, const plg::string& description, int flags, bool hasMin, const QAngle& min, bool hasMax, const QAngle& max)
 {
 	return g_ConVarManager.CreateConVar<QAngle>(name, description, defaultValue, flags, hasMin, min, hasMax, max);
 }
@@ -315,7 +315,7 @@ extern "C" PLUGIN_API CConVarBaseData* CreateConVarQangle(const plg::string& nam
  * @param name The name of the console variable to search for.
  * @return Pointer to the console variable data if found; otherwise, nullptr.
  */
-extern "C" PLUGIN_API CConVarBaseData* FindConVar(const plg::string& name)
+extern "C" PLUGIN_API BaseConVar* FindConVar(const plg::string& name)
 {
 	return g_ConVarManager.FindConVar(name);
 }
@@ -330,6 +330,11 @@ extern "C" PLUGIN_API CConVarBaseData* FindConVar(const plg::string& name)
  */
 extern "C" PLUGIN_API void HookConVarChange(const plg::string& name, ConVarChangeListenerCallback callback)
 {
+	if (callback == nullptr) {
+		g_Logger.Log(LS_WARNING, "Invalid callback pointer\n");
+		return;
+	}
+
 	g_ConVarManager.HookConVarChange(name, callback);
 }
 
@@ -343,6 +348,11 @@ extern "C" PLUGIN_API void HookConVarChange(const plg::string& name, ConVarChang
  */
 extern "C" PLUGIN_API void UnhookConVarChange(const plg::string& name, ConVarChangeListenerCallback callback)
 {
+	if (callback == nullptr) {
+		g_Logger.Log(LS_WARNING, "Invalid callback pointer\n");
+		return;
+	}
+
 	g_ConVarManager.UnhookConVarChange(name, callback);
 }
 
@@ -353,8 +363,14 @@ extern "C" PLUGIN_API void UnhookConVarChange(const plg::string& name, ConVarCha
  * @param flag The flag to check against the console variable.
  * @return True if the flag is set; otherwise, false.
  */
-extern "C" PLUGIN_API bool IsConVarFlagSet(CConVarBaseData* conVar, int64_t flag)
+extern "C" PLUGIN_API bool IsConVarFlagSet(BaseConVar* conVar, int64_t flag)
 {
+	if (conVar == nullptr)
+	{
+		g_Logger.Log(LS_WARNING, "Invalid convar pointer\n");
+		return false;
+	}
+
 	return conVar->IsFlagSet(flag);
 }
 
@@ -364,8 +380,14 @@ extern "C" PLUGIN_API bool IsConVarFlagSet(CConVarBaseData* conVar, int64_t flag
  * @param conVar Pointer to the console variable data.
  * @param flags The flags to be added.
  */
-extern "C" PLUGIN_API void AddConVarFlags(CConVarBaseData* conVar, int64_t flags)
+extern "C" PLUGIN_API void AddConVarFlags(BaseConVar* conVar, int64_t flags)
 {
+	if (conVar == nullptr)
+	{
+		g_Logger.Log(LS_WARNING, "Invalid convar pointer\n");
+		return;
+	}
+
 	conVar->AddFlags(flags);
 }
 
@@ -375,8 +397,14 @@ extern "C" PLUGIN_API void AddConVarFlags(CConVarBaseData* conVar, int64_t flags
  * @param conVar Pointer to the console variable data.
  * @param flags The flags to be removed.
  */
-extern "C" PLUGIN_API void RemoveConVarFlags(CConVarBaseData* conVar, int64_t flags)
+extern "C" PLUGIN_API void RemoveConVarFlags(BaseConVar* conVar, int64_t flags)
 {
+	if (conVar == nullptr)
+	{
+		g_Logger.Log(LS_WARNING, "Invalid convar pointer\n");
+		return;
+	}
+
 	conVar->RemoveFlags(flags);
 }
 
@@ -386,8 +414,14 @@ extern "C" PLUGIN_API void RemoveConVarFlags(CConVarBaseData* conVar, int64_t fl
  * @param conVar Pointer to the console variable data.
  * @return The current flags set on the console variable.
  */
-extern "C" PLUGIN_API int64_t GetConVarFlags(CConVarBaseData* conVar)
+extern "C" PLUGIN_API int64_t GetConVarFlags(BaseConVar* conVar)
 {
+	if (conVar == nullptr)
+	{
+		g_Logger.Log(LS_WARNING, "Invalid convar pointer\n");
+		return 0;
+	}
+
 	return conVar->GetFlags();
 }
 
@@ -398,57 +432,70 @@ extern "C" PLUGIN_API int64_t GetConVarFlags(CConVarBaseData* conVar)
  * @param max Indicates whether to get the maximum (true) or minimum (false) bound.
  * @return The bound value.
  */
-extern "C" PLUGIN_API plg::str GetConVarBounds(CConVarBaseData* conVar, bool max)
+extern "C" PLUGIN_API plg::str GetConVarBounds(BaseConVar* conVar, bool max)
 {
+	if (conVar == nullptr)
+	{
+		g_Logger.Log(LS_WARNING, "Invalid convar pointer.\n");
+		return plg::ReturnStr({});
+	}
+
+	auto* conVarData = conVar->GetConVarData();
+	if (conVarData == nullptr)
+	{
+		g_Logger.Log(LS_WARNING, "Invalid convar data.\n");
+		return plg::ReturnStr({});
+	}
+
 	plg::string value(256, '\0');
 	if (max)
 	{
 		switch (conVar->GetType())
 		{
 			case EConVarType_Bool:
-				conVar->Cast<bool>()->GetStringMaxValue(value.data(), value.size());
+				conVarData->Cast<bool>()->GetStringMaxValue(value.data(), value.size());
 				break;
 			case EConVarType_Int16:
-				conVar->Cast<int16_t>()->GetStringMaxValue(value.data(), value.size());
+				conVarData->Cast<int16_t>()->GetStringMaxValue(value.data(), value.size());
 				break;
 			case EConVarType_UInt16:
-				conVar->Cast<uint16_t>()->GetStringMaxValue(value.data(), value.size());
+				conVarData->Cast<uint16_t>()->GetStringMaxValue(value.data(), value.size());
 				break;
 			case EConVarType_Int32:
-				conVar->Cast<int32_t>()->GetStringMaxValue(value.data(), value.size());
+				conVarData->Cast<int32_t>()->GetStringMaxValue(value.data(), value.size());
 				break;
 			case EConVarType_UInt32:
-				conVar->Cast<uint16_t>()->GetStringMaxValue(value.data(), value.size());
+				conVarData->Cast<uint16_t>()->GetStringMaxValue(value.data(), value.size());
 				break;
 			case EConVarType_Int64:
-				conVar->Cast<int64_t>()->GetStringMaxValue(value.data(), value.size());
+				conVarData->Cast<int64_t>()->GetStringMaxValue(value.data(), value.size());
 				break;
 			case EConVarType_UInt64:
-				conVar->Cast<uint64_t>()->GetStringMaxValue(value.data(), value.size());
+				conVarData->Cast<uint64_t>()->GetStringMaxValue(value.data(), value.size());
 				break;
 			case EConVarType_Float32:
-				conVar->Cast<float>()->GetStringMaxValue(value.data(), value.size());
+				conVarData->Cast<float>()->GetStringMaxValue(value.data(), value.size());
 				break;
 			case EConVarType_Float64:
-				conVar->Cast<double>()->GetStringMaxValue(value.data(), value.size());
+				conVarData->Cast<double>()->GetStringMaxValue(value.data(), value.size());
 				break;
 			case EConVarType_String:
-				conVar->Cast<const char*>()->GetStringMaxValue(value.data(), value.size());
+				conVarData->Cast<const char*>()->GetStringMaxValue(value.data(), value.size());
 				break;
 			case EConVarType_Color:
-				conVar->Cast<Color>()->GetStringMaxValue(value.data(), value.size());
+				conVarData->Cast<Color>()->GetStringMaxValue(value.data(), value.size());
 				break;
 			case EConVarType_Vector2:
-				conVar->Cast<Vector2D>()->GetStringMaxValue(value.data(), value.size());
+				conVarData->Cast<Vector2D>()->GetStringMaxValue(value.data(), value.size());
 				break;
 			case EConVarType_Vector3:
-				conVar->Cast<Vector>()->GetStringMaxValue(value.data(), value.size());
+				conVarData->Cast<Vector>()->GetStringMaxValue(value.data(), value.size());
 				break;
 			case EConVarType_Vector4:
-				conVar->Cast<Vector4D>()->GetStringMaxValue(value.data(), value.size());
+				conVarData->Cast<Vector4D>()->GetStringMaxValue(value.data(), value.size());
 				break;
 			case EConVarType_Qangle:
-				conVar->Cast<QAngle>()->GetStringMaxValue(value.data(), value.size());
+				conVarData->Cast<QAngle>()->GetStringMaxValue(value.data(), value.size());
 				break;
 			default:
 				g_Logger.Log(LS_WARNING, "Invalid convar type.\n");
@@ -460,49 +507,49 @@ extern "C" PLUGIN_API plg::str GetConVarBounds(CConVarBaseData* conVar, bool max
 		switch (conVar->GetType())
 		{
 			case EConVarType_Bool:
-				conVar->Cast<bool>()->GetStringMinValue(value.data(), value.size());
+				conVarData->Cast<bool>()->GetStringMinValue(value.data(), value.size());
 				break;
 			case EConVarType_Int16:
-				conVar->Cast<int16_t>()->GetStringMinValue(value.data(), value.size());
+				conVarData->Cast<int16_t>()->GetStringMinValue(value.data(), value.size());
 				break;
 			case EConVarType_UInt16:
-				conVar->Cast<uint16_t>()->GetStringMinValue(value.data(), value.size());
+				conVarData->Cast<uint16_t>()->GetStringMinValue(value.data(), value.size());
 				break;
 			case EConVarType_Int32:
-				conVar->Cast<int32_t>()->GetStringMinValue(value.data(), value.size());
+				conVarData->Cast<int32_t>()->GetStringMinValue(value.data(), value.size());
 				break;
 			case EConVarType_UInt32:
-				conVar->Cast<uint16_t>()->GetStringMinValue(value.data(), value.size());
+				conVarData->Cast<uint16_t>()->GetStringMinValue(value.data(), value.size());
 				break;
 			case EConVarType_Int64:
-				conVar->Cast<int64_t>()->GetStringMinValue(value.data(), value.size());
+				conVarData->Cast<int64_t>()->GetStringMinValue(value.data(), value.size());
 				break;
 			case EConVarType_UInt64:
-				conVar->Cast<uint64_t>()->GetStringMinValue(value.data(), value.size());
+				conVarData->Cast<uint64_t>()->GetStringMinValue(value.data(), value.size());
 				break;
 			case EConVarType_Float32:
-				conVar->Cast<float>()->GetStringMinValue(value.data(), value.size());
+				conVarData->Cast<float>()->GetStringMinValue(value.data(), value.size());
 				break;
 			case EConVarType_Float64:
-				conVar->Cast<double>()->GetStringMinValue(value.data(), value.size());
+				conVarData->Cast<double>()->GetStringMinValue(value.data(), value.size());
 				break;
 			case EConVarType_String:
-				conVar->Cast<const char*>()->GetStringMinValue(value.data(), value.size());
+				conVarData->Cast<const char*>()->GetStringMinValue(value.data(), value.size());
 				break;
 			case EConVarType_Color:
-				conVar->Cast<Color>()->GetStringMinValue(value.data(), value.size());
+				conVarData->Cast<Color>()->GetStringMinValue(value.data(), value.size());
 				break;
 			case EConVarType_Vector2:
-				conVar->Cast<Vector2D>()->GetStringMinValue(value.data(), value.size());
+				conVarData->Cast<Vector2D>()->GetStringMinValue(value.data(), value.size());
 				break;
 			case EConVarType_Vector3:
-				conVar->Cast<Vector>()->GetStringMinValue(value.data(), value.size());
+				conVarData->Cast<Vector>()->GetStringMinValue(value.data(), value.size());
 				break;
 			case EConVarType_Vector4:
-				conVar->Cast<Vector4D>()->GetStringMinValue(value.data(), value.size());
+				conVarData->Cast<Vector4D>()->GetStringMinValue(value.data(), value.size());
 				break;
 			case EConVarType_Qangle:
-				conVar->Cast<QAngle>()->GetStringMinValue(value.data(), value.size());
+				conVarData->Cast<QAngle>()->GetStringMinValue(value.data(), value.size());
 				break;
 			default:
 				g_Logger.Log(LS_WARNING, "Invalid convar type.\n");
@@ -519,56 +566,69 @@ extern "C" PLUGIN_API plg::str GetConVarBounds(CConVarBaseData* conVar, bool max
  * @param max Indicates whether to set the maximum (true) or minimum (false) bound.
  * @param value The value to set as the bound.
  */
-extern "C" PLUGIN_API void SetConVarBounds(CConVarBaseData* conVar, bool max, const plg::string& value)
+extern "C" PLUGIN_API void SetConVarBounds(BaseConVar* conVar, bool max, const plg::string& value)
 {
+	if (conVar == nullptr)
+	{
+		g_Logger.Log(LS_WARNING, "Invalid convar pointer.\n");
+		return;
+	}
+	
+	auto* conVarData = conVar->GetConVarData();
+	if (conVarData == nullptr)
+	{
+		g_Logger.Log(LS_WARNING, "Invalid convar data.\n");
+		return;
+	}
+	
 	if (max)
 	{
 		switch (conVar->GetType())
 		{
 			case EConVarType_Bool:
-				conVar->Cast<bool>()->SetStringMaxValue(value.c_str());
+				conVarData->Cast<bool>()->SetStringMaxValue(value.c_str());
 				break;
 			case EConVarType_Int16:
-				conVar->Cast<int16_t>()->SetStringMaxValue(value.c_str());
+				conVarData->Cast<int16_t>()->SetStringMaxValue(value.c_str());
 				break;
 			case EConVarType_UInt16:
-				conVar->Cast<uint16_t>()->SetStringMaxValue(value.c_str());
+				conVarData->Cast<uint16_t>()->SetStringMaxValue(value.c_str());
 				break;
 			case EConVarType_Int32:
-				conVar->Cast<int32_t>()->SetStringMaxValue(value.c_str());
+				conVarData->Cast<int32_t>()->SetStringMaxValue(value.c_str());
 				break;
 			case EConVarType_UInt32:
-				conVar->Cast<uint16_t>()->SetStringMaxValue(value.c_str());
+				conVarData->Cast<uint16_t>()->SetStringMaxValue(value.c_str());
 				break;
 			case EConVarType_Int64:
-				conVar->Cast<int64_t>()->SetStringMaxValue(value.c_str());
+				conVarData->Cast<int64_t>()->SetStringMaxValue(value.c_str());
 				break;
 			case EConVarType_UInt64:
-				conVar->Cast<uint64_t>()->SetStringMaxValue(value.c_str());
+				conVarData->Cast<uint64_t>()->SetStringMaxValue(value.c_str());
 				break;
 			case EConVarType_Float32:
-				conVar->Cast<float>()->SetStringMaxValue(value.c_str());
+				conVarData->Cast<float>()->SetStringMaxValue(value.c_str());
 				break;
 			case EConVarType_Float64:
-				conVar->Cast<double>()->SetStringMaxValue(value.c_str());
+				conVarData->Cast<double>()->SetStringMaxValue(value.c_str());
 				break;
 			case EConVarType_String:
-				conVar->Cast<const char*>()->SetStringMaxValue(value.c_str());
+				conVarData->Cast<const char*>()->SetStringMaxValue(value.c_str());
 				break;
 			case EConVarType_Color:
-				conVar->Cast<Color>()->SetStringMaxValue(value.c_str());
+				conVarData->Cast<Color>()->SetStringMaxValue(value.c_str());
 				break;
 			case EConVarType_Vector2:
-				conVar->Cast<Vector2D>()->SetStringMaxValue(value.c_str());
+				conVarData->Cast<Vector2D>()->SetStringMaxValue(value.c_str());
 				break;
 			case EConVarType_Vector3:
-				conVar->Cast<Vector>()->SetStringMaxValue(value.c_str());
+				conVarData->Cast<Vector>()->SetStringMaxValue(value.c_str());
 				break;
 			case EConVarType_Vector4:
-				conVar->Cast<Vector4D>()->SetStringMaxValue(value.c_str());
+				conVarData->Cast<Vector4D>()->SetStringMaxValue(value.c_str());
 				break;
 			case EConVarType_Qangle:
-				conVar->Cast<QAngle>()->SetStringMaxValue(value.c_str());
+				conVarData->Cast<QAngle>()->SetStringMaxValue(value.c_str());
 				break;
 			default:
 				g_Logger.Log(LS_WARNING, "Invalid convar type.\n");
@@ -580,49 +640,49 @@ extern "C" PLUGIN_API void SetConVarBounds(CConVarBaseData* conVar, bool max, co
 		switch (conVar->GetType())
 		{
 			case EConVarType_Bool:
-				conVar->Cast<bool>()->SetStringMinValue(value.c_str());
+				conVarData->Cast<bool>()->SetStringMinValue(value.c_str());
 				break;
 			case EConVarType_Int16:
-				conVar->Cast<int16_t>()->SetStringMinValue(value.c_str());
+				conVarData->Cast<int16_t>()->SetStringMinValue(value.c_str());
 				break;
 			case EConVarType_UInt16:
-				conVar->Cast<uint16_t>()->SetStringMinValue(value.c_str());
+				conVarData->Cast<uint16_t>()->SetStringMinValue(value.c_str());
 				break;
 			case EConVarType_Int32:
-				conVar->Cast<int32_t>()->SetStringMinValue(value.c_str());
+				conVarData->Cast<int32_t>()->SetStringMinValue(value.c_str());
 				break;
 			case EConVarType_UInt32:
-				conVar->Cast<uint16_t>()->SetStringMinValue(value.c_str());
+				conVarData->Cast<uint16_t>()->SetStringMinValue(value.c_str());
 				break;
 			case EConVarType_Int64:
-				conVar->Cast<int64_t>()->SetStringMinValue(value.c_str());
+				conVarData->Cast<int64_t>()->SetStringMinValue(value.c_str());
 				break;
 			case EConVarType_UInt64:
-				conVar->Cast<uint64_t>()->SetStringMinValue(value.c_str());
+				conVarData->Cast<uint64_t>()->SetStringMinValue(value.c_str());
 				break;
 			case EConVarType_Float32:
-				conVar->Cast<float>()->SetStringMinValue(value.c_str());
+				conVarData->Cast<float>()->SetStringMinValue(value.c_str());
 				break;
 			case EConVarType_Float64:
-				conVar->Cast<double>()->SetStringMinValue(value.c_str());
+				conVarData->Cast<double>()->SetStringMinValue(value.c_str());
 				break;
 			case EConVarType_String:
-				conVar->Cast<const char*>()->SetStringMinValue(value.c_str());
+				conVarData->Cast<const char*>()->SetStringMinValue(value.c_str());
 				break;
 			case EConVarType_Color:
-				conVar->Cast<Color>()->SetStringMinValue(value.c_str());
+				conVarData->Cast<Color>()->SetStringMinValue(value.c_str());
 				break;
 			case EConVarType_Vector2:
-				conVar->Cast<Vector2D>()->SetStringMinValue(value.c_str());
+				conVarData->Cast<Vector2D>()->SetStringMinValue(value.c_str());
 				break;
 			case EConVarType_Vector3:
-				conVar->Cast<Vector>()->SetStringMinValue(value.c_str());
+				conVarData->Cast<Vector>()->SetStringMinValue(value.c_str());
 				break;
 			case EConVarType_Vector4:
-				conVar->Cast<Vector4D>()->SetStringMinValue(value.c_str());
+				conVarData->Cast<Vector4D>()->SetStringMinValue(value.c_str());
 				break;
 			case EConVarType_Qangle:
-				conVar->Cast<QAngle>()->SetStringMinValue(value.c_str());
+				conVarData->Cast<QAngle>()->SetStringMinValue(value.c_str());
 				break;
 			default:
 				g_Logger.Log(LS_WARNING, "Invalid convar type.\n");
@@ -637,53 +697,66 @@ extern "C" PLUGIN_API void SetConVarBounds(CConVarBaseData* conVar, bool max, co
  * @param conVar Pointer to the console variable data.
  * @return The output value in string format.
  */
-extern "C" PLUGIN_API plg::str GetConVarDefault(CConVarBaseData* conVar)
+extern "C" PLUGIN_API plg::str GetConVarDefault(BaseConVar* conVar)
 {
-	switch (conVar->GetType())
+	if (conVar == nullptr)
+	{
+		g_Logger.Log(LS_WARNING, "Invalid convar pointer.\n");
+		return plg::ReturnStr({});
+	}
+
+	auto* conVarData = conVar->GetConVarData();
+	if (conVarData == nullptr)
+	{
+		g_Logger.Log(LS_WARNING, "Invalid convar data.\n");
+		return plg::ReturnStr({});
+	}
+
+	switch (conVarData->GetType())
 	{
 		case EConVarType_Bool:
-			return plg::ReturnStr(conVar->Cast<bool>()->GetDefaultValue() ? "true" : "false");
+			return plg::ReturnStr(conVarData->Cast<bool>()->GetDefaultValue() ? "true" : "false");
 		case EConVarType_Int16:
-			return plg::ReturnStr(plg::to_string(conVar->Cast<int16_t>()->GetDefaultValue()));
+			return plg::ReturnStr(plg::to_string(conVarData->Cast<int16_t>()->GetDefaultValue()));
 		case EConVarType_UInt16:
-			return plg::ReturnStr(plg::to_string(conVar->Cast<uint16_t>()->GetDefaultValue()));
+			return plg::ReturnStr(plg::to_string(conVarData->Cast<uint16_t>()->GetDefaultValue()));
 		case EConVarType_Int32:
-			return plg::ReturnStr(plg::to_string(conVar->Cast<int32_t>()->GetDefaultValue()));
+			return plg::ReturnStr(plg::to_string(conVarData->Cast<int32_t>()->GetDefaultValue()));
 		case EConVarType_UInt32:
-			return plg::ReturnStr(plg::to_string(conVar->Cast<uint16_t>()->GetDefaultValue()));
+			return plg::ReturnStr(plg::to_string(conVarData->Cast<uint16_t>()->GetDefaultValue()));
 		case EConVarType_Int64:
-			return plg::ReturnStr(plg::to_string(conVar->Cast<int64_t>()->GetDefaultValue()));
+			return plg::ReturnStr(plg::to_string(conVarData->Cast<int64_t>()->GetDefaultValue()));
 		case EConVarType_UInt64:
-			return plg::ReturnStr(plg::to_string(conVar->Cast<uint64_t>()->GetDefaultValue()));
+			return plg::ReturnStr(plg::to_string(conVarData->Cast<uint64_t>()->GetDefaultValue()));
 		case EConVarType_Float32:
-			return plg::ReturnStr(plg::to_string(conVar->Cast<float>()->GetDefaultValue()));
+			return plg::ReturnStr(plg::to_string(conVarData->Cast<float>()->GetDefaultValue()));
 		case EConVarType_Float64:
-			return plg::ReturnStr(plg::to_string(conVar->Cast<double>()->GetDefaultValue()));
+			return plg::ReturnStr(plg::to_string(conVarData->Cast<double>()->GetDefaultValue()));
 		case EConVarType_String:
-			return plg::ReturnStr(conVar->Cast<const char*>()->GetDefaultValue());
+			return plg::ReturnStr(conVarData->Cast<const char*>()->GetDefaultValue());
 		case EConVarType_Color:
 		{
-			const auto& value = conVar->Cast<Color>()->GetDefaultValue();
+			const auto& value = conVarData->Cast<Color>()->GetDefaultValue();
 			return plg::ReturnStr(std::format("{} {} {} {}", value.r(), value.g(), value.b(), value.a()));
 		}
 		case EConVarType_Vector2:
 		{
-			const auto& value = conVar->Cast<Vector2D>()->GetDefaultValue();
+			const auto& value = conVarData->Cast<Vector2D>()->GetDefaultValue();
 			return plg::ReturnStr(std::format("{} {}", value.x, value.y));
 		}
 		case EConVarType_Vector3:
 		{
-			const auto& value = conVar->Cast<Vector>()->GetDefaultValue();
+			const auto& value = conVarData->Cast<Vector>()->GetDefaultValue();
 			return plg::ReturnStr(std::format("{} {} {}", value.x, value.y, value.z));
 		}
 		case EConVarType_Vector4:
 		{
-			const auto& value = conVar->Cast<Vector4D>()->GetDefaultValue();
+			const auto& value = conVarData->Cast<Vector4D>()->GetDefaultValue();
 			return plg::ReturnStr(std::format("{} {} {} {}", value.x, value.y, value.z, value.w));
 		}
 		case EConVarType_Qangle:
 		{
-			const auto& value = conVar->Cast<QAngle>()->GetDefaultValue();
+			const auto& value = conVarData->Cast<QAngle>()->GetDefaultValue();
 			return plg::ReturnStr(std::format("{} {} {}", value.x, value.y, value.z));
 		}
 		default:
@@ -698,53 +771,66 @@ extern "C" PLUGIN_API plg::str GetConVarDefault(CConVarBaseData* conVar)
  * @param conVar Pointer to the console variable data.
  * @return The output value in string format.
  */
-extern "C" PLUGIN_API plg::str GetConVarValue(CConVarBaseData* conVar)
+extern "C" PLUGIN_API plg::str GetConVarValue(BaseConVar* conVar)
 {
-	switch (conVar->GetType())
+	if (conVar == nullptr)
+	{
+		g_Logger.Log(LS_WARNING, "Invalid convar pointer.\n");
+		return plg::ReturnStr({});
+	}
+	
+	auto* conVarData = conVar->GetConVarData();
+	if (conVarData == nullptr)
+	{
+		g_Logger.Log(LS_WARNING, "Invalid convar data.\n");
+		return plg::ReturnStr({});
+	}
+
+	switch (conVarData->GetType())
 	{
 		case EConVarType_Bool:
-			return plg::ReturnStr(conVar->Cast<bool>()->GetValue() ? "true" : "false");
+			return plg::ReturnStr(conVarData->Cast<bool>()->GetValue() ? "true" : "false");
 		case EConVarType_Int16:
-			return plg::ReturnStr(plg::to_string(conVar->Cast<int16_t>()->GetValue()));
+			return plg::ReturnStr(plg::to_string(conVarData->Cast<int16_t>()->GetValue()));
 		case EConVarType_UInt16:
-			return plg::ReturnStr(plg::to_string(conVar->Cast<uint16_t>()->GetValue()));
+			return plg::ReturnStr(plg::to_string(conVarData->Cast<uint16_t>()->GetValue()));
 		case EConVarType_Int32:
-			return plg::ReturnStr(plg::to_string(conVar->Cast<int32_t>()->GetValue()));
+			return plg::ReturnStr(plg::to_string(conVarData->Cast<int32_t>()->GetValue()));
 		case EConVarType_UInt32:
-			return plg::ReturnStr(plg::to_string(conVar->Cast<uint16_t>()->GetValue()));
+			return plg::ReturnStr(plg::to_string(conVarData->Cast<uint16_t>()->GetValue()));
 		case EConVarType_Int64:
-			return plg::ReturnStr(plg::to_string(conVar->Cast<int64_t>()->GetValue()));
+			return plg::ReturnStr(plg::to_string(conVarData->Cast<int64_t>()->GetValue()));
 		case EConVarType_UInt64:
-			return plg::ReturnStr(plg::to_string(conVar->Cast<uint64_t>()->GetValue()));
+			return plg::ReturnStr(plg::to_string(conVarData->Cast<uint64_t>()->GetValue()));
 		case EConVarType_Float32:
-			return plg::ReturnStr(plg::to_string(conVar->Cast<float>()->GetValue()));
+			return plg::ReturnStr(plg::to_string(conVarData->Cast<float>()->GetValue()));
 		case EConVarType_Float64:
-			return plg::ReturnStr(plg::to_string(conVar->Cast<double>()->GetValue()));
+			return plg::ReturnStr(plg::to_string(conVarData->Cast<double>()->GetValue()));
 		case EConVarType_String:
-			return plg::ReturnStr(conVar->Cast<const char*>()->GetValue());
+			return plg::ReturnStr(conVarData->Cast<const char*>()->GetValue());
 		case EConVarType_Color:
 		{
-			const auto& value = conVar->Cast<Color>()->GetValue();
+			const auto& value = conVarData->Cast<Color>()->GetValue();
 			return plg::ReturnStr(std::format("{} {} {} {}", value.r(), value.g(), value.b(), value.a()));
 		}
 		case EConVarType_Vector2:
 		{
-			const auto& value = conVar->Cast<Vector2D>()->GetValue();
+			const auto& value = conVarData->Cast<Vector2D>()->GetValue();
 			return plg::ReturnStr(std::format("{} {}", value.x, value.y));
 		}
 		case EConVarType_Vector3:
 		{
-			const auto& value = conVar->Cast<Vector>()->GetValue();
+			const auto& value = conVarData->Cast<Vector>()->GetValue();
 			return plg::ReturnStr(std::format("{} {} {}", value.x, value.y, value.z));
 		}
 		case EConVarType_Vector4:
 		{
-			const auto& value = conVar->Cast<Vector4D>()->GetValue();
+			const auto& value = conVarData->Cast<Vector4D>()->GetValue();
 			return plg::ReturnStr(std::format("{} {} {} {}", value.x, value.y, value.z, value.w));
 		}
 		case EConVarType_Qangle:
 		{
-			const auto& value = conVar->Cast<QAngle>()->GetValue();
+			const auto& value = conVarData->Cast<QAngle>()->GetValue();
 			return plg::ReturnStr(std::format("{} {} {}", value.x, value.y, value.z));
 		}
 		default:
@@ -759,9 +845,9 @@ extern "C" PLUGIN_API plg::str GetConVarValue(CConVarBaseData* conVar)
  * @param conVar Pointer to the console variable data.
  * @return The current boolean value of the console variable.
  */
-extern "C" PLUGIN_API bool GetConVarBool(CConVarBaseData* conVar)
+extern "C" PLUGIN_API bool GetConVarBool(BaseConVar* conVar)
 {
-    return conVar->Cast<bool>()->GetValue();
+	return utils::GetConVarValue<bool>(conVar);
 }
 
 /**
@@ -770,9 +856,9 @@ extern "C" PLUGIN_API bool GetConVarBool(CConVarBaseData* conVar)
  * @param conVar Pointer to the console variable data.
  * @return The current int16_t value of the console variable.
  */
-extern "C" PLUGIN_API int16_t GetConVarInt16(CConVarBaseData* conVar)
+extern "C" PLUGIN_API int16_t GetConVarInt16(BaseConVar* conVar)
 {
-    return conVar->Cast<int16_t>()->GetValue();
+	return utils::GetConVarValue<int16_t>(conVar);
 }
 
 /**
@@ -781,9 +867,9 @@ extern "C" PLUGIN_API int16_t GetConVarInt16(CConVarBaseData* conVar)
  * @param conVar Pointer to the console variable data.
  * @return The current uint16_t value of the console variable.
  */
-extern "C" PLUGIN_API uint16_t GetConVarUInt16(CConVarBaseData* conVar)
+extern "C" PLUGIN_API uint16_t GetConVarUInt16(BaseConVar* conVar)
 {
-    return conVar->Cast<uint16_t>()->GetValue();
+	return utils::GetConVarValue<uint16_t>(conVar);
 }
 
 /**
@@ -792,9 +878,9 @@ extern "C" PLUGIN_API uint16_t GetConVarUInt16(CConVarBaseData* conVar)
  * @param conVar Pointer to the console variable data.
  * @return The current int32_t value of the console variable.
  */
-extern "C" PLUGIN_API int32_t GetConVarInt32(CConVarBaseData* conVar)
+extern "C" PLUGIN_API int32_t GetConVarInt32(BaseConVar* conVar)
 {
-    return conVar->Cast<int32_t>()->GetValue();
+	return utils::GetConVarValue<int32_t>(conVar);
 }
 
 /**
@@ -803,9 +889,9 @@ extern "C" PLUGIN_API int32_t GetConVarInt32(CConVarBaseData* conVar)
  * @param conVar Pointer to the console variable data.
  * @return The current uint32_t value of the console variable.
  */
-extern "C" PLUGIN_API uint32_t GetConVarUInt32(CConVarBaseData* conVar)
+extern "C" PLUGIN_API uint32_t GetConVarUInt32(BaseConVar* conVar)
 {
-    return conVar->Cast<uint32_t>()->GetValue();
+	return utils::GetConVarValue<uint32_t>(conVar);
 }
 
 /**
@@ -814,9 +900,9 @@ extern "C" PLUGIN_API uint32_t GetConVarUInt32(CConVarBaseData* conVar)
  * @param conVar Pointer to the console variable data.
  * @return The current int64_t value of the console variable.
  */
-extern "C" PLUGIN_API int64_t GetConVarInt64(CConVarBaseData* conVar)
+extern "C" PLUGIN_API int64_t GetConVarInt64(BaseConVar* conVar)
 {
-    return conVar->Cast<int64_t>()->GetValue();
+	return utils::GetConVarValue<int64_t>(conVar);
 }
 
 /**
@@ -825,9 +911,9 @@ extern "C" PLUGIN_API int64_t GetConVarInt64(CConVarBaseData* conVar)
  * @param conVar Pointer to the console variable data.
  * @return The current uint64_t value of the console variable.
  */
-extern "C" PLUGIN_API uint64_t GetConVarUInt64(CConVarBaseData* conVar)
+extern "C" PLUGIN_API uint64_t GetConVarUInt64(BaseConVar* conVar)
 {
-    return conVar->Cast<uint64_t>()->GetValue();
+	return utils::GetConVarValue<uint64_t>(conVar);
 }
 
 /**
@@ -836,9 +922,9 @@ extern "C" PLUGIN_API uint64_t GetConVarUInt64(CConVarBaseData* conVar)
  * @param conVar Pointer to the console variable data.
  * @return The current float value of the console variable.
  */
-extern "C" PLUGIN_API float GetConVarFloat(CConVarBaseData* conVar)
+extern "C" PLUGIN_API float GetConVarFloat(BaseConVar* conVar)
 {
-    return conVar->Cast<float>()->GetValue();
+	return utils::GetConVarValue<float>(conVar);
 }
 
 /**
@@ -847,9 +933,9 @@ extern "C" PLUGIN_API float GetConVarFloat(CConVarBaseData* conVar)
  * @param conVar Pointer to the console variable data.
  * @return The current double value of the console variable.
  */
-extern "C" PLUGIN_API double GetConVarDouble(CConVarBaseData* conVar)
+extern "C" PLUGIN_API double GetConVarDouble(BaseConVar* conVar)
 {
-    return conVar->Cast<double>()->GetValue();
+	return utils::GetConVarValue<double>(conVar);
 }
 
 /**
@@ -858,9 +944,9 @@ extern "C" PLUGIN_API double GetConVarDouble(CConVarBaseData* conVar)
  * @param conVar Pointer to the console variable data.
  * @return The current string value of the console variable.
  */
-extern "C" PLUGIN_API plg::str GetConVarString(CConVarBaseData* conVar)
+extern "C" PLUGIN_API plg::str GetConVarString(BaseConVar* conVar)
 {
-	return plg::ReturnStr(conVar->Cast<const char*>()->GetValue());
+	return plg::ReturnStr(utils::GetConVarValue<const char*>(conVar));
 }
 
 /**
@@ -869,9 +955,9 @@ extern "C" PLUGIN_API plg::str GetConVarString(CConVarBaseData* conVar)
  * @param conVar Pointer to the console variable data.
  * @return The current Color value of the console variable.
  */
-extern "C" PLUGIN_API int GetConVarColor(CConVarBaseData* conVar)
+extern "C" PLUGIN_API int GetConVarColor(BaseConVar* conVar)
 {
-    return conVar->Cast<Color>()->GetValue().GetRawColor();
+    return utils::GetConVarValue<Color>(conVar).GetRawColor();
 }
 
 /**
@@ -880,9 +966,9 @@ extern "C" PLUGIN_API int GetConVarColor(CConVarBaseData* conVar)
  * @param conVar Pointer to the console variable data.
  * @return The current Vector2D value of the console variable.
  */
-extern "C" PLUGIN_API plg::vec2 GetConVarVector2(CConVarBaseData* conVar)
+extern "C" PLUGIN_API plg::vec2 GetConVarVector2(BaseConVar* conVar)
 {
-	const Vector2D& vec = conVar->Cast<Vector2D>()->GetValue();
+	const Vector2D& vec = utils::GetConVarValue<Vector2D>(conVar);
     return *reinterpret_cast<const plg::vec2*>(&vec);
 }
 
@@ -892,9 +978,9 @@ extern "C" PLUGIN_API plg::vec2 GetConVarVector2(CConVarBaseData* conVar)
  * @param conVar Pointer to the console variable data.
  * @return The current Vector value of the console variable.
  */
-extern "C" PLUGIN_API plg::vec3 GetConVarVector(CConVarBaseData* conVar)
+extern "C" PLUGIN_API plg::vec3 GetConVarVector(BaseConVar* conVar)
 {
-	const Vector& vec = conVar->Cast<Vector>()->GetValue();
+	const Vector& vec = utils::GetConVarValue<Vector>(conVar);
     return *reinterpret_cast<const plg::vec3*>(&vec);
 }
 
@@ -904,9 +990,9 @@ extern "C" PLUGIN_API plg::vec3 GetConVarVector(CConVarBaseData* conVar)
  * @param conVar Pointer to the console variable data.
  * @return The current Vector4D value of the console variable.
  */
-extern "C" PLUGIN_API plg::vec4 GetConVarVector4(CConVarBaseData* conVar)
+extern "C" PLUGIN_API plg::vec4 GetConVarVector4(BaseConVar* conVar)
 {
-	const Vector4D& vec = conVar->Cast<Vector4D>()->GetValue();
+	const Vector4D& vec = utils::GetConVarValue<Vector4D>(conVar);
     return *reinterpret_cast<const plg::vec4*>(&vec);
 }
 
@@ -916,9 +1002,9 @@ extern "C" PLUGIN_API plg::vec4 GetConVarVector4(CConVarBaseData* conVar)
  * @param conVar Pointer to the console variable data.
  * @return The current QAngle value of the console variable.
  */
-extern "C" PLUGIN_API plg::vec3 GetConVarQangle(CConVarBaseData* conVar)
+extern "C" PLUGIN_API plg::vec3 GetConVarQangle(BaseConVar* conVar)
 {
-	const QAngle& ang = conVar->Cast<QAngle>()->GetValue();
+	const QAngle& ang = utils::GetConVarValue<QAngle>(conVar);
     return *reinterpret_cast<const plg::vec3*>(&ang);
 }
 
@@ -930,7 +1016,7 @@ extern "C" PLUGIN_API plg::vec3 GetConVarQangle(CConVarBaseData* conVar)
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarValue(CConVarBaseData* conVar, const plg::string& value, bool replicate, bool notify)
+extern "C" PLUGIN_API void SetConVarValue(BaseConVar* conVar, const plg::string& value, bool replicate, bool notify)
 {
 	switch (conVar->GetType())
 	{
@@ -993,7 +1079,7 @@ extern "C" PLUGIN_API void SetConVarValue(CConVarBaseData* conVar, const plg::st
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarBool(CConVarBaseData* conVar, bool value, bool replicate, bool notify)
+extern "C" PLUGIN_API void SetConVarBool(BaseConVar* conVar, bool value, bool replicate, bool notify)
 {
 	utils::SetConVar(conVar, value, replicate, notify);
 }
@@ -1006,7 +1092,7 @@ extern "C" PLUGIN_API void SetConVarBool(CConVarBaseData* conVar, bool value, bo
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarInt16(CConVarBaseData* conVar, int16_t value, bool replicate, bool notify)
+extern "C" PLUGIN_API void SetConVarInt16(BaseConVar* conVar, int16_t value, bool replicate, bool notify)
 {
 	utils::SetConVar(conVar, value, replicate, notify);
 }
@@ -1019,7 +1105,7 @@ extern "C" PLUGIN_API void SetConVarInt16(CConVarBaseData* conVar, int16_t value
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarUInt16(CConVarBaseData* conVar, uint16_t value, bool replicate, bool notify)
+extern "C" PLUGIN_API void SetConVarUInt16(BaseConVar* conVar, uint16_t value, bool replicate, bool notify)
 {
 	utils::SetConVar(conVar, value, replicate, notify);
 }
@@ -1032,7 +1118,7 @@ extern "C" PLUGIN_API void SetConVarUInt16(CConVarBaseData* conVar, uint16_t val
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarInt32(CConVarBaseData* conVar, int32_t value, bool replicate, bool notify)
+extern "C" PLUGIN_API void SetConVarInt32(BaseConVar* conVar, int32_t value, bool replicate, bool notify)
 {
 	utils::SetConVar(conVar, value, replicate, notify);
 }
@@ -1045,7 +1131,7 @@ extern "C" PLUGIN_API void SetConVarInt32(CConVarBaseData* conVar, int32_t value
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarUInt32(CConVarBaseData* conVar, uint32_t value, bool replicate, bool notify)
+extern "C" PLUGIN_API void SetConVarUInt32(BaseConVar* conVar, uint32_t value, bool replicate, bool notify)
 {
 	utils::SetConVar(conVar, value, replicate, notify);
 }
@@ -1058,7 +1144,7 @@ extern "C" PLUGIN_API void SetConVarUInt32(CConVarBaseData* conVar, uint32_t val
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarInt64(CConVarBaseData* conVar, int64_t value, bool replicate, bool notify)
+extern "C" PLUGIN_API void SetConVarInt64(BaseConVar* conVar, int64_t value, bool replicate, bool notify)
 {
 	utils::SetConVar(conVar, value, replicate, notify);
 }
@@ -1071,7 +1157,7 @@ extern "C" PLUGIN_API void SetConVarInt64(CConVarBaseData* conVar, int64_t value
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarUInt64(CConVarBaseData* conVar, uint64_t value, bool replicate, bool notify)
+extern "C" PLUGIN_API void SetConVarUInt64(BaseConVar* conVar, uint64_t value, bool replicate, bool notify)
 {
 	utils::SetConVar(conVar, value, replicate, notify);
 }
@@ -1084,7 +1170,7 @@ extern "C" PLUGIN_API void SetConVarUInt64(CConVarBaseData* conVar, uint64_t val
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarFloat(CConVarBaseData* conVar, float value, bool replicate, bool notify)
+extern "C" PLUGIN_API void SetConVarFloat(BaseConVar* conVar, float value, bool replicate, bool notify)
 {
 	utils::SetConVar(conVar, value, replicate, notify);
 }
@@ -1097,7 +1183,7 @@ extern "C" PLUGIN_API void SetConVarFloat(CConVarBaseData* conVar, float value, 
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarDouble(CConVarBaseData* conVar, double value, bool replicate, bool notify)
+extern "C" PLUGIN_API void SetConVarDouble(BaseConVar* conVar, double value, bool replicate, bool notify)
 {
 	utils::SetConVar(conVar, value, replicate, notify);
 }
@@ -1110,7 +1196,7 @@ extern "C" PLUGIN_API void SetConVarDouble(CConVarBaseData* conVar, double value
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarString(CConVarBaseData* conVar, const plg::string& value, bool replicate, bool notify)
+extern "C" PLUGIN_API void SetConVarString(BaseConVar* conVar, const plg::string& value, bool replicate, bool notify)
 {
 	utils::SetConVar(conVar, value.c_str(), replicate, notify);
 }
@@ -1123,7 +1209,7 @@ extern "C" PLUGIN_API void SetConVarString(CConVarBaseData* conVar, const plg::s
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarColor(CConVarBaseData* conVar, int value, bool replicate, bool notify)
+extern "C" PLUGIN_API void SetConVarColor(BaseConVar* conVar, int value, bool replicate, bool notify)
 {
 	Color color;
 	color.SetRawColor(value);
@@ -1138,7 +1224,7 @@ extern "C" PLUGIN_API void SetConVarColor(CConVarBaseData* conVar, int value, bo
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarVector2(CConVarBaseData* conVar, const Vector2D& value, bool replicate, bool notify)
+extern "C" PLUGIN_API void SetConVarVector2(BaseConVar* conVar, const Vector2D& value, bool replicate, bool notify)
 {
 	utils::SetConVar(conVar, value, replicate, notify);
 }
@@ -1151,7 +1237,7 @@ extern "C" PLUGIN_API void SetConVarVector2(CConVarBaseData* conVar, const Vecto
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarVector3(CConVarBaseData* conVar, const Vector& value, bool replicate, bool notify)
+extern "C" PLUGIN_API void SetConVarVector3(BaseConVar* conVar, const Vector& value, bool replicate, bool notify)
 {
 	utils::SetConVar(conVar, value, replicate, notify);
 }
@@ -1164,7 +1250,7 @@ extern "C" PLUGIN_API void SetConVarVector3(CConVarBaseData* conVar, const Vecto
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarVector4(CConVarBaseData* conVar, const Vector4D& value, bool replicate, bool notify)
+extern "C" PLUGIN_API void SetConVarVector4(BaseConVar* conVar, const Vector4D& value, bool replicate, bool notify)
 {
 	utils::SetConVar(conVar, value, replicate, notify);
 }
@@ -1177,7 +1263,7 @@ extern "C" PLUGIN_API void SetConVarVector4(CConVarBaseData* conVar, const Vecto
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarQangle(CConVarBaseData* conVar, const QAngle& value, bool replicate, bool notify)
+extern "C" PLUGIN_API void SetConVarQangle(BaseConVar* conVar, const QAngle& value, bool replicate, bool notify)
 {
 	utils::SetConVar(conVar, value, replicate, notify);
 }
@@ -1189,7 +1275,7 @@ extern "C" PLUGIN_API void SetConVarQangle(CConVarBaseData* conVar, const QAngle
  * @param clientIndex The index of the client to replicate the value to.
  * @param value The value to send to the client.
  */
-extern "C" PLUGIN_API void SendConVarValue(CConVarBaseData* conVar, int clientIndex, const plg::string& value)
+extern "C" PLUGIN_API void SendConVarValue(BaseConVar* conVar, int clientIndex, const plg::string& value)
 {
 	utils::SendConVarValue(CPlayerSlot(clientIndex), conVar, value.c_str());
 }

@@ -30,7 +30,7 @@ public:
 	~CConVarManager();
 
 	template<typename T>
-	CConVarBaseData* CreateConVar(const plg::string& name, const plg::string& description, const T& defaultVal, int flags, bool hasMin = false, T min = {}, bool hasMax = {}, T max = {})
+	BaseConVar* CreateConVar(const plg::string& name, const plg::string& description, const T& defaultVal, int flags, bool hasMin = false, T min = {}, bool hasMax = {}, T max = {})
 	{
 		if (name.empty() || g_pCVar->FindCommand(name.c_str()).IsValid())
 		{
@@ -40,24 +40,25 @@ public:
 		auto it = m_cnvLookup.find(name);
 		if (it != m_cnvLookup.end())
 		{
-			return std::get<ConVarInfoPtr>(*it)->conVar->GetConVarData();
-		}
-
-		ConVarHandle hCvarHandle = g_pCVar->FindConVar(name.c_str());
-		if (hCvarHandle.IsValid())
-		{
-			return g_pCVar->GetConVar(hCvarHandle);
+			return std::get<ConVarInfoPtr>(*it)->conVar.get();
 		}
 
 		auto& conVarInfo = *m_cnvLookup.emplace(name, std::make_unique<ConVarInfo>(name, description)).first->second;
-		conVarInfo.conVar = std::unique_ptr<BaseConVar>(new ConVar<T>(conVarInfo.name.c_str(), flags, conVarInfo.description.c_str(), defaultVal, hasMin, min, hasMax, max, &ChangeCallback));
+		auto conVar = std::make_unique<ConVarRef<T>>(name.c_str());
+		if (conVar->GetHandle().IsValid())
+		{
+			conVarInfo.conVar = std::move(conVar);
+		}
+		else
+		{
+			conVarInfo.conVar = std::unique_ptr<BaseConVar>(new ConVar<T>(conVarInfo.name.c_str(), flags, conVarInfo.description.c_str(), defaultVal, hasMin, min, hasMax, max, &ChangeCallback));
+		}
 		m_cnvCache.emplace(conVarInfo.conVar.get(), &conVarInfo);
-		return conVarInfo.conVar->GetConVarData();
+		return conVarInfo.conVar.get();
 	}
 	
 	bool RemoveConVar(const plg::string& name);
-	CConVarBaseData* FindConVar(const plg::string& name);
-	bool IsValidConVar(const plg::string& name) const;
+	BaseConVar* FindConVar(const plg::string& name);
 	void HookConVarChange(const plg::string& name, ConVarChangeListenerCallback callback);
 	void UnhookConVarChange(const plg::string& name, ConVarChangeListenerCallback callback);
 

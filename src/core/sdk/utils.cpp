@@ -133,7 +133,7 @@ float utils::GetAngleDifference(float source, float target, float c, bool relati
 	return fmod(fabs(target - source) + c, 2 * c) - c;
 }
 
-void utils::NotifyConVar(CConVarBaseData* conVar, const char* value)
+void utils::NotifyConVar(BaseConVar* conVar, const char* value)
 {
 	IGameEvent* pEvent = g_pGameEventManager->CreateEvent("server_cvar");
 	if (pEvent == nullptr)
@@ -154,7 +154,7 @@ void utils::NotifyConVar(CConVarBaseData* conVar, const char* value)
 	g_pGameEventManager->FireEvent(pEvent);
 }
 
-void utils::ReplicateConVar(CConVarBaseData* conVar, const char* value)
+void utils::ReplicateConVar(BaseConVar* conVar, const char* value)
 {
 	if (!gpGlobals)
 		return;
@@ -165,7 +165,7 @@ void utils::ReplicateConVar(CConVarBaseData* conVar, const char* value)
 	}
 }
 
-void utils::SendConVarValue(CPlayerSlot slot, CConVarBaseData* conVar, const char* value)
+void utils::SendConVarValue(CPlayerSlot slot, BaseConVar* conVar, const char* value)
 {
 	INetworkMessageInternal* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("CNETMsg_SetConVar");
 	auto msg = pNetMsg->AllocateMessage()->ToPB<CNETMsg_SetConVar>();
@@ -181,7 +181,7 @@ void utils::SendConVarValue(CPlayerSlot slot, CConVarBaseData* conVar, const cha
 #endif
 }
 
-void utils::SendMultipleConVarValues(CPlayerSlot slot, CConVarBaseData** conVar, const char** value, uint32_t size)
+void utils::SendMultipleConVarValues(CPlayerSlot slot, BaseConVar** conVar, const char** value, uint32_t size)
 {
 	INetworkMessageInternal* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("CNETMsg_SetConVar");
 	auto msg = pNetMsg->AllocateMessage()->ToPB<CNETMsg_SetConVar>();
