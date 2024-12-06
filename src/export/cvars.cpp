@@ -1021,49 +1021,49 @@ extern "C" PLUGIN_API void SetConVarValue(BaseConVar* conVar, const plg::string&
 	switch (conVar->GetType())
 	{
 		case EConVarType_Bool:
-			utils::SetConVarString<bool>(conVar, value.c_str(), replicate, notify);
+			utils::SetConVarString<bool>(conVar, value, replicate, notify);
 			break;
 		case EConVarType_Int16:
-			utils::SetConVarString<int16_t>(conVar, value.c_str(), replicate, notify);
+			utils::SetConVarString<int16_t>(conVar, value, replicate, notify);
 			break;
 		case EConVarType_UInt16:
-			utils::SetConVarString<uint16_t>(conVar, value.c_str(), replicate, notify);
+			utils::SetConVarString<uint16_t>(conVar, value, replicate, notify);
 			break;
 		case EConVarType_Int32:
-			utils::SetConVarString<int32_t>(conVar, value.c_str(), replicate, notify);
+			utils::SetConVarString<int32_t>(conVar, value, replicate, notify);
 			break;
 		case EConVarType_UInt32:
-			utils::SetConVarString<uint32_t>(conVar, value.c_str(), replicate, notify);
+			utils::SetConVarString<uint32_t>(conVar, value, replicate, notify);
 			break;
 		case EConVarType_Int64:
-			utils::SetConVarString<int64_t>(conVar, value.c_str(), replicate, notify);
+			utils::SetConVarString<int64_t>(conVar, value, replicate, notify);
 			break;
 		case EConVarType_UInt64:
-			utils::SetConVarString<uint64_t>(conVar, value.c_str(), replicate, notify);
+			utils::SetConVarString<uint64_t>(conVar, value, replicate, notify);
 			break;
 		case EConVarType_Float32:
-			utils::SetConVarString<float>(conVar, value.c_str(), replicate, notify);
+			utils::SetConVarString<float>(conVar, value, replicate, notify);
 			break;
 		case EConVarType_Float64:
-			utils::SetConVarString<double>(conVar, value.c_str(), replicate, notify);
+			utils::SetConVarString<double>(conVar, value, replicate, notify);
 			break;
 		case EConVarType_String:
-			utils::SetConVarString<const char*>(conVar, value.c_str(), replicate, notify);
+			utils::SetConVarString<const char*>(conVar, value, replicate, notify);
 			break;
 		case EConVarType_Color:
-			utils::SetConVarString<Color>(conVar, value.c_str(), replicate, notify);
+			utils::SetConVarString<Color>(conVar, value, replicate, notify);
 			break;
 		case EConVarType_Vector2:
-			utils::SetConVarString<Vector2D>(conVar, value.c_str(), replicate, notify);
+			utils::SetConVarString<Vector2D>(conVar, value, replicate, notify);
 			break;
 		case EConVarType_Vector3:
-			utils::SetConVarString<Vector>(conVar, value.c_str(), replicate, notify);
+			utils::SetConVarString<Vector>(conVar, value, replicate, notify);
 			break;
 		case EConVarType_Vector4:
-			utils::SetConVarString<Vector4D>(conVar, value.c_str(), replicate, notify);
+			utils::SetConVarString<Vector4D>(conVar, value, replicate, notify);
 			break;
 		case EConVarType_Qangle:
-			utils::SetConVarString<QAngle>(conVar, value.c_str(), replicate, notify);
+			utils::SetConVarString<QAngle>(conVar, value, replicate, notify);
 			break;
 		default:
 			g_Logger.Log(LS_WARNING, "Invalid convar type.\n");

@@ -81,7 +81,7 @@ namespace utils
 	}
 
 	template<typename T>
-	void SetConVarString(BaseConVar* conVar, const char* value, bool replicate, bool notify)
+	void SetConVarString(BaseConVar* conVar, const plg::string& value, bool replicate, bool notify)
 	{
 		if (conVar == nullptr)
 		{
@@ -102,9 +102,9 @@ namespace utils
 			return;
 		}
 
-		static_cast<ConVar<T>*>(conVar)->SetValue(value);
-		if (replicate) ReplicateConVar(conVar, value);
-		if (notify) NotifyConVar(conVar, value);
+		static_cast<ConVar<T>*>(conVar)->SetStringValue(value.c_str(), value.size());
+		if (replicate) ReplicateConVar(conVar, value.c_str());
+		if (notify) NotifyConVar(conVar, value.c_str());
 	}
 
 	template<typename T>
