@@ -62,8 +62,7 @@ namespace utils
 			return;
 		}
 
-		auto* cv = conVarData->Cast<T>();
-		cv->SetValue(value);
+		static_cast<ConVar<T>*>(conVar)->SetValue(value);
 		if constexpr (std::same_as<T, const char*>)
 		{
 			if (replicate) ReplicateConVar(conVar, value);
@@ -74,7 +73,7 @@ namespace utils
 			if (replicate || notify)
 			{
 				char val[512];
-				cv->GetStringValue(val, sizeof(val));
+				conVarData->Cast<T>()->GetStringValue(val, sizeof(val));
 				if (replicate) ReplicateConVar(conVar, val);
 				if (notify) NotifyConVar(conVar, val);
 			}
@@ -103,8 +102,7 @@ namespace utils
 			return;
 		}
 
-		auto* cv = conVarData->Cast<T>();
-		cv->SetStringValue(value);
+		static_cast<ConVar<T>*>(conVar)->SetValue(value);
 		if (replicate) ReplicateConVar(conVar, value);
 		if (notify) NotifyConVar(conVar, value);
 	}
@@ -125,7 +123,7 @@ namespace utils
 			return;
 		}
 
-		conVarData->Cast<T>()->SetValue(value);
+		static_cast<ConVar<T>*>(conVar)->SetValue(value);
 	}
 
 	template<typename T>
