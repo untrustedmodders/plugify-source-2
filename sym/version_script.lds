@@ -150,6 +150,7 @@
         EntIndexToEntHandle;
         EntHandleToEntIndex;
         IsValidEntHandle;
+        IsValidEntPointer;
         GetFirstActiveEntity;
         GetConcreteEntityListPointer;
         HookEntityOutput;

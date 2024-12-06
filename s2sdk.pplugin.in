@@ -3873,6 +3873,24 @@
       }
     },
     {
+      "name": "IsValidEntPointer",
+      "group": "Entities",
+      "description": "Checks if the provided entity pointer is valid.",
+      "funcName": "IsValidEntPointer",
+      "paramTypes": [
+        {
+          "name": "entity",
+          "type": "ptr64",
+          "ref": false,
+          "description": "The entity pointer to check."
+        }
+      ],
+      "retType": {
+        "type": "bool",
+        "description": "True if the entity pointer is valid, false otherwise."
+      }
+    },
+    {
       "name": "GetFirstActiveEntity",
       "group": "Entities",
       "description": "Retrieves the pointer to the first active entity.",

@@ -29,6 +29,11 @@ extern "C" PLUGIN_API void* EntIndexToEntPointer(int entityIndex)
  */
 extern "C" PLUGIN_API int EntPointerToEntIndex(CEntityInstance* entity)
 {
+	if (!g_pGameEntitySystem->IsEntityPtr(entity))
+	{
+		return -1;
+	}
+
     return entity->GetRefEHandle().GetEntryIndex();
 }
 
@@ -43,11 +48,10 @@ extern "C" PLUGIN_API int EntPointerToEntIndex(CEntityInstance* entity)
  */
 extern "C" PLUGIN_API int EntPointerToEntHandle(CEntityInstance* entity)
 {
-	//TODO: Add dynamic cast
-    if (entity == nullptr)
-    {
-        return INVALID_EHANDLE_INDEX;
-    }
+	if (!g_pGameEntitySystem->IsEntityPtr(entity))
+	{
+		return INVALID_EHANDLE_INDEX;
+	}
 
     return entity->GetRefEHandle().ToInt();
 }
@@ -136,6 +140,20 @@ extern "C" PLUGIN_API bool IsValidEntHandle(int entityHandle)
     }
 
     return g_pGameEntitySystem->GetEntityInstance(handle) != nullptr;
+}
+
+/**
+ * @brief Checks if the provided entity pointer is valid.
+ *
+ * This function checks whether the entity pointer points to a valid entity in the
+ * entity system. It returns true if valid, and false otherwise.
+ *
+ * @param entity The entity pointer to check.
+ * @return True if the entity pointer is valid, false otherwise.
+ */
+extern "C" PLUGIN_API bool IsValidEntPointer(CEntityInstance* entity)
+{
+	return g_pGameEntitySystem->IsEntityPtr(entity);
 }
 
 /**

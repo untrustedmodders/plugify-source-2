@@ -57,7 +57,9 @@ extern "C" PLUGIN_API int GetSchemaClassSize(const plg::string& className)
 	CSchemaSystemTypeScope2* pType = g_pSchemaSystem2->FindTypeScopeForModule(S2SDK_LIBRARY_PREFIX "server" S2SDK_LIBRARY_SUFFIX);
 	SchemaClassInfoData_t* pClassInfo = pType->FindDeclaredClass(className.c_str());
 	if (!pClassInfo)
+	{
 		return -1;
+	}
 
 	return pClassInfo->m_nSize;
 }
@@ -78,6 +80,7 @@ extern "C" PLUGIN_API bool GetSchemaBoolByName(int entityHandle, const plg::stri
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot get '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
 		return {};
 	}
 	
@@ -105,6 +108,7 @@ extern "C" PLUGIN_API int8_t GetSchemaInt8ByName(int entityHandle, const plg::st
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot get '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
 		return {};
 	}
 	
@@ -132,6 +136,7 @@ extern "C" PLUGIN_API int16_t GetSchemaInt16ByName(int entityHandle, const plg::
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot get '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
 		return {};
 	}
 	
@@ -159,6 +164,7 @@ extern "C" PLUGIN_API int32_t GetSchemaInt32ByName(int entityHandle, const plg::
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot get '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
 		return {};
 	}
 	
@@ -186,6 +192,7 @@ extern "C" PLUGIN_API int64_t GetSchemaInt64ByName(int entityHandle, const plg::
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot get '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
 		return {};
 	}
 	
@@ -213,6 +220,7 @@ extern "C" PLUGIN_API uint8_t GetSchemaUInt8ByName(int entityHandle, const plg::
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot get '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
 		return {};
 	}
 	
@@ -240,6 +248,7 @@ extern "C" PLUGIN_API uint16_t GetSchemaUInt16ByName(int entityHandle, const plg
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot get '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
 		return {};
 	}
 	
@@ -267,6 +276,7 @@ extern "C" PLUGIN_API uint32_t GetSchemaUInt32ByName(int entityHandle, const plg
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot get '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
 		return {};
 	}
 	
@@ -294,6 +304,7 @@ extern "C" PLUGIN_API uint64_t GetSchemaUInt64ByName(int entityHandle, const plg
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot get '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
 		return {};
 	}
 	
@@ -321,6 +332,7 @@ extern "C" PLUGIN_API float GetSchemaFloatByName(int entityHandle, const plg::st
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot get '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
 		return {};
 	}
 	
@@ -348,6 +360,7 @@ extern "C" PLUGIN_API double GetSchemaDoubleByName(int entityHandle, const plg::
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot get '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
 		return {};
 	}
 	
@@ -375,10 +388,9 @@ extern "C" PLUGIN_API void* GetSchemaPointerByName(int entityHandle, const plg::
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot get '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
 		return {};
 	}
-
-	g_Logger.LogFormat(LS_DEBUG, "``````````````````````--- %s\n", typeid(*pEntity).name());
 
 	auto classKey = hash_32_fnv1a_const(className.c_str());
 	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
@@ -404,6 +416,7 @@ extern "C" PLUGIN_API plg::str GetSchemaStringByName(int entityHandle, const plg
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot get '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
 		return {};
 	}
 	
@@ -432,6 +445,7 @@ extern "C" PLUGIN_API plg::vec3 GetSchemaVectorByName(int entityHandle, const pl
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot get '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
 		return {};
 	}
 	
@@ -462,6 +476,7 @@ extern "C" PLUGIN_API void SetSchemaValueBoolByName(int entityHandle, const plg:
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
 		return;
 	}
 	
@@ -497,6 +512,7 @@ extern "C" PLUGIN_API void SetSchemaValueInt8ByName(int entityHandle, const plg:
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
 		return;
 	}
 	
@@ -532,6 +548,7 @@ extern "C" PLUGIN_API void SetSchemaValueInt16ByName(int entityHandle, const plg
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
 		return;
 	}
 	
@@ -567,6 +584,7 @@ extern "C" PLUGIN_API void SetSchemaValueInt32ByName(int entityHandle, const plg
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
 		return;
 	}
 	
@@ -602,6 +620,7 @@ extern "C" PLUGIN_API void SetSchemaValueInt64ByName(int entityHandle, const plg
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
 		return;
 	}
 	
@@ -637,6 +656,7 @@ extern "C" PLUGIN_API void SetSchemaValueUInt8ByName(int entityHandle, const plg
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
 		return;
 	}
 	
@@ -672,6 +692,7 @@ extern "C" PLUGIN_API void SetSchemaValueUInt16ByName(int entityHandle, const pl
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
 		return;
 	}
 	
@@ -707,6 +728,7 @@ extern "C" PLUGIN_API void SetSchemaValueUInt32ByName(int entityHandle, const pl
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
 		return;
 	}
 	
@@ -742,6 +764,7 @@ extern "C" PLUGIN_API void SetSchemaValueUInt64ByName(int entityHandle, const pl
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
 		return;
 	}
 	
@@ -777,6 +800,7 @@ extern "C" PLUGIN_API void SetSchemaValueFloatByName(int entityHandle, const plg
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
 		return;
 	}
 	
@@ -812,6 +836,7 @@ extern "C" PLUGIN_API void SetSchemaValueDoubleByName(int entityHandle, const pl
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
 		return;
 	}
 	
@@ -847,6 +872,7 @@ extern "C" PLUGIN_API void SetSchemaValueStringByName(int entityHandle, const pl
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
 		return;
 	}
 	
@@ -882,6 +908,7 @@ extern "C" PLUGIN_API void SetSchemaValueVectorByName(int entityHandle, const pl
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
 		return;
 	}
 	
@@ -930,6 +957,7 @@ extern "C" PLUGIN_API void SetSchemaStateChanged(int entityHandle, const plg::st
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
 		return;
 	}
 	
