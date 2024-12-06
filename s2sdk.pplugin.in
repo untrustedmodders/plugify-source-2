@@ -8898,18 +8898,6 @@
     {
       "name": "GetGameRules",
       "group": "Gamerules",
-      "description": "Retrieves the pointer of a game rules entity.",
-      "funcName": "GetGameRules",
-      "paramTypes": [
-      ],
-      "retType": {
-        "type": "ptr64",
-        "description": "A pointer of game entity."
-      }
-    },
-    {
-      "name": "GetGameRules",
-      "group": "Gamerules",
       "description": "Retrieves the pointer to the current game rules instance.",
       "funcName": "GetGameRules",
       "paramTypes": [],
