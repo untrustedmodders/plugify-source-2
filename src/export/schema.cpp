@@ -6,6 +6,14 @@
 #include <plugin_export.h>
 #include <tier0/utlstring.h>
 
+PLUGIFY_WARN_PUSH()
+
+#if defined(__clang)
+PLUGIFY_WARN_IGNORE("-Wreturn-type-c-linkage")
+#elif defined(_MSC_VER)
+PLUGIFY_WARN_IGNORE(4190)
+#endif
+
 /**
  * @brief Get the offset of a member in a given schema class.
  *
@@ -411,7 +419,7 @@ extern "C" PLUGIN_API void* GetSchemaPointerByName(int entityHandle, const plg::
  * @param extraOffset The value to add to the offset.
  * @return The value of the member.
  */
-extern "C" PLUGIN_API plg::str GetSchemaStringByName(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
+extern "C" PLUGIN_API plg::string GetSchemaStringByName(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
 {
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
@@ -426,7 +434,7 @@ extern "C" PLUGIN_API plg::str GetSchemaStringByName(int entityHandle, const plg
 	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
 
 	auto str = reinterpret_cast<std::add_pointer_t<CUtlString>>(reinterpret_cast<uintptr_t>(pEntity) + m_key.offset + extraOffset);
-	return plg::ReturnStr(str != nullptr ? str->Get() : "");
+	return str != nullptr ? str->Get() : "";
 }
 
 /**
@@ -988,3 +996,5 @@ extern "C" PLUGIN_API void SetSchemaStateChanged(int entityHandle, const plg::st
 
 	pEntity->NetworkStateChanged(m_key.offset + extraOffset);
 }
+
+PLUGIFY_WARN_POP()

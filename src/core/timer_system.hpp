@@ -5,14 +5,14 @@
 
 class CTimer;
 
-using TimerCallback = void (*)(CTimer*); // TODO: add user data
+using TimerCallback = void (*)(CTimer*, const plg::vector<plg::any>&);
 
 class CTimer
 {
 	friend class CTimerSystem;
 
 public:
-	CTimer(float interval, float execTime, TimerCallback callback, int flags);
+	CTimer(float interval, float execTime, TimerCallback callback, int flags, const plg::vector<plg::any>& userData);
 	~CTimer();
 
 private:
@@ -22,6 +22,7 @@ private:
 	int m_flags;
 	bool m_inExec{};
 	bool m_killMe{};
+	plg::vector<plg::any> m_userData;
 };
 
 class CTimerSystem
@@ -39,7 +40,7 @@ public:
 	static double GetTickedTime();
 	static float GetTickedInterval();
 
-	CTimer* CreateTimer(float interval, TimerCallback callback, int flags);
+	CTimer* CreateTimer(float interval, TimerCallback callback, int flags, const plg::vector<plg::any>&);
 	void KillTimer(CTimer* timer);
 
 private:

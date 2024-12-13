@@ -1,6 +1,14 @@
 #include <core/timer_system.hpp>
 #include <plugin_export.h>
 
+PLUGIFY_WARN_PUSH()
+
+#if defined(__clang)
+PLUGIFY_WARN_IGNORE("-Wreturn-type-c-linkage")
+#elif defined(_MSC_VER)
+PLUGIFY_WARN_IGNORE(4190)
+#endif
+
 /**
  * @brief Creates a new timer that executes a callback function at specified intervals.
  *
@@ -11,11 +19,12 @@
  * @param interval The time interval in seconds between each callback execution.
  * @param callback The function to be called when the timer expires.
  * @param flags Flags that modify the behavior of the timer (e.g., no-map change, repeating).
+ * @param userData An array intended to hold user-related data, allowing for elements of any type.
  * @return A pointer to the newly created CTimer object, or nullptr if the timer could not be created.
  */
-extern "C" PLUGIN_API CTimer* CreateTimer(float interval, TimerCallback callback, int flags)
+extern "C" PLUGIN_API CTimer* CreateTimer(float interval, TimerCallback callback, int flags, const plg::vector<plg::any>& userData)
 {
-	return g_TimerSystem.CreateTimer(interval, callback, flags);
+	return g_TimerSystem.CreateTimer(interval, callback, flags, userData);
 }
 
 /**
@@ -50,3 +59,5 @@ extern "C" PLUGIN_API double GetTickedTime()
 {
 	return CTimerSystem::GetTickedTime();
 }
+
+PLUGIFY_WARN_POP()

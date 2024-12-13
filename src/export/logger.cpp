@@ -1,4 +1,13 @@
 #include <plugin_export.h>
+
+PLUGIFY_WARN_PUSH()
+
+#if defined(__clang)
+PLUGIFY_WARN_IGNORE("-Wreturn-type-c-linkage")
+#elif defined(_MSC_VER)
+PLUGIFY_WARN_IGNORE(4190)
+#endif
+
 /**
  * @brief Registers a new logging channel with specified properties.
  *
@@ -263,3 +272,5 @@ extern "C" PLUGIN_API int LogFullColored(int channelID, int severity, const plg:
 	spewColor.SetRawColor(color);
 	return LoggingSystem_LogDirect(channelID, static_cast<LoggingSeverity_t>(severity), codeInfo, spewColor, message.c_str());
 }
+
+PLUGIFY_WARN_POP()

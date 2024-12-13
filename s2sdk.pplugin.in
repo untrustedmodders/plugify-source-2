@@ -7545,6 +7545,12 @@
                 "name": "timer",
                 "type": "ptr64",
                 "description": "A 64-bit pointer to the timer object. This object contains the details of the timer, such as its current state, duration, and any associated data."
+              },
+              {
+                "name": "userData",
+                "type": "any[]",
+                "ref": false,
+                "description": "An array intended to hold user-related data, allowing for elements of any type."
               }
             ],
             "retType": {
@@ -7558,6 +7564,12 @@
           "type": "int32",
           "ref": false,
           "description": "Flags that modify the behavior of the timer (e.g., no-map change, repeating)."
+        },
+        {
+          "name": "userData",
+          "type": "any[]",
+          "ref": false,
+          "description": "An array intended to hold user-related data, allowing for elements of any type."
         }
       ],
       "retType": {

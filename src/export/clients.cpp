@@ -6,6 +6,14 @@
 #include <plugify/cpp_plugin.hpp>
 #include <plugin_export.h>
 
+PLUGIFY_WARN_PUSH()
+
+#if defined(__clang)
+PLUGIFY_WARN_IGNORE("-Wreturn-type-c-linkage")
+#elif defined(_MSC_VER)
+PLUGIFY_WARN_IGNORE(4190)
+#endif
+
 //!
 extern "C" PLUGIN_API int GetClientIndexFromEntityPointer(CBaseEntity* entity)
 {
@@ -47,21 +55,21 @@ extern "C" PLUGIN_API int GetIndexFromClient(CServerSideClient* client)
  * @param clientIndex Index of the client whose authentication string is being retrieved.
  * @return The authentication string.
  */
-extern "C" PLUGIN_API plg::str GetClientAuthId(int clientIndex)
+extern "C" PLUGIN_API plg::string GetClientAuthId(int clientIndex)
 {
 	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex));
 	if (pPlayer == nullptr || !pPlayer->m_bAuthorized)
 	{
-		return plg::ReturnStr({});
+		return {};
 	}
 
 	auto pSteamId = pPlayer->GetSteamId();
 	if (pSteamId == nullptr)
 	{
-		return plg::ReturnStr({});
+		return {};
 	}
 
-	return plg::ReturnStr(pSteamId->Render());
+	return pSteamId->Render();
 }
 
 /**
@@ -93,15 +101,15 @@ extern "C" PLUGIN_API uint64_t GetClientAccountId(int clientIndex)
  * @param clientIndex Index of the client.
  * @return The IP address.
  */
-extern "C" PLUGIN_API plg::str GetClientIp(int clientIndex)
+extern "C" PLUGIN_API plg::string GetClientIp(int clientIndex)
 {
 	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex));
 	if (pPlayer == nullptr)
 	{
-		return plg::ReturnStr({});
+		return {};
 	}
 
-	return plg::ReturnStr(pPlayer->GetIpAddress());
+	return pPlayer->GetIpAddress();
 }
 
 /**
@@ -110,15 +118,15 @@ extern "C" PLUGIN_API plg::str GetClientIp(int clientIndex)
  * @param clientIndex Index of the client.
  * @return The client's name.
  */
-extern "C" PLUGIN_API plg::str GetClientName(int clientIndex)
+extern "C" PLUGIN_API plg::string GetClientName(int clientIndex)
 {
 	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex));
 	if (pPlayer == nullptr)
 	{
-		return plg::ReturnStr({});
+		return {};
 	}
 
-	return plg::ReturnStr(pPlayer->GetName());
+	return pPlayer->GetName();
 }
 
 /**
@@ -425,11 +433,11 @@ extern "C" PLUGIN_API plg::vec3 GetClientAbsAngles(int clientIndex)
  * @param target The target string specifying the player or players to be targeted.
  * @return A vector where the result of the targeting operation will be stored.
  */
-extern "C" PLUGIN_API plg::vec ProcessTargetString(int caller, const plg::string& target)
+extern "C" PLUGIN_API plg::vector<int> ProcessTargetString(int caller, const plg::string& target)
 {
 	plg::vector<int> output;
 	g_PlayerManager.TargetPlayerString(caller, target.c_str(), output);
-	return plg::ReturnVec(std::move(output));
+	return output;
 }
 
 /**

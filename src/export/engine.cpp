@@ -5,6 +5,15 @@
 #include <engine/IEngineSound.h>
 #include <entity2/entitysystem.h>
 #include <plugin_export.h>
+
+PLUGIFY_WARN_PUSH()
+
+#if defined(__clang)
+PLUGIFY_WARN_IGNORE("-Wreturn-type-c-linkage")
+#elif defined(_MSC_VER)
+PLUGIFY_WARN_IGNORE(4190)
+#endif
+
 /**
  * @brief Returns the path of the game's directory.
  *
@@ -289,3 +298,5 @@ extern "C" PLUGIN_API void EmitSoundToClient(int clientIndex, int channel, const
 {
 	utils::PlaySoundToClient(CPlayerSlot(clientIndex), channel, sound.c_str(), volume, static_cast<soundlevel_t>(soundLevel), flags, pitch, origin, soundTime);
 }
+
+PLUGIFY_WARN_POP()

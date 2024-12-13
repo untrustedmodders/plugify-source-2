@@ -1,6 +1,14 @@
 #include <core/con_command_manager.hpp>
 #include <plugin_export.h>
 
+PLUGIFY_WARN_PUSH()
+
+#if defined(__clang)
+PLUGIFY_WARN_IGNORE("-Wreturn-type-c-linkage")
+#elif defined(_MSC_VER)
+PLUGIFY_WARN_IGNORE(4190)
+#endif
+
 /**
  * @brief Creates a console command as an administrative command.
  * If the command does not exist, it is created. When this command is invoked,

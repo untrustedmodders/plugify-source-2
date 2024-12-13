@@ -1,6 +1,14 @@
 #include "core/sdk/entity/cgamerules.h"
 #include <plugin_export.h>
 
+PLUGIFY_WARN_PUSH()
+
+#if defined(__clang)
+PLUGIFY_WARN_IGNORE("-Wreturn-type-c-linkage")
+#elif defined(_MSC_VER)
+PLUGIFY_WARN_IGNORE(4190)
+#endif
+
 extern CCSGameRules* g_pGameRules;
 
 /**
@@ -36,3 +44,5 @@ extern "C" PLUGIN_API void TerminateRound(float delay, CSRoundEndReason reason)
 
 	g_pGameRules->TerminateRound(delay, reason);
 }
+
+PLUGIFY_WARN_POP()

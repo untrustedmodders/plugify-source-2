@@ -3,6 +3,14 @@
 #include <core/sdk/entity/cbasemodelentity.h>
 #include <plugin_export.h>
 
+PLUGIFY_WARN_PUSH()
+
+#if defined(__clang)
+PLUGIFY_WARN_IGNORE("-Wreturn-type-c-linkage")
+#elif defined(_MSC_VER)
+PLUGIFY_WARN_IGNORE(4190)
+#endif
+
 /**
  * @brief Converts an entity index into an entity pointer.
  *
@@ -344,16 +352,16 @@ extern "C" PLUGIN_API void RemoveEntity(int entityHandle)
  * @param entityHandle The handle of the entity whose class name is to be retrieved.
  * @return A string where the class name will be stored.
  */
-extern "C" PLUGIN_API plg::str GetEntityClassname(int entityHandle)
+extern "C" PLUGIN_API plg::string GetEntityClassname(int entityHandle)
 {
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetEntityClassname' on invalid entity handle: %d\n", entityHandle);
-		return plg::ReturnStr({});
+		return {};
 	}
 
-	return plg::ReturnStr(pEntity->GetClassname());
+	return pEntity->GetClassname();
 }
 
 /**
@@ -365,16 +373,16 @@ extern "C" PLUGIN_API plg::str GetEntityClassname(int entityHandle)
  * @param entityHandle The handle of the entity whose name is to be retrieved.
  * @retrun A string where the entity name will be stored.
  */
-extern "C" PLUGIN_API plg::str GetEntityName(int entityHandle)
+extern "C" PLUGIN_API plg::string GetEntityName(int entityHandle)
 {
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetEntityName' on invalid entity handle: %d\n", entityHandle);
-		return plg::ReturnStr({});
+		return {};
 	}
 
-	return plg::ReturnStr(pEntity->GetName());
+	return pEntity->GetName();
 }
 
 /**
@@ -930,16 +938,16 @@ extern "C" PLUGIN_API void SetEntityAbsVelocity(int entityHandle, const Vector& 
  * @param entityHandle The handle of the entity whose model name is to be retrieved.
  * @return A string where the model name will be stored.
  */
-extern "C" PLUGIN_API plg::str GetEntityModel(int entityHandle)
+extern "C" PLUGIN_API plg::string GetEntityModel(int entityHandle)
 {
 	CBaseModelEntity* pEntity = static_cast<CBaseModelEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
 		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetEntityModel' on invalid entity handle: %d\n", entityHandle);
-		return plg::ReturnStr({});
+		return {};
 	}
 
-	return plg::ReturnStr(pEntity->GetModelName());
+	return pEntity->GetModelName();
 }
 
 /**
@@ -1048,3 +1056,5 @@ extern "C" PLUGIN_API void TeleportEntity(int entityHandle, const Vector* origin
 
 	pEntity->Teleport(origin, angles, velocity);
 }
+
+PLUGIFY_WARN_POP()

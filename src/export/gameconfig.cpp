@@ -1,6 +1,14 @@
 #include <core/game_config.hpp>
 #include <plugin_export.h>
 
+PLUGIFY_WARN_PUSH()
+
+#if defined(__clang)
+PLUGIFY_WARN_IGNORE("-Wreturn-type-c-linkage")
+#elif defined(_MSC_VER)
+PLUGIFY_WARN_IGNORE(4190)
+#endif
+
 /**
  * @brief Closes a game configuration file.
  *
@@ -35,9 +43,9 @@ extern "C" PLUGIN_API CGameConfig* LoadGameConfigFile(const plg::string& file)
  * @param pGameConfig A pointer to the game configuration whose path is to be retrieved.
  * @return A string where the path will be stored.
  */
-extern "C" PLUGIN_API plg::str GetGameConfigPath(CGameConfig* pGameConfig)
+extern "C" PLUGIN_API plg::string GetGameConfigPath(CGameConfig* pGameConfig)
 {
-	return plg::ReturnStr(pGameConfig->GetPath());
+	return pGameConfig->GetPath();
 }
 
 /**
@@ -50,9 +58,9 @@ extern "C" PLUGIN_API plg::str GetGameConfigPath(CGameConfig* pGameConfig)
  * @param name The name of the library to be retrieved.
  * @return A string where the library will be stored.
  */
-extern "C" PLUGIN_API plg::str GetGameConfigLibrary(CGameConfig* pGameConfig, const plg::string& name)
+extern "C" PLUGIN_API plg::string GetGameConfigLibrary(CGameConfig* pGameConfig, const plg::string& name)
 {
-	return plg::ReturnStr(pGameConfig->GetLibrary(name));
+	return pGameConfig->GetLibrary(name);
 }
 
 /**
@@ -65,9 +73,9 @@ extern "C" PLUGIN_API plg::str GetGameConfigLibrary(CGameConfig* pGameConfig, co
  * @param name The name of the signature to be retrieved.
  * @return A string where the signature will be stored.
  */
-extern "C" PLUGIN_API plg::str GetGameConfigSignature(CGameConfig* pGameConfig, const plg::string& name)
+extern "C" PLUGIN_API plg::string GetGameConfigSignature(CGameConfig* pGameConfig, const plg::string& name)
 {
-	return plg::ReturnStr(pGameConfig->GetSignature(name));
+	return pGameConfig->GetSignature(name);
 }
 
 /**
@@ -80,9 +88,9 @@ extern "C" PLUGIN_API plg::str GetGameConfigSignature(CGameConfig* pGameConfig, 
  * @param name The name of the symbol to be retrieved.
  * @return A string where the symbol will be stored.
  */
-extern "C" PLUGIN_API plg::str GetGameConfigSymbol(CGameConfig* pGameConfig, const plg::string& name)
+extern "C" PLUGIN_API plg::string GetGameConfigSymbol(CGameConfig* pGameConfig, const plg::string& name)
 {
-	return plg::ReturnStr(pGameConfig->GetSymbol(name));
+	return pGameConfig->GetSymbol(name);
 }
 
 /**
@@ -95,9 +103,9 @@ extern "C" PLUGIN_API plg::str GetGameConfigSymbol(CGameConfig* pGameConfig, con
  * @param name The name of the patch to be retrieved.
  * @return A string where the patch will be stored.
  */
-extern "C" PLUGIN_API plg::str GetGameConfigPatch(CGameConfig* pGameConfig, const plg::string& name)
+extern "C" PLUGIN_API plg::string GetGameConfigPatch(CGameConfig* pGameConfig, const plg::string& name)
 {
-	return plg::ReturnStr(pGameConfig->GetPatch(name));
+	return pGameConfig->GetPatch(name);
 }
 
 /**
@@ -141,3 +149,5 @@ extern "C" PLUGIN_API void* GetGameConfigMemSig(CGameConfig* pGameConfig, const 
 {
 	return pGameConfig->ResolveSignature(name);
 }
+
+PLUGIFY_WARN_POP()

@@ -6,7 +6,12 @@ double universalTime = 0.0f;
 double timerNextThink = 0.0f;
 const float engineFixedTickInterval = 0.015625f;
 
-CTimer::CTimer(float interval, float execTime, TimerCallback callback, int flags) : m_callback(callback), m_interval(interval), m_execTime(execTime), m_flags(flags)
+CTimer::CTimer(float interval, float execTime, TimerCallback callback, int flags, const plg::vector<plg::any>& userData)
+	: m_callback(callback)
+	, m_userData(userData)
+	, m_interval(interval)
+	, m_execTime(execTime)
+	, m_flags(flags)
 {
 }
 
@@ -78,7 +83,7 @@ void CTimerSystem::RunFrame()
 		if (universalTime >= timer->m_execTime)
 		{
 			timer->m_inExec = true;
-			timer->m_callback(timer);
+			timer->m_callback(timer, timer->m_userData);
 
 			m_onceOffTimers.erase(m_onceOffTimers.begin() + i);
 			delete timer;
@@ -91,7 +96,7 @@ void CTimerSystem::RunFrame()
 		if (universalTime >= timer->m_execTime)
 		{
 			timer->m_inExec = true;
-			timer->m_callback(timer);
+			timer->m_callback(timer, timer->m_userData);
 
 			if (timer->m_killMe)
 			{
@@ -149,11 +154,11 @@ void CTimerSystem::RemoveMapChangeTimers()
 	}
 }
 
-CTimer* CTimerSystem::CreateTimer(float interval, TimerCallback callback, int flags)
+CTimer* CTimerSystem::CreateTimer(float interval, TimerCallback callback, int flags, const plg::vector<plg::any>& userData)
 {
 	float execTime = static_cast<float>(universalTime) + interval;
 
-	auto timer = new CTimer(interval, execTime, callback, flags);
+	auto timer = new CTimer(interval, execTime, callback, flags, userData);
 
 	if (flags & TIMER_FLAG_REPEAT)
 	{

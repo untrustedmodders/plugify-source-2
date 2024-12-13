@@ -1,6 +1,14 @@
 #include <core/player_manager.hpp>
 #include <plugin_export.h>
 
+PLUGIFY_WARN_PUSH()
+
+#if defined(__clang)
+PLUGIFY_WARN_IGNORE("-Wreturn-type-c-linkage")
+#elif defined(_MSC_VER)
+PLUGIFY_WARN_IGNORE(4190)
+#endif
+
 /**
  * @brief Sets the listening state of a client with respect to another client.
  *
@@ -103,3 +111,5 @@ extern "C" PLUGIN_API uint8_t GetClientVoiceFlags(int clientIndex)
 
     return pPlayer->GetVoiceFlags();
 }
+
+PLUGIFY_WARN_POP()

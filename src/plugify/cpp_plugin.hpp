@@ -7,8 +7,7 @@
 #include <utility>
 #include <vector>
 
-#include <plugify/string.hpp>
-#include <plugify/vector.hpp>
+#include <plugify/any.hpp>
 
 namespace std::filesystem {
 #if _WIN32
@@ -16,7 +15,7 @@ namespace std::filesystem {
 #else
 	using path_view = std::string_view;
 #endif
-}
+} // namespace std::filesystem
 
 namespace plg {
 	constexpr int32_t kApiVersion = 1;
@@ -84,7 +83,7 @@ namespace plg {
 	};
 
 	IPluginEntry* GetPluginEntry();
-}
+} // namespace plg
 
 #define EXPOSE_PLUGIN(plugin_api, interface_addr) namespace plg { \
 	GetMethodPtrFn GetMethodPtr{ nullptr }; \
@@ -143,70 +142,24 @@ namespace plg {
 }
 
 namespace plg {
-	extern "C" {
-		struct vec2 {
-			float x;
-			float y;
+	namespace raw {
+		struct vector {
+			[[maybe_unused]] uint8_t padding[sizeof(plg::vector<int>)]{};
 		};
 
-		struct vec3 {
-			float x;
-			float y;
-			float z;
+		struct string {
+			[[maybe_unused]] uint8_t padding[sizeof(plg::string)]{};
 		};
 
-		struct vec4 {
-			float x;
-			float y;
-			float z;
-			float w;
+		struct variant {
+			[[maybe_unused]] uint8_t padding[sizeof(plg::any)]{};
 		};
+	} // namespace raw
 
-		struct mat4x4 {
-			float m[4][4];
-		};
-
-		struct vec {
-			[[maybe_unused]] char padding[sizeof(plg::vector<int>)];
-		};
-
-		struct str {
-			[[maybe_unused]] char padding[sizeof(plg::string)];
-		};
+	template<typename T, typename V>
+	[[nodiscard]] PLUGIFY_FORCE_INLINE T as_raw(V&& value) {
+		T ret{};
+		std::construct_at(reinterpret_cast<V*>(&ret), std::forward<V>(value));
+		return ret;
 	}
-
-	[[nodiscard]] constexpr bool operator==(const vec2& lhs, const vec2& rhs) {
-		return lhs.x == rhs.x && lhs.y == rhs.y;
-	}
-
-	[[nodiscard]] constexpr bool operator==(const vec3& lhs, const vec3& rhs) {
-		return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z;
-	}
-
-	[[nodiscard]] constexpr bool operator==(const vec4& lhs, const vec4& rhs) {
-		return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z && lhs.w == rhs.w;
-	}
-
-	[[nodiscard]] constexpr bool operator==(const mat4x4& lhs, const mat4x4& rhs) {
-		for (int i = 0; i < 4; ++i) {
-			for (int j = 0; j < 4; ++j) {
-				if (lhs.m[i][j] != rhs.m[i][j])
-					return false;
-			}
-		}
-		return true;
-	}
-
-    [[nodiscard]] inline plg::str ReturnStr(plg::string str) {
-        plg::str ret{};
-        std::construct_at(reinterpret_cast<plg::string*>(&ret), std::move(str));
-        return ret;
-    }
-
-    template<typename T>
-    [[nodiscard]] inline plg::vec ReturnVec(plg::vector<T> vec) {
-        plg::vec ret{};
-        std::construct_at(reinterpret_cast<plg::vector<T>*>(&ret), std::move(vec));
-        return ret;
-    }
-}
+} // namespace plg
