@@ -665,7 +665,33 @@
             ],
             "retType": {
               "type": "int32",
-              "description": "The return type is an enum class `ResultType`, which indicates the result of the command execution. The possible values are:\n\n- `Continue = 0`: The command continues to be processed without interruption.\n- `Changed = 1`: Indicates that the command has altered the state or behavior during execution.\n- `Handled = 3`: The command has been successfully handled, and no further action is required.\n- `Stop = 4`: The command processing is halted, and no further steps will be executed."
+              "description": "Indicates the result of the action execution.",
+              "enum": {
+                "name": "ResultType",
+                "description": "Enum representing the possible results of an operation.",
+                "values": [
+                  {
+                    "value": 0,
+                    "name": "Continue",
+                    "description": "The action continues to be processed without interruption."
+                  },
+                  {
+                    "value": 1,
+                    "name": "Changed",
+                    "description": "Indicates that the action has altered the state or behavior during execution."
+                  },
+                  {
+                    "value": 2,
+                    "name": "Handled",
+                    "description": "The action has been successfully handled, and no further action is required."
+                  },
+                  {
+                    "value": 3,
+                    "name": "Stop",
+                    "description": "The action processing is halted, and no further steps will be executed."
+                  }
+                ]
+              }
             }
           }
         }
@@ -725,7 +751,33 @@
             ],
             "retType": {
               "type": "int32",
-              "description": "The return type is an enum class `ResultType`, which indicates the result of the command execution. The possible values are:\n\n- `Continue = 0`: The command continues to be processed without interruption.\n- `Changed = 1`: Indicates that the command has altered the state or behavior during execution.\n- `Handled = 3`: The command has been successfully handled, and no further action is required.\n- `Stop = 4`: The command processing is halted, and no further steps will be executed."
+              "description": "Indicates the result of the action execution.",
+              "enum": {
+                "name": "ResultType",
+                "description": "Enum representing the possible results of an operation.",
+                "values": [
+                  {
+                    "value": 0,
+                    "name": "Continue",
+                    "description": "The action continues to be processed without interruption."
+                  },
+                  {
+                    "value": 1,
+                    "name": "Changed",
+                    "description": "Indicates that the action has altered the state or behavior during execution."
+                  },
+                  {
+                    "value": 2,
+                    "name": "Handled",
+                    "description": "The action has been successfully handled, and no further action is required."
+                  },
+                  {
+                    "value": 3,
+                    "name": "Stop",
+                    "description": "The action processing is halted, and no further steps will be executed."
+                  }
+                ]
+              }
             }
           }
         }
@@ -773,7 +825,33 @@
             ],
             "retType": {
               "type": "int32",
-              "description": "The return type is an enum class `ResultType`, which indicates the result of the command execution. The possible values are:\n\n- `Continue = 0`: The command continues to be processed without interruption.\n- `Changed = 1`: Indicates that the command has altered the state or behavior during execution.\n- `Handled = 3`: The command has been successfully handled, and no further action is required.\n- `Stop = 4`: The command processing is halted, and no further steps will be executed."
+              "description": "Indicates the result of the action execution.",
+              "enum": {
+                "name": "ResultType",
+                "description": "Enum representing the possible results of an operation.",
+                "values": [
+                  {
+                    "value": 0,
+                    "name": "Continue",
+                    "description": "The action continues to be processed without interruption."
+                  },
+                  {
+                    "value": 1,
+                    "name": "Changed",
+                    "description": "Indicates that the action has altered the state or behavior during execution."
+                  },
+                  {
+                    "value": 2,
+                    "name": "Handled",
+                    "description": "The action has been successfully handled, and no further action is required."
+                  },
+                  {
+                    "value": 3,
+                    "name": "Stop",
+                    "description": "The action processing is halted, and no further steps will be executed."
+                  }
+                ]
+              }
             }
           }
         }
@@ -821,7 +899,33 @@
             ],
             "retType": {
               "type": "int32",
-              "description": "The return type is an enum class `ResultType`, which indicates the result of the command execution. The possible values are:\n\n- `Continue = 0`: The command continues to be processed without interruption.\n- `Changed = 1`: Indicates that the command has altered the state or behavior during execution.\n- `Handled = 3`: The command has been successfully handled, and no further action is required.\n- `Stop = 4`: The command processing is halted, and no further steps will be executed."
+              "description": "Indicates the result of the action execution.",
+              "enum": {
+                "name": "ResultType",
+                "description": "Enum representing the possible results of an operation.",
+                "values": [
+                  {
+                    "value": 0,
+                    "name": "Continue",
+                    "description": "The action continues to be processed without interruption."
+                  },
+                  {
+                    "value": 1,
+                    "name": "Changed",
+                    "description": "Indicates that the action has altered the state or behavior during execution."
+                  },
+                  {
+                    "value": 2,
+                    "name": "Handled",
+                    "description": "The action has been successfully handled, and no further action is required."
+                  },
+                  {
+                    "value": 3,
+                    "name": "Stop",
+                    "description": "The action processing is halted, and no further steps will be executed."
+                  }
+                ]
+              }
             }
           }
         },
@@ -875,7 +979,33 @@
             ],
             "retType": {
               "type": "int32",
-              "description": "The return type is an enum class `ResultType`, which indicates the result of the command execution. The possible values are:\n\n- `Continue = 0`: The command continues to be processed without interruption.\n- `Changed = 1`: Indicates that the command has altered the state or behavior during execution.\n- `Handled = 3`: The command has been successfully handled, and no further action is required.\n- `Stop = 4`: The command processing is halted, and no further steps will be executed."
+              "description": "Indicates the result of the action execution.",
+              "enum": {
+                "name": "ResultType",
+                "description": "Enum representing the possible results of an operation.",
+                "values": [
+                  {
+                    "value": 0,
+                    "name": "Continue",
+                    "description": "The action continues to be processed without interruption."
+                  },
+                  {
+                    "value": 1,
+                    "name": "Changed",
+                    "description": "Indicates that the action has altered the state or behavior during execution."
+                  },
+                  {
+                    "value": 2,
+                    "name": "Handled",
+                    "description": "The action has been successfully handled, and no further action is required."
+                  },
+                  {
+                    "value": 3,
+                    "name": "Stop",
+                    "description": "The action processing is halted, and no further steps will be executed."
+                  }
+                ]
+              }
             }
           }
         },
@@ -3957,7 +4087,33 @@
             ],
             "retType": {
               "type": "int32",
-              "description": "The return type is an enum class `ResultType`, which indicates the result of the callback execution. The possible values are:\n\n- `Continue`: The event continues without interruption.\n- `Changed`: The event has been altered or modified.\n- `Handled`: The event has been handled successfully.\n- `Stop`: The event processing is stopped."
+              "description": "Indicates the result of the action execution.",
+              "enum": {
+                "name": "ResultType",
+                "description": "Enum representing the possible results of an operation.",
+                "values": [
+                  {
+                    "value": 0,
+                    "name": "Continue",
+                    "description": "The action continues to be processed without interruption."
+                  },
+                  {
+                    "value": 1,
+                    "name": "Changed",
+                    "description": "Indicates that the action has altered the state or behavior during execution."
+                  },
+                  {
+                    "value": 2,
+                    "name": "Handled",
+                    "description": "The action has been successfully handled, and no further action is required."
+                  },
+                  {
+                    "value": 3,
+                    "name": "Stop",
+                    "description": "The action processing is halted, and no further steps will be executed."
+                  }
+                ]
+              }
             }
           }
         },
@@ -4017,7 +4173,33 @@
             ],
             "retType": {
               "type": "int32",
-              "description": "The return type is an enum class `ResultType`, which indicates the result of the callback execution. The possible values are:\n\n- `Continue`: The event continues without interruption.\n- `Changed`: The event has been altered or modified.\n- `Handled`: The event has been handled successfully.\n- `Stop`: The event processing is stopped."
+              "description": "Indicates the result of the action execution.",
+              "enum": {
+                "name": "ResultType",
+                "description": "Enum representing the possible results of an operation.",
+                "values": [
+                  {
+                    "value": 0,
+                    "name": "Continue",
+                    "description": "The action continues to be processed without interruption."
+                  },
+                  {
+                    "value": 1,
+                    "name": "Changed",
+                    "description": "Indicates that the action has altered the state or behavior during execution."
+                  },
+                  {
+                    "value": 2,
+                    "name": "Handled",
+                    "description": "The action has been successfully handled, and no further action is required."
+                  },
+                  {
+                    "value": 3,
+                    "name": "Stop",
+                    "description": "The action processing is halted, and no further steps will be executed."
+                  }
+                ]
+              }
             }
           }
         },
@@ -4851,7 +5033,33 @@
             ],
             "retType": {
               "type": "int32",
-              "description": "The return type is an enum class `ResultType`, which indicates the result of the event callback execution. The possible values are:\n\n- `Continue = 0`: The event continues without interruption.\n- `Changed = 1`: Indicates that the event has been modified or altered in some way during processing.\n- `Handled = 3`: The event has been successfully handled, and no further action is needed.\n- `Stop = 4`: The event processing is halted, and no further actions will be taken."
+              "description": "Indicates the result of the action execution.",
+              "enum": {
+                "name": "ResultType",
+                "description": "Enum representing the possible results of an operation.",
+                "values": [
+                  {
+                    "value": 0,
+                    "name": "Continue",
+                    "description": "The action continues to be processed without interruption."
+                  },
+                  {
+                    "value": 1,
+                    "name": "Changed",
+                    "description": "Indicates that the action has altered the state or behavior during execution."
+                  },
+                  {
+                    "value": 2,
+                    "name": "Handled",
+                    "description": "The action has been successfully handled, and no further action is required."
+                  },
+                  {
+                    "value": 3,
+                    "name": "Stop",
+                    "description": "The action processing is halted, and no further steps will be executed."
+                  }
+                ]
+              }
             }
           }
         },
@@ -4906,7 +5114,33 @@
             ],
             "retType": {
               "type": "int32",
-              "description": "The return type is an enum class `ResultType`, which indicates the result of the event callback execution. The possible values are:\n\n- `Continue = 0`: The event continues without interruption.\n- `Changed = 1`: Indicates that the event has been modified or altered in some way during processing.\n- `Handled = 3`: The event has been successfully handled, and no further action is needed.\n- `Stop = 4`: The event processing is halted, and no further actions will be taken."
+              "description": "Indicates the result of the action execution.",
+              "enum": {
+                "name": "ResultType",
+                "description": "Enum representing the possible results of an operation.",
+                "values": [
+                  {
+                    "value": 0,
+                    "name": "Continue",
+                    "description": "The action continues to be processed without interruption."
+                  },
+                  {
+                    "value": 1,
+                    "name": "Changed",
+                    "description": "Indicates that the action has altered the state or behavior during execution."
+                  },
+                  {
+                    "value": 2,
+                    "name": "Handled",
+                    "description": "The action has been successfully handled, and no further action is required."
+                  },
+                  {
+                    "value": 3,
+                    "name": "Stop",
+                    "description": "The action processing is halted, and no further steps will be executed."
+                  }
+                ]
+              }
             }
           }
         },
