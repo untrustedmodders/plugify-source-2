@@ -234,20 +234,22 @@ extern "C" PLUGIN_API bool IsServerPaused()
  * @brief Queues a task to be executed on the next frame.
  *
  * @param callback A callback function to be executed on the next frame.
+ * @param userData An array intended to hold user-related data, allowing for elements of any type.
  */
-extern "C" PLUGIN_API void QueueTaskForNextFrame(TaskCallback callback)
+extern "C" PLUGIN_API void QueueTaskForNextFrame(TaskCallback callback, const plg::vector<plg::any>& userData)
 {
-	g_ServerManager.AddTaskForNextFrame(callback);
+	g_ServerManager.AddTaskForNextFrame(callback, userData);
 }
 
 /**
  * @brief Queues a task to be executed on the next world update.
  *
  * @param callback A callback function to be executed on the next world update.
+ * @param userData An array intended to hold user-related data, allowing for elements of any type.
  */
-extern "C" PLUGIN_API void QueueTaskForNextWorldUpdate(TaskCallback callback)
+extern "C" PLUGIN_API void QueueTaskForNextWorldUpdate(TaskCallback callback, const plg::vector<plg::any>& userData)
 {
-	g_ServerManager.AddTaskForNextWorldUpdate(callback);
+	g_ServerManager.AddTaskForNextWorldUpdate(callback, userData);
 }
 
 /**

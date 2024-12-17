@@ -418,6 +418,24 @@
       }
     },
     {
+        "name": "GetClientEyeAngles",
+        "group": "Clients",
+        "description": "Retrieves the client's eye angle.",
+        "funcName": "GetClientEyeAngles",
+        "paramTypes": [
+            {
+                "name": "clientIndex",
+                "type": "int32",
+                "ref": false,
+                "description": "Index of the client."
+            }
+        ],
+        "retType": {
+            "type": "vec3",
+            "description": "A QAngle where the client's eye angle will be stored."
+        }
+    },
+    {
       "name": "ProcessTargetString",
       "group": "Clients",
       "description": "Processes the target string to determine if one user can target another.",
@@ -607,6 +625,353 @@
       "retType": {
         "type": "void"
       }
+    },
+    {
+        "name": "GetClientActiveWeapon",
+        "group": "Clients",
+        "description": "Retrieves the handle of the client's currently active weapon.",
+        "funcName": "GetClientActiveWeapon",
+        "paramTypes": [
+            {
+                "name": "clientIndex",
+                "type": "int32",
+                "ref": false,
+                "description": "The index of the client."
+            }
+        ],
+        "retType": {
+            "type": "int32",
+            "description": "The entity handle of the active weapon, or INVALID_EHANDLE_INDEX if the client is invalid or has no active weapon."
+        }
+    },
+    {
+        "name": "GetClientWeapons",
+        "group": "Clients",
+        "description": "Retrieves a list of weapon handles owned by the client.",
+        "funcName": "GetClientWeapons",
+        "paramTypes": [
+            {
+                "name": "clientIndex",
+                "type": "int32",
+                "ref": false,
+                "description": "The index of the client."
+            }
+        ],
+        "retType": {
+            "type": "int32[]",
+            "description": "A vector of entity handles for the client's weapons, or an empty vector if the client is invalid or has no weapons."
+        }
+    },
+    {
+        "name": "DropWeapon",
+        "group": "Clients",
+        "description": "Forces a player to drop their weapon.",
+        "funcName": "DropWeapon",
+        "paramTypes": [
+            {
+                "name": "clientIndex",
+                "type": "int32",
+                "ref": false,
+                "description": "Index of the client."
+            },
+            {
+                "name": "weaponHandle",
+                "type": "int32",
+                "ref": false,
+                "description": "Handle of weapon to drop."
+            },
+            {
+                "name": "target",
+                "type": "vec3",
+                "ref": false,
+                "description": "Target direction."
+            },
+            {
+                "name": "velocity",
+                "type": "vec3",
+                "ref": false,
+                "description": "Velocity to toss weapon or zero to just drop weapon."
+            }
+        ],
+        "retType": {
+            "type": "void"
+        }
+    },
+    {
+        "name": "StripWeapons",
+        "group": "Clients",
+        "description": "Removes all weapons from a client, with an option to remove the suit as well.",
+        "funcName": "StripWeapons",
+        "paramTypes": [
+            {
+                "name": "clientIndex",
+                "type": "int32",
+                "ref": false,
+                "description": "The index of the client."
+            },
+            {
+                "name": "removeSuit",
+                "type": "bool",
+                "ref": false,
+                "description": "A boolean indicating whether to also remove the client's suit."
+            }
+        ],
+        "retType": {
+            "type": "void"
+        }
+    },
+    {
+        "name": "GiveNamedItem",
+        "group": "Clients",
+        "description": "Gives a named item (e.g., weapon) to a client.",
+        "funcName": "GiveNamedItem",
+        "paramTypes": [
+            {
+                "name": "clientIndex",
+                "type": "int32",
+                "ref": false,
+                "description": "The index of the client."
+            },
+            {
+                "name": "itemName",
+                "type": "string",
+                "ref": false,
+                "description": "The name of the item to give."
+            }
+        ],
+        "retType": {
+            "type": "int32",
+            "description": "The entity handle of the created item, or INVALID_EHANDLE_INDEX if the client or item is invalid."
+        }
+    },
+    {
+        "name": "GetClientButtons",
+        "group": "Clients",
+        "description": "Retrieves the state of a specific button for a client.",
+        "funcName": "GetClientButtons",
+        "paramTypes": [
+            {
+                "name": "clientIndex",
+                "type": "int32",
+                "ref": false,
+                "description": "The index of the client."
+            },
+            {
+                "name": "buttonIndex",
+                "type": "int32",
+                "ref": false,
+                "description": "The index of the button (0-2)."
+            }
+        ],
+        "retType": {
+            "type": "uint64",
+            "description": "uint64_t The state of the specified button, or 0 if the client or button index is invalid."
+        }
+    },
+    {
+        "name": "GetClientMoney",
+        "group": "Clients",
+        "description": "Retrieves the amount of money a client has.",
+        "funcName": "GetClientMoney",
+        "paramTypes": [
+            {
+                "name": "clientIndex",
+                "type": "int32",
+                "ref": false,
+                "description": "The index of the client."
+            }
+        ],
+        "retType": {
+            "type": "int32",
+            "description": "The amount of money the client has, or 0 if the client index is invalid."
+        }
+    },
+    {
+        "name": "SetClientMoney",
+        "group": "Clients",
+        "description": "Sets the amount of money for a client.",
+        "funcName": "SetClientMoney",
+        "paramTypes": [
+            {
+                "name": "clientIndex",
+                "type": "int32",
+                "ref": false,
+                "description": "The index of the client."
+            },
+            {
+                "name": "money",
+                "type": "int32",
+                "ref": false,
+                "description": "The amount of money to set."
+            }
+        ],
+        "retType": {
+            "type": "void"
+        }
+    },
+    {
+        "name": "GetClientKills",
+        "group": "Clients",
+        "description": "Retrieves the number of kills for a client.",
+        "funcName": "GetClientKills",
+        "paramTypes": [
+            {
+                "name": "clientIndex",
+                "type": "int32",
+                "ref": false,
+                "description": "The index of the client."
+            }
+        ],
+        "retType": {
+            "type": "int32",
+            "description": "The number of kills the client has, or 0 if the client index is invalid."
+        }
+    },
+    {
+        "name": "SetClientKills",
+        "group": "Clients",
+        "description": "Sets the number of kills for a client.",
+        "funcName": "SetClientKills",
+        "paramTypes": [
+            {
+                "name": "clientIndex",
+                "type": "int32",
+                "ref": false,
+                "description": "The index of the client."
+            },
+            {
+                "name": "kills",
+                "type": "int32",
+                "ref": false,
+                "description": "The number of kills to set."
+            }
+        ],
+        "retType": {
+            "type": "void"
+        }
+    },
+    {
+        "name": "GetClientDeaths",
+        "group": "Clients",
+        "description": "Retrieves the number of deaths for a client.",
+        "funcName": "GetClientDeaths",
+        "paramTypes": [
+            {
+                "name": "clientIndex",
+                "type": "int32",
+                "ref": false,
+                "description": "The index of the client."
+            }
+        ],
+        "retType": {
+            "type": "int32",
+            "description": "The number of deaths the client has, or 0 if the client index is invalid."
+        }
+    },
+    {
+        "name": "SetClientDeaths",
+        "group": "Clients",
+        "description": "Sets the number of deaths for a client.",
+        "funcName": "SetClientDeaths",
+        "paramTypes": [
+            {
+                "name": "clientIndex",
+                "type": "int32",
+                "ref": false,
+                "description": "The index of the client."
+            },
+            {
+                "name": "deaths",
+                "type": "int32",
+                "ref": false,
+                "description": "The number of deaths to set."
+            }
+        ],
+        "retType": {
+            "type": "void"
+        }
+    },
+    {
+        "name": "GetClientAssists",
+        "group": "Clients",
+        "description": "Retrieves the number of assists for a client.",
+        "funcName": "GetClientAssists",
+        "paramTypes": [
+            {
+                "name": "clientIndex",
+                "type": "int32",
+                "ref": false,
+                "description": "The index of the client."
+            }
+        ],
+        "retType": {
+            "type": "int32",
+            "description": "The number of assists the client has, or 0 if the client index is invalid."
+        }
+    },
+    {
+        "name": "SetClientAssists",
+        "group": "Clients",
+        "description": "Sets the number of assists for a client.",
+        "funcName": "SetClientAssists",
+        "paramTypes": [
+            {
+                "name": "clientIndex",
+                "type": "int32",
+                "ref": false,
+                "description": "The index of the client."
+            },
+            {
+                "name": "assists",
+                "type": "int32",
+                "ref": false,
+                "description": "The number of assists to set."
+            }
+        ],
+        "retType": {
+            "type": "void"
+        }
+    },
+    {
+        "name": "GetClientDamage",
+        "group": "Clients",
+        "description": "Retrieves the total damage dealt by a client.",
+        "funcName": "GetClientDamage",
+        "paramTypes": [
+            {
+                "name": "clientIndex",
+                "type": "int32",
+                "ref": false,
+                "description": "The index of the client."
+            }
+        ],
+        "retType": {
+            "type": "int32",
+            "description": "The total damage dealt by the client, or 0 if the client index is invalid."
+        }
+    },
+    {
+        "name": "SetClientDamage",
+        "group": "Clients",
+        "description": "Sets the total damage dealt by a client.",
+        "funcName": "SetClientDamage",
+        "paramTypes": [
+            {
+                "name": "clientIndex",
+                "type": "int32",
+                "ref": false,
+                "description": "The index of the client."
+            },
+            {
+                "name": "damage",
+                "type": "int32",
+                "ref": false,
+                "description": "The amount of damage to set."
+            }
+        ],
+        "retType": {
+            "type": "void"
+        }
     },
     {
       "name": "AddAdminCommand",
@@ -3716,11 +4081,24 @@
           "prototype": {
             "name": "TaskCallback",
             "description": "Defines a QueueTask Callback.",
-            "paramTypes": [],
+            "paramTypes": [
+			  {
+                "name": "userData",
+                "type": "any[]",
+                "ref": false,
+                "description": "An array intended to hold user-related data, allowing for elements of any type."
+              }
+			],
             "retType": {
               "type": "void"
             }
           }
+        },
+        {
+          "name": "userData",
+          "type": "any[]",
+          "ref": false,
+          "description": "An array intended to hold user-related data, allowing for elements of any type."
         }
       ],
       "retType": {
@@ -3741,11 +4119,24 @@
           "prototype": {
             "name": "TaskCallback",
             "description": "Defines a QueueTask Callback.",
-            "paramTypes": [],
+            "paramTypes": [
+			  {
+                "name": "userData",
+                "type": "any[]",
+                "ref": false,
+                "description": "An array intended to hold user-related data, allowing for elements of any type."
+              }
+			],
             "retType": {
               "type": "void"
             }
           }
+        },
+        {
+          "name": "userData",
+          "type": "any[]",
+          "ref": false,
+          "description": "An array intended to hold user-related data, allowing for elements of any type."
         }
       ],
       "retType": {

@@ -720,7 +720,7 @@ extern "C" PLUGIN_API int GetEntityOwner(int entityHandle)
 		return INVALID_EHANDLE_INDEX;
 	}
 
-	return pEntity->m_CBodyComponent->m_pSceneNode->m_pOwner()->GetRefEHandle().ToInt();
+	return pEntity->m_CBodyComponent->m_pSceneNode->m_pOwner->GetRefEHandle().ToInt();
 }
 
 /**
@@ -769,7 +769,7 @@ extern "C" PLUGIN_API int GetEntityParent(int entityHandle)
 		return INVALID_EHANDLE_INDEX;
 	}
 
-	return pEntity->m_CBodyComponent->m_pSceneNode->m_pParent()->m_pOwner->GetRefEHandle().ToInt();
+	return pEntity->m_CBodyComponent->m_pSceneNode->m_pParent->m_pOwner->GetRefEHandle().ToInt();
 }
 
 /**
@@ -1010,7 +1010,7 @@ extern "C" PLUGIN_API int GetEntityGroundEntity(int entityHandle)
 		return INVALID_EHANDLE_INDEX;
 	}
 
-	return pEntity->m_hGroundEntity()->GetRefEHandle().ToInt();
+	return pEntity->m_hGroundEntity->GetRefEHandle().ToInt();
 }
 
 /**

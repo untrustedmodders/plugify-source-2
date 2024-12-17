@@ -45,6 +45,8 @@ public:
 	SCHEMA_FIELD(CHandle<CCSPlayerPawn>, m_hPawn)
 	SCHEMA_FIELD_POINTER(char, m_iszPlayerName)
 	SCHEMA_FIELD(PlayerConnectedState, m_iConnected)
+	SCHEMA_FIELD(bool, m_bIsHLTV)
+	SCHEMA_FIELD(uint, m_iDesiredFOV)
 
 	CBasePlayerPawn* GetPawn() { return m_hPawn.Get(); }
 	const char* GetPlayerName() { return m_iszPlayerName(); }

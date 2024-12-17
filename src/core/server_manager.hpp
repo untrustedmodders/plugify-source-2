@@ -3,20 +3,25 @@
 #include <mutex>
 #include <thread>
 
-using TaskCallback = void (*)();
+using TaskCallback = void (*)(const plg::vector<plg::any>&);
 
 class CServerManager
 {
 public:
-	void AddTaskForNextWorldUpdate(TaskCallback task);
-	void AddTaskForNextFrame(TaskCallback task);
+	void AddTaskForNextWorldUpdate(TaskCallback task, const plg::vector<plg::any>& userData);
+	void AddTaskForNextFrame(TaskCallback task, const plg::vector<plg::any>& userData);
 
 	void OnGameFrame();
 	void OnPreWorldUpdate();
 
 private:
-	std::vector<TaskCallback> m_nextWorldUpdateTasks;
-	std::vector<TaskCallback> m_nextTasks;
+	struct Task {
+		TaskCallback callback;
+		plg::vector<plg::any> userData;
+	};
+
+	std::vector<Task> m_nextWorldUpdateTasks;
+	std::vector<Task> m_nextTasks;
 	std::mutex m_nextWorldUpdateTasksLock;
 	std::mutex m_nextTasksLock;
 };
