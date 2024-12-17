@@ -37,10 +37,10 @@ extern "C" PLUGIN_API void* EntIndexToEntPointer(int entityIndex)
  */
 extern "C" PLUGIN_API int EntPointerToEntIndex(CEntityInstance* entity)
 {
-	if (!g_pGameEntitySystem->IsEntityPtr(entity))
+	/*if (!g_pGameEntitySystem->IsEntityPtr(entity))
 	{
 		return -1;
-	}
+	}*/
 
     return entity->GetRefEHandle().GetEntryIndex();
 }
@@ -56,10 +56,10 @@ extern "C" PLUGIN_API int EntPointerToEntIndex(CEntityInstance* entity)
  */
 extern "C" PLUGIN_API int EntPointerToEntHandle(CEntityInstance* entity)
 {
-	if (!g_pGameEntitySystem->IsEntityPtr(entity))
+	/*if (!g_pGameEntitySystem->IsEntityPtr(entity))
 	{
 		return INVALID_EHANDLE_INDEX;
-	}
+	}*/
 
     return entity->GetRefEHandle().ToInt();
 }
