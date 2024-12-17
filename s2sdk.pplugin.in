@@ -57,7 +57,7 @@
       ],
       "retType": {
         "type": "uint64",
-        "description": "uint64_t Steam account ID."
+        "description": "Steam account ID."
       }
     },
     {
@@ -765,7 +765,7 @@
         ],
         "retType": {
             "type": "uint64",
-            "description": "uint64_t The state of the specified button, or 0 if the client or button index is invalid."
+            "description": "The state of the specified button, or 0 if the client or button index is invalid."
         }
     },
     {
