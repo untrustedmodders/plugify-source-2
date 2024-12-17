@@ -209,6 +209,18 @@
 				"windows"   "4C 89 44 24 18 55 53 57 41 55 41 56"
 				"linux"     "55 48 89 E5 41 57 49 89 FF 41 56 49 89 F6 41 55 49 89 CD"
 			}
+			"CCSPlayer_ItemServices_CanAcquire"
+			{
+				"library"   "server"
+				"windows"   "48 8B C4 44 89 40 ? 48 89 50 ? 48 89 48"
+				"linux"     "55 48 89 E5 41 57 41 56 41 55 49 89 CD 41 54 53 48 83 EC"
+			}
+			"GetCSWeaponDataFromKey"
+			{
+				"library"   "server"
+				"windows"   "48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B FA 8B F1 48 85 D2 0F 84"
+				"linux"     "55 48 89 E5 41 57 41 56 41 89 FE 41 55 41 54 45"
+			}
 		}
 		"Offsets"
 		{
@@ -228,10 +240,10 @@
 				"linux"     "80"
 			}
 			// 5 functions after one with "Physics_SimulateEntity""Server Game"
-			"Teleport"
+			"CBaseEntity_Teleport"
 			{
-				"windows"   "149"
-				"linux"     "148"
+				"windows"   "157"
+				"linux"     "156"
 			}
 			// 5 functions after one with "targethealthfrac"
 			"CollisionRulesChanged"
@@ -260,10 +272,10 @@
 			// Look for the kill command, go through its callback and you should a find call like this, with v9 being a pawn pointer:
 			// return (*(*v9 + 2832LL))(v9, v27, 0LL);
 			// 2832 (354 * 8) is the offset
-			"CommitSuicide"
+			"CBasePlayerPawn_CommitSuicide"
 			{
-				"windows"   "360"
-				"linux"     "360"
+				"windows"   "380"
+				"linux"     "380"
 			}
 			"ControllerRespawn"
 			{
@@ -271,10 +283,10 @@
 				"linux"     "246"
 			}
 			// "Player.Respawn"
-			"Respawn"
+			"CCSPlayerController_Respawn"
 			{
-				"windows"   "328"
-				"linux"     "329"
+				"windows"   "257"
+				"linux"     "259"
 			}
 			// Check sv_fullupdate
 			"ClientOffset"
@@ -315,6 +327,16 @@
 			{
 				"windows"   "77"
 				"linux"     "79"
+			}
+			"CCSPlayer_WeaponServices::DropWeapon"
+			{
+				"windows"		"22"
+				"linux"			"23"
+			}
+			"CCSPlayer_WeaponServices::SelectItem"
+			{
+				"windows"		"24"
+				"linux"			"25"
 			}
 		}
 		"Addresses"
