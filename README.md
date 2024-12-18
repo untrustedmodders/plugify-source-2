@@ -9,8 +9,8 @@ The **Source2 SDK** is a specialized plugin for the Plugify plugin system, desig
 ### Prerequisites
 
 - Plugify Framework Installed
-- [C++ Language Module](https://www.mono-project.com/docs/about-mono/compatibility/)
-- [PolyHook Plugin](https://github.com/untrustedmodders/plugify-polyhook)
+- [C++ Language Module](https://github.com/untrustedmodders/plugify-module-cpp)
+- [PolyHook Plugin](https://github.com/untrustedmodders/polyhook)
 
 ### Installation
 
@@ -19,7 +19,7 @@ The **Source2 SDK** is a specialized plugin for the Plugify plugin system, desig
 You can install the Source2 SDK using the Plugify plugin manager by running the following command:
 
 ```bash
-plugify install cs2sdk
+plg install s2sdk
 ```
 
 #### Option 2: Manual Installation
@@ -27,9 +27,8 @@ plugify install cs2sdk
 1. Clone this repository:
 
     ```bash
-    git clone https://github.com/untrustedmodders/plugify-source-2.git
+    git clone https://github.com/untrustedmodders/plugify-source-2.git --recursive
     cd plugify-source-2
-    git submodule update --init --recursive
     ```
 
 2. Build the plugin:
@@ -42,7 +41,7 @@ plugify install cs2sdk
    
 ## Documentation
 
-For a complete list of functions, parameters, and examples, please visit our documentation site at: [Plugify Source 2 Documentation](https://untrustedmodders.github.io/plugify-source-2/).
+For a complete list of functions, parameters, and examples, please visit our documentation site at: [Plugify Source 2 Documentation](https://untrustedmodders.github.io/plugify-generator/?file=https%3A%2F%2Fgithub.com%2Funtrustedmodders%2Fplugify-source-2%2Fblob%2Fmain%2Fs2sdk.pplugin.in).
 
 ## Contributing
 
