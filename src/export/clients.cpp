@@ -611,7 +611,7 @@ extern "C" PLUGIN_API plg::vector<int> GetClientWeapons(int clientIndex)
 		return {};
 	}
 
-	auto pWeaponServices = pController->GetPawn()->m_pWeaponServices;
+	auto pWeaponServices = pController->GetPawn()->m_pWeaponServices();
 	if (!pWeaponServices)
 	{
 		return {};
@@ -654,7 +654,7 @@ extern "C" PLUGIN_API void DropWeapon(int clientIndex, int weaponHandle, const p
 		return;
 	}
 
-	auto pWeaponServices = pController->GetPawn()->m_pWeaponServices;
+	auto pWeaponServices = pController->GetPawn()->m_pWeaponServices();
 	if (!pWeaponServices)
 	{
 		return;
@@ -678,7 +678,7 @@ extern "C" PLUGIN_API void StripWeapons(int clientIndex, bool removeSuit)
 		return;
 	}
 
-	auto pItemServices = pController->GetPawn()->m_pItemServices;
+	auto pItemServices = pController->GetPawn()->m_pItemServices();
 	if (!pItemServices)
 	{
 		return;
@@ -703,7 +703,7 @@ extern "C" PLUGIN_API int GiveNamedItem(int clientIndex, const plg::string& item
 		return INVALID_EHANDLE_INDEX;
 	}
 
-	auto pItemServices = pController->GetPawn()->m_pItemServices;
+	auto pItemServices = pController->GetPawn()->m_pItemServices();
 	if (!pItemServices)
 	{
 		return INVALID_EHANDLE_INDEX;
@@ -741,7 +741,7 @@ extern "C" PLUGIN_API uint64_t GetClientButtons(int clientIndex, int buttonIndex
 		return  0;
 	}
 
-	auto pMovementServices = pController->GetPawn()->m_pMovementServices;
+	auto pMovementServices = pController->GetPawn()->m_pMovementServices();
 	if (!pMovementServices)
 	{
 		return 0;
@@ -765,7 +765,7 @@ extern "C" PLUGIN_API int GetClientMoney(int clientIndex)
 		return  0;
 	}
 
-	auto pInGameMoneyServices = pController->m_pInGameMoneyServices;
+	auto pInGameMoneyServices = pController->m_pInGameMoneyServices();
 	if (!pInGameMoneyServices)
 	{
 		return 0;
@@ -789,7 +789,7 @@ extern "C" PLUGIN_API void SetClientMoney(int clientIndex, int money)
 		return;
 	}
 
-	auto pInGameMoneyServices = pController->m_pInGameMoneyServices;
+	auto pInGameMoneyServices = pController->m_pInGameMoneyServices();
 	if (!pInGameMoneyServices)
 	{
 		return;
@@ -813,7 +813,7 @@ extern "C" PLUGIN_API int GetClientKills(int clientIndex)
 		return 0;
 	}
 
-	auto pActionTrackingServices = pController->m_pActionTrackingServices;
+	auto pActionTrackingServices = pController->m_pActionTrackingServices();
 	if (!pActionTrackingServices)
 	{
 		return 0;
@@ -837,7 +837,7 @@ extern "C" PLUGIN_API void SetClientKills(int clientIndex, int kills)
 		return;
 	}
 
-	auto pActionTrackingServices = pController->m_pActionTrackingServices;
+	auto pActionTrackingServices = pController->m_pActionTrackingServices();
 	if (!pActionTrackingServices)
 	{
 		return;
@@ -861,7 +861,7 @@ extern "C" PLUGIN_API int GetClientDeaths(int clientIndex)
 		return  0;
 	}
 
-	auto pActionTrackingServices = pController->m_pActionTrackingServices;
+	auto pActionTrackingServices = pController->m_pActionTrackingServices();
 	if (!pActionTrackingServices)
 	{
 		return 0;
@@ -885,7 +885,7 @@ extern "C" PLUGIN_API void SetClientDeaths(int clientIndex, int deaths)
 		return;
 	}
 
-	auto pActionTrackingServices = pController->m_pActionTrackingServices;
+	auto pActionTrackingServices = pController->m_pActionTrackingServices();
 	if (!pActionTrackingServices)
 	{
 		return;
@@ -909,7 +909,7 @@ extern "C" PLUGIN_API int GetClientAssists(int clientIndex)
 		return  0;
 	}
 
-	auto pActionTrackingServices = pController->m_pActionTrackingServices;
+	auto pActionTrackingServices = pController->m_pActionTrackingServices();
 	if (!pActionTrackingServices)
 	{
 		return 0;
@@ -933,7 +933,7 @@ extern "C" PLUGIN_API void SetClientAssists(int clientIndex, int assists)
 		return;
 	}
 
-	auto pActionTrackingServices = pController->m_pActionTrackingServices;
+	auto pActionTrackingServices = pController->m_pActionTrackingServices();
 	if (!pActionTrackingServices)
 	{
 		return;
@@ -957,7 +957,7 @@ extern "C" PLUGIN_API int GetClientDamage(int clientIndex)
 		return  0;
 	}
 
-	auto pActionTrackingServices = pController->m_pActionTrackingServices;
+	auto pActionTrackingServices = pController->m_pActionTrackingServices();
 	if (!pActionTrackingServices)
 	{
 		return 0;
@@ -981,7 +981,7 @@ extern "C" PLUGIN_API void SetClientDamage(int clientIndex, int damage)
 		return;
 	}
 
-	auto pActionTrackingServices = pController->m_pActionTrackingServices;
+	auto pActionTrackingServices = pController->m_pActionTrackingServices();
 	if (!pActionTrackingServices)
 	{
 		return;
