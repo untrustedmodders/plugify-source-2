@@ -2,6 +2,11 @@
 
 CConVarManager::~CConVarManager()
 {
+	if (!g_pCVar)
+	{
+		return;
+	}
+
 	g_pCVar->RemoveGlobalChangeCallback(&ChangeGlobal);
 	for (const auto& [cv, _] : m_cnvCache)
 	{

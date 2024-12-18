@@ -15,14 +15,14 @@ public:
 	void AddTagToChannel(const char* tagName) const;
 	bool HasTag(const char* tag) const;
 
-	[[nodiscard]] bool IsChannelEnabled(LoggingSeverity_t severity) const;
-	[[nodiscard]] bool IsChannelEnabled(LoggingVerbosity_t verbosity) const;
+	bool IsChannelEnabled(LoggingSeverity_t severity) const;
+	bool IsChannelEnabled(LoggingVerbosity_t verbosity) const;
 
-	[[nodiscard]] LoggingVerbosity_t GetChannelVerbosity() const;
+	LoggingVerbosity_t GetChannelVerbosity() const;
 	void SetChannelVerbosity(LoggingVerbosity_t verbosity) const;
 	int GetChannelColor() const;
 	void SetChannelColor(int color) const;
-	[[nodiscard]] LoggingChannelFlags_t GetChannelFlags() const;
+	LoggingChannelFlags_t GetChannelFlags() const;
 	void SetChannelFlags(LoggingChannelFlags_t flags) const;
 
 	static void SetChannelVerbosityByName(const char* name, LoggingVerbosity_t verbosity);

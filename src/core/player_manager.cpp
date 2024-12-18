@@ -160,7 +160,7 @@ void CPlayer::SetAdminFlags(uint64 adminFlags)
 	m_iAdminFlags = adminFlags;
 }
 
-bool CPlayer::IsAdminFlagSet(uint64 flag)
+bool CPlayer::IsAdminFlagSet(uint64 flag) const
 {
 	return !flag || (m_iAdminFlags & flag);
 }

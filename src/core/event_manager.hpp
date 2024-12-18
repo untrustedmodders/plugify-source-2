@@ -7,7 +7,7 @@
 
 struct EventInfo
 {
-	IGameEvent* pEvent{nullptr};
+	IGameEvent* pEvent{};
 	bool bDontBroadcast{};
 };
 

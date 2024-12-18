@@ -66,7 +66,7 @@ public:
 	void SetSteamId(const CSteamID* steam_id);
 	uint64 GetAdminFlags() const;
 	void SetAdminFlags(uint64 adminFlags);
-	bool IsAdminFlagSet(uint64 flag);
+	bool IsAdminFlagSet(uint64 flag) const;
 	bool IsConnected() const;
 	bool IsFakeClient() const;
 	bool IsAuthorized() const;

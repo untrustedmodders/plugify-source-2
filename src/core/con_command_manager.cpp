@@ -5,13 +5,21 @@
 
 CConCommandManager::~CConCommandManager()
 {
+	if (!g_pCVar)
+	{
+		return;
+	}
+
 	for (const auto& [_, command] : m_cmdLookup)
 	{
-		g_pCVar->UnregisterConCommand(command->commandRef->GetHandle());
+		if (!command->defaultCommand)
+		{
+			g_pCVar->UnregisterConCommand(command->commandRef->GetHandle());
+		}
 	}
 }
 
-void CommandCallback(const CCommandContext& context, const CCommand& command)
+void CommandCallback(const CCommandContext&, const CCommand&)
 {
 }
 
