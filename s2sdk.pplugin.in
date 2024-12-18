@@ -7074,10 +7074,10 @@
       }
     },
     {
-      "name": "GetSchemaBoolByName",
+      "name": "GetSchemaFieldBool",
       "group": "Schema",
-      "description": "Get a value from a schema member by its name.",
-      "funcName": "GetSchemaBoolByName",
+      "description": "Get a value from a schema field.",
+      "funcName": "GetSchemaFieldBool",
       "paramTypes": [
         {
           "name": "entityHandle",
@@ -7110,10 +7110,10 @@
       }
     },
     {
-      "name": "GetSchemaInt8ByName",
+      "name": "GetSchemaFieldInt8",
       "group": "Schema",
-      "description": "Get a value from a schema member by its name.",
-      "funcName": "GetSchemaInt8ByName",
+      "description": "Get a value from a schema field.",
+      "funcName": "GetSchemaFieldInt8",
       "paramTypes": [
         {
           "name": "entityHandle",
@@ -7146,10 +7146,10 @@
       }
     },
     {
-      "name": "GetSchemaInt16ByName",
+      "name": "GetSchemaFieldInt16",
       "group": "Schema",
-      "description": "Get a value from a schema member by its name.",
-      "funcName": "GetSchemaInt16ByName",
+      "description": "Get a value from a schema field.",
+      "funcName": "GetSchemaFieldInt16",
       "paramTypes": [
         {
           "name": "entityHandle",
@@ -7182,10 +7182,10 @@
       }
     },
     {
-      "name": "GetSchemaInt32ByName",
+      "name": "GetSchemaFieldInt32",
       "group": "Schema",
-      "description": "Get a value from a schema member by its name.",
-      "funcName": "GetSchemaInt32ByName",
+      "description": "Get a value from a schema field.",
+      "funcName": "GetSchemaFieldInt32",
       "paramTypes": [
         {
           "name": "entityHandle",
@@ -7218,10 +7218,10 @@
       }
     },
     {
-      "name": "GetSchemaInt64ByName",
+      "name": "GetSchemaFieldInt64",
       "group": "Schema",
-      "description": "Get a value from a schema member by its name.",
-      "funcName": "GetSchemaInt64ByName",
+      "description": "Get a value from a schema field.",
+      "funcName": "GetSchemaFieldInt64",
       "paramTypes": [
         {
           "name": "entityHandle",
@@ -7254,10 +7254,10 @@
       }
     },
     {
-      "name": "GetSchemaUInt8ByName",
+      "name": "GetSchemaFieldUInt8",
       "group": "Schema",
-      "description": "Get a value from a schema member by its name.",
-      "funcName": "GetSchemaUInt8ByName",
+      "description": "Get a value from a schema field.",
+      "funcName": "GetSchemaFieldUInt8",
       "paramTypes": [
         {
           "name": "entityHandle",
@@ -7290,10 +7290,10 @@
       }
     },
     {
-      "name": "GetSchemaUInt16ByName",
+      "name": "GetSchemaFieldUInt16",
       "group": "Schema",
-      "description": "Get a value from a schema member by its name.",
-      "funcName": "GetSchemaUInt16ByName",
+      "description": "Get a value from a schema field.",
+      "funcName": "GetSchemaFieldUInt16",
       "paramTypes": [
         {
           "name": "entityHandle",
@@ -7326,10 +7326,10 @@
       }
     },
     {
-      "name": "GetSchemaUInt32ByName",
+      "name": "GetSchemaFieldUInt32",
       "group": "Schema",
-      "description": "Get a value from a schema member by its name.",
-      "funcName": "GetSchemaUInt32ByName",
+      "description": "Get a value from a schema field.",
+      "funcName": "GetSchemaFieldUInt32",
       "paramTypes": [
         {
           "name": "entityHandle",
@@ -7362,10 +7362,10 @@
       }
     },
     {
-      "name": "GetSchemaUInt64ByName",
+      "name": "GetSchemaFieldUInt64",
       "group": "Schema",
-      "description": "Get a value from a schema member by its name.",
-      "funcName": "GetSchemaUInt64ByName",
+      "description": "Get a value from a schema field.",
+      "funcName": "GetSchemaFieldUInt64",
       "paramTypes": [
         {
           "name": "entityHandle",
@@ -7398,10 +7398,10 @@
       }
     },
     {
-      "name": "GetSchemaFloatByName",
+      "name": "GetSchemaFieldFloat",
       "group": "Schema",
-      "description": "Get a value from a schema member by its name.",
-      "funcName": "GetSchemaFloatByName",
+      "description": "Get a value from a schema field.",
+      "funcName": "GetSchemaFieldFloat",
       "paramTypes": [
         {
           "name": "entityHandle",
@@ -7434,10 +7434,10 @@
       }
     },
     {
-      "name": "GetSchemaDoubleByName",
+      "name": "GetSchemaFieldDouble",
       "group": "Schema",
-      "description": "Get a value from a schema member by its name.",
-      "funcName": "GetSchemaDoubleByName",
+      "description": "Get a value from a schema field.",
+      "funcName": "GetSchemaFieldDouble",
       "paramTypes": [
         {
           "name": "entityHandle",
@@ -7470,10 +7470,10 @@
       }
     },
     {
-      "name": "GetSchemaPointerByName",
+      "name": "GetSchemaFieldPointer",
       "group": "Schema",
-      "description": "Get a value from a schema member by its name.",
-      "funcName": "GetSchemaPointerByName",
+      "description": "Get a value from a schema field.",
+      "funcName": "GetSchemaFieldPointer",
       "paramTypes": [
         {
           "name": "entityHandle",
@@ -7506,10 +7506,10 @@
       }
     },
     {
-      "name": "GetSchemaStringByName",
+      "name": "GetSchemaFieldString",
       "group": "Schema",
-      "description": "Get a value from a schema member by its name.",
-      "funcName": "GetSchemaStringByName",
+      "description": "Get a value from a schema field.",
+      "funcName": "GetSchemaFieldString",
       "paramTypes": [
         {
           "name": "entityHandle",
@@ -7542,10 +7542,10 @@
       }
     },
     {
-      "name": "GetSchemaVectorByName",
+      "name": "GetSchemaFieldVector",
       "group": "Schema",
-      "description": "Get a value from a schema member by its name.",
-      "funcName": "GetSchemaVectorByName",
+      "description": "Get a value from a schema field.",
+      "funcName": "GetSchemaFieldVector",
       "paramTypes": [
         {
           "name": "entityHandle",
@@ -7578,10 +7578,10 @@
       }
     },
     {
-      "name": "SetSchemaValueBoolByName",
+      "name": "SetSchemaFieldBool",
       "group": "Schema",
-      "description": "Set a value for a schema member by its name.",
-      "funcName": "SetSchemaValueBoolByName",
+      "description": "Set a value for a schema field.",
+      "funcName": "SetSchemaFieldBool",
       "paramTypes": [
         {
           "name": "entityHandle",
@@ -7619,10 +7619,10 @@
       }
     },
     {
-      "name": "SetSchemaValueInt8ByName",
+      "name": "SetSchemaFieldInt8",
       "group": "Schema",
-      "description": "Set a value for a schema member by its name.",
-      "funcName": "SetSchemaValueInt8ByName",
+      "description": "Set a value for a schema field.",
+      "funcName": "SetSchemaFieldInt8",
       "paramTypes": [
         {
           "name": "entityHandle",
@@ -7660,10 +7660,10 @@
       }
     },
     {
-      "name": "SetSchemaValueInt16ByName",
+      "name": "SetSchemaFieldInt16",
       "group": "Schema",
-      "description": "Set a value for a schema member by its name.",
-      "funcName": "SetSchemaValueInt16ByName",
+      "description": "Set a value for a schema field.",
+      "funcName": "SetSchemaFieldInt16",
       "paramTypes": [
         {
           "name": "entityHandle",
@@ -7701,10 +7701,10 @@
       }
     },
     {
-      "name": "SetSchemaValueInt32ByName",
+      "name": "SetSchemaFieldInt32",
       "group": "Schema",
-      "description": "Set a value for a schema member by its name.",
-      "funcName": "SetSchemaValueInt32ByName",
+      "description": "Set a value for a schema field.",
+      "funcName": "SetSchemaFieldInt32",
       "paramTypes": [
         {
           "name": "entityHandle",
@@ -7742,10 +7742,10 @@
       }
     },
     {
-      "name": "SetSchemaValueInt64ByName",
+      "name": "SetSchemaFieldInt64",
       "group": "Schema",
-      "description": "Set a value for a schema member by its name.",
-      "funcName": "SetSchemaValueInt64ByName",
+      "description": "Set a value for a schema field.",
+      "funcName": "SetSchemaFieldInt64",
       "paramTypes": [
         {
           "name": "entityHandle",
@@ -7783,10 +7783,10 @@
       }
     },
     {
-      "name": "SetSchemaValueUInt8ByName",
+      "name": "SetSchemaFieldUInt8",
       "group": "Schema",
-      "description": "Set a value for a schema member by its name.",
-      "funcName": "SetSchemaValueUInt8ByName",
+      "description": "Set a value for a schema field.",
+      "funcName": "SetSchemaFieldUInt8",
       "paramTypes": [
         {
           "name": "entityHandle",
@@ -7824,10 +7824,10 @@
       }
     },
     {
-      "name": "SetSchemaValueUInt16ByName",
+      "name": "SetSchemaFieldUInt16",
       "group": "Schema",
-      "description": "Set a value for a schema member by its name.",
-      "funcName": "SetSchemaValueUInt16ByName",
+      "description": "Set a value for a schema field.",
+      "funcName": "SetSchemaFieldUInt16",
       "paramTypes": [
         {
           "name": "entityHandle",
@@ -7865,10 +7865,10 @@
       }
     },
     {
-      "name": "SetSchemaValueUInt32ByName",
+      "name": "SetSchemaFieldUInt32",
       "group": "Schema",
-      "description": "Set a value for a schema member by its name.",
-      "funcName": "SetSchemaValueUInt32ByName",
+      "description": "Set a value for a schema field.",
+      "funcName": "SetSchemaFieldUInt32",
       "paramTypes": [
         {
           "name": "entityHandle",
@@ -7906,10 +7906,10 @@
       }
     },
     {
-      "name": "SetSchemaValueUInt64ByName",
+      "name": "SetSchemaFieldUInt64",
       "group": "Schema",
-      "description": "Set a value for a schema member by its name.",
-      "funcName": "SetSchemaValueUInt64ByName",
+      "description": "Set a value for a schema field.",
+      "funcName": "SetSchemaFieldUInt64",
       "paramTypes": [
         {
           "name": "entityHandle",
@@ -7947,10 +7947,10 @@
       }
     },
     {
-      "name": "SetSchemaValueFloatByName",
+      "name": "SetSchemaFieldFloat",
       "group": "Schema",
-      "description": "Set a value for a schema member by its name.",
-      "funcName": "SetSchemaValueFloatByName",
+      "description": "Set a value for a schema field.",
+      "funcName": "SetSchemaFieldFloat",
       "paramTypes": [
         {
           "name": "entityHandle",
@@ -7988,10 +7988,10 @@
       }
     },
     {
-      "name": "SetSchemaValueDoubleByName",
+      "name": "SetSchemaFieldDouble",
       "group": "Schema",
-      "description": "Set a value for a schema member by its name.",
-      "funcName": "SetSchemaValueDoubleByName",
+      "description": "Set a value for a schema field.",
+      "funcName": "SetSchemaFieldDouble",
       "paramTypes": [
         {
           "name": "entityHandle",
@@ -8029,10 +8029,10 @@
       }
     },
     {
-      "name": "SetSchemaValueStringByName",
+      "name": "SetSchemaFieldString",
       "group": "Schema",
-      "description": "Set a value for a schema member by its name.",
-      "funcName": "SetSchemaValueStringByName",
+      "description": "Set a value for a schema field.",
+      "funcName": "SetSchemaFieldString",
       "paramTypes": [
         {
           "name": "entityHandle",
@@ -8070,16 +8070,1053 @@
       }
     },
     {
-      "name": "SetSchemaValueVectorByName",
+      "name": "SetSchemaFieldVector",
       "group": "Schema",
-      "description": "Set a value for a schema member by its name.",
-      "funcName": "SetSchemaValueVectorByName",
+      "description": "Set a value for a schema field.",
+      "funcName": "SetSchemaFieldVector",
       "paramTypes": [
         {
           "name": "entityHandle",
           "type": "int32",
           "ref": false,
           "description": "The handle of the entity where the value is to be set."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class that contains the member."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the member to be set."
+        },
+        {
+          "name": "value",
+          "type": "vec3",
+          "ref": false,
+          "description": "The value to assign to the member."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "GetSchemaFieldBoolByPtr",
+      "group": "Schema",
+      "description": "Get a value from a schema field by its pointer.",
+      "funcName": "GetSchemaFieldBoolByPtr",
+      "paramTypes": [
+        {
+          "name": "instancePointer",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance from which the value is to be retrieved."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the member whose value is to be retrieved."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
+        }
+      ],
+      "retType": {
+        "type": "bool",
+        "description": "The value of the member."
+      }
+    },
+    {
+      "name": "GetSchemaFieldInt8ByPtr",
+      "group": "Schema",
+      "description": "Get a value from a schema field by its pointer.",
+      "funcName": "GetSchemaFieldInt8ByPtr",
+      "paramTypes": [
+        {
+          "name": "instancePointer",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance from which the value is to be retrieved."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the member whose value is to be retrieved."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
+        }
+      ],
+      "retType": {
+        "type": "int8",
+        "description": "The value of the member."
+      }
+    },
+    {
+      "name": "GetSchemaFieldInt16ByPtr",
+      "group": "Schema",
+      "description": "Get a value from a schema field by its pointer.",
+      "funcName": "GetSchemaFieldInt16ByPtr",
+      "paramTypes": [
+        {
+          "name": "instancePointer",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance from which the value is to be retrieved."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the member whose value is to be retrieved."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
+        }
+      ],
+      "retType": {
+        "type": "int16",
+        "description": "The value of the member."
+      }
+    },
+    {
+      "name": "GetSchemaFieldInt32ByPtr",
+      "group": "Schema",
+      "description": "Get a value from a schema field by its pointer.",
+      "funcName": "GetSchemaFieldInt32ByPtr",
+      "paramTypes": [
+        {
+          "name": "instancePointer",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance from which the value is to be retrieved."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the member whose value is to be retrieved."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
+        }
+      ],
+      "retType": {
+        "type": "int32",
+        "description": "The value of the member."
+      }
+    },
+    {
+      "name": "GetSchemaFieldInt64ByPtr",
+      "group": "Schema",
+      "description": "Get a value from a schema field by its pointer.",
+      "funcName": "GetSchemaFieldInt64ByPtr",
+      "paramTypes": [
+        {
+          "name": "instancePointer",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance from which the value is to be retrieved."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the member whose value is to be retrieved."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
+        }
+      ],
+      "retType": {
+        "type": "int64",
+        "description": "The value of the member."
+      }
+    },
+    {
+      "name": "GetSchemaFieldUInt8ByPtr",
+      "group": "Schema",
+      "description": "Get a value from a schema field by its pointer.",
+      "funcName": "GetSchemaFieldUInt8ByPtr",
+      "paramTypes": [
+        {
+          "name": "instancePointer",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance from which the value is to be retrieved."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the member whose value is to be retrieved."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
+        }
+      ],
+      "retType": {
+        "type": "uint8",
+        "description": "The value of the member."
+      }
+    },
+    {
+      "name": "GetSchemaFieldUInt16ByPtr",
+      "group": "Schema",
+      "description": "Get a value from a schema field by its pointer.",
+      "funcName": "GetSchemaFieldUInt16ByPtr",
+      "paramTypes": [
+        {
+          "name": "instancePointer",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance from which the value is to be retrieved."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the member whose value is to be retrieved."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
+        }
+      ],
+      "retType": {
+        "type": "uint16",
+        "description": "The value of the member."
+      }
+    },
+    {
+      "name": "GetSchemaFieldUInt32ByPtr",
+      "group": "Schema",
+      "description": "Get a value from a schema field by its pointer.",
+      "funcName": "GetSchemaFieldUInt32ByPtr",
+      "paramTypes": [
+        {
+          "name": "instancePointer",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance from which the value is to be retrieved."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the member whose value is to be retrieved."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
+        }
+      ],
+      "retType": {
+        "type": "uint32",
+        "description": "The value of the member."
+      }
+    },
+    {
+      "name": "GetSchemaFieldUInt64ByPtr",
+      "group": "Schema",
+      "description": "Get a value from a schema field by its pointer.",
+      "funcName": "GetSchemaFieldUInt64ByPtr",
+      "paramTypes": [
+        {
+          "name": "instancePointer",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance from which the value is to be retrieved."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the member whose value is to be retrieved."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
+        }
+      ],
+      "retType": {
+        "type": "uint64",
+        "description": "The value of the member."
+      }
+    },
+    {
+      "name": "GetSchemaFieldFloatByPtr",
+      "group": "Schema",
+      "description": "Get a value from a schema field by its pointer.",
+      "funcName": "GetSchemaFieldFloatByPtr",
+      "paramTypes": [
+        {
+          "name": "instancePointer",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance from which the value is to be retrieved."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the member whose value is to be retrieved."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
+        }
+      ],
+      "retType": {
+        "type": "float",
+        "description": "The value of the member."
+      }
+    },
+    {
+      "name": "GetSchemaFieldDoubleByPtr",
+      "group": "Schema",
+      "description": "Get a value from a schema field by its pointer.",
+      "funcName": "GetSchemaFieldDoubleByPtr",
+      "paramTypes": [
+        {
+          "name": "instancePointer",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance from which the value is to be retrieved."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the member whose value is to be retrieved."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
+        }
+      ],
+      "retType": {
+        "type": "double",
+        "description": "The value of the member."
+      }
+    },
+    {
+      "name": "GetSchemaFieldPointerByPtr",
+      "group": "Schema",
+      "description": "Get a value from a schema field by its pointer.",
+      "funcName": "GetSchemaFieldPointerByPtr",
+      "paramTypes": [
+        {
+          "name": "instancePointer",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance from which the value is to be retrieved."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the member whose value is to be retrieved."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
+        }
+      ],
+      "retType": {
+        "type": "ptr64",
+        "description": "The value of the member."
+      }
+    },
+    {
+      "name": "GetSchemaFieldStringByPtr",
+      "group": "Schema",
+      "description": "Get a value from a schema field by its pointer.",
+      "funcName": "GetSchemaFieldStringByPtr",
+      "paramTypes": [
+        {
+          "name": "instancePointer",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance from which the value is to be retrieved."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the member whose value is to be retrieved."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
+        }
+      ],
+      "retType": {
+        "type": "string",
+        "description": "The value of the member."
+      }
+    },
+    {
+      "name": "GetSchemaFieldVectorByPtr",
+      "group": "Schema",
+      "description": "Get a value from a schema field by its pointer.",
+      "funcName": "GetSchemaFieldVectorByPtr",
+      "paramTypes": [
+        {
+          "name": "instancePointer",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance from which the value is to be retrieved."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the member whose value is to be retrieved."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
+        }
+      ],
+      "retType": {
+        "type": "vec3",
+        "description": "The value of the member."
+      }
+    },
+    {
+      "name": "SetSchemaFieldBoolByPtr",
+      "group": "Schema",
+      "description": "Set a value for a schema field by its pointer.",
+      "funcName": "SetSchemaFieldBoolByPtr",
+      "paramTypes": [
+        {
+          "name": "instancePointer",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance of the class where the value is to be set."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class that contains the member."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the member to be set."
+        },
+        {
+          "name": "value",
+          "type": "bool",
+          "ref": false,
+          "description": "The value to assign to the member."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "SetSchemaFieldInt8ByPtr",
+      "group": "Schema",
+      "description": "Set a value for a schema field by its pointer.",
+      "funcName": "SetSchemaFieldInt8ByPtr",
+      "paramTypes": [
+        {
+          "name": "instancePointer",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance of the class where the value is to be set."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class that contains the member."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the member to be set."
+        },
+        {
+          "name": "value",
+          "type": "int8",
+          "ref": false,
+          "description": "The value to assign to the member."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "SetSchemaFieldInt16ByPtr",
+      "group": "Schema",
+      "description": "Set a value for a schema field by its pointer.",
+      "funcName": "SetSchemaFieldInt16ByPtr",
+      "paramTypes": [
+        {
+          "name": "instancePointer",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance of the class where the value is to be set."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class that contains the member."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the member to be set."
+        },
+        {
+          "name": "value",
+          "type": "int16",
+          "ref": false,
+          "description": "The value to assign to the member."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "SetSchemaFieldInt32ByPtr",
+      "group": "Schema",
+      "description": "Set a value for a schema field by its pointer.",
+      "funcName": "SetSchemaFieldInt32ByPtr",
+      "paramTypes": [
+        {
+          "name": "instancePointer",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance of the class where the value is to be set."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class that contains the member."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the member to be set."
+        },
+        {
+          "name": "value",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to assign to the member."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "SetSchemaFieldInt64ByPtr",
+      "group": "Schema",
+      "description": "Set a value for a schema field by its pointer.",
+      "funcName": "SetSchemaFieldInt64ByPtr",
+      "paramTypes": [
+        {
+          "name": "instancePointer",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance of the class where the value is to be set."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class that contains the member."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the member to be set."
+        },
+        {
+          "name": "value",
+          "type": "int64",
+          "ref": false,
+          "description": "The value to assign to the member."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "SetSchemaFieldUInt8ByPtr",
+      "group": "Schema",
+      "description": "Set a value for a schema field by its pointer.",
+      "funcName": "SetSchemaFieldUInt8ByPtr",
+      "paramTypes": [
+        {
+          "name": "instancePointer",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance of the class where the value is to be set."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class that contains the member."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the member to be set."
+        },
+        {
+          "name": "value",
+          "type": "uint8",
+          "ref": false,
+          "description": "The value to assign to the member."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "SetSchemaFieldUInt16ByPtr",
+      "group": "Schema",
+      "description": "Set a value for a schema field by its pointer.",
+      "funcName": "SetSchemaFieldUInt16ByPtr",
+      "paramTypes": [
+        {
+          "name": "instancePointer",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance of the class where the value is to be set."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class that contains the member."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the member to be set."
+        },
+        {
+          "name": "value",
+          "type": "uint16",
+          "ref": false,
+          "description": "The value to assign to the member."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "SetSchemaFieldUInt32ByPtr",
+      "group": "Schema",
+      "description": "Set a value for a schema field by its pointer.",
+      "funcName": "SetSchemaFieldUInt32ByPtr",
+      "paramTypes": [
+        {
+          "name": "instancePointer",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance of the class where the value is to be set."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class that contains the member."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the member to be set."
+        },
+        {
+          "name": "value",
+          "type": "uint32",
+          "ref": false,
+          "description": "The value to assign to the member."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "SetSchemaFieldUInt64ByPtr",
+      "group": "Schema",
+      "description": "Set a value for a schema field by its pointer.",
+      "funcName": "SetSchemaFieldUInt64ByPtr",
+      "paramTypes": [
+        {
+          "name": "instancePointer",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance of the class where the value is to be set."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class that contains the member."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the member to be set."
+        },
+        {
+          "name": "value",
+          "type": "uint64",
+          "ref": false,
+          "description": "The value to assign to the member."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "SetSchemaFieldFloatByPtr",
+      "group": "Schema",
+      "description": "Set a value for a schema field by its pointer.",
+      "funcName": "SetSchemaFieldFloatByPtr",
+      "paramTypes": [
+        {
+          "name": "instancePointer",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance of the class where the value is to be set."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class that contains the member."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the member to be set."
+        },
+        {
+          "name": "value",
+          "type": "float",
+          "ref": false,
+          "description": "The value to assign to the member."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "SetSchemaFieldDoubleByPtr",
+      "group": "Schema",
+      "description": "Set a value for a schema field by its pointer.",
+      "funcName": "SetSchemaFieldDoubleByPtr",
+      "paramTypes": [
+        {
+          "name": "instancePointer",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance of the class where the value is to be set."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class that contains the member."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the member to be set."
+        },
+        {
+          "name": "value",
+          "type": "double",
+          "ref": false,
+          "description": "The value to assign to the member."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "SetSchemaFieldStringByPtr",
+      "group": "Schema",
+      "description": "Set a value for a schema field by its pointer.",
+      "funcName": "SetSchemaFieldStringByPtr",
+      "paramTypes": [
+        {
+          "name": "instancePointer",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance of the class where the value is to be set."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class that contains the member."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the member to be set."
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "ref": false,
+          "description": "The value to assign to the member."
+        },
+        {
+          "name": "extraOffset",
+          "type": "int32",
+          "ref": false,
+          "description": "The value to add to the offset."
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "SetSchemaFieldVectorByPtr",
+      "group": "Schema",
+      "description": "Set a value for a schema field by its pointer.",
+      "funcName": "SetSchemaFieldVectorByPtr",
+      "paramTypes": [
+        {
+          "name": "instancePointer",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance of the class where the value is to be set."
         },
         {
           "name": "className",
