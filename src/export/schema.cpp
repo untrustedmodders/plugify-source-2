@@ -1609,4 +1609,69 @@ extern "C" PLUGIN_API void SetSchemaFieldVectorByPtr(void* instancePointer, cons
 	*reinterpret_cast<Vector*>(reinterpret_cast<uintptr_t>(instancePointer) + m_key.offset + extraOffset) = value;
 }
 
+//
+
+/**
+ * @brief Updates the networked state of a schema field for a given entity instance.
+ *
+ * This function ensures that changes to a schema field are appropriately networked,
+ * while adhering to specific guidelines if configured. It validates whether the field
+ * is networked, computes necessary offsets, and invokes the required methods to mark
+ * the state as changed.
+ *
+ * @param entityHandle The handle of the entity where the value is to be set.
+ * @param className The name of the class that contains the member.
+ * @param memberName The name of the member to be set.
+ * @param extraOffset The value to add to the offset.
+ *
+ * @note If the "FollowCS2ServerGuidelines" configuration option is enabled, certain fields
+ *       may be restricted from being marked as changed. An appropriate warning is logged in such cases.
+ *
+ * @warning Logs a warning if the field is not networked or if it is in the restricted list
+ *          when "FollowCS2ServerGuidelines" is enabled.
+ *
+ * @details
+ * - Computes a hash key for the class and member names to locate the field.
+ * - Verifies whether the field is networked before proceeding.
+ * - Calculates chain offsets to determine the correct memory location.
+ * - Calls appropriate methods to mark the state as changed and update network-related
+ *   fields for the entity instance.
+ */
+extern "C" PLUGIN_API void SetSchemaStateChanged(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
+{
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	if (!pEntity)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		return;
+	}
+
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		return;
+	}
+
+	auto classKey = hash_32_fnv1a_const(className.c_str());
+	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
+
+	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
+
+	if (!m_key.networked)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Field '%s::%s' is not networked, but \"SetStateChanged\" was called on it.", className.c_str(), memberName.c_str());
+		return;
+	}
+
+	int chainOffset = schema::FindChainOffset(className.c_str());
+
+	if (chainOffset != 0)
+	{
+		schema::NetworkStateChanged(((int64_t)(pEntity) + m_key.offset), m_key.offset + extraOffset, 0xFFFFFFFF);
+		return;
+	}
+
+	pEntity->NetworkStateChanged(m_key.offset + extraOffset);
+}
+
 PLUGIFY_WARN_POP()
