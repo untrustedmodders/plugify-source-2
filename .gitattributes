@@ -1,1 +1,2 @@
 examples/** linuguist-vendored
+*.pplugin.in text eol=lf linguist-language=JSON
