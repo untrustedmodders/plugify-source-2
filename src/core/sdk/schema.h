@@ -40,16 +40,12 @@
 #include <utldelegate.h>
 #undef schema
 
-struct TypeInfo {
-	int32 size;
-	uint8 alignment;
-};
-
 struct SchemaKey
 {
 	int32 offset;
 	bool networked;
-	std::vector<TypeInfo> info;
+	int size;
+	CSchemaType* type;
 };
 
 struct CNetworkVarChainer : public CSmartPtr<CEntityInstance>
@@ -120,9 +116,16 @@ namespace schema
 		"m_nMusicID",
 	};
 
+	enum class ElementType {
+		Cell,
+		Array,
+		Vector
+	};
+
 	int32_t FindChainOffset(const char* className);
 	SchemaKey GetOffset(const char* className, uint32_t classKey, const char* memberName, uint32_t memberKey);
 	void NetworkStateChanged(int64 chainEntity, uint32 nLocalOffset, int nArrayIndex = 0xFFFFFFFF);
+	std::pair<ElementType, int> GetElementType(CSchemaType* type);
 } // namespace schema
 
 class CBaseEntity;

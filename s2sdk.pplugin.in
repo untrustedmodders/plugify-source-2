@@ -8805,6 +8805,150 @@
       }
     },
     {
+      "name": "GetEntSchemaAny",
+      "group": "Schema",
+      "description": "Retrieves a value from an entity's schema.",
+      "funcName": "GetEntSchemaAny",
+      "paramTypes": [
+        {
+          "name": "entityHandle",
+          "type": "int32",
+          "ref": false,
+          "description": "The handle of the entity from which the value is to be retrieved."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the schema member."
+        }
+      ],
+      "retType": {
+        "type": "any",
+        "description": "A value at the given schema offset."
+      }
+    },
+    {
+      "name": "SetEntSchemaAny",
+      "group": "Schema",
+      "description": "Sets a value in an entity's schema.",
+      "funcName": "SetEntSchemaAny",
+      "paramTypes": [
+        {
+          "name": "entityHandle",
+          "type": "int32",
+          "ref": false,
+          "description": "The handle of the entity from which the value is to be retrieved."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the schema member."
+        },
+        {
+          "name": "value",
+          "type": "any",
+          "ref": false,
+          "description": "The value to set."
+        },
+        {
+          "name": "changeState",
+          "type": "bool",
+          "ref": false,
+          "description": "If true, change will be sent over the network."
+        }
+      ],
+      "retType": {
+        "type": "void",
+        "description": "A value at the given schema offset."
+      }
+    },
+    {
+      "name": "GetEntSchemaAny2",
+      "group": "Schema",
+      "description": "Retrieves a value from an entity's schema.",
+      "funcName": "GetEntSchemaAny2",
+      "paramTypes": [
+        {
+          "name": "entity",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance of the class where the value is to be set."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the schema member."
+        }
+      ],
+      "retType": {
+        "type": "any",
+        "description": "A value at the given schema offset."
+      }
+    },
+    {
+      "name": "SetEntSchemaAny2",
+      "group": "Schema",
+      "description": "Sets a value in an entity's schema.",
+      "funcName": "SetEntSchemaAny2",
+      "paramTypes": [
+        {
+          "name": "entity",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance of the class where the value is to be set."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the schema member."
+        },
+        {
+          "name": "value",
+          "type": "any",
+          "ref": false,
+          "description": "The value to set."
+        },
+        {
+          "name": "changeState",
+          "type": "bool",
+          "ref": false,
+          "description": "If true, change will be sent over the network."
+        }
+      ],
+      "retType": {
+        "type": "void",
+        "description": "A value at the given schema offset."
+      }
+    },
+    {
       "name": "CreateTimer",
       "group": "Timers",
       "description": "Creates a new timer that executes a callback function at specified intervals.",

@@ -153,13 +153,13 @@ void Source2SDK::OnPluginEnd()
 void Source2SDK::OnServerStartup()
 {
 	g_pGameEntitySystem = GameEntitySystem();
-	if (g_pGameEntitySystem != nullptr)
+	/*if (g_pGameEntitySystem != nullptr)
 	{
 		if (g_pGameEntitySystem->m_entityListeners.Find(&g_pEntityListener) == -1)
 		{
 			g_pGameEntitySystem->m_entityListeners.AddToTail(&g_pEntityListener);
 		}
-	}
+	}*/
 
 	if (g_pNetworkGameServer != nullptr)
 	{

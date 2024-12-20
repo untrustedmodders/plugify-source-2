@@ -68,23 +68,18 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t* tableMap, const char* cla
 	keyValueMap->EnsureCapacity(fieldsSize);
 	tableMap->Insert(classKey, keyValueMap);
 
+	int nSize = 0;
+	uint8 nAlignment = 0;
+
 	for (int i = 0; i < fieldsSize; ++i)
 	{
 		SchemaClassFieldData_t& field = pFields[i];
 
+		field.m_pType->GetSizeAndAlignment(nSize, nAlignment);
+
 		g_Logger.LogFormat(LS_DEBUG, "%s::%s found at -> 0x%X - %llx\n", className, field.m_pszName, field.m_nSingleInheritanceOffset, &field);
 
-		int j = 0;
-		std::vector<TypeInfo> infos;
-		CSchemaType* pSchemaType = field.m_pType;
-		while (pSchemaType && j++ < 3)
-		{
-			auto& info = infos.emplace_back();
-			pSchemaType->GetSizeAndAlignment(info.size, info.alignment);
-			pSchemaType = pSchemaType->GetInnerType().Get();
-		}
-
-		keyValueMap->Insert(hash_32_fnv1a_const(field.m_pszName), {field.m_nSingleInheritanceOffset, IsFieldNetworked(field), std::move(infos)});
+		keyValueMap->Insert(hash_32_fnv1a_const(field.m_pszName), {field.m_nSingleInheritanceOffset, IsFieldNetworked(field), nSize, field.m_pType});
 	}
 
 	return true;
@@ -148,4 +143,39 @@ void schema::NetworkStateChanged(int64 chainEntity, uint32 nLocalOffset, int nAr
 	{
 		pEntity->NetworkStateChanged(nLocalOffset, nArrayIndex, chainEnt->m_PathIndex.m_Value);
 	}
+}
+
+std::pair<schema::ElementType, int> schema::GetElementType(CSchemaType* type) {
+	switch (type->m_eTypeCategory)
+	{
+		case SCHEMA_TYPE_FIXED_ARRAY:
+			return { ElementType::Array, static_cast<CSchemaType_FixedArray*>(type)->m_nElementSize };
+		case SCHEMA_TYPE_DECLARED_CLASS:
+			std::string_view typeClassName(static_cast<CSchemaType_DeclaredClass*>(type)->m_pClassInfo->m_pszName);
+			if (typeClassName.find("UtlVector")) {
+				return { ElementType::Vector, sizeof(CEntityHandle) };
+				// TODO: Add support of all types
+				/*if (typeClassName.find("CHandle") != std::string::npos) {
+					return { ElementType::Vector, sizeof(CEntityHandle) };
+				} else if (typeClassName.find("CUtlString") != std::string::npos) {
+					return { ElementType::Vector, sizeof(CUtlString) };
+				} else if (typeClassName.find("CUtlSymbolLarge") != std::string::npos) {
+					return { ElementType::Vector, sizeof(CUtlSymbolLarge) };
+				} else if (typeClassName.find("float32") != std::string::npos) {
+					return { ElementType::Vector, sizeof(float32) };
+				} else if (typeClassName.find("float64") != std::string::npos) {
+					return { ElementType::Vector, sizeof(float64) };
+				} else if (typeClassName.find("int8") != std::string::npos) {
+					return { ElementType::Vector, sizeof(int8) };
+				} else if (typeClassName.find("int16") != std::string::npos) {
+					return { ElementType::Vector, sizeof(int16) };
+				} else if (typeClassName.find("int32") != std::string::npos) {
+					return { ElementType::Vector, sizeof(int32) };
+				} else if (typeClassName.find("int64") != std::string::npos) {
+					return { ElementType::Vector, sizeof(int64) };
+				}*/
+			}
+			break;
+	}
+	return { ElementType::Cell, -1 };
 }
