@@ -2034,107 +2034,107 @@ extern "C" PLUGIN_API void SetEntSchemaAny2(CEntityInstance* entity, const plg::
 			{
 				case SCHEMA_BUILTIN_TYPE_CHAR:
 					plg::visit([&](const auto& v) {
-					   using T = std::decay_t<decltype(v)>;
-					   if constexpr (std::is_arithmetic_v<T>) {
-						   *reinterpret_cast<char*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<char>(v);
-					   }
-				   }, value);
+						using T = std::decay_t<decltype(v)>;
+						if constexpr (std::is_arithmetic_v<T>) {
+							*reinterpret_cast<char*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<char>(v);
+						}
+					}, value);
 					return;
 				case SCHEMA_BUILTIN_TYPE_INT8:
 					plg::visit([&](const auto& v) {
-					   using T = std::decay_t<decltype(v)>;
-					   if constexpr (std::is_arithmetic_v<T>) {
-						   *reinterpret_cast<int8_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int8_t>(v);
-					   }
-				   }, value);
+						using T = std::decay_t<decltype(v)>;
+						if constexpr (std::is_arithmetic_v<T>) {
+							*reinterpret_cast<int8_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int8_t>(v);
+						}
+					}, value);
 					return;
 				case SCHEMA_BUILTIN_TYPE_UINT8:
 					plg::visit([&](const auto& v) {
-					   using T = std::decay_t<decltype(v)>;
-					   if constexpr (std::is_arithmetic_v<T>) {
-						   *reinterpret_cast<uint8_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<uint8_t>(v);
-					   }
-				   }, value);
+						using T = std::decay_t<decltype(v)>;
+						if constexpr (std::is_arithmetic_v<T>) {
+							*reinterpret_cast<uint8_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<uint8_t>(v);
+						}
+					}, value);
 					return;
 				case SCHEMA_BUILTIN_TYPE_INT16:
 					plg::visit([&](const auto& v) {
-					   using T = std::decay_t<decltype(v)>;
-					   if constexpr (std::is_arithmetic_v<T>) {
-						   *reinterpret_cast<int16_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int16_t>(v);
-					   }
-				   }, value);
+						using T = std::decay_t<decltype(v)>;
+						if constexpr (std::is_arithmetic_v<T>) {
+							*reinterpret_cast<int16_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int16_t>(v);
+						}
+					}, value);
 					return;
 				case SCHEMA_BUILTIN_TYPE_UINT16:
 					plg::visit([&](const auto& v) {
-					   using T = std::decay_t<decltype(v)>;
-					   if constexpr (std::is_arithmetic_v<T>) {
-						   *reinterpret_cast<uint16_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<uint16_t>(v);
-					   }
-				   }, value);
+						using T = std::decay_t<decltype(v)>;
+						if constexpr (std::is_arithmetic_v<T>) {
+							*reinterpret_cast<uint16_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<uint16_t>(v);
+						}
+					}, value);
 					return;
 				case SCHEMA_BUILTIN_TYPE_INT32:
 					plg::visit([&](const auto& v) {
-					   using T = std::decay_t<decltype(v)>;
-					   if constexpr (std::is_arithmetic_v<T>) {
-						   *reinterpret_cast<int32_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int32_t>(v);
-					   }
-				   }, value);
+						using T = std::decay_t<decltype(v)>;
+						if constexpr (std::is_arithmetic_v<T>) {
+							*reinterpret_cast<int32_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int32_t>(v);
+						}
+					}, value);
 					return;
 				case SCHEMA_BUILTIN_TYPE_UINT32:
 					plg::visit([&](const auto& v) {
-					   using T = std::decay_t<decltype(v)>;
-					   if constexpr (std::is_arithmetic_v<T>) {
-						   *reinterpret_cast<uint32_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<uint32_t>(v);
-					   }
-				   }, value);
+						using T = std::decay_t<decltype(v)>;
+						if constexpr (std::is_arithmetic_v<T>) {
+							*reinterpret_cast<uint32_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<uint32_t>(v);
+						}
+					}, value);
 					return;
 				case SCHEMA_BUILTIN_TYPE_INT64:
 					plg::visit([&](const auto& v) {
-					   using T = std::decay_t<decltype(v)>;
-					   if constexpr (std::is_arithmetic_v<T>) {
-						   *reinterpret_cast<int64_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int64_t>(v);
-					   }
-				   }, value);
+						using T = std::decay_t<decltype(v)>;
+						if constexpr (std::is_arithmetic_v<T>) {
+							*reinterpret_cast<int64_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int64_t>(v);
+						}
+					}, value);
 					return;
 				case SCHEMA_BUILTIN_TYPE_UINT64:
 					plg::visit([&](const auto& v) {
-					   using T = std::decay_t<decltype(v)>;
-					   if constexpr (std::is_arithmetic_v<T>) {
-						   *reinterpret_cast<uint64_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<uint64_t>(v);
-					   }
-				   }, value);
+						using T = std::decay_t<decltype(v)>;
+						if constexpr (std::is_arithmetic_v<T>) {
+							*reinterpret_cast<uint64_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<uint64_t>(v);
+						}
+					}, value);
 					return;
 				case SCHEMA_BUILTIN_TYPE_FLOAT32:
 					plg::visit([&](const auto& v) {
-					   using T = std::decay_t<decltype(v)>;
-					   if constexpr (std::is_arithmetic_v<T>) {
-						   *reinterpret_cast<float*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<float>(v);
-					   }
-				   }, value);
+						using T = std::decay_t<decltype(v)>;
+						if constexpr (std::is_arithmetic_v<T>) {
+							*reinterpret_cast<float*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<float>(v);
+						}
+					}, value);
 					return;
 				case SCHEMA_BUILTIN_TYPE_FLOAT64:
 					plg::visit([&](const auto& v) {
-					   using T = std::decay_t<decltype(v)>;
-					   if constexpr (std::is_arithmetic_v<T>) {
-						   *reinterpret_cast<double*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<double>(v);
-					   }
-				   }, value);
+						using T = std::decay_t<decltype(v)>;
+						if constexpr (std::is_arithmetic_v<T>) {
+							*reinterpret_cast<double*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<double>(v);
+						}
+					}, value);
 					return;
 				case SCHEMA_BUILTIN_TYPE_BOOL:
 					plg::visit([&](const auto& v) {
-					   using T = std::decay_t<decltype(v)>;
-					   if constexpr (std::is_arithmetic_v<T>) {
-						   *reinterpret_cast<bool*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<bool>(v);
-					   }
-				   }, value);
+						using T = std::decay_t<decltype(v)>;
+						if constexpr (std::is_arithmetic_v<T>) {
+							*reinterpret_cast<bool*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<bool>(v);
+						}
+					}, value);
 					return;
 				case SCHEMA_BUILTIN_TYPE_COUNT:
 					plg::visit([&](const auto& v) {
-					   using T = std::decay_t<decltype(v)>;
-					   if constexpr (std::is_arithmetic_v<T>) {
-						   *reinterpret_cast<uint64_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<uint64_t>(v);
-					   }
-				   }, value);
+						using T = std::decay_t<decltype(v)>;
+						if constexpr (std::is_arithmetic_v<T>) {
+							*reinterpret_cast<uint64_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<uint64_t>(v);
+						}
+					}, value);
 					return;
 				case SCHEMA_BUILTIN_TYPE_VOID:
 					return;
@@ -2146,13 +2146,13 @@ extern "C" PLUGIN_API void SetEntSchemaAny2(CEntityInstance* entity, const plg::
 		case SCHEMA_TYPE_POINTER:
 		{
 			plg::visit([&](const auto& v) {
-			   using T = std::decay_t<decltype(v)>;
-			   if constexpr (std::is_arithmetic_v<T>) {
-				   *reinterpret_cast<intptr_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<intptr_t>(v);
-			   } else if constexpr (std::is_pointer_v<T>) {
-				   *reinterpret_cast<void**>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<void*>(v);
-			   }
-		   }, value);
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_arithmetic_v<T>) {
+					*reinterpret_cast<intptr_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<intptr_t>(v);
+				} else if constexpr (std::is_pointer_v<T>) {
+					*reinterpret_cast<void**>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<void*>(v);
+				}
+			}, value);
 			return;
 		}
 		case SCHEMA_TYPE_BITFIELD:
@@ -2173,146 +2173,146 @@ extern "C" PLUGIN_API void SetEntSchemaAny2(CEntityInstance* entity, const plg::
 					{
 						case SCHEMA_BUILTIN_TYPE_CHAR:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<decltype(v)>;
-							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
-								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
-								   {
-									   reinterpret_cast<char*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<char>(v[i]);
-								   }
-							   }
-						   }, value);
+								using T = std::decay_t<decltype(v)>;
+								if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
+									for (size_t i = 0; i < std::min<size_t>(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
+									{
+										reinterpret_cast<char*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<char>(v[i]);
+									}
+								}
+							}, value);
 							return;
 						case SCHEMA_BUILTIN_TYPE_INT8:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<decltype(v)>;
-							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
-								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
-								   {
-									   reinterpret_cast<int8_t*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<int8_t>(v[i]);
-								   }
-							   }
-						   }, value);
+								using T = std::decay_t<decltype(v)>;
+								if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
+									for (size_t i = 0; i < std::min<size_t>(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
+									{
+										reinterpret_cast<int8_t*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<int8_t>(v[i]);
+									}
+								}
+							}, value);
 							return;
 						case SCHEMA_BUILTIN_TYPE_UINT8:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<decltype(v)>;
-							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
-								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
-								   {
-									   reinterpret_cast<uint8_t*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<uint8_t>(v[i]);
-								   }
-							   }
-						   }, value);
+								using T = std::decay_t<decltype(v)>;
+								if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
+									for (size_t i = 0; i < std::min<size_t>(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
+									{
+										reinterpret_cast<uint8_t*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<uint8_t>(v[i]);
+									}
+								}
+							}, value);
 							return;
 						case SCHEMA_BUILTIN_TYPE_INT16:
 							plg::visit([&](const auto& v) {
-						   using T = std::decay_t<decltype(v)>;
-						   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
-							   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
-							   {
-								   reinterpret_cast<int16_t*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<int16_t>(v[i]);
-							   }
-						   }
-					   }, value);
+								using T = std::decay_t<decltype(v)>;
+								if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
+									for (size_t i = 0; i < std::min<size_t>(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
+									{
+										reinterpret_cast<int16_t*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<int16_t>(v[i]);
+									}
+								}
+							}, value);
 							return;
 						case SCHEMA_BUILTIN_TYPE_UINT16:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<decltype(v)>;
-							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
-								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
-								   {
-									   reinterpret_cast<uint16_t*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<uint16_t>(v[i]);
-								   }
-							   }
-						   }, value);
+								using T = std::decay_t<decltype(v)>;
+								if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
+									for (size_t i = 0; i < std::min<size_t>(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
+									{
+										reinterpret_cast<uint16_t*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<uint16_t>(v[i]);
+									}
+								}
+							}, value);
 							return;
 						case SCHEMA_BUILTIN_TYPE_INT32:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<decltype(v)>;
-							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
-								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
-								   {
-									   reinterpret_cast<int32_t*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<int32_t>(v[i]);
-								   }
-							   }
-						   }, value);
+								using T = std::decay_t<decltype(v)>;
+								if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
+									for (size_t i = 0; i < std::min<size_t>(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
+									{
+										reinterpret_cast<int32_t*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<int32_t>(v[i]);
+									}
+								}
+							}, value);
 							return;
 						case SCHEMA_BUILTIN_TYPE_UINT32:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<decltype(v)>;
-							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
-								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
-								   {
-									   reinterpret_cast<uint32_t*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<uint32_t>(v[i]);
-								   }
-							   }
-						   }, value);
+								using T = std::decay_t<decltype(v)>;
+								if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
+									for (size_t i = 0; i < std::min<size_t>(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
+									{
+										reinterpret_cast<uint32_t*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<uint32_t>(v[i]);
+									}
+								}
+							}, value);
 							return;
 						case SCHEMA_BUILTIN_TYPE_INT64:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<decltype(v)>;
-							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
-								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
-								   {
-									   reinterpret_cast<int64_t*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<int64_t>(v[i]);
-								   }
-							   }
-						   }, value);
+								using T = std::decay_t<decltype(v)>;
+								if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
+									for (size_t i = 0; i < std::min<size_t>(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
+									{
+										reinterpret_cast<int64_t*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<int64_t>(v[i]);
+									}
+								}
+							}, value);
 							return;
 						case SCHEMA_BUILTIN_TYPE_UINT64:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<decltype(v)>;
-							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
-								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
-								   {
-									   reinterpret_cast<uint64_t*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<uint64_t>(v[i]);
-								   }
-							   }
-						   }, value);
+								using T = std::decay_t<decltype(v)>;
+								if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
+									for (size_t i = 0; i < std::min<size_t>(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
+									{
+										reinterpret_cast<uint64_t*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<uint64_t>(v[i]);
+									}
+								}
+							}, value);
 							return;
 						case SCHEMA_BUILTIN_TYPE_FLOAT32:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<decltype(v)>;
-							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
-								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
-								   {
-									   reinterpret_cast<float*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<float>(v[i]);
-								   }
-							   }
-						   }, value);
+								using T = std::decay_t<decltype(v)>;
+								if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
+									for (size_t i = 0; i < std::min<size_t>(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
+									{
+										reinterpret_cast<float*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<float>(v[i]);
+									}
+								}
+							}, value);
 							return;
 						case SCHEMA_BUILTIN_TYPE_FLOAT64:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<decltype(v)>;
-							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
-								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
-								   {
-									   reinterpret_cast<double*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<double>(v[i]);
-								   }
-							   }
-						   }, value);
+								using T = std::decay_t<decltype(v)>;
+								if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
+									for (size_t i = 0; i < std::min<size_t>(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
+									{
+										reinterpret_cast<double*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<double>(v[i]);
+									}
+								}
+							}, value);
 							return;
 						case SCHEMA_BUILTIN_TYPE_BOOL:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<decltype(v)>;
-							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
-								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
-								   {
-									   reinterpret_cast<bool*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<bool>(v[i]);
-								   }
-							   }
-						   }, value);
+								using T = std::decay_t<decltype(v)>;
+								if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
+									for (size_t i = 0; i < std::min<size_t>(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
+									{
+										reinterpret_cast<bool*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<bool>(v[i]);
+									}
+								}
+							}, value);
 							return;
 						case SCHEMA_BUILTIN_TYPE_COUNT:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<decltype(v)>;
-							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
-								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
-								   {
-									   reinterpret_cast<uint64_t*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<uint64_t>(v[i]);
-								   }
-							   }
-						   }, value);
+								using T = std::decay_t<decltype(v)>;
+								if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
+									for (size_t i = 0; i < std::min<size_t>(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
+									{
+										reinterpret_cast<uint64_t*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<uint64_t>(v[i]);
+									}
+								}
+							}, value);
 							return;
 						case SCHEMA_BUILTIN_TYPE_VOID:
 							return;
@@ -2324,13 +2324,13 @@ extern "C" PLUGIN_API void SetEntSchemaAny2(CEntityInstance* entity, const plg::
 				case SCHEMA_TYPE_POINTER:
 					plg::visit([&](const auto& v) {
 						using T = std::decay_t<decltype(v)>;
-					    if constexpr (std::is_same_v<T, plg::vector<void*>> || std::is_same_v<T, plg::vector<int64_t>> || std::is_same_v<T, plg::vector<uint64_t>>) {
-						   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
-						   {
-							   reinterpret_cast<void**>(reinterpret_cast<intptr_t>(entity) + offset)[i] = reinterpret_cast<void*>(v[i]);
-						   }
-					   }
-				    }, value);
+						 if constexpr (std::is_same_v<T, plg::vector<void*>> || std::is_same_v<T, plg::vector<int64_t>> || std::is_same_v<T, plg::vector<uint64_t>>) {
+							for (size_t i = 0; i < std::min<size_t>(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
+							{
+								reinterpret_cast<void**>(reinterpret_cast<intptr_t>(entity) + offset)[i] = reinterpret_cast<void*>(v[i]);
+							}
+						}
+					 }, value);
 					return;
 				case SCHEMA_TYPE_BITFIELD:
 					g_Logger.LogFormat(LS_WARNING, "SCHEMA_TYPE_FIXED_ARRAY<SCHEMA_TYPE_BITFIELD> not supported!\n");
@@ -2347,34 +2347,34 @@ extern "C" PLUGIN_API void SetEntSchemaAny2(CEntityInstance* entity, const plg::
 					std::string_view typeClassName(pTypeDeclaredClass->m_pClassInfo->m_pszName);
 					if (typeClassName.find("CUtlString") != std::string::npos) {
 						plg::visit([&](const auto& v) {
-						   using T = std::decay_t<decltype(v)>;
-						   if constexpr (std::is_same_v<T, plg::vector<plg::string>>) {
-							   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
-							   {
-								   reinterpret_cast<CUtlString*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = v[i].c_str();
-							   }
-						   }
-					   }, value);
+							using T = std::decay_t<decltype(v)>;
+							if constexpr (std::is_same_v<T, plg::vector<plg::string>>) {
+								for (size_t i = 0; i < std::min<size_t>(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
+								{
+									reinterpret_cast<CUtlString*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = v[i].c_str();
+								}
+							}
+						}, value);
 					} else if (typeClassName.find("CUtlSymbolLarge") != std::string::npos) {
 						plg::visit([&](const auto& v) {
-						   using T = std::decay_t<decltype(v)>;
-						   if constexpr (std::is_same_v<T, plg::vector<plg::string>>) {
-							   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
-							   {
-								   reinterpret_cast<CUtlSymbolLarge*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = v[i].c_str();
-							   }
-						   }
-					   }, value);
+							using T = std::decay_t<decltype(v)>;
+							if constexpr (std::is_same_v<T, plg::vector<plg::string>>) {
+								for (size_t i = 0; i < std::min<size_t>(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
+								{
+									reinterpret_cast<CUtlSymbolLarge*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = v[i].c_str();
+								}
+							}
+						}, value);
 					} else if (typeClassName.find("CHandle") != std::string::npos) {
 						plg::visit([&](const auto& v) {
-						   using T = std::decay_t<decltype(v)>;
-						   if constexpr (std::is_same_v<T, plg::vector<int32_t>> || std::is_same_v<T, plg::vector<int64_t>> || std::is_same_v<T, plg::vector<uint32_t>> || std::is_same_v<T, plg::vector<uint64_t>>) {
-							   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
-							   {
-								   reinterpret_cast<CEntityHandle*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = CEntityHandle((uint32)v[i]);
-							   }
-						   }
-					   }, value);
+							using T = std::decay_t<decltype(v)>;
+							if constexpr (std::is_same_v<T, plg::vector<int32_t>> || std::is_same_v<T, plg::vector<int64_t>> || std::is_same_v<T, plg::vector<uint32_t>> || std::is_same_v<T, plg::vector<uint64_t>>) {
+								for (size_t i = 0; i < std::min<size_t>(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
+								{
+									reinterpret_cast<CEntityHandle*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = CEntityHandle((uint32)v[i]);
+								}
+							}
+						}, value);
 					} else {
 						g_Logger.LogFormat(LS_WARNING, "SCHEMA_TYPE_FIXED_ARRAY<SCHEMA_TYPE_DECLARED_CLASS(%s)> not supported!\n", typeClassName);
 					}
@@ -2387,49 +2387,49 @@ extern "C" PLUGIN_API void SetEntSchemaAny2(CEntityInstance* entity, const plg::
 					{
 						case 1:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<decltype(v)>;
-							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
-								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
-								   {
-									   reinterpret_cast<int8_t*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<int8_t>(v[i]);
-								   }
-							   }
-						   }, value);
+								using T = std::decay_t<decltype(v)>;
+								if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
+									for (size_t i = 0; i < std::min<size_t>(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
+									{
+										reinterpret_cast<int8_t*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<int8_t>(v[i]);
+									}
+								}
+							}, value);
 							return;
 						case 2:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<decltype(v)>;
-							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
-								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
-								   {
-									   reinterpret_cast<int16_t*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<int16_t>(v[i]);
-								   }
-							   }
-						   }, value);
+								using T = std::decay_t<decltype(v)>;
+								if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
+									for (size_t i = 0; i < std::min<size_t>(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
+									{
+										reinterpret_cast<int16_t*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<int16_t>(v[i]);
+									}
+								}
+							}, value);
 							return;
 
 						case 4:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<decltype(v)>;
-							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
-								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
-								   {
-									   reinterpret_cast<int32_t*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<int32_t>(v[i]);
-								   }
-							   }
-						   }, value);
+								using T = std::decay_t<decltype(v)>;
+								if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
+									for (size_t i = 0; i < std::min<size_t>(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
+									{
+										reinterpret_cast<int32_t*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<int32_t>(v[i]);
+									}
+								}
+							}, value);
 							return;
 
 						case 8:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<decltype(v)>;
-							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
-								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
-								   {
-									   reinterpret_cast<int64_t*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<int64_t>(v[i]);
-								   }
-							   }
-						   }, value);
+								using T = std::decay_t<decltype(v)>;
+								if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
+									for (size_t i = 0; i < std::min<size_t>(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
+									{
+										reinterpret_cast<int64_t*>(reinterpret_cast<intptr_t>(entity) + offset)[i] = static_cast<int64_t>(v[i]);
+									}
+								}
+							}, value);
 							return;
 						default:
 							g_Logger.LogFormat(LS_WARNING, "SCHEMA_TYPE_FIXED_ARRAY<SCHEMA_TYPE_DECLARED_ENUM> size not supported!\n");
@@ -2457,7 +2457,7 @@ extern "C" PLUGIN_API void SetEntSchemaAny2(CEntityInstance* entity, const plg::
 					if constexpr (std::is_same_v<T, plg::string>) {
 						*reinterpret_cast<CUtlString*>(reinterpret_cast<intptr_t>(entity) + offset) = v.c_str();
 					}
-			    }, value);
+				 }, value);
 			} else if (typeClassName.starts_with("CUtlSymbolLarge")) {
 				plg::visit([&](const auto& v) {
 					using T = std::decay_t<decltype(v)>;
@@ -2467,10 +2467,10 @@ extern "C" PLUGIN_API void SetEntSchemaAny2(CEntityInstance* entity, const plg::
 				}, value);
 			} else if (typeClassName.starts_with("CHandle")) {
 				plg::visit([&](const auto& v) {
-				   using T = std::decay_t<decltype(v)>;
-				   if constexpr (std::is_arithmetic_v<T>) {
-					   *reinterpret_cast<CEntityHandle*>(reinterpret_cast<intptr_t>(entity) + offset) = CEntityHandle((uint32)v);
-				   }
+					using T = std::decay_t<decltype(v)>;
+					if constexpr (std::is_arithmetic_v<T>) {
+						*reinterpret_cast<CEntityHandle*>(reinterpret_cast<intptr_t>(entity) + offset) = CEntityHandle((uint32)v);
+					}
 				}, value);
 			} else {
 				g_Logger.LogFormat(LS_WARNING, "SCHEMA_TYPE_DECLARED_CLASS(%s) not supported!\n", typeClassName);
@@ -2484,35 +2484,35 @@ extern "C" PLUGIN_API void SetEntSchemaAny2(CEntityInstance* entity, const plg::
 			{
 				case 1:
 					plg::visit([&](const auto& v) {
-					   using T = std::decay_t<decltype(v)>;
-					   if constexpr (std::is_arithmetic_v<T>) {
-						   *reinterpret_cast<int8_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int32_t>(v);
-					   }
-				   }, value);
+						using T = std::decay_t<decltype(v)>;
+						if constexpr (std::is_arithmetic_v<T>) {
+							*reinterpret_cast<int8_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int32_t>(v);
+						}
+					}, value);
 					return;
 				case 2:
 					plg::visit([&](const auto& v) {
-					   using T = std::decay_t<decltype(v)>;
-					   if constexpr (std::is_arithmetic_v<T>) {
-						   *reinterpret_cast<int16_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int32_t>(v);
-					   }
-				   }, value);
+						using T = std::decay_t<decltype(v)>;
+						if constexpr (std::is_arithmetic_v<T>) {
+							*reinterpret_cast<int16_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int32_t>(v);
+						}
+					}, value);
 					return;
 				case 4:
 					plg::visit([&](const auto& v) {
-					   using T = std::decay_t<decltype(v)>;
-					   if constexpr (std::is_arithmetic_v<T>) {
-						   *reinterpret_cast<int32_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int32_t>(v);
-					   }
-				   }, value);
+						using T = std::decay_t<decltype(v)>;
+						if constexpr (std::is_arithmetic_v<T>) {
+							*reinterpret_cast<int32_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int32_t>(v);
+						}
+					}, value);
 					return;
 				case 8:
 					plg::visit([&](const auto& v) {
-					   using T = std::decay_t<decltype(v)>;
-					   if constexpr (std::is_arithmetic_v<T>) {
-						   *reinterpret_cast<int64_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int32_t>(v);
-					   }
-				   }, value);
+						using T = std::decay_t<decltype(v)>;
+						if constexpr (std::is_arithmetic_v<T>) {
+							*reinterpret_cast<int64_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int32_t>(v);
+						}
+					}, value);
 					return;
 				default:
 					g_Logger.LogFormat(LS_WARNING, "SCHEMA_TYPE_DECLARED_ENUM size not supported!\n");

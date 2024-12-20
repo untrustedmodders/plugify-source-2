@@ -220,3 +220,25 @@ namespace utils
 	};
 
 } // namespace utils
+
+namespace plg {
+	template<typename T, typename = void>
+	struct has_arithmetic_value_type : std::false_type {};
+
+	template<typename T>
+	struct has_arithmetic_value_type<T, std::void_t<typename T::value_type>>
+		: std::is_arithmetic<typename T::value_type> {};
+
+	template<typename T>
+	inline constexpr bool has_arithmetic_value_type_v = has_arithmetic_value_type<T>::value;
+
+	template<typename T, typename = void>
+	struct is_vector : std::false_type {};
+
+	template<typename T>
+	struct is_vector<T, std::void_t<typename T::value_type, typename T::allocator_type>>
+		: std::is_same<plg::vector<typename T::value_type, typename T::allocator_type>, T> {};
+
+	template<typename T>
+	inline constexpr bool is_vector_v = is_vector<T>::value;
+} // namespace plg
