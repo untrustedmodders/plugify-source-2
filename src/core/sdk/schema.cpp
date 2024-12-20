@@ -152,7 +152,7 @@ std::pair<schema::ElementType, int> schema::GetElementType(CSchemaType* type) {
 			return { ElementType::Array, static_cast<CSchemaType_FixedArray*>(type)->m_nElementSize };
 		case SCHEMA_TYPE_DECLARED_CLASS:
 			std::string_view typeClassName(static_cast<CSchemaType_DeclaredClass*>(type)->m_pClassInfo->m_pszName);
-			if (typeClassName.find("UtlVector")) {
+			if (typeClassName.find("UtlVector") != std::string::npos) {
 				return { ElementType::Vector, sizeof(CEntityHandle) };
 				// TODO: Add support of all types
 				/*if (typeClassName.find("CHandle") != std::string::npos) {
