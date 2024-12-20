@@ -2173,7 +2173,7 @@ extern "C" PLUGIN_API void SetEntSchemaAny2(CEntityInstance* entity, const plg::
 					{
 						case SCHEMA_BUILTIN_TYPE_CHAR:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<std::decay_t<decltype(v)>>;
+							   using T = std::decay_t<decltype(v)>;
 							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
 								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
 								   {
@@ -2184,7 +2184,7 @@ extern "C" PLUGIN_API void SetEntSchemaAny2(CEntityInstance* entity, const plg::
 							return;
 						case SCHEMA_BUILTIN_TYPE_INT8:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<std::decay_t<decltype(v)>>;
+							   using T = std::decay_t<decltype(v)>;
 							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
 								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
 								   {
@@ -2195,7 +2195,7 @@ extern "C" PLUGIN_API void SetEntSchemaAny2(CEntityInstance* entity, const plg::
 							return;
 						case SCHEMA_BUILTIN_TYPE_UINT8:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<std::decay_t<decltype(v)>>;
+							   using T = std::decay_t<decltype(v)>;
 							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
 								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
 								   {
@@ -2206,7 +2206,7 @@ extern "C" PLUGIN_API void SetEntSchemaAny2(CEntityInstance* entity, const plg::
 							return;
 						case SCHEMA_BUILTIN_TYPE_INT16:
 							plg::visit([&](const auto& v) {
-						   using T = std::decay_t<std::decay_t<decltype(v)>>;
+						   using T = std::decay_t<decltype(v)>;
 						   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
 							   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
 							   {
@@ -2217,7 +2217,7 @@ extern "C" PLUGIN_API void SetEntSchemaAny2(CEntityInstance* entity, const plg::
 							return;
 						case SCHEMA_BUILTIN_TYPE_UINT16:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<std::decay_t<decltype(v)>>;
+							   using T = std::decay_t<decltype(v)>;
 							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
 								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
 								   {
@@ -2228,7 +2228,7 @@ extern "C" PLUGIN_API void SetEntSchemaAny2(CEntityInstance* entity, const plg::
 							return;
 						case SCHEMA_BUILTIN_TYPE_INT32:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<std::decay_t<decltype(v)>>;
+							   using T = std::decay_t<decltype(v)>;
 							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
 								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
 								   {
@@ -2239,7 +2239,7 @@ extern "C" PLUGIN_API void SetEntSchemaAny2(CEntityInstance* entity, const plg::
 							return;
 						case SCHEMA_BUILTIN_TYPE_UINT32:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<std::decay_t<decltype(v)>>;
+							   using T = std::decay_t<decltype(v)>;
 							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
 								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
 								   {
@@ -2250,7 +2250,7 @@ extern "C" PLUGIN_API void SetEntSchemaAny2(CEntityInstance* entity, const plg::
 							return;
 						case SCHEMA_BUILTIN_TYPE_INT64:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<std::decay_t<decltype(v)>>;
+							   using T = std::decay_t<decltype(v)>;
 							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
 								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
 								   {
@@ -2261,7 +2261,7 @@ extern "C" PLUGIN_API void SetEntSchemaAny2(CEntityInstance* entity, const plg::
 							return;
 						case SCHEMA_BUILTIN_TYPE_UINT64:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<std::decay_t<decltype(v)>>;
+							   using T = std::decay_t<decltype(v)>;
 							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
 								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
 								   {
@@ -2272,7 +2272,7 @@ extern "C" PLUGIN_API void SetEntSchemaAny2(CEntityInstance* entity, const plg::
 							return;
 						case SCHEMA_BUILTIN_TYPE_FLOAT32:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<std::decay_t<decltype(v)>>;
+							   using T = std::decay_t<decltype(v)>;
 							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
 								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
 								   {
@@ -2283,7 +2283,7 @@ extern "C" PLUGIN_API void SetEntSchemaAny2(CEntityInstance* entity, const plg::
 							return;
 						case SCHEMA_BUILTIN_TYPE_FLOAT64:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<std::decay_t<decltype(v)>>;
+							   using T = std::decay_t<decltype(v)>;
 							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
 								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
 								   {
@@ -2294,7 +2294,7 @@ extern "C" PLUGIN_API void SetEntSchemaAny2(CEntityInstance* entity, const plg::
 							return;
 						case SCHEMA_BUILTIN_TYPE_BOOL:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<std::decay_t<decltype(v)>>;
+							   using T = std::decay_t<decltype(v)>;
 							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
 								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
 								   {
@@ -2305,7 +2305,7 @@ extern "C" PLUGIN_API void SetEntSchemaAny2(CEntityInstance* entity, const plg::
 							return;
 						case SCHEMA_BUILTIN_TYPE_COUNT:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<std::decay_t<decltype(v)>>;
+							   using T = std::decay_t<decltype(v)>;
 							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
 								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
 								   {
@@ -2387,7 +2387,7 @@ extern "C" PLUGIN_API void SetEntSchemaAny2(CEntityInstance* entity, const plg::
 					{
 						case 1:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<std::decay_t<decltype(v)>>;
+							   using T = std::decay_t<decltype(v)>;
 							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
 								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
 								   {
@@ -2398,7 +2398,7 @@ extern "C" PLUGIN_API void SetEntSchemaAny2(CEntityInstance* entity, const plg::
 							return;
 						case 2:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<std::decay_t<decltype(v)>>;
+							   using T = std::decay_t<decltype(v)>;
 							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
 								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
 								   {
@@ -2410,7 +2410,7 @@ extern "C" PLUGIN_API void SetEntSchemaAny2(CEntityInstance* entity, const plg::
 
 						case 4:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<std::decay_t<decltype(v)>>;
+							   using T = std::decay_t<decltype(v)>;
 							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
 								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
 								   {
@@ -2422,7 +2422,7 @@ extern "C" PLUGIN_API void SetEntSchemaAny2(CEntityInstance* entity, const plg::
 
 						case 8:
 							plg::visit([&](const auto& v) {
-							   using T = std::decay_t<std::decay_t<decltype(v)>>;
+							   using T = std::decay_t<decltype(v)>;
 							   if constexpr (plg::is_vector_v<T> && plg::has_arithmetic_value_type_v<T>) {
 								   for (size_t i = 0; i < std::min(v.size(), static_cast<size_t>(pTypeFixedArray->m_nElementSize)); ++i)
 								   {
@@ -2576,3 +2576,4 @@ extern "C" PLUGIN_API void SetEntSchemaAny(int entityHandle, const plg::string& 
 }
 
 PLUGIFY_WARN_POP()
+
