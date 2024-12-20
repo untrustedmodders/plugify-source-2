@@ -74,7 +74,17 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t* tableMap, const char* cla
 
 		g_Logger.LogFormat(LS_DEBUG, "%s::%s found at -> 0x%X - %llx\n", className, field.m_pszName, field.m_nSingleInheritanceOffset, &field);
 
-		keyValueMap->Insert(hash_32_fnv1a_const(field.m_pszName), {field.m_nSingleInheritanceOffset, IsFieldNetworked(field)});
+		int j = 0;
+		std::vector<TypeInfo> infos;
+		CSchemaType* pSchemaType = field.m_pType;
+		while (pSchemaType && j++ < 3)
+		{
+			auto& info = infos.emplace_back();
+			pSchemaType->GetSizeAndAlignment(info.size, info.alignment);
+			pSchemaType = pSchemaType->GetInnerType().Get();
+		}
+
+		keyValueMap->Insert(hash_32_fnv1a_const(field.m_pszName), {field.m_nSingleInheritanceOffset, IsFieldNetworked(field), std::move(infos)});
 	}
 
 	return true;

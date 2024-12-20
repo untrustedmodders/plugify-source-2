@@ -40,10 +40,16 @@
 #include <utldelegate.h>
 #undef schema
 
+struct TypeInfo {
+	int32 size;
+	uint8 alignment;
+};
+
 struct SchemaKey
 {
 	int32 offset;
 	bool networked;
+	std::vector<TypeInfo> info;
 };
 
 struct CNetworkVarChainer : public CSmartPtr<CEntityInstance>
@@ -75,7 +81,7 @@ inline constexpr uint64_t hash_64_fnv1a_const(const char* const str, const uint6
 
 namespace schema
 {
-	static std::array CS2BadList = {
+	static std::unordered_set<plg::string> CS2BadList = {
 		"m_bIsValveDS",
 		"m_bIsQuestEligible",
 		"m_iItemDefinitionIndex", // in unmanaged this cannot be set.
@@ -116,85 +122,94 @@ namespace schema
 
 	int32_t FindChainOffset(const char* className);
 	SchemaKey GetOffset(const char* className, uint32_t classKey, const char* memberName, uint32_t memberKey);
-	void NetworkStateChanged(int64 chainEntity, uint32 nLocalOffset, int nArrayIndex);
+	void NetworkStateChanged(int64 chainEntity, uint32 nLocalOffset, int nArrayIndex = 0xFFFFFFFF);
 } // namespace schema
-
 
 class CBaseEntity;
 
-#define SCHEMA_FIELD_OFFSET(type, varName, extra_offset)                                                                 \
-	class varName##_prop                                                                                                 \
-	{                                                                                                                    \
-	public:                                                                                                              \
-		std::add_lvalue_reference_t<type> Get()                                                                          \
-		{                                                                                                                \
-			static constexpr auto datatable_hash = hash_32_fnv1a_const(ThisClassName);                                   \
-			static constexpr auto prop_hash = hash_32_fnv1a_const(#varName);                                             \
-                                                                                                                         \
-			static const auto m_key = schema::GetOffset(ThisClassName, datatable_hash, #varName, prop_hash);             \
-                                                                                                                         \
-			static const size_t offset = offsetof(ThisClass, varName);                                                   \
-			ThisClass* pThisClass = (ThisClass*)((byte*)this - offset);                                                  \
-                                                                                                                         \
-			return *reinterpret_cast<std::add_pointer_t<type>>(                                                          \
-				(uintptr_t)(pThisClass) + m_key.offset + extra_offset);                                                  \
-		}                                                                                                                \
-		void Set(type val)                                                                                               \
-		{                                                                                                                \
-			static constexpr auto datatable_hash = hash_32_fnv1a_const(ThisClassName);                                   \
-			static constexpr auto prop_hash = hash_32_fnv1a_const(#varName);                                             \
-                                                                                                                         \
-			static const auto m_key = schema::GetOffset(ThisClassName, datatable_hash, #varName, prop_hash);             \
-                                                                                                                         \
-			static const auto m_chain = schema::FindChainOffset(ThisClassName);                                          \
-                                                                                                                         \
-			static const size_t offset = offsetof(ThisClass, varName);                                                   \
-			ThisClass* pThisClass = (ThisClass*)((byte*)this - offset);                                                  \
-                                                                                                                         \
-			if (m_chain != 0 && m_key.networked)                                                                         \
-			{                                                                                                            \
-				DevMsg("Found chain offset %d for %s::%s\n", m_chain, ThisClassName, #varName);                          \
-				schema::NetworkStateChanged((uintptr_t)(pThisClass) + m_chain, m_key.offset + extra_offset, 0xFFFFFFFF); \
-			}                                                                                                            \
-			else if (m_key.networked)                                                                                    \
-			{                                                                                                            \
-				/* WIP: Works fine for most props, but inlined classes in the middle of a class will                     \
-					need to have their this pointer corrected by the offset .*/                                          \
-				DevMsg("Attempting to call SetStateChanged on on %s::%s\n", ThisClassName, #varName);                    \
-				if (!IsStruct)                                                                                           \
-					((CEntityInstance*)pThisClass)->NetworkStateChanged(m_key.offset + extra_offset, -1, -1);            \
-				else if (IsPlatformPosix()) /* This is currently broken on windows */                                    \
-					CALL_VIRTUAL(void, 1, pThisClass, m_key.offset + extra_offset, 0xFFFFFFFF, 0xFFFF);                  \
-			}                                                                                                            \
-			*reinterpret_cast<std::add_pointer_t<type>>((uintptr_t)(pThisClass) + m_key.offset + extra_offset) = val;    \
-		}                                                                                                                \
-		operator std::add_lvalue_reference_t<type>() { return Get(); }                                                   \
-		std::add_lvalue_reference_t<type> operator()() { return Get(); }                                                 \
-		std::add_lvalue_reference_t<type> operator->() { return Get(); }                                                 \
-		varName##_prop& operator()(type val) { Set(val); return *this; }                                                 \
-		varName##_prop& operator=(type val) { Set(val); return *this; }                                                  \
+#define SCHEMA_FIELD_OFFSET(type, varName, extra_offset)                                                                             \
+	class varName##_prop                                                                                                             \
+	{                                                                                                                                \
+	public:                                                                                                                          \
+		std::add_lvalue_reference_t<type> Get()                                                                                      \
+		{                                                                                                                            \
+			static constexpr auto classKey = hash_32_fnv1a_const(ThisClassName);                                                     \
+			static constexpr auto memberName = hash_32_fnv1a_const(#varName);                                                        \
+                                                                                                                                     \
+			static const auto schemaKey = schema::GetOffset(ThisClassName, classKey, #varName, memberName);                          \
+                                                                                                                                     \
+			static const size_t offset = offsetof(ThisClass, varName);                                                               \
+			ThisClass* pThisClass = (ThisClass*)((byte*)this - offset);                                                              \
+                                                                                                                                     \
+			return *reinterpret_cast<std::add_pointer_t<type>>(                                                                      \
+				(uintptr_t)(pThisClass) + schemaKey.offset + extra_offset);                                                          \
+		}                                                                                                                            \
+		void Set(type val)                                                                                                           \
+		{                                                                                                                            \
+			static constexpr auto classKey = hash_32_fnv1a_const(ThisClassName);                                                     \
+			static constexpr auto memberName = hash_32_fnv1a_const(#varName);                                                        \
+                                                                                                                                     \
+			static const auto schemaKey = schema::GetOffset(ThisClassName, classKey, #varName, memberName);                          \
+                                                                                                                                     \
+			static const size_t offset = offsetof(ThisClass, varName);                                                               \
+			ThisClass* pThisClass = (ThisClass*)((byte*)this - offset);                                                              \
+                                                                                                                                     \
+			if (schemaKey.networked)                                                                                                 \
+			{                                                                                                                        \
+				static const auto chainOffset = schema::FindChainOffset(ThisClassName);                                              \
+				if (chainOffset != 0)                                                                                                \
+				{                                                                                                                    \
+					DevMsg("Found chain offset %d for %s::%s\n", chainOffset, ThisClassName, #varName);                              \
+					schema::NetworkStateChanged((uintptr_t)(pThisClass) + chainOffset, schemaKey.offset + extra_offset, 0xFFFFFFFF); \
+				}                                                                                                                    \
+				else                                                                                                                 \
+				{                                                                                                                    \
+					/* WIP: Works fine for most props, but inlined classes in the middle of a class will                             \
+						need to have their this pointer corrected by the offset .*/                                                  \
+					DevMsg("Attempting to call SetStateChanged on on %s::%s\n", ThisClassName, #varName);                            \
+					if (!IsStruct)                                                                                                   \
+						((CEntityInstance*)pThisClass)->NetworkStateChanged(schemaKey.offset + extra_offset, -1, -1);                \
+					else if (IsPlatformPosix()) /* This is currently broken on windows */                                            \
+						CALL_VIRTUAL(void, 1, pThisClass, schemaKey.offset + extra_offset, 0xFFFFFFFF, 0xFFFF);                      \
+				}                                                                                                                    \
+			}                                                                                                                        \
+			*reinterpret_cast<std::add_pointer_t<type>>((uintptr_t)(pThisClass) + schemaKey.offset + extra_offset) = val;            \
+		}                                                                                                                            \
+		operator std::add_lvalue_reference_t<type>() { return Get(); }                                                               \
+		std::add_lvalue_reference_t<type> operator()() { return Get(); }                                                             \
+		std::add_lvalue_reference_t<type> operator->() { return Get(); }                                                             \
+		varName##_prop& operator()(type val)                                                                                         \
+		{                                                                                                                            \
+			Set(val);                                                                                                                \
+			return *this;                                                                                                            \
+		}                                                                                                                            \
+		varName##_prop& operator=(type val)                                                                                          \
+		{                                                                                                                            \
+			Set(val);                                                                                                                \
+			return *this;                                                                                                            \
+		}                                                                                                                            \
 	} varName;
 
-#define SCHEMA_FIELD_POINTER_OFFSET(type, varName, extra_offset)                                             \
-	class varName##_prop                                                                                     \
-	{                                                                                                        \
-	public:                                                                                                  \
-		type* Get()                                                                                          \
-		{                                                                                                    \
-			static constexpr auto datatable_hash = hash_32_fnv1a_const(ThisClassName);                       \
-			static constexpr auto prop_hash = hash_32_fnv1a_const(#varName);                                 \
-                                                                                                             \
-			static const auto m_key = schema::GetOffset(ThisClassName, datatable_hash, #varName, prop_hash); \
-                                                                                                             \
-			static const size_t offset = offsetof(ThisClass, varName);                                       \
-			ThisClass* pThisClass = (ThisClass*)((byte*)this - offset);                                      \
-                                                                                                             \
-			return reinterpret_cast<std::add_pointer_t<type>>(                                               \
-				(uintptr_t)(pThisClass) + m_key.offset + extra_offset);                                      \
-		}                                                                                                    \
-		operator type*() { return Get(); }                                                                   \
-		type* operator()() { return Get(); }                                                                 \
-		type* operator->() { return Get(); }                                                                 \
+#define SCHEMA_FIELD_POINTER_OFFSET(type, varName, extra_offset)                                            \
+	class varName##_prop                                                                                    \
+	{                                                                                                       \
+	public:                                                                                                 \
+		type* Get()                                                                                         \
+		{                                                                                                   \
+			static constexpr auto classKey = hash_32_fnv1a_const(ThisClassName);                            \
+			static constexpr auto memberName = hash_32_fnv1a_const(#varName);                               \
+                                                                                                            \
+			static const auto schemaKey = schema::GetOffset(ThisClassName, classKey, #varName, memberName); \
+                                                                                                            \
+			static const size_t offset = offsetof(ThisClass, varName);                                      \
+			ThisClass* pThisClass = (ThisClass*)((byte*)this - offset);                                     \
+                                                                                                            \
+			return reinterpret_cast<std::add_pointer_t<type>>(                                              \
+				(uintptr_t)(pThisClass) + schemaKey.offset + extra_offset);                                 \
+		}                                                                                                   \
+		operator type*() { return Get(); }                                                                  \
+		type* operator()() { return Get(); }                                                                \
+		type* operator->() { return Get(); }                                                                \
 	} varName;
 
 // Use this when you want the member's value itself

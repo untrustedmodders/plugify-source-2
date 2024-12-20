@@ -1,7 +1,8 @@
-#include <core/core_config.hpp>
 #include <core/sdk/entity/cschemasystem.h>
 #include <core/sdk/entity/cbaseentity.h>
 #include <core/sdk/schema.h>
+#include <core/sdk/utils.h>
+#include <core/core_config.hpp>
 #include <plugify/cpp_plugin.hpp>
 #include <plugin_export.h>
 #include <tier0/utlstring.h>
@@ -28,9 +29,21 @@ extern "C" PLUGIN_API int32 GetSchemaOffset(const plg::string& className, const 
 	auto classKey = hash_32_fnv1a_const(className.c_str());
 	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
 
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
+	const auto schemaKey = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
+	return schemaKey.offset;
+}
 
-	return m_key.offset;
+/**
+ * @brief Get the offset of a chain in a given schema class.
+ *
+ * This function retrieves the offset of a chain in the specified class.
+ *
+ * @param className The name of the class.
+ * @return The offset of the chain entity in the class.
+ */
+extern "C" PLUGIN_API int32 GetSchemaChainOffset(const plg::string& className)
+{
+	return schema::FindChainOffset(className.c_str());
 }
 
 /**
@@ -47,9 +60,8 @@ extern "C" PLUGIN_API bool IsSchemaFieldNetworked(const plg::string& className, 
 	auto classKey = hash_32_fnv1a_const(className.c_str());
 	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
 
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	return m_key.networked;
+	const auto schemaKey = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
+	return schemaKey.networked;
 }
 
 /**
@@ -73,1580 +85,1060 @@ extern "C" PLUGIN_API int GetSchemaClassSize(const plg::string& className)
 }
 
 /**
- * @brief Get a value from a schema field.
- *
- * This function retrieves the value of the specified member from the given instance.
+ * @brief Peeks into an entity's object schema and retrieves the integer value at the given offset.
  *
  * @param entityHandle The handle of the entity from which the value is to be retrieved.
- * @param className The name of the class.
- * @param memberName The name of the member whose value is to be retrieved.
- * @param extraOffset The value to add to the offset.
- * @return The value of the member.
+ * @param offset The offset of the schema to use.
+ * @param size Number of bytes to write (valid values are 1, 2, 4 or 8).
+ * @return The integer value at the given memory location.
  */
-extern "C" PLUGIN_API bool GetSchemaFieldBool(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
+extern "C" PLUGIN_API int64_t GetEntData(int entityHandle, int offset, int size)
 {
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot get '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
-		return {};
-	}
-	
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	return *reinterpret_cast<std::add_pointer_t<bool>>(reinterpret_cast<uintptr_t>(pEntity) + m_key.offset + extraOffset);
-}
-
-/**
- * @brief Get a value from a schema field.
- *
- * This function retrieves the value of the specified member from the given instance.
- *
- * @param entityHandle The handle of the entity from which the value is to be retrieved.
- * @param className The name of the class.
- * @param memberName The name of the member whose value is to be retrieved.
- * @param extraOffset The value to add to the offset.
- * @return The value of the member.
- */
-extern "C" PLUGIN_API int8_t GetSchemaFieldInt8(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot get '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
-		return {};
-	}
-	
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	return *reinterpret_cast<std::add_pointer_t<int8_t>>(reinterpret_cast<uintptr_t>(pEntity) + m_key.offset + extraOffset);
-}
-
-/**
- * @brief Get a value from a schema field.
- *
- * This function retrieves the value of the specified member from the given instance.
- *
- * @param entityHandle The handle of the entity from which the value is to be retrieved.
- * @param className The name of the class.
- * @param memberName The name of the member whose value is to be retrieved.
- * @param extraOffset The value to add to the offset.
- * @return The value of the member.
- */
-extern "C" PLUGIN_API int16_t GetSchemaFieldInt16(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot get '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
-		return {};
-	}
-	
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	return *reinterpret_cast<std::add_pointer_t<int16_t>>(reinterpret_cast<uintptr_t>(pEntity) + m_key.offset + extraOffset);
-}
-
-/**
- * @brief Get a value from a schema field.
- *
- * This function retrieves the value of the specified member from the given instance.
- *
- * @param entityHandle The handle of the entity from which the value is to be retrieved.
- * @param className The name of the class.
- * @param memberName The name of the member whose value is to be retrieved.
- * @param extraOffset The value to add to the offset.
- * @return The value of the member.
- */
-extern "C" PLUGIN_API int32_t GetSchemaFieldInt32(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot get '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
-		return {};
-	}
-	
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	return *reinterpret_cast<std::add_pointer_t<int32_t>>(reinterpret_cast<uintptr_t>(pEntity) + m_key.offset + extraOffset);
-}
-
-/**
- * @brief Get a value from a schema field.
- *
- * This function retrieves the value of the specified member from the given instance.
- *
- * @param entityHandle The handle of the entity from which the value is to be retrieved.
- * @param className The name of the class.
- * @param memberName The name of the member whose value is to be retrieved.
- * @param extraOffset The value to add to the offset.
- * @return The value of the member.
- */
-extern "C" PLUGIN_API int64_t GetSchemaFieldInt64(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot get '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
-		return {};
-	}
-	
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	return *reinterpret_cast<std::add_pointer_t<int64_t>>(reinterpret_cast<uintptr_t>(pEntity) + m_key.offset + extraOffset);
-}
-
-/**
- * @brief Get a value from a schema field.
- *
- * This function retrieves the value of the specified member from the given instance.
- *
- * @param entityHandle The handle of the entity from which the value is to be retrieved.
- * @param className The name of the class.
- * @param memberName The name of the member whose value is to be retrieved.
- * @param extraOffset The value to add to the offset.
- * @return The value of the member.
- */
-extern "C" PLUGIN_API uint8_t GetSchemaFieldUInt8(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot get '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
-		return {};
-	}
-	
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	return *reinterpret_cast<std::add_pointer_t<uint8_t>>(reinterpret_cast<uintptr_t>(pEntity) + m_key.offset + extraOffset);
-}
-
-/**
- * @brief Get a value from a schema field.
- *
- * This function retrieves the value of the specified member from the given instance.
- *
- * @param entityHandle The handle of the entity from which the value is to be retrieved.
- * @param className The name of the class.
- * @param memberName The name of the member whose value is to be retrieved.
- * @param extraOffset The value to add to the offset.
- * @return The value of the member.
- */
-extern "C" PLUGIN_API uint16_t GetSchemaFieldUInt16(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot get '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
-		return {};
-	}
-	
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	return *reinterpret_cast<std::add_pointer_t<uint16_t>>(reinterpret_cast<uintptr_t>(pEntity) + m_key.offset + extraOffset);
-}
-
-/**
- * @brief Get a value from a schema field.
- *
- * This function retrieves the value of the specified member from the given instance.
- *
- * @param entityHandle The handle of the entity from which the value is to be retrieved.
- * @param className The name of the class.
- * @param memberName The name of the member whose value is to be retrieved.
- * @param extraOffset The value to add to the offset.
- * @return The value of the member.
- */
-extern "C" PLUGIN_API uint32_t GetSchemaFieldUInt32(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot get '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
-		return {};
-	}
-	
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	return *reinterpret_cast<std::add_pointer_t<uint32_t>>(reinterpret_cast<uintptr_t>(pEntity) + m_key.offset + extraOffset);
-}
-
-/**
- * @brief Get a value from a schema field.
- *
- * This function retrieves the value of the specified member from the given instance.
- *
- * @param entityHandle The handle of the entity from which the value is to be retrieved.
- * @param className The name of the class.
- * @param memberName The name of the member whose value is to be retrieved.
- * @param extraOffset The value to add to the offset.
- * @return The value of the member.
- */
-extern "C" PLUGIN_API uint64_t GetSchemaFieldUInt64(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot get '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
-		return {};
-	}
-	
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	return *reinterpret_cast<std::add_pointer_t<uint64_t>>(reinterpret_cast<uintptr_t>(pEntity) + m_key.offset + extraOffset);
-}
-
-/**
- * @brief Get a value from a schema field.
- *
- * This function retrieves the value of the specified member from the given instance.
- *
- * @param entityHandle The handle of the entity from which the value is to be retrieved.
- * @param className The name of the class.
- * @param memberName The name of the member whose value is to be retrieved.
- * @param extraOffset The value to add to the offset.
- * @return The value of the member.
- */
-extern "C" PLUGIN_API float GetSchemaFieldFloat(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot get '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
-		return {};
-	}
-	
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	return *reinterpret_cast<std::add_pointer_t<float>>(reinterpret_cast<uintptr_t>(pEntity) + m_key.offset + extraOffset);
-}
-
-/**
- * @brief Get a value from a schema field.
- *
- * This function retrieves the value of the specified member from the given instance.
- *
- * @param entityHandle The handle of the entity from which the value is to be retrieved.
- * @param className The name of the class.
- * @param memberName The name of the member whose value is to be retrieved.
- * @param extraOffset The value to add to the offset.
- * @return The value of the member.
- */
-extern "C" PLUGIN_API double GetSchemaFieldDouble(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot get '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
-		return {};
-	}
-	
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	return *reinterpret_cast<std::add_pointer_t<double>>(reinterpret_cast<uintptr_t>(pEntity) + m_key.offset + extraOffset);
-}
-
-/**
- * @brief Get a value from a schema field.
- *
- * This function retrieves the value of the specified member from the given instance.
- *
- * @param entityHandle The handle of the entity from which the value is to be retrieved.
- * @param className The name of the class.
- * @param memberName The name of the member whose value is to be retrieved.
- * @param extraOffset The value to add to the offset.
- * @return The value of the member.
- */
-extern "C" PLUGIN_API void* GetSchemaFieldPointer(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot get '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot get '%d' with invalid entity handle: %d\n", offset, entityHandle);
 		return {};
 	}
 
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	return *reinterpret_cast<std::add_pointer_t<void*>>(reinterpret_cast<uintptr_t>(pEntity) + m_key.offset + extraOffset);
+	switch (size) {
+		case 1:
+			return *reinterpret_cast<int8_t*>(reinterpret_cast<intptr_t>(pEntity) + offset);
+		case 2:
+			return *reinterpret_cast<int16_t*>(reinterpret_cast<intptr_t>(pEntity) + offset);
+		case 4:
+			return *reinterpret_cast<int32_t*>(reinterpret_cast<intptr_t>(pEntity) + offset);
+		case 8:
+			return *reinterpret_cast<int64_t*>(reinterpret_cast<intptr_t>(pEntity) + offset);
+		default:
+			return 0;
+	}
 }
 
 /**
- * @brief Get a value from a schema field.
- *
- * This function retrieves the value of the specified member from the given instance.
+ * @brief Peeks into an entity's object data and sets the integer value at the given offset.
  *
  * @param entityHandle The handle of the entity from which the value is to be retrieved.
- * @param className The name of the class.
- * @param memberName The name of the member whose value is to be retrieved.
- * @param extraOffset The value to add to the offset.
- * @return The value of the member.
+ * @param offset The offset of the schema to use.
+ * @param value The integer value to set.
+ * @param size Number of bytes to write (valid values are 1, 2, 4 or 8).
+ * @param changeState If true, change will be sent over the network.
+ * @param chainOffset The offset of the chain entity in the class.
  */
-extern "C" PLUGIN_API plg::string GetSchemaFieldString(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
+extern "C" PLUGIN_API void SetEntData(int entityHandle, int offset, int64_t value, int size, bool changeState, int chainOffset)
 {
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot get '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
-		return {};
-	}
-	
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	auto str = reinterpret_cast<std::add_pointer_t<CUtlString>>(reinterpret_cast<uintptr_t>(pEntity) + m_key.offset + extraOffset);
-	return str != nullptr ? str->Get() : "";
-}
-
-/**
- * @brief Get a value from a schema field.
- *
- * This function retrieves the value of the specified member from the given instance.
- *
- * @param entityHandle The handle of the entity from which the value is to be retrieved.
- * @param className The name of the class.
- * @param memberName The name of the member whose value is to be retrieved.
- * @param extraOffset The value to add to the offset.
- * @return The value of the member.
- */
-extern "C" PLUGIN_API plg::vec3 GetSchemaFieldVector(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot get '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
-		return {};
-	}
-	
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	const Vector& vec = *reinterpret_cast<std::add_pointer_t<Vector>>(reinterpret_cast<uintptr_t>(pEntity) + m_key.offset + extraOffset);
-	return *reinterpret_cast<const plg::vec3*>(&vec);
-}
-
-/**
- * @brief Set a value for a schema field.
- *
- * This function sets the specified member's value for a given instance of a class.
- * If the "FollowCS2ServerGuidelines" option is enabled and the member is in the bad list,
- * a warning is logged and the value is not set.
- *
- * @param entityHandle The handle of the entity where the value is to be set.
- * @param className The name of the class that contains the member.
- * @param memberName The name of the member to be set.
- * @param value The value to assign to the member.
- * @param extraOffset The value to add to the offset.
- */
-extern "C" PLUGIN_API void SetSchemaFieldBool(int entityHandle, const plg::string& className, const plg::string& memberName, bool value, int extraOffset)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
-		return;
-	}
-	
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%d' with invalid entity handle: %d\n", offset, entityHandle);
 		return;
 	}
 
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	*reinterpret_cast<std::add_pointer_t<bool>>(reinterpret_cast<uintptr_t>(pEntity) + m_key.offset + extraOffset) = value;
-}
-
-/**
- * @brief Set a value for a schema field.
- *
- * This function sets the specified member's value for a given instance of a class.
- * If the "FollowCS2ServerGuidelines" option is enabled and the member is in the bad list,
- * a warning is logged and the value is not set.
- *
- * @param entityHandle The handle of the entity where the value is to be set.
- * @param className The name of the class that contains the member.
- * @param memberName The name of the member to be set.
- * @param value The value to assign to the member.
- * @param extraOffset The value to add to the offset.
- */
-extern "C" PLUGIN_API void SetSchemaFieldInt8(int entityHandle, const plg::string& className, const plg::string& memberName, int8_t value, int extraOffset)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
+	if (changeState)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
-		return;
-	}
-	
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return;
+		if (chainOffset != 0)
+		{
+			schema::NetworkStateChanged(reinterpret_cast<intptr_t>(pEntity) + chainOffset, offset);
+		}
+		else
+		{
+			pEntity->NetworkStateChanged(offset);
+		}
 	}
 
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	*reinterpret_cast<std::add_pointer_t<int8_t>>(reinterpret_cast<uintptr_t>(pEntity) + m_key.offset + extraOffset) = value;
-}
-
-/**
- * @brief Set a value for a schema field.
- *
- * This function sets the specified member's value for a given instance of a class.
- * If the "FollowCS2ServerGuidelines" option is enabled and the member is in the bad list,
- * a warning is logged and the value is not set.
- *
- * @param entityHandle The handle of the entity where the value is to be set.
- * @param className The name of the class that contains the member.
- * @param memberName The name of the member to be set.
- * @param value The value to assign to the member.
- * @param extraOffset The value to add to the offset.
- */
-extern "C" PLUGIN_API void SetSchemaFieldInt16(int entityHandle, const plg::string& className, const plg::string& memberName, int16_t value, int extraOffset)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
-		return;
+	switch (size) {
+		case 1:
+			*reinterpret_cast<int8_t*>(reinterpret_cast<intptr_t>(pEntity) + offset) = static_cast<int8_t>(value);
+		case 2:
+			*reinterpret_cast<int16_t*>(reinterpret_cast<intptr_t>(pEntity) + offset) = static_cast<int16_t>(value);
+		case 4:
+			*reinterpret_cast<int32_t*>(reinterpret_cast<intptr_t>(pEntity) + offset) = static_cast<int32_t>(value);
+		case 8:
+			*reinterpret_cast<int64_t*>(reinterpret_cast<intptr_t>(pEntity) + offset) = value;
+		default:
+			break;
 	}
-	
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return;
-	}
-
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	*reinterpret_cast<std::add_pointer_t<int16_t>>(reinterpret_cast<uintptr_t>(pEntity) + m_key.offset + extraOffset) = value;
-}
-
-/**
- * @brief Set a value for a schema field.
- *
- * This function sets the specified member's value for a given instance of a class.
- * If the "FollowCS2ServerGuidelines" option is enabled and the member is in the bad list,
- * a warning is logged and the value is not set.
- *
- * @param entityHandle The handle of the entity where the value is to be set.
- * @param className The name of the class that contains the member.
- * @param memberName The name of the member to be set.
- * @param value The value to assign to the member.
- * @param extraOffset The value to add to the offset.
- */
-extern "C" PLUGIN_API void SetSchemaFieldInt32(int entityHandle, const plg::string& className, const plg::string& memberName, int32_t value, int extraOffset)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
-		return;
-	}
-	
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return;
-	}
-
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	*reinterpret_cast<std::add_pointer_t<int32_t>>(reinterpret_cast<uintptr_t>(pEntity) + m_key.offset + extraOffset) = value;
-}
-
-/**
- * @brief Set a value for a schema field.
- *
- * This function sets the specified member's value for a given instance of a class.
- * If the "FollowCS2ServerGuidelines" option is enabled and the member is in the bad list,
- * a warning is logged and the value is not set.
- *
- * @param entityHandle The handle of the entity where the value is to be set.
- * @param className The name of the class that contains the member.
- * @param memberName The name of the member to be set.
- * @param value The value to assign to the member.
- * @param extraOffset The value to add to the offset.
- */
-extern "C" PLUGIN_API void SetSchemaFieldInt64(int entityHandle, const plg::string& className, const plg::string& memberName, int64_t value, int extraOffset)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
-		return;
-	}
-	
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return;
-	}
-
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	*reinterpret_cast<std::add_pointer_t<int64_t>>(reinterpret_cast<uintptr_t>(pEntity) + m_key.offset + extraOffset) = value;
-}
-
-/**
- * @brief Set a value for a schema field.
- *
- * This function sets the specified member's value for a given instance of a class.
- * If the "FollowCS2ServerGuidelines" option is enabled and the member is in the bad list,
- * a warning is logged and the value is not set.
- *
- * @param entityHandle The handle of the entity where the value is to be set.
- * @param className The name of the class that contains the member.
- * @param memberName The name of the member to be set.
- * @param value The value to assign to the member.
- * @param extraOffset The value to add to the offset.
- */
-extern "C" PLUGIN_API void SetSchemaFieldUInt8(int entityHandle, const plg::string& className, const plg::string& memberName, uint8_t value, int extraOffset)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
-		return;
-	}
-	
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return;
-	}
-
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	*reinterpret_cast<std::add_pointer_t<uint8_t>>(reinterpret_cast<uintptr_t>(pEntity) + m_key.offset + extraOffset) = value;
-}
-
-/**
- * @brief Set a value for a schema field.
- *
- * This function sets the specified member's value for a given instance of a class.
- * If the "FollowCS2ServerGuidelines" option is enabled and the member is in the bad list,
- * a warning is logged and the value is not set.
- *
- * @param entityHandle The handle of the entity where the value is to be set.
- * @param className The name of the class that contains the member.
- * @param memberName The name of the member to be set.
- * @param value The value to assign to the member.
- * @param extraOffset The value to add to the offset.
- */
-extern "C" PLUGIN_API void SetSchemaFieldUInt16(int entityHandle, const plg::string& className, const plg::string& memberName, uint16_t value, int extraOffset)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
-		return;
-	}
-	
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return;
-	}
-
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	*reinterpret_cast<std::add_pointer_t<uint16_t>>(reinterpret_cast<uintptr_t>(pEntity) + m_key.offset + extraOffset) = value;
-}
-
-/**
- * @brief Set a value for a schema field.
- *
- * This function sets the specified member's value for a given instance of a class.
- * If the "FollowCS2ServerGuidelines" option is enabled and the member is in the bad list,
- * a warning is logged and the value is not set.
- *
- * @param entityHandle The handle of the entity where the value is to be set.
- * @param className The name of the class that contains the member.
- * @param memberName The name of the member to be set.
- * @param value The value to assign to the member.
- * @param extraOffset The value to add to the offset.
- */
-extern "C" PLUGIN_API void SetSchemaFieldUInt32(int entityHandle, const plg::string& className, const plg::string& memberName, uint32_t value, int extraOffset)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
-		return;
-	}
-	
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return;
-	}
-
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	*reinterpret_cast<std::add_pointer_t<uint32_t>>(reinterpret_cast<uintptr_t>(pEntity) + m_key.offset + extraOffset) = value;
-}
-
-/**
- * @brief Set a value for a schema field.
- *
- * This function sets the specified member's value for a given instance of a class.
- * If the "FollowCS2ServerGuidelines" option is enabled and the member is in the bad list,
- * a warning is logged and the value is not set.
- *
- * @param entityHandle The handle of the entity where the value is to be set.
- * @param className The name of the class that contains the member.
- * @param memberName The name of the member to be set.
- * @param value The value to assign to the member.
- * @param extraOffset The value to add to the offset.
- */
-extern "C" PLUGIN_API void SetSchemaFieldUInt64(int entityHandle, const plg::string& className, const plg::string& memberName, uint64_t value, int extraOffset)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
-		return;
-	}
-	
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return;
-	}
-
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	*reinterpret_cast<std::add_pointer_t<uint64_t>>(reinterpret_cast<uintptr_t>(pEntity) + m_key.offset + extraOffset) = value;
-}
-
-/**
- * @brief Set a value for a schema field.
- *
- * This function sets the specified member's value for a given instance of a class.
- * If the "FollowCS2ServerGuidelines" option is enabled and the member is in the bad list,
- * a warning is logged and the value is not set.
- *
- * @param entityHandle The handle of the entity where the value is to be set.
- * @param className The name of the class that contains the member.
- * @param memberName The name of the member to be set.
- * @param value The value to assign to the member.
- * @param extraOffset The value to add to the offset.
- */
-extern "C" PLUGIN_API void SetSchemaFieldFloat(int entityHandle, const plg::string& className, const plg::string& memberName, float value, int extraOffset)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
-		return;
-	}
-	
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return;
-	}
-
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	*reinterpret_cast<std::add_pointer_t<float>>(reinterpret_cast<uintptr_t>(pEntity) + m_key.offset + extraOffset) = value;
-}
-
-/**
- * @brief Set a value for a schema field.
- *
- * This function sets the specified member's value for a given instance of a class.
- * If the "FollowCS2ServerGuidelines" option is enabled and the member is in the bad list,
- * a warning is logged and the value is not set.
- *
- * @param entityHandle The handle of the entity where the value is to be set.
- * @param className The name of the class that contains the member.
- * @param memberName The name of the member to be set.
- * @param value The value to assign to the member.
- * @param extraOffset The value to add to the offset.
- */
-extern "C" PLUGIN_API void SetSchemaFieldDouble(int entityHandle, const plg::string& className, const plg::string& memberName, double value, int extraOffset)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
-		return;
-	}
-	
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return;
-	}
-
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	*reinterpret_cast<std::add_pointer_t<double>>(reinterpret_cast<uintptr_t>(pEntity) + m_key.offset + extraOffset) = value;
-}
-
-/**
- * @brief Set a value for a schema field.
- *
- * This function sets the specified member's value for a given instance of a class.
- * If the "FollowCS2ServerGuidelines" option is enabled and the member is in the bad list,
- * a warning is logged and the value is not set.
- *
- * @param entityHandle The handle of the entity where the value is to be set.
- * @param className The name of the class that contains the member.
- * @param memberName The name of the member to be set.
- * @param value The value to assign to the member.
- * @param extraOffset The value to add to the offset.
- */
-extern "C" PLUGIN_API void SetSchemaFieldString(int entityHandle, const plg::string& className, const plg::string& memberName, const plg::string& value, int extraOffset)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
-		return;
-	}
-	
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return;
-	}
-
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	*reinterpret_cast<CUtlString*>(reinterpret_cast<uintptr_t>(pEntity) + m_key.offset + extraOffset) = value.c_str();
-}
-
-/**
- * @brief Set a value for a schema field.
- *
- * This function sets the specified member's value for a given instance of a class.
- * If the "FollowCS2ServerGuidelines" option is enabled and the member is in the bad list,
- * a warning is logged and the value is not set.
- *
- * @param entityHandle The handle of the entity where the value is to be set.
- * @param className The name of the class that contains the member.
- * @param memberName The name of the member to be set.
- * @param value The value to assign to the member.
- * @param extraOffset The value to add to the offset.
- */
-extern "C" PLUGIN_API void SetSchemaFieldVector(int entityHandle, const plg::string& className, const plg::string& memberName, const Vector& value, int extraOffset)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
-		return;
-	}
-	
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return;
-	}
-
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	*reinterpret_cast<Vector*>(reinterpret_cast<uintptr_t>(pEntity) + m_key.offset + extraOffset) = value;
-}
-
-// 
-
-/**
- * @brief Get a value from a schema field by its pointer.
- *
- * This function retrieves the value of the specified member from the given instance.
- *
- * @param instancePointer Pointer to the instance from which the value is to be retrieved.
- * @param className The name of the class.
- * @param memberName The name of the member whose value is to be retrieved.
- * @param extraOffset The value to add to the offset.
- * @return The value of the member.
- */
-extern "C" PLUGIN_API bool GetSchemaFieldBoolByPtr(void* instancePointer, const plg::string& className, const plg::string& memberName, int extraOffset)
-{
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	return *reinterpret_cast<std::add_pointer_t<bool>>(reinterpret_cast<uintptr_t>(instancePointer) + m_key.offset + extraOffset);
-}
-
-/**
- * @brief Get a value from a schema field by its pointer.
- *
- * This function retrieves the value of the specified member from the given instance.
- *
- * @param instancePointer Pointer to the instance from which the value is to be retrieved.
- * @param className The name of the class.
- * @param memberName The name of the member whose value is to be retrieved.
- * @param extraOffset The value to add to the offset.
- * @return The value of the member.
- */
-extern "C" PLUGIN_API int8_t GetSchemaFieldInt8ByPtr(void* instancePointer, const plg::string& className, const plg::string& memberName, int extraOffset)
-{
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	return *reinterpret_cast<std::add_pointer_t<int8_t>>(reinterpret_cast<uintptr_t>(instancePointer) + m_key.offset + extraOffset);
-}
-
-/**
- * @brief Get a value from a schema field by its pointer.
- *
- * This function retrieves the value of the specified member from the given instance.
- *
- * @param instancePointer Pointer to the instance from which the value is to be retrieved.
- * @param className The name of the class.
- * @param memberName The name of the member whose value is to be retrieved.
- * @param extraOffset The value to add to the offset.
- * @return The value of the member.
- */
-extern "C" PLUGIN_API int16_t GetSchemaFieldInt16ByPtr(void* instancePointer, const plg::string& className, const plg::string& memberName, int extraOffset)
-{
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	return *reinterpret_cast<std::add_pointer_t<int16_t>>(reinterpret_cast<uintptr_t>(instancePointer) + m_key.offset + extraOffset);
-}
-
-/**
- * @brief Get a value from a schema field by its pointer.
- *
- * This function retrieves the value of the specified member from the given instance.
- *
- * @param instancePointer Pointer to the instance from which the value is to be retrieved.
- * @param className The name of the class.
- * @param memberName The name of the member whose value is to be retrieved.
- * @param extraOffset The value to add to the offset.
- * @return The value of the member.
- */
-extern "C" PLUGIN_API int32_t GetSchemaFieldInt32ByPtr(void* instancePointer, const plg::string& className, const plg::string& memberName, int extraOffset)
-{
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	return *reinterpret_cast<std::add_pointer_t<int32_t>>(reinterpret_cast<uintptr_t>(instancePointer) + m_key.offset + extraOffset);
-}
-
-/**
- * @brief Get a value from a schema field by its pointer.
- *
- * This function retrieves the value of the specified member from the given instance.
- *
- * @param instancePointer Pointer to the instance from which the value is to be retrieved.
- * @param className The name of the class.
- * @param memberName The name of the member whose value is to be retrieved.
- * @param extraOffset The value to add to the offset.
- * @return The value of the member.
- */
-extern "C" PLUGIN_API int64_t GetSchemaFieldInt64ByPtr(void* instancePointer, const plg::string& className, const plg::string& memberName, int extraOffset)
-{
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	return *reinterpret_cast<std::add_pointer_t<int64_t>>(reinterpret_cast<uintptr_t>(instancePointer) + m_key.offset + extraOffset);
-}
-
-/**
- * @brief Get a value from a schema field by its pointer.
- *
- * This function retrieves the value of the specified member from the given instance.
- *
- * @param instancePointer Pointer to the instance from which the value is to be retrieved.
- * @param className The name of the class.
- * @param memberName The name of the member whose value is to be retrieved.
- * @param extraOffset The value to add to the offset.
- * @return The value of the member.
- */
-extern "C" PLUGIN_API uint8_t GetSchemaFieldUInt8ByPtr(void* instancePointer, const plg::string& className, const plg::string& memberName, int extraOffset)
-{
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	return *reinterpret_cast<std::add_pointer_t<uint8_t>>(reinterpret_cast<uintptr_t>(instancePointer) + m_key.offset + extraOffset);
-}
-
-/**
- * @brief Get a value from a schema field by its pointer.
- *
- * This function retrieves the value of the specified member from the given instance.
- *
- * @param instancePointer Pointer to the instance from which the value is to be retrieved.
- * @param className The name of the class.
- * @param memberName The name of the member whose value is to be retrieved.
- * @param extraOffset The value to add to the offset.
- * @return The value of the member.
- */
-extern "C" PLUGIN_API uint16_t GetSchemaFieldUInt16ByPtr(void* instancePointer, const plg::string& className, const plg::string& memberName, int extraOffset)
-{
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	return *reinterpret_cast<std::add_pointer_t<uint16_t>>(reinterpret_cast<uintptr_t>(instancePointer) + m_key.offset + extraOffset);
-}
-
-/**
- * @brief Get a value from a schema field by its pointer.
- *
- * This function retrieves the value of the specified member from the given instance.
- *
- * @param instancePointer Pointer to the instance from which the value is to be retrieved.
- * @param className The name of the class.
- * @param memberName The name of the member whose value is to be retrieved.
- * @param extraOffset The value to add to the offset.
- * @return The value of the member.
- */
-extern "C" PLUGIN_API uint32_t GetSchemaFieldUInt32ByPtr(void* instancePointer, const plg::string& className, const plg::string& memberName, int extraOffset)
-{
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	return *reinterpret_cast<std::add_pointer_t<uint32_t>>(reinterpret_cast<uintptr_t>(instancePointer) + m_key.offset + extraOffset);
-}
-
-/**
- * @brief Get a value from a schema field by its pointer.
- *
- * This function retrieves the value of the specified member from the given instance.
- *
- * @param instancePointer Pointer to the instance from which the value is to be retrieved.
- * @param className The name of the class.
- * @param memberName The name of the member whose value is to be retrieved.
- * @param extraOffset The value to add to the offset.
- * @return The value of the member.
- */
-extern "C" PLUGIN_API uint64_t GetSchemaFieldUInt64ByPtr(void* instancePointer, const plg::string& className, const plg::string& memberName, int extraOffset)
-{
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	return *reinterpret_cast<std::add_pointer_t<uint64_t>>(reinterpret_cast<uintptr_t>(instancePointer) + m_key.offset + extraOffset);
-}
-
-/**
- * @brief Get a value from a schema field by its pointer.
- *
- * This function retrieves the value of the specified member from the given instance.
- *
- * @param instancePointer Pointer to the instance from which the value is to be retrieved.
- * @param className The name of the class.
- * @param memberName The name of the member whose value is to be retrieved.
- * @param extraOffset The value to add to the offset.
- * @return The value of the member.
- */
-extern "C" PLUGIN_API float GetSchemaFieldFloatByPtr(void* instancePointer, const plg::string& className, const plg::string& memberName, int extraOffset)
-{
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	return *reinterpret_cast<std::add_pointer_t<float>>(reinterpret_cast<uintptr_t>(instancePointer) + m_key.offset + extraOffset);
-}
-
-/**
- * @brief Get a value from a schema field by its pointer.
- *
- * This function retrieves the value of the specified member from the given instance.
- *
- * @param instancePointer Pointer to the instance from which the value is to be retrieved.
- * @param className The name of the class.
- * @param memberName The name of the member whose value is to be retrieved.
- * @param extraOffset The value to add to the offset.
- * @return The value of the member.
- */
-extern "C" PLUGIN_API double GetSchemaFieldDoubleByPtr(void* instancePointer, const plg::string& className, const plg::string& memberName, int extraOffset)
-{
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	return *reinterpret_cast<std::add_pointer_t<double>>(reinterpret_cast<uintptr_t>(instancePointer) + m_key.offset + extraOffset);
-}
-
-/**
- * @brief Get a value from a schema field by its pointer.
- *
- * This function retrieves the value of the specified member from the given instance.
- *
- * @param instancePointer Pointer to the instance from which the value is to be retrieved.
- * @param className The name of the class.
- * @param memberName The name of the member whose value is to be retrieved.
- * @param extraOffset The value to add to the offset.
- * @return The value of the member.
- */
-extern "C" PLUGIN_API void* GetSchemaFieldPointerByPtr(void* instancePointer, const plg::string& className, const plg::string& memberName, int extraOffset)
-{
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	return *reinterpret_cast<std::add_pointer_t<void*>>(reinterpret_cast<uintptr_t>(instancePointer) + m_key.offset + extraOffset);
-}
-
-/**
- * @brief Get a value from a schema field by its pointer.
- *
- * This function retrieves the value of the specified member from the given instance.
- *
- * @param instancePointer Pointer to the instance from which the value is to be retrieved.
- * @param className The name of the class.
- * @param memberName The name of the member whose value is to be retrieved.
- * @param extraOffset The value to add to the offset.
- * @return The value of the member.
- */
-extern "C" PLUGIN_API plg::string GetSchemaFieldStringByPtr(void* instancePointer, const plg::string& className, const plg::string& memberName, int extraOffset)
-{
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	auto str = reinterpret_cast<std::add_pointer_t<CUtlString>>(reinterpret_cast<uintptr_t>(instancePointer) + m_key.offset + extraOffset);
-	return str != nullptr ? str->Get() : "";
-}
-
-/**
- * @brief Get a value from a schema field by its pointer.
- *
- * This function retrieves the value of the specified member from the given instance.
- *
- * @param instancePointer Pointer to the instance from which the value is to be retrieved.
- * @param className The name of the class.
- * @param memberName The name of the member whose value is to be retrieved.
- * @param extraOffset The value to add to the offset.
- * @return The value of the member.
- */
-extern "C" PLUGIN_API plg::vec3 GetSchemaFieldVectorByPtr(void* instancePointer, const plg::string& className, const plg::string& memberName, int extraOffset)
-{
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	const Vector& vec = *reinterpret_cast<std::add_pointer_t<Vector>>(reinterpret_cast<uintptr_t>(instancePointer) + m_key.offset + extraOffset);
-	return *reinterpret_cast<const plg::vec3*>(&vec);
-}
-
-/**
- * @brief Set a value for a schema field by its pointer.
- *
- * This function sets the specified member's value for a given instance of a class.
- * If the "FollowCS2ServerGuidelines" option is enabled and the member is in the bad list,
- * a warning is logged and the value is not set.
- *
- * @param instancePointer Pointer to the instance of the class where the value is to be set.
- * @param className The name of the class that contains the member.
- * @param memberName The name of the member to be set.
- * @param value The value to assign to the member.
- * @param extraOffset The value to add to the offset.
- */
-extern "C" PLUGIN_API void SetSchemaFieldBoolByPtr(void* instancePointer, const plg::string& className, const plg::string& memberName, bool value, int extraOffset)
-{
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return;
-	}
-
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	*reinterpret_cast<std::add_pointer_t<bool>>(reinterpret_cast<uintptr_t>(instancePointer) + m_key.offset + extraOffset) = value;
-}
-
-/**
- * @brief Set a value for a schema field by its pointer.
- *
- * This function sets the specified member's value for a given instance of a class.
- * If the "FollowCS2ServerGuidelines" option is enabled and the member is in the bad list,
- * a warning is logged and the value is not set.
- *
- * @param instancePointer Pointer to the instance of the class where the value is to be set.
- * @param className The name of the class that contains the member.
- * @param memberName The name of the member to be set.
- * @param value The value to assign to the member.
- * @param extraOffset The value to add to the offset.
- */
-extern "C" PLUGIN_API void SetSchemaFieldInt8ByPtr(void* instancePointer, const plg::string& className, const plg::string& memberName, int8_t value, int extraOffset)
-{
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return;
-	}
-
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	*reinterpret_cast<std::add_pointer_t<int8_t>>(reinterpret_cast<uintptr_t>(instancePointer) + m_key.offset + extraOffset) = value;
-}
-
-/**
- * @brief Set a value for a schema field by its pointer.
- *
- * This function sets the specified member's value for a given instance of a class.
- * If the "FollowCS2ServerGuidelines" option is enabled and the member is in the bad list,
- * a warning is logged and the value is not set.
- *
- * @param instancePointer Pointer to the instance of the class where the value is to be set.
- * @param className The name of the class that contains the member.
- * @param memberName The name of the member to be set.
- * @param value The value to assign to the member.
- * @param extraOffset The value to add to the offset.
- */
-extern "C" PLUGIN_API void SetSchemaFieldInt16ByPtr(void* instancePointer, const plg::string& className, const plg::string& memberName, int16_t value, int extraOffset)
-{
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return;
-	}
-
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	*reinterpret_cast<std::add_pointer_t<int16_t>>(reinterpret_cast<uintptr_t>(instancePointer) + m_key.offset + extraOffset) = value;
-}
-
-/**
- * @brief Set a value for a schema field by its pointer.
- *
- * This function sets the specified member's value for a given instance of a class.
- * If the "FollowCS2ServerGuidelines" option is enabled and the member is in the bad list,
- * a warning is logged and the value is not set.
- *
- * @param instancePointer Pointer to the instance of the class where the value is to be set.
- * @param className The name of the class that contains the member.
- * @param memberName The name of the member to be set.
- * @param value The value to assign to the member.
- * @param extraOffset The value to add to the offset.
- */
-extern "C" PLUGIN_API void SetSchemaFieldInt32ByPtr(void* instancePointer, const plg::string& className, const plg::string& memberName, int32_t value, int extraOffset)
-{
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return;
-	}
-
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	*reinterpret_cast<std::add_pointer_t<int32_t>>(reinterpret_cast<uintptr_t>(instancePointer) + m_key.offset + extraOffset) = value;
-}
-
-/**
- * @brief Set a value for a schema field by its pointer.
- *
- * This function sets the specified member's value for a given instance of a class.
- * If the "FollowCS2ServerGuidelines" option is enabled and the member is in the bad list,
- * a warning is logged and the value is not set.
- *
- * @param instancePointer Pointer to the instance of the class where the value is to be set.
- * @param className The name of the class that contains the member.
- * @param memberName The name of the member to be set.
- * @param value The value to assign to the member.
- * @param extraOffset The value to add to the offset.
- */
-extern "C" PLUGIN_API void SetSchemaFieldInt64ByPtr(void* instancePointer, const plg::string& className, const plg::string& memberName, int64_t value, int extraOffset)
-{
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return;
-	}
-
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	*reinterpret_cast<std::add_pointer_t<int64_t>>(reinterpret_cast<uintptr_t>(instancePointer) + m_key.offset + extraOffset) = value;
-}
-
-/**
- * @brief Set a value for a schema field by its pointer.
- *
- * This function sets the specified member's value for a given instance of a class.
- * If the "FollowCS2ServerGuidelines" option is enabled and the member is in the bad list,
- * a warning is logged and the value is not set.
- *
- * @param instancePointer Pointer to the instance of the class where the value is to be set.
- * @param className The name of the class that contains the member.
- * @param memberName The name of the member to be set.
- * @param value The value to assign to the member.
- * @param extraOffset The value to add to the offset.
- */
-extern "C" PLUGIN_API void SetSchemaFieldUInt8ByPtr(void* instancePointer, const plg::string& className, const plg::string& memberName, uint8_t value, int extraOffset)
-{
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return;
-	}
-
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	*reinterpret_cast<std::add_pointer_t<uint8_t>>(reinterpret_cast<uintptr_t>(instancePointer) + m_key.offset + extraOffset) = value;
-}
-
-/**
- * @brief Set a value for a schema field by its pointer.
- *
- * This function sets the specified member's value for a given instance of a class.
- * If the "FollowCS2ServerGuidelines" option is enabled and the member is in the bad list,
- * a warning is logged and the value is not set.
- *
- * @param instancePointer Pointer to the instance of the class where the value is to be set.
- * @param className The name of the class that contains the member.
- * @param memberName The name of the member to be set.
- * @param value The value to assign to the member.
- * @param extraOffset The value to add to the offset.
- */
-extern "C" PLUGIN_API void SetSchemaFieldUInt16ByPtr(void* instancePointer, const plg::string& className, const plg::string& memberName, uint16_t value, int extraOffset)
-{
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return;
-	}
-
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	*reinterpret_cast<std::add_pointer_t<uint16_t>>(reinterpret_cast<uintptr_t>(instancePointer) + m_key.offset + extraOffset) = value;
-}
-
-/**
- * @brief Set a value for a schema field by its pointer.
- *
- * This function sets the specified member's value for a given instance of a class.
- * If the "FollowCS2ServerGuidelines" option is enabled and the member is in the bad list,
- * a warning is logged and the value is not set.
- *
- * @param instancePointer Pointer to the instance of the class where the value is to be set.
- * @param className The name of the class that contains the member.
- * @param memberName The name of the member to be set.
- * @param value The value to assign to the member.
- * @param extraOffset The value to add to the offset.
- */
-extern "C" PLUGIN_API void SetSchemaFieldUInt32ByPtr(void* instancePointer, const plg::string& className, const plg::string& memberName, uint32_t value, int extraOffset)
-{
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return;
-	}
-
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	*reinterpret_cast<std::add_pointer_t<uint32_t>>(reinterpret_cast<uintptr_t>(instancePointer) + m_key.offset + extraOffset) = value;
-}
-
-/**
- * @brief Set a value for a schema field by its pointer.
- *
- * This function sets the specified member's value for a given instance of a class.
- * If the "FollowCS2ServerGuidelines" option is enabled and the member is in the bad list,
- * a warning is logged and the value is not set.
- *
- * @param instancePointer Pointer to the instance of the class where the value is to be set.
- * @param className The name of the class that contains the member.
- * @param memberName The name of the member to be set.
- * @param value The value to assign to the member.
- * @param extraOffset The value to add to the offset.
- */
-extern "C" PLUGIN_API void SetSchemaFieldUInt64ByPtr(void* instancePointer, const plg::string& className, const plg::string& memberName, uint64_t value, int extraOffset)
-{
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return;
-	}
-
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	*reinterpret_cast<std::add_pointer_t<uint64_t>>(reinterpret_cast<uintptr_t>(instancePointer) + m_key.offset + extraOffset) = value;
-}
-
-/**
- * @brief Set a value for a schema field by its pointer.
- *
- * This function sets the specified member's value for a given instance of a class.
- * If the "FollowCS2ServerGuidelines" option is enabled and the member is in the bad list,
- * a warning is logged and the value is not set.
- *
- * @param instancePointer Pointer to the instance of the class where the value is to be set.
- * @param className The name of the class that contains the member.
- * @param memberName The name of the member to be set.
- * @param value The value to assign to the member.
- * @param extraOffset The value to add to the offset.
- */
-extern "C" PLUGIN_API void SetSchemaFieldFloatByPtr(void* instancePointer, const plg::string& className, const plg::string& memberName, float value, int extraOffset)
-{
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return;
-	}
-
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	*reinterpret_cast<std::add_pointer_t<float>>(reinterpret_cast<uintptr_t>(instancePointer) + m_key.offset + extraOffset) = value;
-}
-
-/**
- * @brief Set a value for a schema field by its pointer.
- *
- * This function sets the specified member's value for a given instance of a class.
- * If the "FollowCS2ServerGuidelines" option is enabled and the member is in the bad list,
- * a warning is logged and the value is not set.
- *
- * @param instancePointer Pointer to the instance of the class where the value is to be set.
- * @param className The name of the class that contains the member.
- * @param memberName The name of the member to be set.
- * @param value The value to assign to the member.
- * @param extraOffset The value to add to the offset.
- */
-extern "C" PLUGIN_API void SetSchemaFieldDoubleByPtr(void* instancePointer, const plg::string& className, const plg::string& memberName, double value, int extraOffset)
-{
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return;
-	}
-
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	*reinterpret_cast<std::add_pointer_t<double>>(reinterpret_cast<uintptr_t>(instancePointer) + m_key.offset + extraOffset) = value;
-}
-
-/**
- * @brief Set a value for a schema field by its pointer.
- *
- * This function sets the specified member's value for a given instance of a class.
- * If the "FollowCS2ServerGuidelines" option is enabled and the member is in the bad list,
- * a warning is logged and the value is not set.
- *
- * @param instancePointer Pointer to the instance of the class where the value is to be set.
- * @param className The name of the class that contains the member.
- * @param memberName The name of the member to be set.
- * @param value The value to assign to the member.
- * @param extraOffset The value to add to the offset.
- */
-extern "C" PLUGIN_API void SetSchemaFieldStringByPtr(void* instancePointer, const plg::string& className, const plg::string& memberName, const plg::string& value, int extraOffset)
-{
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return;
-	}
-
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	*reinterpret_cast<CUtlString*>(reinterpret_cast<uintptr_t>(instancePointer) + m_key.offset + extraOffset) = value.c_str();
-}
-
-/**
- * @brief Set a value for a schema field by its pointer.
- *
- * This function sets the specified member's value for a given instance of a class.
- * If the "FollowCS2ServerGuidelines" option is enabled and the member is in the bad list,
- * a warning is logged and the value is not set.
- *
- * @param instancePointer Pointer to the instance of the class where the value is to be set.
- * @param className The name of the class that contains the member.
- * @param memberName The name of the member to be set.
- * @param value The value to assign to the member.
- * @param extraOffset The value to add to the offset.
- */
-extern "C" PLUGIN_API void SetSchemaFieldVectorByPtr(void* instancePointer, const plg::string& className, const plg::string& memberName, const Vector& value, int extraOffset)
-{
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return;
-	}
-
-	auto classKey = hash_32_fnv1a_const(className.c_str());
-	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
-
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	*reinterpret_cast<Vector*>(reinterpret_cast<uintptr_t>(instancePointer) + m_key.offset + extraOffset) = value;
 }
 
 //
 
 /**
- * @brief Updates the networked state of a schema field for a given entity instance.
+ * @brief Peeks into an entity's object schema and retrieves the float value at the given offset.
+ *
+ * @param entityHandle The handle of the entity from which the value is to be retrieved.
+ * @param offset The offset of the schema to use.
+ * @param size Number of bytes to write (valid values are 1, 2, 4 or 8).
+ * @return The float value at the given memory location.
+ */
+extern "C" PLUGIN_API double GetEntDataFloat(int entityHandle, int offset, int size)
+{
+	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle));
+	if (!pEntity)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot get '%d' with invalid entity handle: %d\n", offset, entityHandle);
+		return {};
+	}
+
+	switch (size) {
+		case 4:
+			return *reinterpret_cast<float*>(reinterpret_cast<intptr_t>(pEntity) + offset);
+		case 8:
+			return *reinterpret_cast<double*>(reinterpret_cast<intptr_t>(pEntity) + offset);
+		default:
+			return 0;
+	}
+}
+
+/**
+ * @brief Peeks into an entity's object data and sets the float value at the given offset.
+ *
+ * @param entityHandle The handle of the entity from which the value is to be retrieved.
+ * @param offset The offset of the schema to use.
+ * @param value The float value to set.
+ * @param size Number of bytes to write (valid values are 1, 2, 4 or 8).
+ * @param changeState If true, change will be sent over the network.
+ * @param chainOffset The offset of the chain entity in the class.
+ */
+extern "C" PLUGIN_API void SetEntDataFloat(int entityHandle, int offset, double value, int size, bool changeState, int chainOffset)
+{
+	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle));
+	if (!pEntity)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%d' with invalid entity handle: %d\n", offset, entityHandle);
+		return;
+	}
+
+	if (changeState)
+	{
+		if (chainOffset != 0)
+		{
+			schema::NetworkStateChanged(reinterpret_cast<intptr_t>(pEntity) + chainOffset, offset);
+		}
+		else
+		{
+			pEntity->NetworkStateChanged(offset);
+		}
+	}
+
+	switch (size) {
+		case 4:
+			*reinterpret_cast<float*>(reinterpret_cast<intptr_t>(pEntity) + offset) = static_cast<float>(value);
+		case 8:
+			*reinterpret_cast<double*>(reinterpret_cast<intptr_t>(pEntity) + offset) = value;
+		default:
+			break;
+	}
+}
+
+//
+
+/**
+ * @brief Peeks into an entity's object schema and retrieves the string value at the given offset.
+ *
+ * @param entityHandle The handle of the entity from which the value is to be retrieved.
+ * @param offset The offset of the schema to use.
+ * @return The string value at the given memory location.
+ */
+extern "C" PLUGIN_API plg::string GetEntDataString(int entityHandle, int offset)
+{
+	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle));
+	if (!pEntity)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot get '%d' with invalid entity handle: %d\n", offset, entityHandle);
+		return {};
+	}
+
+	return reinterpret_cast<CUtlString*>(reinterpret_cast<intptr_t>(pEntity) + offset)->Get();
+}
+
+/**
+ * @brief Peeks into an entity's object data and sets the string at the given offset.
+ *
+ * @param entityHandle The handle of the entity from which the value is to be retrieved.
+ * @param offset The offset of the schema to use.
+ * @param value The string value to set.
+ * @param changeState If true, change will be sent over the network.
+ * @param chainOffset The offset of the chain entity in the class.
+ */
+extern "C" PLUGIN_API void SetEntDataString(int entityHandle, int offset, const plg::string& value, bool changeState, int chainOffset)
+{
+	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle));
+	if (!pEntity)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%d' with invalid entity handle: %d\n", offset, entityHandle);
+		return;
+	}
+
+	if (changeState)
+	{
+		if (chainOffset != 0)
+		{
+			schema::NetworkStateChanged(reinterpret_cast<intptr_t>(pEntity) + chainOffset, offset);
+		}
+		else
+		{
+			pEntity->NetworkStateChanged(offset);
+		}
+	}
+
+	*reinterpret_cast<CUtlString*>(reinterpret_cast<intptr_t>(pEntity) + offset) = value.c_str();
+}
+
+//
+
+/**
+ * @brief Peeks into an entity's object schema and retrieves the vector value at the given offset.
+ *
+ * @param entityHandle The handle of the entity from which the value is to be retrieved.
+ * @param offset The offset of the schema to use.
+ * @return The vector value at the given memory location.
+ */
+extern "C" PLUGIN_API plg::vec3 GetEntDataVector(int entityHandle, int offset)
+{
+	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle));
+	if (!pEntity)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot get '%d' with invalid entity handle: %d\n", offset, entityHandle);
+		return {};
+	}
+
+	return *reinterpret_cast<plg::vec3*>(reinterpret_cast<intptr_t>(pEntity) + offset);
+}
+
+/**
+ * @brief Peeks into an entity's object data and sets the vector at the given offset.
+ *
+ * @param entityHandle The handle of the entity from which the value is to be retrieved.
+ * @param offset The offset of the schema to use.
+ * @param value The vector value to set.
+ * @param changeState If true, change will be sent over the network.
+ * @param chainOffset The offset of the chain entity in the class.
+ */
+extern "C" PLUGIN_API void SetEntDataVector(int entityHandle, int offset, const plg::vec3& value, bool changeState, int chainOffset)
+{
+	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle));
+	if (!pEntity)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%d' with invalid entity handle: %d\n", offset, entityHandle);
+		return;
+	}
+
+	if (changeState)
+	{
+		if (chainOffset != 0)
+		{
+			schema::NetworkStateChanged(reinterpret_cast<intptr_t>(pEntity) + chainOffset, offset);
+		}
+		else
+		{
+			pEntity->NetworkStateChanged(offset);
+		}
+	}
+
+	*reinterpret_cast<plg::vec3*>(reinterpret_cast<intptr_t>(pEntity) + offset) = value;
+}
+
+//
+
+/**
+ * @brief Peeks into an entity's object data and retrieves the entity handle at the given offset.
+ *
+ * @note This will only work on offsets that are stored as "entity handles" (which usually looks like m_h* in properties)
+ *
+ * @param entityHandle The handle of the entity from which the value is to be retrieved.
+ * @param offset The offset of the schema to use.
+ * @return The entity handle at the given memory location.
+ */
+extern "C" PLUGIN_API int GetEntDataEnt(int entityHandle, int offset)
+{
+	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle));
+	if (!pEntity)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%d' with invalid entity handle: %d\n", offset, entityHandle);
+		return INVALID_EHANDLE_INDEX;
+	}
+
+	return reinterpret_cast<CEntityHandle*>(reinterpret_cast<intptr_t>(pEntity) + offset)->ToInt();
+}
+
+/**
+ * @brief Peeks into an entity's object data and sets the entity handle at the given offset.
+ *
+ * @param entityHandle The handle of the entity from which the value is to be retrieved.
+ * @param offset The offset of the schema to use.
+ * @param value The entity handle to set.
+ * @param changeState If true, change will be sent over the network.
+ * @param chainOffset The offset of the chain entity in the class.
+ */
+extern "C" PLUGIN_API void SetEntDataEnt(int entityHandle, int offset, int value, bool changeState, int chainOffset)
+{
+	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle));
+	if (!pEntity)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%d' with invalid entity handle: %d\n", offset, entityHandle);
+		return;
+	}
+
+	if (changeState)
+	{
+		if (chainOffset != 0)
+		{
+			schema::NetworkStateChanged(reinterpret_cast<intptr_t>(pEntity) + chainOffset, offset);
+		}
+		else
+		{
+			pEntity->NetworkStateChanged(offset);
+		}
+	}
+
+	*reinterpret_cast<CEntityHandle*>(reinterpret_cast<intptr_t>(pEntity) + offset) = CEntityHandle((uint32)value);
+}
+
+/**
+ * @brief Updates the networked state of a schema field for a given entity handle.
+ *
+ * @param entityHandle The handle of the entity from which the value is to be retrieved.
+ * @param offset The offset of the schema to use.
+ * @param chainOffset The offset of the chain entity in the class.
+ */
+extern "C" PLUGIN_API void ChangeEntityState(int entityHandle, int offset, int chainOffset) 
+{
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	if (!pEntity)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot change state of '%d' with invalid entity handle: %d\n", offset, entityHandle);
+		return;
+	}
+	
+	if (chainOffset != 0)
+	{
+		schema::NetworkStateChanged((reinterpret_cast<intptr_t>(pEntity) + chainOffset), offset);
+	}
+	else
+	{
+		pEntity->NetworkStateChanged(offset);
+	}
+}
+
+//
+
+/**
+ * @brief Retrieves the count of values that an entity schema's array can store.
+ *
+ * This function is considered safer and more robust over GetEntData, because it performs strict offset checking and typing rules.
+ *
+ * @param entityHandle The handle of the entity from which the value is to be retrieved.
+ * @param className The name of the class.
+ * @param memberName The name of the schema member.
+ * @return Size of array (in elements) or 0 if schema is not an array.
+ */
+extern "C" PLUGIN_API int GetEntSchemaArraySize(int entityHandle, const plg::string& className, const plg::string& memberName)
+{
+	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle));
+	if (!pEntity)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		return {};
+	}
+
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		return {};
+	}
+
+	auto classKey = hash_32_fnv1a_const(className.c_str());
+	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
+
+	const auto [offset, networked, info] = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
+	if (offset == 0)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot find offset for '%s::%s' with entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		return {};
+	}
+
+	switch (info[0].size)
+	{
+		case 24:
+			return reinterpret_cast<CUtlVector<int8_t>*>(reinterpret_cast<intptr_t>(pEntity) + offset)->Count();
+		default:
+			return 0;
+	}
+}
+
+//
+
+/**
+ * @brief Retrieves an integer value from an entity's schema.
+ *
+ * This function is considered safer and more robust over GetEntData, because it performs strict offset checking and typing rules.
+ *
+ * @param entityHandle The handle of the entity from which the value is to be retrieved.
+ * @param className The name of the class.
+ * @param memberName The name of the schema member.
+ * @param element Element # (starting from 0) if schema is an array.
+ * @return An integer value at the given schema offset.
+ */
+extern "C" PLUGIN_API int64_t GetEntSchema(int entityHandle, const plg::string& className, const plg::string& memberName, int element)
+{
+	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle));
+	if (!pEntity)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		return {};
+	}
+
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		return {};
+	}
+
+	auto classKey = hash_32_fnv1a_const(className.c_str());
+	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
+
+	const auto [offset, networked, info] = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
+	if (offset == 0)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot find offset for '%s::%s' with entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		return {};
+	}
+
+	switch (info[0].size)
+	{
+		case 1:
+			return *reinterpret_cast<int8_t*>(reinterpret_cast<intptr_t>(pEntity) + offset);
+		case 2:
+			return *reinterpret_cast<int16_t*>(reinterpret_cast<intptr_t>(pEntity) + offset);
+		case 4:
+			return *reinterpret_cast<int32_t*>(reinterpret_cast<intptr_t>(pEntity) + offset);
+		case 8:
+			return *reinterpret_cast<int64_t*>(reinterpret_cast<intptr_t>(pEntity) + offset);
+		case 24:
+			switch (info[1].size)
+			{
+				case 1:
+					return reinterpret_cast<CUtlVector<int8_t>*>(reinterpret_cast<intptr_t>(pEntity) + offset)->Element(element);
+				case 2:
+					return reinterpret_cast<CUtlVector<int16_t>*>(reinterpret_cast<intptr_t>(pEntity) + offset)->Element(element);
+				case 4:
+					return reinterpret_cast<CUtlVector<int32_t>*>(reinterpret_cast<intptr_t>(pEntity) + offset)->Element(element);
+				case 8:
+					return reinterpret_cast<CUtlVector<int64_t>*>(reinterpret_cast<intptr_t>(pEntity) + offset)->Element(element);
+				default:
+					return 0;
+			}
+		default:
+			return 0;
+	}
+}
+
+/**
+ * @brief Sets an integer value in an entity's schema.
+ *
+ * This function is considered safer and more robust over GetEntData, because it performs strict offset checking and typing rules.
+ *
+ * @param entityHandle The handle of the entity from which the value is to be retrieved.
+ * @param className The name of the class.
+ * @param memberName The name of the schema member.
+ * @param value The integer value to set.
+ * @param changeState If true, change will be sent over the network.
+ * @param element Element # (starting from 0) if schema is an array.
+ * @return An integer value at the given schema offset.
+ */
+extern "C" PLUGIN_API void SetEntSchema(int entityHandle, const plg::string& className, const plg::string& memberName, int64_t value, bool changeState, int element)
+{
+	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle));
+	if (!pEntity)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		return;
+	}
+
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		return;
+	}
+
+	auto classKey = hash_32_fnv1a_const(className.c_str());
+	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
+
+	const auto [offset, networked, info] = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
+	if (offset == 0)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot find offset for '%s::%s' with entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		return;
+	}
+
+	if (changeState && networked)
+	{
+		int chainOffset = schema::FindChainOffset(className.c_str());
+		if (chainOffset != 0)
+		{
+			schema::NetworkStateChanged((reinterpret_cast<intptr_t>(pEntity) + chainOffset), offset);
+		}
+		else
+		{
+			pEntity->NetworkStateChanged(offset);
+		}
+	}
+
+	switch (info[0].size)
+	{
+		case 1:
+			*reinterpret_cast<int8_t*>(reinterpret_cast<intptr_t>(pEntity) + offset) = static_cast<int8_t>(value);
+		case 2:
+			*reinterpret_cast<int16_t*>(reinterpret_cast<intptr_t>(pEntity) + offset) = static_cast<int16_t>(value);
+		case 4:
+			*reinterpret_cast<int32_t*>(reinterpret_cast<intptr_t>(pEntity) + offset) = static_cast<int32_t>(value);
+		case 8:
+			*reinterpret_cast<int64_t*>(reinterpret_cast<intptr_t>(pEntity) + offset) = value;
+		case 24:
+			switch (info[1].size)
+			{
+				case 1:
+					reinterpret_cast<CUtlVector<int8_t>*>(reinterpret_cast<intptr_t>(pEntity) + offset)->Element(element) = static_cast<int8_t>(value);
+				case 2:
+					reinterpret_cast<CUtlVector<int16_t>*>(reinterpret_cast<intptr_t>(pEntity) + offset)->Element(element) = static_cast<int16_t>(value);
+				case 4:
+					reinterpret_cast<CUtlVector<int32_t>*>(reinterpret_cast<intptr_t>(pEntity) + offset)->Element(element) = static_cast<int32_t>(value);
+				case 8:
+					reinterpret_cast<CUtlVector<int64_t>*>(reinterpret_cast<intptr_t>(pEntity) + offset)->Element(element) = value;
+				default:
+					break;
+			}
+		default:
+			break;
+	}
+}
+
+//
+
+/**
+ * @brief Retrieves a float value from an entity's schema.
+ *
+ * This function is considered safer and more robust over GetEntData, because it performs strict offset checking and typing rules.
+ *
+ * @param entityHandle The handle of the entity from which the value is to be retrieved.
+ * @param className The name of the class.
+ * @param memberName The name of the schema member.
+ * @param element Element # (starting from 0) if schema is an array.
+ * @return A float value at the given schema offset.
+ */
+extern "C" PLUGIN_API double GetEntSchemaFloat(int entityHandle, const plg::string& className, const plg::string& memberName, int element)
+{
+	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle));
+	if (!pEntity)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		return {};
+	}
+
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		return {};
+	}
+
+	auto classKey = hash_32_fnv1a_const(className.c_str());
+	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
+
+	const auto [offset, networked, info] = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
+	if (offset == 0)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot find offset for '%s::%s' with entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		return {};
+	}
+
+	switch (info[0].size)
+	{
+		case 4:
+			return *reinterpret_cast<float*>(reinterpret_cast<intptr_t>(pEntity) + offset);
+		case 8:
+			return *reinterpret_cast<double*>(reinterpret_cast<intptr_t>(pEntity) + offset);
+		case 24:
+			switch (info[1].size)
+			{
+				case 4:
+					return reinterpret_cast<CUtlVector<float>*>(reinterpret_cast<intptr_t>(pEntity) + offset)->Element(element);
+				case 8:
+					return reinterpret_cast<CUtlVector<double>*>(reinterpret_cast<intptr_t>(pEntity) + offset)->Element(element);
+				default:
+					return 0;
+			}
+		default:
+			return 0;
+	}
+}
+
+/**
+ * @brief Sets a float value in an entity's schema.
+ *
+ * This function is considered safer and more robust over GetEntData, because it performs strict offset checking and typing rules.
+ *
+ * @param entityHandle The handle of the entity from which the value is to be retrieved.
+ * @param className The name of the class.
+ * @param memberName The name of the schema member.
+ * @param value The float value to set.
+ * @param changeState If true, change will be sent over the network.
+ * @param element Element # (starting from 0) if schema is an array.
+ * @return An float value at the given schema offset.
+ */
+extern "C" PLUGIN_API void SetEntSchemaFloat(int entityHandle, const plg::string& className, const plg::string& memberName, double value, bool changeState, int element)
+{
+	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle));
+	if (!pEntity)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		return;
+	}
+
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		return;
+	}
+
+	auto classKey = hash_32_fnv1a_const(className.c_str());
+	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
+
+	const auto [offset, networked, info] = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
+	if (offset == 0)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot find offset for '%s::%s' with entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		return;
+	}
+
+	if (changeState && networked)
+	{
+		int chainOffset = schema::FindChainOffset(className.c_str());
+		if (chainOffset != 0)
+		{
+			schema::NetworkStateChanged((reinterpret_cast<intptr_t>(pEntity) + chainOffset), offset);
+		}
+		else
+		{
+			pEntity->NetworkStateChanged(offset);
+		}
+	}
+
+	switch (info[0].size)
+	{
+		case 4:
+			*reinterpret_cast<float*>(reinterpret_cast<intptr_t>(pEntity) + offset) = static_cast<float>(value);
+		case 8:
+			*reinterpret_cast<double*>(reinterpret_cast<intptr_t>(pEntity) + offset) = value;
+		case 24:
+			switch (info[1].size)
+			{
+				case 4:
+					reinterpret_cast<CUtlVector<float>*>(reinterpret_cast<intptr_t>(pEntity) + offset)->Element(element) = static_cast<float>(value);
+				case 8:
+					reinterpret_cast<CUtlVector<double>*>(reinterpret_cast<intptr_t>(pEntity) + offset)->Element(element) = value;
+				default:
+					break;
+			}
+		default:
+			break;
+	}
+}
+
+//
+
+/**
+ * @brief Retrieves a string value from an entity's schema.
+*
+* This function is considered safer and more robust over GetEntData, because it performs strict offset checking and typing rules.
+ *
+ * @param entityHandle The handle of the entity from which the value is to be retrieved.
+ * @param className The name of the class.
+ * @param memberName The name of the schema member.
+ * @param element Element # (starting from 0) if schema is an array.
+ * @return A string value at the given schema offset.
+ */
+extern "C" PLUGIN_API plg::string GetEntSchemaString(int entityHandle, const plg::string& className, const plg::string& memberName, int element)
+{
+	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle));
+	if (!pEntity)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		return {};
+	}
+
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		return {};
+	}
+
+	auto classKey = hash_32_fnv1a_const(className.c_str());
+	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
+
+	const auto [offset, networked, info] = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
+	if (offset == 0)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot find offset for '%s::%s' with entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		return {};
+	}
+
+	switch (info[0].size)
+	{
+		case 8:
+			return reinterpret_cast<CUtlString*>(reinterpret_cast<intptr_t>(pEntity) + offset)->Get();
+		case 24:
+			switch (info[1].size)
+			{
+				case 8:
+					return reinterpret_cast<CUtlVector<CUtlString>*>(reinterpret_cast<intptr_t>(pEntity) + offset)->Element(element).Get();
+				default:
+					return {};
+			}
+		default:
+			return {};
+	}
+}
+
+/**
+ * @brief Sets a string value in an entity's schema.
+ *
+ * This function is considered safer and more robust over GetEntData, because it performs strict offset checking and typing rules.
+ *
+ * @param entityHandle The handle of the entity from which the value is to be retrieved.
+ * @param className The name of the class.
+ * @param memberName The name of the schema member.
+ * @param value The string value to set.
+ * @param changeState If true, change will be sent over the network.
+ * @param element Element # (starting from 0) if schema is an array.
+ * @return An string value at the given schema offset.
+ */
+extern "C" PLUGIN_API void SetEntSchemaString(int entityHandle, const plg::string& className, const plg::string& memberName, const plg::string& value, bool changeState, int element)
+{
+	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle));
+	if (!pEntity)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		return;
+	}
+
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		return;
+	}
+
+	auto classKey = hash_32_fnv1a_const(className.c_str());
+	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
+
+	const auto [offset, networked, info] = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
+	if (offset == 0)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot find offset for '%s::%s' with entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		return;
+	}
+
+	if (changeState && networked)
+	{
+		int chainOffset = schema::FindChainOffset(className.c_str());
+		if (chainOffset != 0)
+		{
+			schema::NetworkStateChanged((reinterpret_cast<intptr_t>(pEntity) + chainOffset), offset);
+		}
+		else
+		{
+			pEntity->NetworkStateChanged(offset);
+		}
+	}
+
+	switch (info[0].size)
+	{
+		case 8:
+			*reinterpret_cast<CUtlString*>(reinterpret_cast<intptr_t>(pEntity) + offset) = value.c_str();
+		case 24:
+			switch (info[1].size)
+			{
+				case 8:
+					reinterpret_cast<CUtlVector<CUtlString>*>(reinterpret_cast<intptr_t>(pEntity) + offset)->Element(element) = value.c_str();
+				default:
+					break;
+			}
+		default:
+			break;
+	}
+}
+
+//
+
+/**
+ * @brief Retrieves a vector value from an entity's schema.
+ *
+ * This function is considered safer and more robust over GetEntData, because it performs strict offset checking and typing rules.
+ *
+ * @param entityHandle The handle of the entity from which the value is to be retrieved.
+ * @param className The name of the class.
+ * @param memberName The name of the schema member.
+ * @param element Element # (starting from 0) if schema is an array.
+ * @return A string value at the given schema offset.
+ */
+extern "C" PLUGIN_API plg::vec3 GetEntSchemaVector(int entityHandle, const plg::string& className, const plg::string& memberName, int element)
+{
+	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle));
+	if (!pEntity)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		return {};
+	}
+
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		return {};
+	}
+
+	auto classKey = hash_32_fnv1a_const(className.c_str());
+	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
+
+	const auto [offset, networked, info] = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
+	if (offset == 0)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot find offset for '%s::%s' with entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		return {};
+	}
+
+	switch (info[0].size)
+	{
+		case 12:
+			return *reinterpret_cast<plg::vec3*>(reinterpret_cast<intptr_t>(pEntity) + offset);
+		case 24:
+			switch (info[1].size)
+			{
+				case 12:
+					return reinterpret_cast<CUtlVector<plg::vec3>*>(reinterpret_cast<intptr_t>(pEntity) + offset)->Element(element);
+				default:
+					return {};
+			}
+		default:
+			return {};
+	}
+}
+
+/**
+ * @brief Sets a vector value in an entity's schema.
+ *
+ * This function is considered safer and more robust over GetEntData, because it performs strict offset checking and typing rules.
+ *
+ * @param entityHandle The handle of the entity from which the value is to be retrieved.
+ * @param className The name of the class.
+ * @param memberName The name of the schema member.
+ * @param value The vector value to set.
+ * @param changeState If true, change will be sent over the network.
+ * @param element Element # (starting from 0) if schema is an array.
+ * @return An vector value at the given schema offset.
+ */
+extern "C" PLUGIN_API void SetEntSchemaVector(int entityHandle, const plg::string& className, const plg::string& memberName, const plg::vec3& value, bool changeState, int element)
+{
+	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle));
+	if (!pEntity)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		return;
+	}
+
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		return;
+	}
+
+	auto classKey = hash_32_fnv1a_const(className.c_str());
+	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
+
+	const auto [offset, networked, info] = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
+	if (offset == 0)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot find offset for '%s::%s' with entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		return;
+	}
+
+	if (changeState && networked)
+	{
+		int chainOffset = schema::FindChainOffset(className.c_str());
+		if (chainOffset != 0)
+		{
+			schema::NetworkStateChanged((reinterpret_cast<intptr_t>(pEntity) + chainOffset), offset);
+		}
+		else
+		{
+			pEntity->NetworkStateChanged(offset);
+		}
+	}
+
+	switch (info[0].size)
+	{
+		case 12:
+			*reinterpret_cast<plg::vec3*>(reinterpret_cast<intptr_t>(pEntity) + offset) = value;
+		case 24:
+			switch (info[1].size)
+			{
+				case 12:
+					reinterpret_cast<CUtlVector<plg::vec3>*>(reinterpret_cast<intptr_t>(pEntity) + offset)->Element(element) = value;
+				default:
+					break;
+			}
+		default:
+			break;
+	}
+}
+
+//
+
+/**
+ * @brief Retrieves an entity handle from an entity's schema.
+ *
+ * This function is considered safer and more robust over GetEntData, because it performs strict offset checking and typing rules.
+ *
+ * @note This will only work on offsets that are stored as "entity handles" (which usually looks like m_h* in properties)
+ *
+ * @param entityHandle The handle of the entity from which the value is to be retrieved.
+ * @param className The name of the class.
+ * @param memberName The name of the schema member.
+ * @param element Element # (starting from 0) if schema is an array.
+ * @return A string value at the given schema offset.
+ */
+extern "C" PLUGIN_API int GetEntSchemaEnt(int entityHandle, const plg::string& className, const plg::string& memberName, int element)
+{
+	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle));
+	if (!pEntity)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		return INVALID_EHANDLE_INDEX;
+	}
+
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		return INVALID_EHANDLE_INDEX;
+	}
+
+	auto classKey = hash_32_fnv1a_const(className.c_str());
+	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
+
+	const auto [offset, networked, info] = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
+	if (offset == 0)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot find offset for '%s::%s' with entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		return INVALID_EHANDLE_INDEX;
+	}
+
+	switch (info[0].size)
+	{
+		case 4:
+			return reinterpret_cast<CEntityHandle*>(reinterpret_cast<intptr_t>(pEntity) + offset)->ToInt();
+		case 24:
+			switch (info[1].size)
+			{
+				case 4:
+					reinterpret_cast<CUtlVector<CEntityHandle>*>(reinterpret_cast<intptr_t>(pEntity) + offset)->Element(element).ToInt();
+				default:
+					return INVALID_EHANDLE_INDEX;
+			}
+		default:
+			return INVALID_EHANDLE_INDEX;
+	}
+}
+
+/**
+ * @brief Sets a entity handle in an entity's schema.
+ *
+ * This function is considered safer and more robust over GetEntData, because it performs strict offset checking and typing rules.
+ *
+ * @note This will only work on offsets that are stored as "entity handles" (which usually looks like m_h* in properties)
+ *
+ * @param entityHandle The handle of the entity from which the value is to be retrieved.
+ * @param className The name of the class.
+ * @param memberName The name of the schema member.
+ * @param value The entity handle to set.
+ * @param changeState If true, change will be sent over the network.
+ * @param element Element # (starting from 0) if schema is an array.
+ * @return An entity handle at the given schema offset.
+ */
+extern "C" PLUGIN_API void SetEntSchemaEnt(int entityHandle, const plg::string& className, const plg::string& memberName, int value, bool changeState, int element)
+{
+	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle));
+	if (!pEntity)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		return;
+	}
+
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		return;
+	}
+
+	auto classKey = hash_32_fnv1a_const(className.c_str());
+	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
+
+	const auto [offset, networked, info] = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
+	if (offset == 0)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot find offset for '%s::%s' with entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		return;
+	}
+
+	if (changeState && networked)
+	{
+		int chainOffset = schema::FindChainOffset(className.c_str());
+		if (chainOffset != 0)
+		{
+			schema::NetworkStateChanged((reinterpret_cast<intptr_t>(pEntity) + chainOffset), offset);
+		}
+		else
+		{
+			pEntity->NetworkStateChanged(offset);
+		}
+	}
+
+	switch (info[0].size)
+	{
+		case 4:
+			*reinterpret_cast<CEntityHandle*>(reinterpret_cast<intptr_t>(pEntity) + offset) = CEntityHandle((uint32)value);
+		case 24:
+			switch (info[1].size)
+			{
+				case 4:
+					reinterpret_cast<CUtlVector<CEntityHandle>*>(reinterpret_cast<intptr_t>(pEntity) + offset)->Element(element) = CEntityHandle((uint32)value);
+				default:
+					break;
+			}
+		default:
+			break;
+	}
+}
+
+/**
+ * @brief Updates the networked state of a schema field for a given entity handle.
  *
  * This function ensures that changes to a schema field are appropriately networked,
  * while adhering to specific guidelines if configured. It validates whether the field
  * is networked, computes necessary offsets, and invokes the required methods to mark
  * the state as changed.
  *
- * @param entityHandle The handle of the entity where the value is to be set.
+ * @param entity Pointer to the instance of the class where the value is to be set.
  * @param className The name of the class that contains the member.
  * @param memberName The name of the member to be set.
- * @param extraOffset The value to add to the offset.
- *
- * @note If the "FollowCS2ServerGuidelines" configuration option is enabled, certain fields
- *       may be restricted from being marked as changed. An appropriate warning is logged in such cases.
- *
- * @warning Logs a warning if the field is not networked or if it is in the restricted list
- *          when "FollowCS2ServerGuidelines" is enabled.
- *
- * @details
- * - Computes a hash key for the class and member names to locate the field.
- * - Verifies whether the field is networked before proceeding.
- * - Calculates chain offsets to determine the correct memory location.
- * - Calls appropriate methods to mark the state as changed and update network-related
- *   fields for the entity instance.
  */
-extern "C" PLUGIN_API void SetSchemaStateChanged(int entityHandle, const plg::string& className, const plg::string& memberName, int extraOffset)
+extern "C" PLUGIN_API void NetworkStateChanged(int entityHandle, const plg::string& className, const plg::string& memberName)
 {
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot change state of '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
 		return;
 	}
 
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && std::find(schema::CS2BadList.begin(), schema::CS2BadList.end(), memberName) != schema::CS2BadList.end())
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
 	{
 		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
 		return;
@@ -1655,23 +1147,959 @@ extern "C" PLUGIN_API void SetSchemaStateChanged(int entityHandle, const plg::st
 	auto classKey = hash_32_fnv1a_const(className.c_str());
 	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
 
-	const auto m_key = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
-
-	if (!m_key.networked)
+	auto [offset, networked, info] = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
+	if (networked)
+	{
+		int chainOffset = schema::FindChainOffset(className.c_str());
+		if (chainOffset != 0)
+		{
+			schema::NetworkStateChanged((reinterpret_cast<intptr_t>(pEntity) + chainOffset), offset);
+		}
+		else
+		{
+			pEntity->NetworkStateChanged(offset);
+		}
+	}
+	else
 	{
 		g_Logger.LogFormat(LS_WARNING, "Field '%s::%s' is not networked, but \"SetStateChanged\" was called on it.", className.c_str(), memberName.c_str());
-		return;
+	}
+}
+
+//
+//
+//
+//
+//
+//
+
+
+/**
+ * @brief Peeks into an entity's object schema and retrieves the integer value at the given offset.
+ *
+ * @param entity Pointer to the instance of the class where the value is to be set.
+ * @param offset The offset of the schema to use.
+ * @param size Number of bytes to write (valid values are 1, 2, 4 or 8).
+ * @return The integer value at the given memory location.
+ */
+extern "C" PLUGIN_API int64_t GetEntData2(CEntityInstance* entity, int offset, int size)
+{
+	switch (size) {
+		case 1:
+			return *reinterpret_cast<int8_t*>(reinterpret_cast<intptr_t>(entity) + offset);
+		case 2:
+			return *reinterpret_cast<int16_t*>(reinterpret_cast<intptr_t>(entity) + offset);
+		case 4:
+			return *reinterpret_cast<int32_t*>(reinterpret_cast<intptr_t>(entity) + offset);
+		case 8:
+			return *reinterpret_cast<int64_t*>(reinterpret_cast<intptr_t>(entity) + offset);
+		default:
+			return 0;
+	}
+}
+
+/**
+ * @brief Peeks into an entity's object data and sets the integer value at the given offset.
+ *
+ * @param entity Pointer to the instance of the class where the value is to be set.
+ * @param offset The offset of the schema to use.
+ * @param value The integer value to set.
+ * @param size Number of bytes to write (valid values are 1, 2, 4 or 8).
+ * @param changeState If true, change will be sent over the network.
+ * @param chainOffset The offset of the chain entity in the class.
+ */
+extern "C" PLUGIN_API void SetEntData2(CEntityInstance* entity, int offset, int64_t value, int size, bool changeState, int chainOffset)
+{
+	if (changeState)
+	{
+		if (chainOffset != 0)
+		{
+			schema::NetworkStateChanged(reinterpret_cast<intptr_t>(entity) + chainOffset, offset);
+		}
+		else
+		{
+			entity->NetworkStateChanged(offset);
+		}
 	}
 
-	int chainOffset = schema::FindChainOffset(className.c_str());
+	switch (size) {
+		case 1:
+			*reinterpret_cast<int8_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int8_t>(value);
+		case 2:
+			*reinterpret_cast<int16_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int16_t>(value);
+		case 4:
+			*reinterpret_cast<int32_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int32_t>(value);
+		case 8:
+			*reinterpret_cast<int64_t*>(reinterpret_cast<intptr_t>(entity) + offset) = value;
+		default:
+			break;
+	}
+}
 
+//
+
+/**
+ * @brief Peeks into an entity's object schema and retrieves the float value at the given offset.
+ *
+ * @param entity Pointer to the instance of the class where the value is to be set.
+ * @param offset The offset of the schema to use.
+ * @param size Number of bytes to write (valid values are 1, 2, 4 or 8).
+ * @return The float value at the given memory location.
+ */
+extern "C" PLUGIN_API double GetEntDataFloat2(CEntityInstance* entity, int offset, int size)
+{
+	switch (size) {
+		case 4:
+			return *reinterpret_cast<float*>(reinterpret_cast<intptr_t>(entity) + offset);
+		case 8:
+			return *reinterpret_cast<double*>(reinterpret_cast<intptr_t>(entity) + offset);
+		default:
+			return 0;
+	}
+}
+
+/**
+ * @brief Peeks into an entity's object data and sets the float value at the given offset.
+ *
+ * @param entity Pointer to the instance of the class where the value is to be set.
+ * @param offset The offset of the schema to use.
+ * @param value The float value to set.
+ * @param size Number of bytes to write (valid values are 1, 2, 4 or 8).
+ * @param changeState If true, change will be sent over the network.
+ * @param chainOffset The offset of the chain entity in the class.
+ */
+extern "C" PLUGIN_API void SetEntDataFloat2(CEntityInstance* entity, int offset, double value, int size, bool changeState, int chainOffset)
+{
+	if (changeState)
+	{
+		if (chainOffset != 0)
+		{
+			schema::NetworkStateChanged(reinterpret_cast<intptr_t>(entity) + chainOffset, offset);
+		}
+		else
+		{
+			entity->NetworkStateChanged(offset);
+		}
+	}
+
+	switch (size) {
+		case 4:
+			*reinterpret_cast<float*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<float>(value);
+		case 8:
+			*reinterpret_cast<double*>(reinterpret_cast<intptr_t>(entity) + offset) = value;
+		default:
+			break;
+	}
+}
+
+//
+
+/**
+ * @brief Peeks into an entity's object schema and retrieves the string value at the given offset.
+ *
+ * @param entity Pointer to the instance of the class where the value is to be set.
+ * @param offset The offset of the schema to use.
+ * @return The string value at the given memory location.
+ */
+extern "C" PLUGIN_API plg::string GetEntDataString2(CEntityInstance* entity, int offset)
+{
+	return reinterpret_cast<CUtlString*>(reinterpret_cast<intptr_t>(entity) + offset)->Get();
+}
+
+/**
+ * @brief Peeks into an entity's object data and sets the string at the given offset.
+ *
+ * @param entity Pointer to the instance of the class where the value is to be set.
+ * @param offset The offset of the schema to use.
+ * @param value The string value to set.
+ * @param changeState If true, change will be sent over the network.
+ * @param chainOffset The offset of the chain entity in the class.
+ */
+extern "C" PLUGIN_API void SetEntDataString2(CEntityInstance* entity, int offset, const plg::string& value, bool changeState, int chainOffset)
+{
+	if (changeState)
+	{
+		if (chainOffset != 0)
+		{
+			schema::NetworkStateChanged(reinterpret_cast<intptr_t>(entity) + chainOffset, offset);
+		}
+		else
+		{
+			entity->NetworkStateChanged(offset);
+		}
+	}
+
+	*reinterpret_cast<CUtlString*>(reinterpret_cast<intptr_t>(entity) + offset) = value.c_str();
+}
+
+//
+
+/**
+ * @brief Peeks into an entity's object schema and retrieves the vector value at the given offset.
+ *
+ * @param entity Pointer to the instance of the class where the value is to be set.
+ * @param offset The offset of the schema to use.
+ * @return The vector value at the given memory location.
+ */
+extern "C" PLUGIN_API plg::vec3 GetEntDataVector2(CEntityInstance* entity, int offset)
+{
+	return *reinterpret_cast<plg::vec3*>(reinterpret_cast<intptr_t>(entity) + offset);
+}
+
+/**
+ * @brief Peeks into an entity's object data and sets the vector at the given offset.
+ *
+ * @param entity Pointer to the instance of the class where the value is to be set.
+ * @param offset The offset of the schema to use.
+ * @param value The vector value to set.
+ * @param changeState If true, change will be sent over the network.
+ * @param chainOffset The offset of the chain entity in the class.
+ */
+extern "C" PLUGIN_API void SetEntDataVector2(CEntityInstance* entity, int offset, const plg::vec3& value, bool changeState, int chainOffset)
+{
+	if (changeState)
+	{
+		if (chainOffset != 0)
+		{
+			schema::NetworkStateChanged(reinterpret_cast<intptr_t>(entity) + chainOffset, offset);
+		}
+		else
+		{
+			entity->NetworkStateChanged(offset);
+		}
+	}
+
+	*reinterpret_cast<plg::vec3*>(reinterpret_cast<intptr_t>(entity) + offset) = value;
+}
+
+//
+
+/**
+ * @brief Peeks into an entity's object data and retrieves the entity handle at the given offset.
+ *
+ * @note This will only work on offsets that are stored as "entity handles" (which usually looks like m_h* in properties)
+ *
+ * @param entity Pointer to the instance of the class where the value is to be set.
+ * @param offset The offset of the schema to use.
+ * @return The entity handle at the given memory location.
+ */
+extern "C" PLUGIN_API int GetEntDataEnt2(CEntityInstance* entity, int offset)
+{
+	return reinterpret_cast<CEntityHandle*>(reinterpret_cast<intptr_t>(entity) + offset)->ToInt();
+}
+
+/**
+ * @brief Peeks into an entity's object data and sets the entity handle at the given offset.
+ *
+ * @param entity Pointer to the instance of the class where the value is to be set.
+ * @param offset The offset of the schema to use.
+ * @param value The entity handle to set.
+ * @param changeState If true, change will be sent over the network.
+ * @param chainOffset The offset of the chain entity in the class.
+ */
+extern "C" PLUGIN_API void SetEntDataEnt2(CEntityInstance* entity, int offset, int value, bool changeState, int chainOffset)
+{
+	if (changeState)
+	{
+		if (chainOffset != 0)
+		{
+			schema::NetworkStateChanged(reinterpret_cast<intptr_t>(entity) + chainOffset, offset);
+		}
+		else
+		{
+			entity->NetworkStateChanged(offset);
+		}
+	}
+
+	*reinterpret_cast<CEntityHandle*>(reinterpret_cast<intptr_t>(entity) + offset) = CEntityHandle((uint32)value);
+}
+
+/**
+ * @brief Updates the networked state of a schema field for a given entity pointer.
+ *
+ * @param entity Pointer to the instance of the class where the value is to be set.
+ * @param offset The offset of the schema to use.
+ * @param chainOffset The offset of the chain entity in the class.
+ */
+extern "C" PLUGIN_API void ChangeEntityState2(CEntityInstance* entity, int offset, int chainOffset) 
+{
 	if (chainOffset != 0)
 	{
-		schema::NetworkStateChanged(((int64_t)(pEntity) + m_key.offset), m_key.offset + extraOffset, 0xFFFFFFFF);
+		schema::NetworkStateChanged((reinterpret_cast<intptr_t>(entity) + chainOffset), offset);
+	}
+	else
+	{
+		entity->NetworkStateChanged(offset);
+	}
+}
+
+//
+
+/**
+ * @brief Retrieves the count of values that an entity schema's array can store.
+ *
+ * This function is considered safer and more robust over GetEntData, because it performs strict offset checking and typing rules.
+ *
+ * @param entity Pointer to the instance of the class where the value is to be set.
+ * @param className The name of the class.
+ * @param memberName The name of the schema member.
+ * @return Size of array (in elements) or 0 if schema is not an array.
+ */
+extern "C" PLUGIN_API int GetEntSchemaArraySize2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName)
+{
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		return {};
+	}
+
+	auto classKey = hash_32_fnv1a_const(className.c_str());
+	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
+
+	const auto [offset, networked, info] = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
+	if (offset == 0)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot find offset for '%s::%s' with entity pointer: %p\n", className.c_str(), memberName.c_str(), entity);
+		return {};
+	}
+
+	switch (info[0].size)
+	{
+		case 24:
+			return reinterpret_cast<CUtlVector<int8_t>*>(reinterpret_cast<intptr_t>(entity) + offset)->Count();
+		default:
+			return 0;
+	}
+}
+
+//
+
+/**
+ * @brief Retrieves an integer value from an entity's schema.
+ *
+ * This function is considered safer and more robust over GetEntData, because it performs strict offset checking and typing rules.
+ *
+ * @param entity Pointer to the instance of the class where the value is to be set.
+ * @param className The name of the class.
+ * @param memberName The name of the schema member.
+ * @param element Element # (starting from 0) if schema is an array.
+ * @return An integer value at the given schema offset.
+ */
+extern "C" PLUGIN_API int64_t GetEntSchema2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int element)
+{
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		return {};
+	}
+
+	auto classKey = hash_32_fnv1a_const(className.c_str());
+	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
+
+	const auto [offset, networked, info] = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
+	if (offset == 0)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot find offset for '%s::%s' with entity pointer: %p\n", className.c_str(), memberName.c_str(), entity);
+		return {};
+	}
+
+	switch (info[0].size)
+	{
+		case 1:
+			return *reinterpret_cast<int8_t*>(reinterpret_cast<intptr_t>(entity) + offset);
+		case 2:
+			return *reinterpret_cast<int16_t*>(reinterpret_cast<intptr_t>(entity) + offset);
+		case 4:
+			return *reinterpret_cast<int32_t*>(reinterpret_cast<intptr_t>(entity) + offset);
+		case 8:
+			return *reinterpret_cast<int64_t*>(reinterpret_cast<intptr_t>(entity) + offset);
+		case 24:
+			switch (info[1].size)
+			{
+				case 1:
+					return reinterpret_cast<CUtlVector<int8_t>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element);
+				case 2:
+					return reinterpret_cast<CUtlVector<int16_t>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element);
+				case 4:
+					return reinterpret_cast<CUtlVector<int32_t>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element);
+				case 8:
+					return reinterpret_cast<CUtlVector<int64_t>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element);
+				default:
+					return 0;
+			}
+		default:
+			return 0;
+	}
+}
+
+/**
+ * @brief Sets an integer value in an entity's schema.
+ *
+ * This function is considered safer and more robust over GetEntData, because it performs strict offset checking and typing rules.
+ *
+ * @param entity Pointer to the instance of the class where the value is to be set.
+ * @param className The name of the class.
+ * @param memberName The name of the schema member.
+ * @param value The integer value to set.
+ * @param changeState If true, change will be sent over the network.
+ * @param element Element # (starting from 0) if schema is an array.
+ * @return An integer value at the given schema offset.
+ */
+extern "C" PLUGIN_API void SetEntSchema2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int64_t value, bool changeState, int element)
+{
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
 		return;
 	}
 
-	pEntity->NetworkStateChanged(m_key.offset + extraOffset);
+	auto classKey = hash_32_fnv1a_const(className.c_str());
+	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
+
+	const auto [offset, networked, info] = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
+	if (offset == 0)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot find offset for '%s::%s' with entity pointer: %p\n", className.c_str(), memberName.c_str(), entity);
+		return;
+	}
+
+	if (changeState && networked)
+	{
+		int chainOffset = schema::FindChainOffset(className.c_str());
+		if (chainOffset != 0)
+		{
+			schema::NetworkStateChanged((reinterpret_cast<intptr_t>(entity) + chainOffset), offset);
+		}
+		else
+		{
+			entity->NetworkStateChanged(offset);
+		}
+	}
+
+	switch (info[0].size)
+	{
+		case 1:
+			*reinterpret_cast<int8_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int8_t>(value);
+		case 2:
+			*reinterpret_cast<int16_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int16_t>(value);
+		case 4:
+			*reinterpret_cast<int32_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int32_t>(value);
+		case 8:
+			*reinterpret_cast<int64_t*>(reinterpret_cast<intptr_t>(entity) + offset) = value;
+		case 24:
+			switch (info[1].size)
+			{
+				case 1:
+					reinterpret_cast<CUtlVector<int8_t>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element) = static_cast<int8_t>(value);
+				case 2:
+					reinterpret_cast<CUtlVector<int16_t>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element) = static_cast<int16_t>(value);
+				case 4:
+					reinterpret_cast<CUtlVector<int32_t>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element) = static_cast<int32_t>(value);
+				case 8:
+					reinterpret_cast<CUtlVector<int64_t>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element) = value;
+				default:
+					break;
+			}
+		default:
+			break;
+	}
+}
+
+//
+
+/**
+ * @brief Retrieves a float value from an entity's schema.
+ *
+ * This function is considered safer and more robust over GetEntData, because it performs strict offset checking and typing rules.
+ *
+ * @param entity Pointer to the instance of the class where the value is to be set.
+ * @param className The name of the class.
+ * @param memberName The name of the schema member.
+ * @param element Element # (starting from 0) if schema is an array.
+ * @return A float value at the given schema offset.
+ */
+extern "C" PLUGIN_API double GetEntSchemaFloat2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int element)
+{
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		return {};
+	}
+
+	auto classKey = hash_32_fnv1a_const(className.c_str());
+	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
+
+	const auto [offset, networked, info] = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
+	if (offset == 0)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot find offset for '%s::%s' with entity pointer: %p\n", className.c_str(), memberName.c_str(), entity);
+		return {};
+	}
+
+	switch (info[0].size)
+	{
+		case 4:
+			return *reinterpret_cast<float*>(reinterpret_cast<intptr_t>(entity) + offset);
+		case 8:
+			return *reinterpret_cast<double*>(reinterpret_cast<intptr_t>(entity) + offset);
+		case 24:
+			switch (info[1].size)
+			{
+				case 4:
+					return reinterpret_cast<CUtlVector<float>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element);
+				case 8:
+					return reinterpret_cast<CUtlVector<double>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element);
+				default:
+					return 0;
+			}
+		default:
+			return 0;
+	}
+}
+
+/**
+ * @brief Sets a float value in an entity's schema.
+ *
+ * This function is considered safer and more robust over GetEntData, because it performs strict offset checking and typing rules.
+ *
+ * @param entity Pointer to the instance of the class where the value is to be set.
+ * @param className The name of the class.
+ * @param memberName The name of the schema member.
+ * @param value The float value to set.
+ * @param changeState If true, change will be sent over the network.
+ * @param element Element # (starting from 0) if schema is an array.
+ * @return An float value at the given schema offset.
+ */
+extern "C" PLUGIN_API void SetEntSchemaFloat2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, double value, bool changeState, int element)
+{
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		return;
+	}
+
+	auto classKey = hash_32_fnv1a_const(className.c_str());
+	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
+
+	const auto [offset, networked, info] = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
+	if (offset == 0)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot find offset for '%s::%s' with entity pointer: %p\n", className.c_str(), memberName.c_str(), entity);
+		return;
+	}
+
+	if (changeState && networked)
+	{
+		int chainOffset = schema::FindChainOffset(className.c_str());
+		if (chainOffset != 0)
+		{
+			schema::NetworkStateChanged((reinterpret_cast<intptr_t>(entity) + chainOffset), offset);
+		}
+		else
+		{
+			entity->NetworkStateChanged(offset);
+		}
+	}
+
+	switch (info[0].size)
+	{
+		case 4:
+			*reinterpret_cast<float*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<float>(value);
+		case 8:
+			*reinterpret_cast<double*>(reinterpret_cast<intptr_t>(entity) + offset) = value;
+		case 24:
+			switch (info[1].size)
+			{
+				case 4:
+					reinterpret_cast<CUtlVector<float>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element) = static_cast<float>(value);
+				case 8:
+					reinterpret_cast<CUtlVector<double>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element) = value;
+				default:
+					break;
+			}
+		default:
+			break;
+	}
+}
+
+//
+
+/**
+ * @brief Retrieves a string value from an entity's schema.
+*
+* This function is considered safer and more robust over GetEntData, because it performs strict offset checking and typing rules.
+ *
+ * @param entity Pointer to the instance of the class where the value is to be set.
+ * @param className The name of the class.
+ * @param memberName The name of the schema member.
+ * @param element Element # (starting from 0) if schema is an array.
+ * @return A string value at the given schema offset.
+ */
+extern "C" PLUGIN_API plg::string GetEntSchemaString2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int element)
+{
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		return {};
+	}
+
+	auto classKey = hash_32_fnv1a_const(className.c_str());
+	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
+
+	const auto [offset, networked, info] = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
+	if (offset == 0)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot find offset for '%s::%s' with entity pointer: %p\n", className.c_str(), memberName.c_str(), entity);
+		return {};
+	}
+
+	switch (info[0].size)
+	{
+		case 8:
+			return reinterpret_cast<CUtlString*>(reinterpret_cast<intptr_t>(entity) + offset)->Get();
+		case 24:
+			switch (info[1].size)
+			{
+				case 8:
+					return reinterpret_cast<CUtlVector<CUtlString>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element).Get();
+				default:
+					return {};
+			}
+		default:
+			return {};
+	}
+}
+
+/**
+ * @brief Sets a string value in an entity's schema.
+ *
+ * This function is considered safer and more robust over GetEntData, because it performs strict offset checking and typing rules.
+ *
+ * @param entity Pointer to the instance of the class where the value is to be set.
+ * @param className The name of the class.
+ * @param memberName The name of the schema member.
+ * @param value The string value to set.
+ * @param changeState If true, change will be sent over the network.
+ * @param element Element # (starting from 0) if schema is an array.
+ * @return An string value at the given schema offset.
+ */
+extern "C" PLUGIN_API void SetEntSchemaString2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, const plg::string& value, bool changeState, int element)
+{
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		return;
+	}
+
+	auto classKey = hash_32_fnv1a_const(className.c_str());
+	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
+
+	const auto [offset, networked, info] = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
+	if (offset == 0)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot find offset for '%s::%s' with entity pointer: %p\n", className.c_str(), memberName.c_str(), entity);
+		return;
+	}
+
+	if (changeState && networked)
+	{
+		int chainOffset = schema::FindChainOffset(className.c_str());
+		if (chainOffset != 0)
+		{
+			schema::NetworkStateChanged((reinterpret_cast<intptr_t>(entity) + chainOffset), offset);
+		}
+		else
+		{
+			entity->NetworkStateChanged(offset);
+		}
+	}
+
+	switch (info[0].size)
+	{
+		case 8:
+			*reinterpret_cast<CUtlString*>(reinterpret_cast<intptr_t>(entity) + offset) = value.c_str();
+		case 24:
+			switch (info[1].size)
+			{
+				case 8:
+					reinterpret_cast<CUtlVector<CUtlString>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element) = value.c_str();
+				default:
+					break;
+			}
+		default:
+			break;
+	}
+}
+
+//
+
+/**
+ * @brief Retrieves a vector value from an entity's schema.
+ *
+ * This function is considered safer and more robust over GetEntData, because it performs strict offset checking and typing rules.
+ *
+ * @param entity Pointer to the instance of the class where the value is to be set.
+ * @param className The name of the class.
+ * @param memberName The name of the schema member.
+ * @param element Element # (starting from 0) if schema is an array.
+ * @return A string value at the given schema offset.
+ */
+extern "C" PLUGIN_API plg::vec3 GetEntSchemaVector2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int element)
+{
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		return {};
+	}
+
+	auto classKey = hash_32_fnv1a_const(className.c_str());
+	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
+
+	const auto [offset, networked, info] = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
+	if (offset == 0)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot find offset for '%s::%s' with entity pointer: %p\n", className.c_str(), memberName.c_str(), entity);
+		return {};
+	}
+
+	switch (info[0].size)
+	{
+		case 12:
+			return *reinterpret_cast<plg::vec3*>(reinterpret_cast<intptr_t>(entity) + offset);
+		case 24:
+			switch (info[1].size)
+			{
+				case 12:
+					return reinterpret_cast<CUtlVector<plg::vec3>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element);
+				default:
+					return {};
+			}
+		default:
+			return {};
+	}
+}
+
+/**
+ * @brief Sets a vector value in an entity's schema.
+ *
+ * This function is considered safer and more robust over GetEntData, because it performs strict offset checking and typing rules.
+ *
+ * @param entity Pointer to the instance of the class where the value is to be set.
+ * @param className The name of the class.
+ * @param memberName The name of the schema member.
+ * @param value The vector value to set.
+ * @param changeState If true, change will be sent over the network.
+ * @param element Element # (starting from 0) if schema is an array.
+ * @return An vector value at the given schema offset.
+ */
+extern "C" PLUGIN_API void SetEntSchemaVector2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, const plg::vec3& value, bool changeState, int element)
+{
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		return;
+	}
+
+	auto classKey = hash_32_fnv1a_const(className.c_str());
+	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
+
+	const auto [offset, networked, info] = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
+	if (offset == 0)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot find offset for '%s::%s' with entity pointer: %p\n", className.c_str(), memberName.c_str(), entity);
+		return;
+	}
+
+	if (changeState && networked)
+	{
+		int chainOffset = schema::FindChainOffset(className.c_str());
+		if (chainOffset != 0)
+		{
+			schema::NetworkStateChanged((reinterpret_cast<intptr_t>(entity) + chainOffset), offset);
+		}
+		else
+		{
+			entity->NetworkStateChanged(offset);
+		}
+	}
+
+	switch (info[0].size)
+	{
+		case 12:
+			*reinterpret_cast<plg::vec3*>(reinterpret_cast<intptr_t>(entity) + offset) = value;
+		case 24:
+			switch (info[1].size)
+			{
+				case 12:
+					reinterpret_cast<CUtlVector<plg::vec3>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element) = value;
+				default:
+					break;
+			}
+		default:
+			break;
+	}
+}
+
+//
+
+/**
+ * @brief Retrieves an entity handle from an entity's schema.
+ *
+ * This function is considered safer and more robust over GetEntData, because it performs strict offset checking and typing rules.
+ *
+ * @note This will only work on offsets that are stored as "entity handles" (which usually looks like m_h* in properties)
+ *
+ * @param entity Pointer to the instance of the class where the value is to be set.
+ * @param className The name of the class.
+ * @param memberName The name of the schema member.
+ * @param element Element # (starting from 0) if schema is an array.
+ * @return A string value at the given schema offset.
+ */
+extern "C" PLUGIN_API int GetEntSchemaEnt2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int element)
+{
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		return {};
+	}
+
+	auto classKey = hash_32_fnv1a_const(className.c_str());
+	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
+
+	const auto [offset, networked, info] = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
+	if (offset == 0)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot find offset for '%s::%s' with entity pointer: %p\n", className.c_str(), memberName.c_str(), entity);
+		return {};
+	}
+
+	switch (info[0].size)
+	{
+		case 4:
+			return reinterpret_cast<CEntityHandle*>(reinterpret_cast<intptr_t>(entity) + offset)->ToInt();
+		case 24:
+			switch (info[1].size)
+			{
+				case 4:
+					reinterpret_cast<CUtlVector<CEntityHandle>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element).ToInt();
+				default:
+					return INVALID_EHANDLE_INDEX;
+			}
+		default:
+			return INVALID_EHANDLE_INDEX;
+	}
+}
+
+/**
+ * @brief Sets a entity handle in an entity's schema.
+ *
+ * This function is considered safer and more robust over GetEntData, because it performs strict offset checking and typing rules.
+ *
+ * @note This will only work on offsets that are stored as "entity handles" (which usually looks like m_h* in properties)
+ *
+ * @param entity Pointer to the instance of the class where the value is to be set.
+ * @param className The name of the class.
+ * @param memberName The name of the schema member.
+ * @param value The entity handle to set.
+ * @param changeState If true, change will be sent over the network.
+ * @param element Element # (starting from 0) if schema is an array.
+ * @return An entity handle at the given schema offset.
+ */
+extern "C" PLUGIN_API void SetEntSchemaEnt2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int value, bool changeState, int element)
+{
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		return;
+	}
+
+	auto classKey = hash_32_fnv1a_const(className.c_str());
+	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
+
+	const auto [offset, networked, info] = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
+	if (offset == 0)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot find offset for '%s::%s' with entity pointer: %p\n", className.c_str(), memberName.c_str(), entity);
+		return;
+	}
+
+	if (changeState && networked)
+	{
+		int chainOffset = schema::FindChainOffset(className.c_str());
+		if (chainOffset != 0)
+		{
+			schema::NetworkStateChanged((reinterpret_cast<intptr_t>(entity) + chainOffset), offset);
+		}
+		else
+		{
+			entity->NetworkStateChanged(offset);
+		}
+	}
+
+	switch (info[0].size)
+	{
+		case 4:
+			*reinterpret_cast<CEntityHandle*>(reinterpret_cast<intptr_t>(entity) + offset) = CEntityHandle((uint32)value);
+		case 24:
+			switch (info[1].size)
+			{
+				case 4:
+					reinterpret_cast<CUtlVector<CEntityHandle>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element) = CEntityHandle((uint32)value);
+				default:
+					break;
+			}
+		default:
+			break;
+	}
+}
+
+//
+//
+//
+//
+//
+//
+
+/**
+ * @brief Updates the networked state of a schema field for a given entity pointer.
+ *
+ * This function ensures that changes to a schema field are appropriately networked,
+ * while adhering to specific guidelines if configured. It validates whether the field
+ * is networked, computes necessary offsets, and invokes the required methods to mark
+ * the state as changed.
+ *
+ * @param entity Pointer to the instance of the class where the value is to be set.
+ * @param className The name of the class that contains the member.
+ * @param memberName The name of the member to be set.
+ */
+extern "C" PLUGIN_API void NetworkStateChanged2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName)
+{
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		return;
+	}
+
+	auto classKey = hash_32_fnv1a_const(className.c_str());
+	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
+
+	auto [offset, networked, info] = schema::GetOffset(className.c_str(), classKey, memberName.c_str(), memberKey);
+	if (networked)
+	{
+		int chainOffset = schema::FindChainOffset(className.c_str());
+		if (chainOffset != 0)
+		{
+			schema::NetworkStateChanged((reinterpret_cast<intptr_t>(entity) + chainOffset), offset);
+		}
+		else
+		{
+			entity->NetworkStateChanged(offset);
+		}
+	}
+	else
+	{
+		g_Logger.LogFormat(LS_WARNING, "Field '%s::%s' is not networked, but \"SetStateChanged\" was called on it.", className.c_str(), memberName.c_str());
+	}
 }
 
 PLUGIFY_WARN_POP()

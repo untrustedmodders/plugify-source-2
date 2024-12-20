@@ -1,5 +1,6 @@
 #pragma once
 
+#include "schema.h"
 #include <convar.h>
 #include <eiface.h>
 #if S2SDK_PLATFORM_LINUX || S2SDK_PLATFORM_APPLE
@@ -13,6 +14,7 @@
 #define S2SDK_NSTR(str) str
 #define S2SDK_UTF8(str) str
 #endif
+
 
 class CBaseEntity;
 class CServerSideClient;
@@ -174,25 +176,6 @@ namespace utils
 
 	std::vector<plg::string> Split(std::string_view strv, std::string_view delims);
 
-	/*inline plg::string Demangle(const char* name)
-	{
-#if S2SDK_PLATFORM_LINUX || S2SDK_PLATFORM_APPLE
-		int status = 0;
-
-		std::unique_ptr<char, void (*)(void*)> res(
-			abi::__cxa_demangle(name, nullptr, nullptr, &status),
-			std::free);
-
-		std::string_view ret((status == 0) ? res.get() : name);
-#else
-		std::string_view ret(name);
-#endif
-		if (ret.substr(ret.size() - 3) == " ()")
-			ret.remove_suffix(3);
-
-		return plg::string(ret);
-	}*/
-
 #if S2SDK_PLATFORM_WINDOWS
 	/// Converts the specified UTF-8 string to a wide string.
 	plg::wstring ConvertUtf8ToWide(std::string_view str);
@@ -203,20 +186,14 @@ namespace utils
 	bool ConvertWideToUtf8(plg::string& dest, std::wstring_view str);
 #endif
 
-	/**
-	 * Combines a seed into a hash and modifies the seed by the new hash.
-	 * @param seed The seed.
-	 * @param v The value to hash.
-	 * https://stackoverflow.com/questions/2590677/how-do-i-combine-hash-values-in-c0x
-	 */
-	inline void hash_combine(size_t& seed) {}
-
-	template <typename T, typename... Rest>
-	inline void hash_combine(size_t& seed, const T& v, Rest... rest)
+	namespace
 	{
-		std::hash<T> hasher;
-		seed ^= hasher(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-		hash_combine(seed, rest...);
+		template<typename T, typename... Rest>
+		void hash_combine(std::size_t& seed, const T& v, const Rest&... rest)
+		{
+			seed ^= std::hash<T>{}(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+			(hash_combine(seed, rest), ...);
+		}
 	}
 
 	template <typename T1, typename T2>
@@ -225,8 +202,7 @@ namespace utils
 		std::size_t operator()(std::pair<T1, T2> const& p) const
 		{
 			std::size_t seed;
-			hash_combine(seed, p.first);
-			hash_combine(seed, p.second);
+			hash_combine(seed, p.first, p.second);
 			return seed;
 		}
 	};
