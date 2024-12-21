@@ -19,6 +19,8 @@
 class CBaseEntity;
 class CServerSideClient;
 
+#include <variant>
+
 namespace utils
 {
 	// ConVars
@@ -241,4 +243,7 @@ namespace plg {
 
 	template<typename T>
 	inline constexpr bool is_vector_v = is_vector<T>::value;
+
 } // namespace plg
+
+

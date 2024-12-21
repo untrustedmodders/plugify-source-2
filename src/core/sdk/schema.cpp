@@ -144,38 +144,3 @@ void schema::NetworkStateChanged(int64 chainEntity, uint32 nLocalOffset, int nAr
 		pEntity->NetworkStateChanged(nLocalOffset, nArrayIndex, chainEnt->m_PathIndex.m_Value);
 	}
 }
-
-std::pair<schema::ElementType, int> schema::GetElementType(CSchemaType* type) {
-	switch (type->m_eTypeCategory)
-	{
-		case SCHEMA_TYPE_FIXED_ARRAY:
-			return { ElementType::Array, static_cast<CSchemaType_FixedArray*>(type)->m_nElementSize };
-		case SCHEMA_TYPE_DECLARED_CLASS:
-			std::string_view typeClassName(static_cast<CSchemaType_DeclaredClass*>(type)->m_pClassInfo->m_pszName);
-			if (typeClassName.find("UtlVector") != std::string::npos) {
-				return { ElementType::Vector, sizeof(CEntityHandle) };
-				// TODO: Add support of all types
-				/*if (typeClassName.find("CHandle") != std::string::npos) {
-					return { ElementType::Vector, sizeof(CEntityHandle) };
-				} else if (typeClassName.find("CUtlString") != std::string::npos) {
-					return { ElementType::Vector, sizeof(CUtlString) };
-				} else if (typeClassName.find("CUtlSymbolLarge") != std::string::npos) {
-					return { ElementType::Vector, sizeof(CUtlSymbolLarge) };
-				} else if (typeClassName.find("float32") != std::string::npos) {
-					return { ElementType::Vector, sizeof(float32) };
-				} else if (typeClassName.find("float64") != std::string::npos) {
-					return { ElementType::Vector, sizeof(float64) };
-				} else if (typeClassName.find("int8") != std::string::npos) {
-					return { ElementType::Vector, sizeof(int8) };
-				} else if (typeClassName.find("int16") != std::string::npos) {
-					return { ElementType::Vector, sizeof(int16) };
-				} else if (typeClassName.find("int32") != std::string::npos) {
-					return { ElementType::Vector, sizeof(int32) };
-				} else if (typeClassName.find("int64") != std::string::npos) {
-					return { ElementType::Vector, sizeof(int64) };
-				}*/
-			}
-			break;
-	}
-	return { ElementType::Cell, -1 };
-}

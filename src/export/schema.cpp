@@ -695,12 +695,6 @@ extern "C" PLUGIN_API void ChangeEntityState2(CEntityInstance* entity, int offse
  */
 extern "C" PLUGIN_API int GetEntSchemaArraySize2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName)
 {
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return {};
-	}
-
 	auto classKey = hash_32_fnv1a_const(className.c_str());
 	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
 
@@ -738,12 +732,6 @@ extern "C" PLUGIN_API int GetEntSchemaArraySize2(CEntityInstance* entity, const 
  */
 extern "C" PLUGIN_API int64_t GetEntSchema2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int element)
 {
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return {};
-	}
-
 	auto classKey = hash_32_fnv1a_const(className.c_str());
 	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
 
@@ -754,7 +742,7 @@ extern "C" PLUGIN_API int64_t GetEntSchema2(CEntityInstance* entity, const plg::
 		return {};
 	}
 
-	auto [elementType, elementSize] = schema::GetElementType(type);
+	auto [elementType, elementSize] = schema::IsIntType(type);
 	switch (elementType)
 	{
 		case schema::ElementType::Array:
@@ -783,7 +771,7 @@ extern "C" PLUGIN_API int64_t GetEntSchema2(CEntityInstance* entity, const plg::
 					return reinterpret_cast<CUtlVector<int64_t>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element);
 			}
 			return 0;
-		default:
+		case schema::ElementType::Single:
 			switch (size)
 			{
 				case 1:
@@ -795,6 +783,10 @@ extern "C" PLUGIN_API int64_t GetEntSchema2(CEntityInstance* entity, const plg::
 				case 8:
 					return *reinterpret_cast<int64_t*>(reinterpret_cast<intptr_t>(entity) + offset);
 			}
+			return 0;
+
+		default:
+			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a integer", className.c_str(), memberName.c_str());
 			return 0;
 	}
 }
@@ -843,7 +835,7 @@ extern "C" PLUGIN_API void SetEntSchema2(CEntityInstance* entity, const plg::str
 		}
 	}
 
-	auto [elementType, elementSize] = schema::GetElementType(type);
+	auto [elementType, elementSize] = schema::IsIntType(type);
 	switch (elementType)
 	{
 		case schema::ElementType::Array:
@@ -880,7 +872,7 @@ extern "C" PLUGIN_API void SetEntSchema2(CEntityInstance* entity, const plg::str
 					break;
 			}
 			break;
-		default:
+		case schema::ElementType::Single:
 			switch (size)
 			{
 				case 1:
@@ -896,6 +888,8 @@ extern "C" PLUGIN_API void SetEntSchema2(CEntityInstance* entity, const plg::str
 					*reinterpret_cast<int64_t*>(reinterpret_cast<intptr_t>(entity) + offset) = value;
 					break;
 			}
+		default:
+			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a integer", className.c_str(), memberName.c_str());
 			break;
 	}
 }
@@ -915,12 +909,6 @@ extern "C" PLUGIN_API void SetEntSchema2(CEntityInstance* entity, const plg::str
  */
 extern "C" PLUGIN_API double GetEntSchemaFloat2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int element)
 {
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return {};
-	}
-
 	auto classKey = hash_32_fnv1a_const(className.c_str());
 	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
 
@@ -931,35 +919,38 @@ extern "C" PLUGIN_API double GetEntSchemaFloat2(CEntityInstance* entity, const p
 		return {};
 	}
 
-	auto [elementType, elementSize] = schema::GetElementType(type);
+	auto [elementType, elementSize] = schema::IsFloatType(type);
 	switch (elementType)
 	{
 		case schema::ElementType::Array:
 			switch (elementSize)
 			{
-				case 4:
+				case sizeof(float):
 					return reinterpret_cast<float*>(reinterpret_cast<intptr_t>(entity) + offset)[element];
-				case 8:
+				case sizeof(double):
 					return reinterpret_cast<double*>(reinterpret_cast<intptr_t>(entity) + offset)[element];
 			}
 			return 0;
 		case schema::ElementType::Vector:
 			switch (elementSize)
 			{
-				case 4:
+				case sizeof(float):
 					return reinterpret_cast<CUtlVector<float>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element);
-				case 8:
+				case sizeof(double):
 					return reinterpret_cast<CUtlVector<double>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element);
 			}
 			return 0;
-		default:
+		case schema::ElementType::Single:
 			switch (size)
 			{
-				case 4:
+				case sizeof(float):
 					return *reinterpret_cast<float*>(reinterpret_cast<intptr_t>(entity) + offset);
-				case 8:
+				case sizeof(double):
 					return *reinterpret_cast<double*>(reinterpret_cast<intptr_t>(entity) + offset);
 			}
+			return 0;
+		default:
+			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a float", className.c_str(), memberName.c_str());
 			return 0;
 	}
 }
@@ -1008,16 +999,16 @@ extern "C" PLUGIN_API void SetEntSchemaFloat2(CEntityInstance* entity, const plg
 		}
 	}
 
-	auto [elementType, elementSize] = schema::GetElementType(type);
+	auto [elementType, elementSize] = schema::IsFloatType(type);
 	switch (elementType)
 	{
 		case schema::ElementType::Array:
 			switch (elementSize)
 			{
-				case 4:
+				case sizeof(float):
 					reinterpret_cast<float*>(reinterpret_cast<intptr_t>(entity) + offset)[element] = static_cast<float>(value);
 					break;
-				case 8:
+				case sizeof(double):
 					reinterpret_cast<double*>(reinterpret_cast<intptr_t>(entity) + offset)[element] = value;
 					break;
 			}
@@ -1025,24 +1016,27 @@ extern "C" PLUGIN_API void SetEntSchemaFloat2(CEntityInstance* entity, const plg
 		case schema::ElementType::Vector:
 			switch (elementSize)
 			{
-				case 4:
+				case sizeof(float):
 					reinterpret_cast<CUtlVector<float>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element) = static_cast<float>(value);
 					break;
-				case 8:
+				case sizeof(double):
 					reinterpret_cast<CUtlVector<double>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element) = value;
 					break;
 			}
 			break;
-		default:
+		case schema::ElementType::Single:
 			switch (size)
 			{
-				case 4:
+				case sizeof(float):
 					*reinterpret_cast<float*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<float>(value);
 					break;
-				case 8:
+				case sizeof(double):
 					*reinterpret_cast<double*>(reinterpret_cast<intptr_t>(entity) + offset) = value;
 					break;
 			}
+			break;
+		default:
+			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a float", className.c_str(), memberName.c_str());
 			break;
 	}
 }
@@ -1062,12 +1056,6 @@ extern "C" PLUGIN_API void SetEntSchemaFloat2(CEntityInstance* entity, const plg
  */
 extern "C" PLUGIN_API plg::string GetEntSchemaString2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int element)
 {
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return {};
-	}
-
 	auto classKey = hash_32_fnv1a_const(className.c_str());
 	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
 
@@ -1078,15 +1066,17 @@ extern "C" PLUGIN_API plg::string GetEntSchemaString2(CEntityInstance* entity, c
 		return {};
 	}
 
-	auto [elementType, elementSize] = schema::GetElementType(type);
-	switch (elementType)
+	switch (schema::IsStringType(type))
 	{
 		case schema::ElementType::Array:
 			return reinterpret_cast<CUtlString*>(reinterpret_cast<intptr_t>(entity) + offset)[element].Get();
 		case schema::ElementType::Vector:
 			return reinterpret_cast<CUtlVector<CUtlString>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element).Get();
-		default:
+		case schema::ElementType::Single:
 			return reinterpret_cast<CUtlString*>(reinterpret_cast<intptr_t>(entity) + offset)->Get();
+		default:
+			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a string", className.c_str(), memberName.c_str());
+			return {};
 	}
 }
 
@@ -1134,8 +1124,7 @@ extern "C" PLUGIN_API void SetEntSchemaString2(CEntityInstance* entity, const pl
 		}
 	}
 
-	auto [elementType, elementSize] = schema::GetElementType(type);
-	switch (elementType)
+	switch (schema::IsStringType(type))
 	{
 		case schema::ElementType::Array:
 			reinterpret_cast<CUtlString*>(reinterpret_cast<intptr_t>(entity) + offset)[element] = value.c_str();
@@ -1143,8 +1132,11 @@ extern "C" PLUGIN_API void SetEntSchemaString2(CEntityInstance* entity, const pl
 		case schema::ElementType::Vector:
 			reinterpret_cast<CUtlVector<CUtlString>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element) = value.c_str();
 			break;
-		default:
+		case schema::ElementType::Single:
 			*reinterpret_cast<CUtlString*>(reinterpret_cast<intptr_t>(entity) + offset) = value.c_str();
+			break;
+		default:
+			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a string", className.c_str(), memberName.c_str());
 			break;
 	}
 }
@@ -1164,12 +1156,6 @@ extern "C" PLUGIN_API void SetEntSchemaString2(CEntityInstance* entity, const pl
  */
 extern "C" PLUGIN_API plg::vec3 GetEntSchemaVector2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int element)
 {
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return {};
-	}
-
 	auto classKey = hash_32_fnv1a_const(className.c_str());
 	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
 
@@ -1180,15 +1166,17 @@ extern "C" PLUGIN_API plg::vec3 GetEntSchemaVector2(CEntityInstance* entity, con
 		return {};
 	}
 
-	auto [elementType, elementSize] = schema::GetElementType(type);
-	switch (elementType)
+	switch (schema::IsVectorType(type))
 	{
 		case schema::ElementType::Array:
 			return reinterpret_cast<plg::vec3*>(reinterpret_cast<intptr_t>(entity) + offset)[element];
 		case schema::ElementType::Vector:
 			return reinterpret_cast<CUtlVector<plg::vec3>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element);
-		default:
+		case schema::ElementType::Single:
 			return *reinterpret_cast<plg::vec3*>(reinterpret_cast<intptr_t>(entity) + offset);
+		default:
+			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a vector", className.c_str(), memberName.c_str());
+			return {};
 	}
 }
 
@@ -1236,8 +1224,7 @@ extern "C" PLUGIN_API void SetEntSchemaVector2(CEntityInstance* entity, const pl
 		}
 	}
 
-	auto [elementType, elementSize] = schema::GetElementType(type);
-	switch (elementType)
+	switch (schema::IsVectorType(type))
 	{
 		case schema::ElementType::Array:
 			reinterpret_cast<plg::vec3*>(reinterpret_cast<intptr_t>(entity) + offset)[element] = value;
@@ -1245,8 +1232,11 @@ extern "C" PLUGIN_API void SetEntSchemaVector2(CEntityInstance* entity, const pl
 		case schema::ElementType::Vector:
 			reinterpret_cast<CUtlVector<plg::vec3>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element) = value;
 			break;
-		default:
+		case schema::ElementType::Single:
 			*reinterpret_cast<plg::vec3*>(reinterpret_cast<intptr_t>(entity) + offset) = value;
+			break;
+		default:
+			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a vector", className.c_str(), memberName.c_str());
 			break;
 	}
 }
@@ -1268,12 +1258,6 @@ extern "C" PLUGIN_API void SetEntSchemaVector2(CEntityInstance* entity, const pl
  */
 extern "C" PLUGIN_API int GetEntSchemaEnt2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int element)
 {
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return INVALID_EHANDLE_INDEX;
-	}
-
 	auto classKey = hash_32_fnv1a_const(className.c_str());
 	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
 
@@ -1284,15 +1268,17 @@ extern "C" PLUGIN_API int GetEntSchemaEnt2(CEntityInstance* entity, const plg::s
 		return INVALID_EHANDLE_INDEX;
 	}
 
-	auto [elementType, elementSize] = schema::GetElementType(type);
-	switch (elementType)
+	switch (schema::IsHandleType(type))
 	{
 		case schema::ElementType::Array:
 			return reinterpret_cast<CEntityHandle*>(reinterpret_cast<intptr_t>(entity) + offset)[element].ToInt();
 		case schema::ElementType::Vector:
 			return reinterpret_cast<CUtlVector<CEntityHandle>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element).ToInt();
-		default:
+		case schema::ElementType::Single:
 			return reinterpret_cast<CEntityHandle*>(reinterpret_cast<intptr_t>(entity) + offset)->ToInt();
+		default:
+			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a entity handle", className.c_str(), memberName.c_str());
+			return INVALID_EHANDLE_INDEX;
 	}
 }
 
@@ -1342,8 +1328,7 @@ extern "C" PLUGIN_API void SetEntSchemaEnt2(CEntityInstance* entity, const plg::
 		}
 	}
 
-	auto [elementType, elementSize] = schema::GetElementType(type);
-	switch (elementType)
+	switch (schema::IsHandleType(type))
 	{
 		case schema::ElementType::Array:
 			reinterpret_cast<CEntityHandle*>(reinterpret_cast<intptr_t>(entity) + offset)[element] = CEntityHandle((uint32)value);
@@ -1351,8 +1336,11 @@ extern "C" PLUGIN_API void SetEntSchemaEnt2(CEntityInstance* entity, const plg::
 		case schema::ElementType::Vector:
 			reinterpret_cast<CUtlVector<CEntityHandle>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element) = CEntityHandle((uint32)value);
 			break;
-		default:
+		case schema::ElementType::Single:
 			*reinterpret_cast<CEntityHandle*>(reinterpret_cast<intptr_t>(entity) + offset) = CEntityHandle((uint32)value);
+			break;
+		default:
+			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a entity handle", className.c_str(), memberName.c_str());
 			break;
 	}
 }
@@ -1373,12 +1361,6 @@ extern "C" PLUGIN_API void SetEntSchemaEnt2(CEntityInstance* entity, const plg::
  */
 extern "C" PLUGIN_API void NetworkStateChanged2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName)
 {
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return;
-	}
-
 	auto classKey = hash_32_fnv1a_const(className.c_str());
 	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
 
@@ -1730,12 +1712,6 @@ extern "C" PLUGIN_API void NetworkStateChanged(int entityHandle, const plg::stri
  */
 extern "C" PLUGIN_API plg::any GetEntSchemaAny2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName)
 {
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end())
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
-		return {};
-	}
-
 	auto classKey = hash_32_fnv1a_const(className.c_str());
 	auto memberKey = hash_32_fnv1a_const(memberName.c_str());
 
@@ -2451,7 +2427,35 @@ extern "C" PLUGIN_API void SetEntSchemaAny2(CEntityInstance* entity, const plg::
 		{
 			auto* pTypeDeclaredClass = static_cast<CSchemaType_DeclaredClass*>(type);
 			std::string_view typeClassName(pTypeDeclaredClass->m_pClassInfo->m_pszName);
-			if (typeClassName.starts_with("CUtlString")) {
+			if (typeClassName.find("UtlVector") != std::string::npos) {
+				if (typeClassName.find("CHandle") != std::string::npos) {
+					plg::visit([&](const auto& v) {
+						using T = std::decay_t<decltype(v)>;
+						if constexpr (std::is_same_v<T, plg::vector<int32_t>> || std::is_same_v<T, plg::vector<int64_t>> || std::is_same_v<T, plg::vector<uint32_t>> || std::is_same_v<T, plg::vector<uint64_t>>) {
+							auto vec = reinterpret_cast<CUtlVector<CEntityHandle>*>(reinterpret_cast<intptr_t>(entity) + offset);
+							// TODO:
+						}
+					}, value);
+				} else if (typeClassName.find("CUtlString") != std::string::npos) {
+					plg::visit([&](const auto& v) {
+						using T = std::decay_t<decltype(v)>;
+						if constexpr (std::is_same_v<T, plg::vector<plg::string>>) {
+							auto vec = reinterpret_cast<CUtlVector<CUtlString>*>(reinterpret_cast<intptr_t>(entity) + offset);
+							// TODO:
+						}
+					}, value);
+				} else if (typeClassName.find("CUtlSymbolLarge") != std::string::npos) {
+					plg::visit([&](const auto& v) {
+						using T = std::decay_t<decltype(v)>;
+						if constexpr (std::is_same_v<T, plg::vector<plg::string>>) {
+							auto vec = reinterpret_cast<CUtlVector<CUtlSymbolLarge>*>(reinterpret_cast<intptr_t>(entity) + offset);
+							// TODO:
+						}
+					}, value);
+				} else {
+					g_Logger.LogFormat(LS_WARNING, "UtlVector<SCHEMA_TYPE_DECLARED_CLASS>(%s) not supported!\n", typeClassName);
+				}
+			} else if (typeClassName.starts_with("CUtlString")) {
 				plg::visit([&](const auto& v) {
 					using T = std::decay_t<decltype(v)>;
 					if constexpr (std::is_same_v<T, plg::string>) {
