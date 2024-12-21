@@ -158,7 +158,7 @@ namespace globals
 		CBaseGameSystemFactory** ppGameFactory = g_pGameConfig->GetAddress("CBaseGameSystemFactory::sm_pFirst").CCast<CBaseGameSystemFactory**>();
 		CBaseGameSystemFactory::sm_pFirst = ppGameFactory;
 		CGameSystemEventDispatcher** ppEventDispatcher = g_pGameConfig->GetAddress("&IGameSystem::sm_pEventDispatcher").RCast<CGameSystemEventDispatcher**>();
-		Plugify_RegisterGameSystem.CCast<RegisterGameSystemFn>()(ppGameFactory, ppEventDispatcher);
+		//Plugify_RegisterGameSystem.CCast<RegisterGameSystemFn>()(ppGameFactory, ppEventDispatcher);
 
 		// load more if needed
 		RESOLVE_SIG(g_pGameConfig, "LegacyGameEventListener", addresses::GetLegacyGameEventListener);
