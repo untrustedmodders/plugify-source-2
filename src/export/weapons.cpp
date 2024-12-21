@@ -29,4 +29,22 @@ extern "C" PLUGIN_API CCSWeaponBaseVData* GetWeaponVData(int entityHandle)
 	return pWeapon->GetWeaponVData();
 }
 
+/**
+ * @brief Retrieves the weapon definition index for a given entity handle.
+ *
+ * @param entityHandle The handle of the entity from which to retrieve the weapon def index.
+ * @return The weapon definition index as a `uint16_t`, or 0 if the entity handle is invalid.
+ */
+extern "C" PLUGIN_API uint16_t GetWeaponDefIndex(int entityHandle)
+{
+	CBasePlayerWeapon* pWeapon = static_cast<CBasePlayerWeapon*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	if (!pWeapon)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetWeaponDefIndex' on invalid entity handle: %d\n", entityHandle);
+		return 0;
+	}
+
+	return pWeapon->m_AttributeManager().m_Item().m_iItemDefinitionIndex;
+}
+
 PLUGIFY_WARN_POP()

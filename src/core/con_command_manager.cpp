@@ -264,7 +264,7 @@ poly::ReturnAction CConCommandManager::Hook_DispatchConCommand(poly::Params& par
 	auto ctx = poly::GetArgument<const CCommandContext*>(params, 2);
 	auto args = poly::GetArgument<const CCommand*>(params, 3);
 
-	const char* name = args->Arg(0);
+	const char* name = args != nullptr ? args->Arg(0) : "";
 
 	g_Logger.LogFormat(LS_DEBUG, "[ConCommandManager::Hook_DispatchConCommand]: %s\n", name);
 
@@ -283,7 +283,7 @@ poly::ReturnAction CConCommandManager::Hook_DispatchConCommand_Post(poly::Params
 	auto ctx = poly::GetArgument<const CCommandContext*>(params, 2);
 	auto args = poly::GetArgument<const CCommand*>(params, 3);
 
-	const char* name = args->Arg(0);
+	const char* name = args != nullptr ? args->Arg(0) : "";
 
 	auto result = ExecuteCommandCallbacks(name, *ctx, *args, HookMode::Post, CommandCallingContext::Console);
 	if (result >= ResultType::Handled)

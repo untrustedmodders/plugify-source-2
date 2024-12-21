@@ -7752,10 +7752,10 @@
       }
     },
     {
-      "name": "GetEntSchemaVector",
+      "name": "GetEntSchemaVector3D",
       "group": "Schema",
       "description": "Retrieves a vector value from an entity's schema.",
-      "funcName": "GetEntSchemaVector",
+      "funcName": "GetEntSchemaVector3D",
       "paramTypes": [
         {
           "name": "entityHandle",
@@ -7788,10 +7788,10 @@
       }
     },
     {
-      "name": "SetEntSchemaVector",
+      "name": "SetEntSchemaVector3D",
       "group": "Schema",
       "description": "Sets a vector value in an entity's schema.",
-      "funcName": "SetEntSchemaVector",
+      "funcName": "SetEntSchemaVector3D",
       "paramTypes": [
         {
           "name": "entityHandle",
@@ -7814,6 +7814,222 @@
         {
           "name": "value",
           "type": "vec3",
+          "ref": false,
+          "description": "The vector value to set."
+        },
+        {
+          "name": "changeState",
+          "type": "bool",
+          "ref": false,
+          "description": "If true, change will be sent over the network."
+        },
+        {
+          "name": "element",
+          "type": "int32",
+          "ref": false,
+          "description": "Element # (starting from 0) if schema is an array."
+        }
+      ],
+      "retType": {
+        "type": "void",
+        "description": "An vector value at the given schema offset."
+      }
+    },
+    {
+      "name": "GetEntSchemaVector2D",
+      "group": "Schema",
+      "description": "Retrieves a vector value from an entity's schema.",
+      "funcName": "GetEntSchemaVector2D",
+      "paramTypes": [
+        {
+          "name": "entityHandle",
+          "type": "int32",
+          "ref": false,
+          "description": "The handle of the entity from which the value is to be retrieved."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the schema member."
+        },
+        {
+          "name": "element",
+          "type": "int32",
+          "ref": false,
+          "description": "Element # (starting from 0) if schema is an array."
+        }
+      ],
+      "retType": {
+        "type": "vec2",
+        "description": "A string value at the given schema offset."
+      }
+    },
+    {
+      "name": "SetEntSchemaVector2D",
+      "group": "Schema",
+      "description": "Sets a vector value in an entity's schema.",
+      "funcName": "SetEntSchemaVector2D",
+      "paramTypes": [
+        {
+          "name": "entityHandle",
+          "type": "int32",
+          "ref": false,
+          "description": "The handle of the entity from which the value is to be retrieved."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the schema member."
+        },
+        {
+          "name": "value",
+          "type": "vec2",
+          "ref": false,
+          "description": "The vector value to set."
+        },
+        {
+          "name": "changeState",
+          "type": "bool",
+          "ref": false,
+          "description": "If true, change will be sent over the network."
+        },
+        {
+          "name": "element",
+          "type": "int32",
+          "ref": false,
+          "description": "Element # (starting from 0) if schema is an array."
+        }
+      ],
+      "retType": {
+        "type": "void",
+        "description": "An vector value at the given schema offset."
+      }
+    },
+    {
+      "name": "SetEntSchemaVector3D",
+      "group": "Schema",
+      "description": "Sets a vector value in an entity's schema.",
+      "funcName": "SetEntSchemaVector3D",
+      "paramTypes": [
+        {
+          "name": "entityHandle",
+          "type": "int32",
+          "ref": false,
+          "description": "The handle of the entity from which the value is to be retrieved."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the schema member."
+        },
+        {
+          "name": "value",
+          "type": "vec3",
+          "ref": false,
+          "description": "The vector value to set."
+        },
+        {
+          "name": "changeState",
+          "type": "bool",
+          "ref": false,
+          "description": "If true, change will be sent over the network."
+        },
+        {
+          "name": "element",
+          "type": "int32",
+          "ref": false,
+          "description": "Element # (starting from 0) if schema is an array."
+        }
+      ],
+      "retType": {
+        "type": "void",
+        "description": "An vector value at the given schema offset."
+      }
+    },
+    {
+      "name": "GetEntSchemaVector4D",
+      "group": "Schema",
+      "description": "Retrieves a vector value from an entity's schema.",
+      "funcName": "GetEntSchemaVector4D",
+      "paramTypes": [
+        {
+          "name": "entityHandle",
+          "type": "int32",
+          "ref": false,
+          "description": "The handle of the entity from which the value is to be retrieved."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the schema member."
+        },
+        {
+          "name": "element",
+          "type": "int32",
+          "ref": false,
+          "description": "Element # (starting from 0) if schema is an array."
+        }
+      ],
+      "retType": {
+        "type": "vec4",
+        "description": "A string value at the given schema offset."
+      }
+    },
+    {
+      "name": "SetEntSchemaVector4D",
+      "group": "Schema",
+      "description": "Sets a vector value in an entity's schema.",
+      "funcName": "SetEntSchemaVector4D",
+      "paramTypes": [
+        {
+          "name": "entityHandle",
+          "type": "int32",
+          "ref": false,
+          "description": "The handle of the entity from which the value is to be retrieved."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the schema member."
+        },
+        {
+          "name": "value",
+          "type": "vec4",
           "ref": false,
           "description": "The vector value to set."
         },
@@ -8608,10 +8824,10 @@
       }
     },
     {
-      "name": "GetEntSchemaVector2",
+      "name": "GetEntSchemaVector3D2",
       "group": "Schema",
       "description": "Retrieves a vector value from an entity's schema.",
-      "funcName": "GetEntSchemaVector2",
+      "funcName": "GetEntSchemaVector3D2",
       "paramTypes": [
         {
           "name": "entity",
@@ -8644,10 +8860,10 @@
       }
     },
     {
-      "name": "SetEntSchemaVector2",
+      "name": "SetEntSchemaVector3D2",
       "group": "Schema",
       "description": "Sets a vector value in an entity's schema.",
-      "funcName": "SetEntSchemaVector2",
+      "funcName": "SetEntSchemaVector3D2",
       "paramTypes": [
         {
           "name": "entity",
@@ -8670,6 +8886,174 @@
         {
           "name": "value",
           "type": "vec3",
+          "ref": false,
+          "description": "The vector value to set."
+        },
+        {
+          "name": "changeState",
+          "type": "bool",
+          "ref": false,
+          "description": "If true, change will be sent over the network."
+        },
+        {
+          "name": "element",
+          "type": "int32",
+          "ref": false,
+          "description": "Element # (starting from 0) if schema is an array."
+        }
+      ],
+      "retType": {
+        "type": "void",
+        "description": "An vector value at the given schema offset."
+      }
+    },
+    {
+      "name": "GetEntSchemaVector2D2",
+      "group": "Schema",
+      "description": "Retrieves a vector value from an entity's schema.",
+      "funcName": "GetEntSchemaVector2D2",
+      "paramTypes": [
+        {
+          "name": "entity",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance of the class where the value is to be set."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the schema member."
+        },
+        {
+          "name": "element",
+          "type": "int32",
+          "ref": false,
+          "description": "Element # (starting from 0) if schema is an array."
+        }
+      ],
+      "retType": {
+        "type": "vec2",
+        "description": "A string value at the given schema offset."
+      }
+    },
+    {
+      "name": "SetEntSchemaVector2D2",
+      "group": "Schema",
+      "description": "Sets a vector value in an entity's schema.",
+      "funcName": "SetEntSchemaVector2D2",
+      "paramTypes": [
+        {
+          "name": "entity",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance of the class where the value is to be set."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the schema member."
+        },
+        {
+          "name": "value",
+          "type": "vec2",
+          "ref": false,
+          "description": "The vector value to set."
+        },
+        {
+          "name": "changeState",
+          "type": "bool",
+          "ref": false,
+          "description": "If true, change will be sent over the network."
+        },
+        {
+          "name": "element",
+          "type": "int32",
+          "ref": false,
+          "description": "Element # (starting from 0) if schema is an array."
+        }
+      ],
+      "retType": {
+        "type": "void",
+        "description": "An vector value at the given schema offset."
+      }
+    },
+    {
+      "name": "GetEntSchemaVector4D2",
+      "group": "Schema",
+      "description": "Retrieves a vector value from an entity's schema.",
+      "funcName": "GetEntSchemaVector4D2",
+      "paramTypes": [
+        {
+          "name": "entity",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance of the class where the value is to be set."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the schema member."
+        },
+        {
+          "name": "element",
+          "type": "int32",
+          "ref": false,
+          "description": "Element # (starting from 0) if schema is an array."
+        }
+      ],
+      "retType": {
+        "type": "vec4",
+        "description": "A string value at the given schema offset."
+      }
+    },
+    {
+      "name": "SetEntSchemaVector4D2",
+      "group": "Schema",
+      "description": "Sets a vector value in an entity's schema.",
+      "funcName": "SetEntSchemaVector4D2",
+      "paramTypes": [
+        {
+          "name": "entity",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the instance of the class where the value is to be set."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the class."
+        },
+        {
+          "name": "memberName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the schema member."
+        },
+        {
+          "name": "value",
+          "type": "vec4",
           "ref": false,
           "description": "The vector value to set."
         },
@@ -8802,150 +9186,6 @@
       ],
       "retType": {
         "type": "void"
-      }
-    },
-    {
-      "name": "GetEntSchemaAny",
-      "group": "Schema",
-      "description": "Retrieves a value from an entity's schema.",
-      "funcName": "GetEntSchemaAny",
-      "paramTypes": [
-        {
-          "name": "entityHandle",
-          "type": "int32",
-          "ref": false,
-          "description": "The handle of the entity from which the value is to be retrieved."
-        },
-        {
-          "name": "className",
-          "type": "string",
-          "ref": false,
-          "description": "The name of the class."
-        },
-        {
-          "name": "memberName",
-          "type": "string",
-          "ref": false,
-          "description": "The name of the schema member."
-        }
-      ],
-      "retType": {
-        "type": "any",
-        "description": "A value at the given schema offset."
-      }
-    },
-    {
-      "name": "SetEntSchemaAny",
-      "group": "Schema",
-      "description": "Sets a value in an entity's schema.",
-      "funcName": "SetEntSchemaAny",
-      "paramTypes": [
-        {
-          "name": "entityHandle",
-          "type": "int32",
-          "ref": false,
-          "description": "The handle of the entity from which the value is to be retrieved."
-        },
-        {
-          "name": "className",
-          "type": "string",
-          "ref": false,
-          "description": "The name of the class."
-        },
-        {
-          "name": "memberName",
-          "type": "string",
-          "ref": false,
-          "description": "The name of the schema member."
-        },
-        {
-          "name": "value",
-          "type": "any",
-          "ref": false,
-          "description": "The value to set."
-        },
-        {
-          "name": "changeState",
-          "type": "bool",
-          "ref": false,
-          "description": "If true, change will be sent over the network."
-        }
-      ],
-      "retType": {
-        "type": "void",
-        "description": "A value at the given schema offset."
-      }
-    },
-    {
-      "name": "GetEntSchemaAny2",
-      "group": "Schema",
-      "description": "Retrieves a value from an entity's schema.",
-      "funcName": "GetEntSchemaAny2",
-      "paramTypes": [
-        {
-          "name": "entity",
-          "type": "ptr64",
-          "ref": false,
-          "description": "Pointer to the instance of the class where the value is to be set."
-        },
-        {
-          "name": "className",
-          "type": "string",
-          "ref": false,
-          "description": "The name of the class."
-        },
-        {
-          "name": "memberName",
-          "type": "string",
-          "ref": false,
-          "description": "The name of the schema member."
-        }
-      ],
-      "retType": {
-        "type": "any",
-        "description": "A value at the given schema offset."
-      }
-    },
-    {
-      "name": "SetEntSchemaAny2",
-      "group": "Schema",
-      "description": "Sets a value in an entity's schema.",
-      "funcName": "SetEntSchemaAny2",
-      "paramTypes": [
-        {
-          "name": "entity",
-          "type": "ptr64",
-          "ref": false,
-          "description": "Pointer to the instance of the class where the value is to be set."
-        },
-        {
-          "name": "className",
-          "type": "string",
-          "ref": false,
-          "description": "The name of the class."
-        },
-        {
-          "name": "memberName",
-          "type": "string",
-          "ref": false,
-          "description": "The name of the schema member."
-        },
-        {
-          "name": "value",
-          "type": "any",
-          "ref": false,
-          "description": "The value to set."
-        },
-        {
-          "name": "changeState",
-          "type": "bool",
-          "ref": false,
-          "description": "If true, change will be sent over the network."
-        }
-      ],
-      "retType": {
-        "type": "void",
-        "description": "A value at the given schema offset."
       }
     },
     {
@@ -10385,6 +10625,24 @@
       "retType": {
         "type": "ptr64",
         "description": "The handle of the entity from which to retrieve the weapon VData."
+      }
+    },
+    {
+      "name": "GetWeaponDefIndex",
+      "group": "Weapons",
+      "description": "etrieves the weapon definition index for a given entity handle.",
+      "funcName": "GetWeaponDefIndex",
+      "paramTypes": [
+        {
+          "name": "entityHandle",
+          "type": "int32",
+          "ref": false,
+          "description": "The handle of the entity from which to retrieve the weapon def index."
+        }
+      ],
+      "retType": {
+        "type": "uint16",
+        "description": "The weapon definition index as a `uint16_t`, or 0 if the entity handle is invalid."
       }
     }
   ]

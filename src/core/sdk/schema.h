@@ -116,265 +116,306 @@ namespace schema
 		"m_nMusicID",
 	};
 
-	enum class ElementType {
+	enum ElementType : int {
 		Invalid,
 		Single,
 		Array,
-		Vector
+		Collection,
+		Class
 	};
 
 	int32_t FindChainOffset(const char* className);
 	SchemaKey GetOffset(const char* className, uint32_t classKey, const char* memberName, uint32_t memberKey);
 	void NetworkStateChanged(int64 chainEntity, uint32 nLocalOffset, int nArrayIndex = 0xFFFFFFFF);
 
-	inline std::pair<ElementType, int> IsIntType(CSchemaType* type) {
+	inline schema::ElementType GetElementType(CSchemaType* type)
+	{
 		switch (type->m_eTypeCategory)
 		{
 			case SCHEMA_TYPE_FIXED_ARRAY:
 			{
-				auto* pTypeFixedArray = static_cast<CSchemaType_FixedArray*>(type);
-				auto* pElementType = pTypeFixedArray->m_pElementType;
-				if (pElementType->m_eTypeCategory == SCHEMA_TYPE_BUILTIN) {
-					auto* pElementTypeBuiltin = static_cast<CSchemaType_Builtin*>(pElementType);
-					switch (pElementTypeBuiltin->m_eBuiltinType)
+				return Array;
+			}
+			case SCHEMA_TYPE_ATOMIC:
+			{
+				if (type->m_eAtomicCategory == SCHEMA_ATOMIC_COLLECTION_OF_T)
+					return Collection;
+				else
+					return Invalid;
+			}
+		}
+		return Single;
+	}
+
+	inline std::pair<ElementType, int> IsIntType(CSchemaType* type)
+	{
+		switch (type->m_eTypeCategory)
+		{
+			case SCHEMA_TYPE_FIXED_ARRAY:
+			{
+				auto* pElementType = static_cast<CSchemaType_FixedArray*>(type)->m_pElementType;
+				switch (pElementType->m_eTypeCategory)
+				{
+					case SCHEMA_TYPE_BUILTIN:
 					{
-						case SCHEMA_BUILTIN_TYPE_BOOL:
-							return { ElementType::Array, sizeof(bool) };
-						case SCHEMA_BUILTIN_TYPE_CHAR:
-							return { ElementType::Array, sizeof(char) };
-						case SCHEMA_BUILTIN_TYPE_INT8:
-							return { ElementType::Array, sizeof(int8) };
-						case SCHEMA_BUILTIN_TYPE_UINT8:
-							return { ElementType::Array, sizeof(uint8) };
-						case SCHEMA_BUILTIN_TYPE_INT16:
-							return { ElementType::Array, sizeof(int16) };
-						case SCHEMA_BUILTIN_TYPE_UINT16:
-							return { ElementType::Array, sizeof(uint16) };
-						case SCHEMA_BUILTIN_TYPE_INT32:
-							return { ElementType::Array, sizeof(int32) };
-						case SCHEMA_BUILTIN_TYPE_UINT32:
-							return { ElementType::Array, sizeof(uint32) };
-						case SCHEMA_BUILTIN_TYPE_INT64:
-							return { ElementType::Array, sizeof(int64) };
-						case SCHEMA_BUILTIN_TYPE_UINT64:
-							return { ElementType::Array, sizeof(uint64_t) };
-						case SCHEMA_BUILTIN_TYPE_COUNT:
-							return { ElementType::Array, sizeof(size_t) };
-						default:
-							return { ElementType::Invalid, -1 };
+						switch (static_cast<CSchemaType_Builtin*>(pElementType)->m_eBuiltinType)
+						{
+							case SCHEMA_BUILTIN_TYPE_BOOL:
+								return { Array, sizeof(bool) };
+							case SCHEMA_BUILTIN_TYPE_CHAR:
+								return { Array, sizeof(char) };
+							case SCHEMA_BUILTIN_TYPE_INT8:
+								return { Array, sizeof(int8) };
+							case SCHEMA_BUILTIN_TYPE_UINT8:
+								return { Array, sizeof(uint8) };
+							case SCHEMA_BUILTIN_TYPE_INT16:
+								return { Array, sizeof(int16) };
+							case SCHEMA_BUILTIN_TYPE_UINT16:
+								return { Array, sizeof(uint16) };
+							case SCHEMA_BUILTIN_TYPE_INT32:
+								return { Array, sizeof(int32) };
+							case SCHEMA_BUILTIN_TYPE_UINT32:
+								return { Array, sizeof(uint32) };
+							case SCHEMA_BUILTIN_TYPE_INT64:
+								return { Array, sizeof(int64) };
+							case SCHEMA_BUILTIN_TYPE_UINT64:
+								return { Array, sizeof(uint64_t) };
+							case SCHEMA_BUILTIN_TYPE_COUNT:
+								return { Array, sizeof(size_t) };
+							default:
+								return { Invalid, -1 };
+						}
 					}
+					case SCHEMA_TYPE_DECLARED_CLASS:
+					{
+						int nSize = static_cast<CSchemaType_DeclaredClass*>(pElementType)->m_pClassInfo->m_nSize;
+						if (nSize <= sizeof(double))
+						{
+							return { Array, nSize };
+						}
+						return { Invalid, -1 };
+					}
+					case SCHEMA_TYPE_DECLARED_ENUM:
+						return { Array, static_cast<CSchemaType_DeclaredEnum*>(pElementType)->m_pEnumInfo->m_nSize };
+					case SCHEMA_TYPE_POINTER:
+						return { Array, sizeof(void*) };
+					default:
+						break;
 				}
-				return { ElementType::Invalid, -1 };
+				return { Invalid, -1 };
 			}
 			case SCHEMA_TYPE_DECLARED_CLASS:
 			{
-				std::string_view typeClassName(static_cast<CSchemaType_DeclaredClass*>(type)->m_pClassInfo->m_pszName);
-				if (typeClassName.find("UtlVector") != std::string::npos) {
-					if (typeClassName.find('*') != std::string::npos) {
-						return { ElementType::Vector, sizeof(uint64) };
-					} else if (typeClassName.find("int8") != std::string::npos) {
-						return { ElementType::Vector, sizeof(int8) };
-					} else if (typeClassName.find("int16") != std::string::npos) {
-						return { ElementType::Vector, sizeof(int16) };
-					} else if (typeClassName.find("int32") != std::string::npos) {
-						return { ElementType::Vector, sizeof(int32) };
-					} else if (typeClassName.find("int64") != std::string::npos) {
-						return { ElementType::Vector, sizeof(int64) };
-					} else if (typeClassName.find("uint8") != std::string::npos) {
-						return { ElementType::Vector, sizeof(uint8) };
-					} else if (typeClassName.find("uint16") != std::string::npos) {
-						return { ElementType::Vector, sizeof(uint16) };
-					} else if (typeClassName.find("uint32") != std::string::npos) {
-						return { ElementType::Vector, sizeof(uint32) };
-					} else if (typeClassName.find("uint64") != std::string::npos) {
-						return { ElementType::Vector, sizeof(uint64) };
+				int nSize = static_cast<CSchemaType_DeclaredClass*>(type)->m_pClassInfo->m_nSize;
+				if (nSize <= sizeof(void*))
+				{
+					return { Single, nSize };
+				}
+				return { Class, -1 };
+			}
+			case SCHEMA_TYPE_ATOMIC:
+			{
+				if (type->m_eAtomicCategory == SCHEMA_ATOMIC_COLLECTION_OF_T)
+				{
+					switch (static_cast<CSchemaType_Atomic_CollectionOfT*>(type)->m_nElementSize)
+					{
+						case sizeof(int8):
+							return { Collection, sizeof(int8) };
+						case sizeof(int16):
+							return { Collection, sizeof(int16) };
+						case sizeof(int32):
+							return { Collection, sizeof(int32) };
+						case sizeof(int64):
+							return { Collection, sizeof(int64) };
+						default:
+							break;
 					}
 				}
-				return { ElementType::Invalid, -1 };
+				return { Invalid, -1 };
 			}
 			case SCHEMA_TYPE_BUILTIN:
 			{
-				auto* pTypeBuiltin = static_cast<CSchemaType_Builtin*>(type);
-				switch (pTypeBuiltin->m_eBuiltinType) {
+				switch (static_cast<CSchemaType_Builtin*>(type)->m_eBuiltinType) {
 					case SCHEMA_BUILTIN_TYPE_BOOL:
-						return { ElementType::Single, sizeof(bool) };
+						return { Single, sizeof(bool) };
 					case SCHEMA_BUILTIN_TYPE_CHAR:
-						return { ElementType::Single, sizeof(char) };
+						return { Single, sizeof(char) };
 					case SCHEMA_BUILTIN_TYPE_INT8:
-						return { ElementType::Single, sizeof(int8) };
+						return { Single, sizeof(int8) };
 					case SCHEMA_BUILTIN_TYPE_UINT8:
-						return { ElementType::Single, sizeof(uint8) };
+						return { Single, sizeof(uint8) };
 					case SCHEMA_BUILTIN_TYPE_INT16:
-						return { ElementType::Single, sizeof(int16) };
+						return { Single, sizeof(int16) };
 					case SCHEMA_BUILTIN_TYPE_UINT16:
-						return { ElementType::Single, sizeof(uint16) };
+						return { Single, sizeof(uint16) };
 					case SCHEMA_BUILTIN_TYPE_INT32:
-						return { ElementType::Single, sizeof(int32) };
+						return { Single, sizeof(int32) };
 					case SCHEMA_BUILTIN_TYPE_UINT32:
-						return { ElementType::Single, sizeof(uint32) };
+						return { Single, sizeof(uint32) };
 					case SCHEMA_BUILTIN_TYPE_INT64:
-						return { ElementType::Single, sizeof(int64) };
+						return { Single, sizeof(int64) };
 					case SCHEMA_BUILTIN_TYPE_UINT64:
-						return { ElementType::Single, sizeof(uint64_t) };
+						return { Single, sizeof(uint64_t) };
 					case SCHEMA_BUILTIN_TYPE_COUNT:
-						return { ElementType::Single, sizeof(size_t) };
+						return { Single, sizeof(size_t) };
 					default:
-						return { ElementType::Invalid, -1 };
+						return { Invalid, -1 };
 				}
+			}
+			case SCHEMA_TYPE_DECLARED_ENUM:
+			{
+				return { Single, static_cast<CSchemaType_DeclaredEnum*>(type)->m_pEnumInfo->m_nSize };
 			}
 			case SCHEMA_TYPE_POINTER:
 			{
-				return { ElementType::Single, sizeof(void*) };
+				return { Single, sizeof(void*) };
 			}
 		}
 
-		return { ElementType::Invalid, -1 };
+		return { Invalid, -1 };
 	}
 
-	inline std::pair<ElementType, int> IsFloatType(CSchemaType* type) {
+	inline std::pair<ElementType, int> IsFloatType(CSchemaType* type)
+	{
 		switch (type->m_eTypeCategory)
 		{
 			case SCHEMA_TYPE_FIXED_ARRAY:
 			{
-				auto* pTypeFixedArray = static_cast<CSchemaType_FixedArray*>(type);
-				auto* pElementType = pTypeFixedArray->m_pElementType;
-				if (pElementType->m_eTypeCategory == SCHEMA_TYPE_BUILTIN) {
-					auto* pElementTypeBuiltin = static_cast<CSchemaType_Builtin*>(pElementType);
-					switch (pElementTypeBuiltin->m_eBuiltinType)
+				auto* pElementType = static_cast<CSchemaType_FixedArray*>(type)->m_pElementType;
+				switch (pElementType->m_eTypeCategory)
+				{
+					case SCHEMA_TYPE_BUILTIN:
 					{
-						case SCHEMA_BUILTIN_TYPE_FLOAT32:
-							return { ElementType::Array, sizeof(float32) };
-						case SCHEMA_BUILTIN_TYPE_FLOAT64:
-							return { ElementType::Array, sizeof(float64) };
-						default:
-							return { ElementType::Invalid, -1 };
+						auto* pElementTypeBuiltin = static_cast<CSchemaType_Builtin*>(pElementType);
+						switch (pElementTypeBuiltin->m_eBuiltinType)
+						{
+							case SCHEMA_BUILTIN_TYPE_FLOAT32:
+								return { Array, sizeof(float32) };
+							case SCHEMA_BUILTIN_TYPE_FLOAT64:
+								return { Array, sizeof(float64) };
+							default:
+								return { Invalid, -1 };
+						}
 					}
+					case SCHEMA_TYPE_DECLARED_CLASS:
+					{
+						int nSize = static_cast<CSchemaType_DeclaredClass*>(pElementType)->m_pClassInfo->m_nSize;
+						if (nSize <= sizeof(double))
+						{
+							return { Array, nSize };
+						}
+						return { Invalid, -1 };
+					}
+					default:
+						break;
 				}
-				return { ElementType::Invalid, -1 };
+				return { Invalid, -1 };
 			}
 			case SCHEMA_TYPE_DECLARED_CLASS:
 			{
-				std::string_view typeClassName(static_cast<CSchemaType_DeclaredClass*>(type)->m_pClassInfo->m_pszName);
-				if (typeClassName.find("UtlVector") != std::string::npos) {
-					if (typeClassName.find("float32") != std::string::npos) {
-						return { ElementType::Vector, sizeof(float32) };
-					} else if (typeClassName.find("float64") != std::string::npos) {
-						return { ElementType::Vector, sizeof(float64) };
+				int nSize = static_cast<CSchemaType_DeclaredClass*>(type)->m_pClassInfo->m_nSize;
+				if (nSize <= sizeof(double))
+				{
+					return { Single, nSize };
+				}
+				return { Invalid, -1 };
+			}
+			case SCHEMA_TYPE_ATOMIC:
+			{
+				if (type->m_eAtomicCategory == SCHEMA_ATOMIC_COLLECTION_OF_T)
+				{
+					switch (static_cast<CSchemaType_Atomic_CollectionOfT*>(type)->m_nElementSize)
+					{
+						case sizeof(float32):
+							return { Collection, sizeof(float32) };
+						case sizeof(float64):
+							return { Collection, sizeof(float64) };
+						default:
+							break;
 					}
 				}
-				return { ElementType::Invalid, -1 };
+				return { Invalid, -1 };
 			}
 			case SCHEMA_TYPE_BUILTIN:
 			{
-				auto* pTypeBuiltin = static_cast<CSchemaType_Builtin*>(type);
-				switch (pTypeBuiltin->m_eBuiltinType) {
+				switch (static_cast<CSchemaType_Builtin*>(type)->m_eBuiltinType) {
 					case SCHEMA_BUILTIN_TYPE_FLOAT32:
-						return { ElementType::Single, sizeof(float32) };
+						return { Single, sizeof(float32) };
 					case SCHEMA_BUILTIN_TYPE_FLOAT64:
-						return { ElementType::Single, sizeof(float64) };
+						return { Single, sizeof(float64) };
 					default:
-						return { ElementType::Invalid, -1 };
+						return { Invalid, -1 };
 				}
 			}
 		}
 
-		return { ElementType::Invalid, -1 };
+		return { Invalid, -1 };
 	}
 
-	inline ElementType IsStringType(CSchemaType* type) {
+	inline ElementType IsPlainType(CSchemaType* type, size_t size)
+	{
 		switch (type->m_eTypeCategory)
 		{
 			case SCHEMA_TYPE_FIXED_ARRAY:
 			{
-				auto* pTypeFixedArray = static_cast<CSchemaType_FixedArray*>(type);
-				auto* pElementType = pTypeFixedArray->m_pElementType;
-				if (pElementType->m_eTypeCategory == SCHEMA_TYPE_DECLARED_CLASS) {
-					std::string_view typeClassName(static_cast<CSchemaType_DeclaredClass*>(pElementType)->m_pClassInfo->m_pszName);
-					if (typeClassName.find("CUtlString") != std::string::npos) {
-						return ElementType::Array;
-					}
+				auto* pElementType = static_cast<CSchemaType_FixedArray*>(type)->m_pElementType;
+				if (pElementType->m_eTypeCategory == SCHEMA_TYPE_ATOMIC && pElementType->m_eAtomicCategory == SCHEMA_ATOMIC_PLAIN) {
+					if (static_cast<CSchemaType_Atomic*>(pElementType)->m_nSize == size)
+						return Array;
 				}
-				return ElementType::Invalid;
+				return Invalid;
 			}
-			case SCHEMA_TYPE_DECLARED_CLASS:
+			case SCHEMA_TYPE_ATOMIC:
 			{
-				std::string_view typeClassName(static_cast<CSchemaType_DeclaredClass*>(type)->m_pClassInfo->m_pszName);
-				if (typeClassName.find("UtlVector") != std::string::npos) {
-					if (typeClassName.find("CUtlString") != std::string::npos) {
-						return ElementType::Vector;
-					}
-				} else if (typeClassName.find("CUtlString") != std::string::npos) {
-					return ElementType::Single;
+				switch (type->m_eAtomicCategory)
+				{
+					case SCHEMA_ATOMIC_PLAIN:
+						if (static_cast<CSchemaType_Atomic*>(type)->m_nSize == size)
+							return Single;
+						break;
+					case SCHEMA_ATOMIC_COLLECTION_OF_T:
+						if (static_cast<CSchemaType_Atomic_CollectionOfT*>(type)->m_nElementSize == size)
+							return Collection;
+						break;
 				}
-				return ElementType::Invalid;
+				return Invalid;
 			}
 		}
 
-		return ElementType::Invalid;
+		return Invalid;
 	}
 
-	inline ElementType IsVectorType(CSchemaType* type) {
+	inline ElementType IsAtomicType(CSchemaType* type, size_t size)
+	{
 		switch (type->m_eTypeCategory)
 		{
 			case SCHEMA_TYPE_FIXED_ARRAY:
 			{
-				auto* pTypeFixedArray = static_cast<CSchemaType_FixedArray*>(type);
-				auto* pElementType = pTypeFixedArray->m_pElementType;
-				if (pElementType->m_eTypeCategory == SCHEMA_TYPE_DECLARED_CLASS) {
-					std::string_view typeClassName(static_cast<CSchemaType_DeclaredClass*>(pElementType)->m_pClassInfo->m_pszName);
-					if (typeClassName.find("Vector") != std::string::npos) {
-						return ElementType::Array;
-					}
+				auto* pElementType = static_cast<CSchemaType_FixedArray*>(type)->m_pElementType;
+				if (pElementType->m_eTypeCategory == SCHEMA_TYPE_ATOMIC && pElementType->m_eAtomicCategory == SCHEMA_ATOMIC_T) {
+					if (static_cast<CSchemaType_Atomic_T*>(pElementType)->m_nSize == size)
+						return Array;
 				}
-				return ElementType::Invalid;
+				return Invalid;
 			}
-			case SCHEMA_TYPE_DECLARED_CLASS:
+			case SCHEMA_TYPE_ATOMIC:
 			{
-				std::string_view typeClassName(static_cast<CSchemaType_DeclaredClass*>(type)->m_pClassInfo->m_pszName);
-				if (typeClassName.find("UtlVector") != std::string::npos) {
-					if (typeClassName.find("Vector") != std::string::npos) {
-						return ElementType::Vector;
-					}
-				} else if (typeClassName.find("Vector") != std::string::npos) {
-					return ElementType::Single;
+				switch (type->m_eAtomicCategory)
+				{
+					case SCHEMA_ATOMIC_T:
+						if (static_cast<CSchemaType_Atomic_T*>(type)->m_nSize == size)
+							return Single;
+						break;
+					case SCHEMA_ATOMIC_COLLECTION_OF_T:
+						if (static_cast<CSchemaType_Atomic_CollectionOfT*>(type)->m_nElementSize == size)
+							return Collection;
+						break;
 				}
-				return ElementType::Invalid;
+				return Invalid;
 			}
 		}
 
-		return ElementType::Invalid;
-	}
-
-	inline ElementType IsHandleType(CSchemaType* type) {
-		switch (type->m_eTypeCategory)
-		{
-			case SCHEMA_TYPE_FIXED_ARRAY:
-			{
-				auto* pTypeFixedArray = static_cast<CSchemaType_FixedArray*>(type);
-				auto* pElementType = pTypeFixedArray->m_pElementType;
-				if (pElementType->m_eTypeCategory == SCHEMA_TYPE_DECLARED_CLASS) {
-					std::string_view typeClassName(static_cast<CSchemaType_DeclaredClass*>(pElementType)->m_pClassInfo->m_pszName);
-					if (typeClassName.find("CHandle") != std::string::npos) {
-						return ElementType::Array;
-					}
-				}
-				return ElementType::Invalid;
-			}
-			case SCHEMA_TYPE_DECLARED_CLASS:
-			{
-				std::string_view typeClassName(static_cast<CSchemaType_DeclaredClass*>(type)->m_pClassInfo->m_pszName);
-				if (typeClassName.find("UtlVector") != std::string::npos) {
-					if (typeClassName.find("CHandle") != std::string::npos) {
-						return ElementType::Vector;
-					}
-				} else if (typeClassName.find("CHandle") != std::string::npos) {
-					return ElementType::Single;
-				}
-				return ElementType::Invalid;
-			}
-		}
-
-		return ElementType::Invalid;
+		return Invalid;
 	}
 
 } // namespace schema
