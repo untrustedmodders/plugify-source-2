@@ -1053,7 +1053,7 @@ extern "C" PLUGIN_API void SetEntSchemaString2(CEntityInstance* entity, const pl
  * @param className The name of the class.
  * @param memberName The name of the schema member.
  * @param element Element # (starting from 0) if schema is an array.
- * @return A string value at the given schema offset.
+ * @return A vector value at the given schema offset.
  */
 extern "C" PLUGIN_API plg::vec3 GetEntSchemaVector3D2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int element)
 {
@@ -1153,7 +1153,7 @@ extern "C" PLUGIN_API void SetEntSchemaVector3D2(CEntityInstance* entity, const 
  * @param className The name of the class.
  * @param memberName The name of the schema member.
  * @param element Element # (starting from 0) if schema is an array.
- * @return A string value at the given schema offset.
+ * @return A vector value at the given schema offset.
  */
 extern "C" PLUGIN_API plg::vec2 GetEntSchemaVector2D2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int element)
 {
@@ -1255,7 +1255,7 @@ extern "C" PLUGIN_API void SetEntSchemaVector2D2(CEntityInstance* entity, const 
  * @param className The name of the class.
  * @param memberName The name of the schema member.
  * @param element Element # (starting from 0) if schema is an array.
- * @return A string value at the given schema offset.
+ * @return A vector value at the given schema offset.
  */
 extern "C" PLUGIN_API plg::vec4 GetEntSchemaVector4D2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int element)
 {
@@ -1282,8 +1282,6 @@ extern "C" PLUGIN_API plg::vec4 GetEntSchemaVector4D2(CEntityInstance* entity, c
 			return {};
 	}
 }
-
-//
 
 /**
  * @brief Sets a vector value in an entity's schema.
