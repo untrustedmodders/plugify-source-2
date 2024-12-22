@@ -6,10 +6,18 @@
 #include <plugify/vector.hpp>
 
 namespace plg {
-	struct invalid {};
-	struct none {};
-	union function { void* ptr; };
+	struct invalid {}; //!< Represents an invalid type.
+	struct none {};	//!< Represents the absence of a value.
+	union function { void* ptr; }; //!< Represents a function pointer as a union for flexibility.
 
+	/**
+	 * @brief A variant type capable of holding various data types,
+	 *	   including primitives, arrays, and custom objects.
+	 * 
+	 * @note The order of types in the `any` variant corresponds directly to
+	 *	   the `ValueType` enumeration, ensuring a 1:1 mapping for efficient
+	 *	   type resolution at runtime.
+	 */
 	using any = variant<
 			invalid,
 
@@ -47,6 +55,10 @@ namespace plg {
 			vector<double>,
 			vector<string>,
 			vector<variant<none>>,
+			vector<vec2>,
+			vector<vec3>,
+			vector<vec4>,
+			vector<mat4x4>,
 			vec2,
 			vec3,
 			vec4
