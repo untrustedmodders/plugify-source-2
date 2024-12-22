@@ -688,6 +688,32 @@ extern "C" PLUGIN_API void StripWeapons(int clientIndex, bool removeSuit)
 }
 
 /**
+ * @brief Removes a player's item.
+ *
+ * @param clientIndex Index of the client.
+ * @param weaponHandle Handle of weapon to remove.
+ */
+extern "C" PLUGIN_API void RemovePlayerItem(int clientIndex, int weaponHandle)
+{
+	auto pController = utils::GetController(CPlayerSlot(clientIndex));
+	if (!pController)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot 'RemovePlayerItem' on invalid client index: %d\n", clientIndex);
+		return;
+	}
+
+	CBasePlayerWeapon* pWeapon = static_cast<CBasePlayerWeapon*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)weaponHandle)));
+	if (!pWeapon)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot 'RemovePlayerItem' on invalid weapon handle: %d\n", weaponHandle);
+		return;
+	}
+
+	pController->GetPawn()->RemovePlayerItem(pWeapon);
+}
+
+
+/**
  * @brief Gives a named item (e.g., weapon) to a client.
  *
  * @param clientIndex The index of the client.

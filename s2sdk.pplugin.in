@@ -721,6 +721,29 @@
         }
     },
     {
+        "name": "RemovePlayerItem",
+        "group": "Clients",
+        "description": "Removes a player's item.",
+        "funcName": "RemovePlayerItem",
+        "paramTypes": [
+            {
+                "name": "clientIndex",
+                "type": "int32",
+                "ref": false,
+                "description": "The index of the client."
+            },
+            {
+                "name": "weaponHandle",
+                "type": "int32",
+                "ref": false,
+                "description": "Handle of weapon to remove."
+            }
+        ],
+        "retType": {
+            "type": "void"
+        }
+    },
+    {
         "name": "GiveNamedItem",
         "group": "Clients",
         "description": "Gives a named item (e.g., weapon) to a client.",

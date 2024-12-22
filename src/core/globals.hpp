@@ -102,12 +102,16 @@ class CBaseModelEntity;
 class CGameRules;
 class CTakeDamageInfo;
 class INetworkStringTable;
+class CBasePlayerPawn;
+class CBasePlayerWeapon;
 
 namespace addresses
 {
 	inline IGameEventListener2* (*GetLegacyGameEventListener)(CPlayerSlot slot);
 
 	//inline void (*TracePlayerBBox)(const Vector& start, const Vector& end, const bbox_t& bounds, CTraceFilterS2* filter, trace_t_s2& pm);
+
+	inline void (*CBasePlayerPawn_RemovePlayerItem)(CBasePlayerPawn* player, CBasePlayerWeapon* weapon);
 
 	inline void (*CCSPlayerController_SwitchTeam)(CCSPlayerController* controller, int team);
 
