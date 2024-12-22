@@ -57,31 +57,30 @@ namespace plg {
 					float m20, m21, m22, m23;
 					float m30, m31, m32, m33;
 				};
-				float data[4][4];
+				float m[4][4];
+				float data[16];
 			};
 		};
 	}
 
 	PLUGIFY_WARN_POP()
 
-	[[nodiscard]] constexpr bool operator==(const vec2& lhs, const vec2& rhs) {
+	constexpr bool operator==(const vec2& lhs, const vec2& rhs) {
 		return lhs.x == rhs.x && lhs.y == rhs.y;
 	}
 
-	[[nodiscard]] constexpr bool operator==(const vec3& lhs, const vec3& rhs) {
+	constexpr bool operator==(const vec3& lhs, const vec3& rhs) {
 		return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z;
 	}
 
-	[[nodiscard]] constexpr bool operator==(const vec4& lhs, const vec4& rhs) {
+	constexpr bool operator==(const vec4& lhs, const vec4& rhs) {
 		return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z && lhs.w == rhs.w;
 	}
 
-	[[nodiscard]] constexpr bool operator==(const mat4x4& lhs, const mat4x4& rhs) {
-		for (int i = 0; i < 4; ++i) {
-			for (int j = 0; j < 4; ++j) {
-				if (lhs.data[i][j] != rhs.data[i][j])
-					return false;
-			}
+	constexpr bool operator==(const mat4x4& lhs, const mat4x4& rhs) {
+		for (int i = 0; i < 16; ++i) {
+			if (lhs.data[i] != rhs.data[i])
+				return false;
 		}
 		return true;
 	}
