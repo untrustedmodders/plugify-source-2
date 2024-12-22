@@ -126,7 +126,7 @@
 			"CGameRules_TerminateRound"
 			{
 				"library"   "server"
-				"windows"   "48 8B C4 4C 89 48 ? 48 89 48 ? 55 56"
+				"windows"   "48 8B C4 4C 89 48 ? 48 89 48 ? 55 41 55"
 				"linux"	    "55 48 89 E5 41 57 41 56 41 55 41 54 49 89 FC 53 48 81 EC 88 00 00 00 48 8D 05 ? ? ? ?"
 			}
 			// "chicken"is passed to this
@@ -212,8 +212,14 @@
 			"CCSPlayer_ItemServices_CanAcquire"
 			{
 				"library"   "server"
-				"windows"   "48 8B C4 44 89 40 ? 48 89 50 ? 48 89 48"
+				"windows"   "44 89 44 24 ? 48 89 54 24 ? 48 89 4C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8B EC"
 				"linux"     "55 48 89 E5 41 57 41 56 41 55 49 89 CD 41 54 53 48 83 EC"
+			}
+			"CBasePlayerPawn_RemovePlayerItem"
+			{
+				"library"   "server"
+				"windows"   "48 ? ? 0F 84 ? ? ? ? 48 89 5C 24 ? 57 48 ? ? ? 48 ? ? 48 ? ? E8"
+				"linux"     "55 48 89 ? 41 ? 49 89 ? 41 ? 49 89 ? E8 ? ? ? ? 49 39"
 			}
 			"GetCSWeaponDataFromKey"
 			{
