@@ -279,6 +279,11 @@ public:
 		addresses::UTIL_Remove(this);
 	}
 
+	void AcceptInput(const char* pInputName, variant_t* value, CEntityInstance* pActivator = nullptr, CEntityInstance* pCaller = nullptr, int outputId = 0)
+	{
+		addresses::CEntityInstance_AcceptInput(this, pInputName, pActivator, pCaller, value, outputId);
+	}
+
 	void SetMoveType(MoveType_t nMoveType)
 	{
 		addresses::CBaseEntity_SetMoveType(this, nMoveType, m_MoveCollide);

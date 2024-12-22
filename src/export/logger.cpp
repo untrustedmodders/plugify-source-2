@@ -23,9 +23,7 @@ PLUGIFY_WARN_IGNORE(4190)
  */
 extern "C" PLUGIN_API int RegisterLoggingChannel(const plg::string& name, int iFlags, int verbosity, int color)
 {
-	Color spewColor;
-	spewColor.SetRawColor(color);
-	return LoggingSystem_RegisterLoggingChannel(name.c_str(), nullptr, iFlags, static_cast<LoggingVerbosity_t>(verbosity), spewColor);
+	return LoggingSystem_RegisterLoggingChannel(name.c_str(), nullptr, iFlags, static_cast<LoggingVerbosity_t>(verbosity), *reinterpret_cast<Color*>(&color));
 }
 
 /**
@@ -224,9 +222,7 @@ extern "C" PLUGIN_API int Log(int channelID, int severity, const plg::string& me
  */
 extern "C" PLUGIN_API int LogColored(int channelID, int severity, int color, const plg::string& message)
 {
-	Color spewColor;
-	spewColor.SetRawColor(color);
-	return LoggingSystem_LogDirect(channelID, static_cast<LoggingSeverity_t>(severity), spewColor, message.c_str());
+	return LoggingSystem_LogDirect(channelID, static_cast<LoggingSeverity_t>(severity), *reinterpret_cast<Color*>(&color), message.c_str());
 }
 
 /**
@@ -268,9 +264,7 @@ extern "C" PLUGIN_API int LogFull(int channelID, int severity, const plg::string
 extern "C" PLUGIN_API int LogFullColored(int channelID, int severity, const plg::string& file, int line, const plg::string& function, int color, const plg::string& message)
 {
 	LeafCodeInfo_t codeInfo{file.c_str(), line, function.c_str()};
-	Color spewColor;
-	spewColor.SetRawColor(color);
-	return LoggingSystem_LogDirect(channelID, static_cast<LoggingSeverity_t>(severity), codeInfo, spewColor, message.c_str());
+	return LoggingSystem_LogDirect(channelID, static_cast<LoggingSeverity_t>(severity), codeInfo, *reinterpret_cast<Color*>(&color), message.c_str());
 }
 
 PLUGIFY_WARN_POP()

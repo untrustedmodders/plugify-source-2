@@ -423,7 +423,7 @@ extern "C" PLUGIN_API plg::vec3 GetClientAbsAngles(int clientIndex)
 	}
 
 	const QAngle& ang = pController->m_CBodyComponent->m_pSceneNode->m_angRotation();
-    return *reinterpret_cast<const plg::vec3*>(&ang);
+	return *reinterpret_cast<const plg::vec3*>(&ang);
 }
 
 /**
@@ -441,7 +441,7 @@ extern "C" PLUGIN_API plg::vec3 GetClientEyeAngles(int clientIndex)
 	}
 
 	const QAngle& ang = static_cast<CCSPlayerPawn*>(pController->GetPawn())->m_angEyeAngles();
-    return *reinterpret_cast<const plg::vec3*>(&ang);
+	return *reinterpret_cast<const plg::vec3*>(&ang);
 }
 
 /**

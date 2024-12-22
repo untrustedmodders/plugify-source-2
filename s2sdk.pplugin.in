@@ -5409,6 +5409,165 @@
       }
     },
     {
+      "name": "AcceptInput",
+      "group": "Entities",
+      "description": "Invokes a named input method on a specified entity.",
+      "funcName": "AcceptInput",
+      "paramTypes": [
+        {
+          "name": "entityHandle",
+          "type": "int32",
+          "ref": false,
+          "description": "The handle of the target entity that will receive the input."
+        },
+        {
+          "name": "inputName",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the input action to invoke."
+        },
+        {
+          "name": "activatorHandle",
+          "type": "int32",
+          "ref": false,
+          "description": "The handle of the entity that initiated the sequence of actions."
+        },
+        {
+          "name": "callerHandle",
+          "type": "int32",
+          "ref": false,
+          "description": "The handle of the entity sending this event."
+        },
+        {
+          "name": "value",
+          "type": "any",
+          "ref": false,
+          "description": "The value associated with the input action."
+        },
+        {
+          "name": "type",
+          "type": "int32",
+          "ref": false,
+          "description": "The type or classification of the value.",
+          "enum": {
+            "name": "FieldType",
+            "description": "Represents the possible types of data that can be passed as a value in input actions.",
+            "values": [
+              {
+                "value": 0,
+                "name": "Auto",
+                "description": "Automatically detect the type of the value."
+              },
+              {
+                "value": 1,
+                "name": "Float32",
+                "description": "A 32-bit floating-point number."
+              },
+              {
+                "value": 2,
+                "name": "Float64",
+                "description": "A 64-bit floating-point number."
+              },
+              {
+                "value": 3,
+                "name": "Int32",
+                "description": "A 32-bit signed integer."
+              },
+              {
+                "value": 4,
+                "name": "UInt32",
+                "description": "A 32-bit unsigned integer."
+              },
+              {
+                "value": 5,
+                "name": "Int64",
+                "description": "A 64-bit signed integer."
+              },
+              {
+                "value": 6,
+                "name": "UInt64",
+                "description": "A 64-bit unsigned integer."
+              },
+              {
+                "value": 7,
+                "name": "Boolean",
+                "description": "A boolean value (true or false)."
+              },
+              {
+                "value": 8,
+                "name": "Character",
+                "description": "A single character."
+              },
+              {
+                "value": 9,
+                "name": "String",
+                "description": "A managed string object."
+              },
+              {
+                "value": 10,
+                "name": "CString",
+                "description": "A null-terminated C-style string."
+              },
+              {
+                "value": 11,
+                "name": "HScript",
+                "description": "A script handle, typically for scripting integration."
+              },
+              {
+                "value": 12,
+                "name": "EHandle",
+                "description": "An entity handle, used to reference an entity within the system."
+              },
+              {
+                "value": 13,
+                "name": "Resource",
+                "description": "A resource handle, such as a file or asset reference."
+              },
+              {
+                "value": 14,
+                "name": "Vector3d",
+                "description": "A 3D vector, typically representing position or direction."
+              },
+              {
+                "value": 15,
+                "name": "Vector2d",
+                "description": "A 2D vector, for planar data or coordinates."
+              },
+              {
+                "value": 16,
+                "name": "Vector4d",
+                "description": "A 4D vector, often used for advanced mathematical representations."
+              },
+              {
+                "value": 17,
+                "name": "Color32",
+                "description": "A 32-bit color value (RGBA)."
+              },
+              {
+                "value": 18,
+                "name": "QAngle",
+                "description": "A quaternion-based angle representation."
+              },
+              {
+                "value": 19,
+                "name": "Quaternion",
+                "description": "A quaternion, used for rotation and orientation calculations."
+              }
+            ]
+          }
+        },
+        {
+          "name": "outputId",
+          "type": "int32",
+          "ref": false,
+          "description": "An identifier for tracking the output of this operation."
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
       "name": "HookEvent",
       "group": "Events",
       "description": "Creates a hook for when a game event is fired.",

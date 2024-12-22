@@ -1,4 +1,5 @@
 #include <core/output_manager.hpp>
+#include <core/sdk/utils.h>
 #include <core/sdk/entity/cbaseentity.h>
 #include <core/sdk/entity/cbasemodelentity.h>
 #include <plugin_export.h>
@@ -23,7 +24,7 @@ PLUGIFY_WARN_IGNORE(4190)
  */
 extern "C" PLUGIN_API void* EntIndexToEntPointer(int entityIndex)
 {
-    return g_pGameEntitySystem->GetEntityInstance(CEntityIndex(entityIndex));
+	return g_pGameEntitySystem->GetEntityInstance(CEntityIndex(entityIndex));
 }
 
 /**
@@ -42,7 +43,7 @@ extern "C" PLUGIN_API int EntPointerToEntIndex(CEntityInstance* entity)
 		return -1;
 	}
 
-    return entity->GetRefEHandle().GetEntryIndex();
+	return entity->GetRefEHandle().GetEntryIndex();
 }
 
 /**
@@ -61,7 +62,7 @@ extern "C" PLUGIN_API int EntPointerToEntHandle(CEntityInstance* entity)
 		return INVALID_EHANDLE_INDEX;
 	}
 
-    return entity->GetRefEHandle().ToInt();
+	return entity->GetRefEHandle().ToInt();
 }
 
 /**
@@ -75,13 +76,13 @@ extern "C" PLUGIN_API int EntPointerToEntHandle(CEntityInstance* entity)
  */
 extern "C" PLUGIN_API void* EntHandleToEntPointer(int entityHandle)
 {
-    CEntityHandle handle((uint32)entityHandle);
-    if (!handle.IsValid())
-    {
-        return nullptr;
-    }
+	CEntityHandle handle((uint32)entityHandle);
+	if (!handle.IsValid())
+	{
+		return nullptr;
+	}
 
-    return g_pGameEntitySystem->GetEntityInstance(handle);
+	return g_pGameEntitySystem->GetEntityInstance(handle);
 }
 
 /**
@@ -95,13 +96,13 @@ extern "C" PLUGIN_API void* EntHandleToEntPointer(int entityHandle)
  */
 extern "C" PLUGIN_API int EntIndexToEntHandle(int entityIndex)
 {
-    CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
-    if (!pEntity)
-    {
-        return INVALID_EHANDLE_INDEX;
-    }
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
+	if (!pEntity)
+	{
+		return INVALID_EHANDLE_INDEX;
+	}
 
-    return pEntity->GetRefEHandle().ToInt();
+	return pEntity->GetRefEHandle().ToInt();
 }
 
 /**
@@ -115,19 +116,19 @@ extern "C" PLUGIN_API int EntIndexToEntHandle(int entityIndex)
  */
 extern "C" PLUGIN_API int EntHandleToEntIndex(int entityHandle)
 {
-    CEntityHandle handle((uint32)entityHandle);
-    if (!handle.IsValid())
-    {
-        return -1;
-    }
+	CEntityHandle handle((uint32)entityHandle);
+	if (!handle.IsValid())
+	{
+		return -1;
+	}
 
-    CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(handle));
-    if (!pEntity)
-    {
-        return -1;
-    }
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(handle));
+	if (!pEntity)
+	{
+		return -1;
+	}
 
-    return pEntity->entindex();
+	return pEntity->entindex();
 }
 
 /**
@@ -141,13 +142,13 @@ extern "C" PLUGIN_API int EntHandleToEntIndex(int entityHandle)
  */
 extern "C" PLUGIN_API bool IsValidEntHandle(int entityHandle)
 {
-    CEntityHandle handle((uint32)entityHandle);
-    if (!handle.IsValid())
-    {
-        return false;
-    }
+	CEntityHandle handle((uint32)entityHandle);
+	if (!handle.IsValid())
+	{
+		return false;
+	}
 
-    return g_pGameEntitySystem->GetEntityInstance(handle) != nullptr;
+	return g_pGameEntitySystem->GetEntityInstance(handle) != nullptr;
 }
 
 /**
@@ -174,7 +175,7 @@ extern "C" PLUGIN_API bool IsValidEntPointer(CEntityInstance* entity)
  */
 extern "C" PLUGIN_API void* GetFirstActiveEntity()
 {
-    return g_pGameEntitySystem->m_EntityList.m_pFirstActiveEntity;
+	return g_pGameEntitySystem->m_EntityList.m_pFirstActiveEntity;
 }
 
 /**
@@ -187,7 +188,7 @@ extern "C" PLUGIN_API void* GetFirstActiveEntity()
  */
 extern "C" PLUGIN_API void* GetConcreteEntityListPointer()
 {
-    return &g_pGameEntitySystem->m_EntityList;
+	return &g_pGameEntitySystem->m_EntityList;
 }
 
 /**
@@ -203,7 +204,7 @@ extern "C" PLUGIN_API void* GetConcreteEntityListPointer()
  */
 extern "C" PLUGIN_API void HookEntityOutput(const plg::string& szClassname, const plg::string& szOutput, EntityListenerCallback callback, bool post)
 {
-    g_OutputManager.HookEntityOutput(szClassname, szOutput, callback, static_cast<HookMode>(post));
+	g_OutputManager.HookEntityOutput(szClassname, szOutput, callback, static_cast<HookMode>(post));
 }
 
 /**
@@ -218,7 +219,7 @@ extern "C" PLUGIN_API void HookEntityOutput(const plg::string& szClassname, cons
  */
 extern "C" PLUGIN_API void UnhookEntityOutput(const plg::string& szClassname, const plg::string& szOutput, EntityListenerCallback callback, bool post)
 {
-    g_OutputManager.UnhookEntityOutput(szClassname, szOutput, callback, static_cast<HookMode>(post));
+	g_OutputManager.UnhookEntityOutput(szClassname, szOutput, callback, static_cast<HookMode>(post));
 }
 
 ////////////////////////
@@ -234,20 +235,20 @@ extern "C" PLUGIN_API void UnhookEntityOutput(const plg::string& szClassname, co
  */
 extern "C" PLUGIN_API int FindEntityByClassname(int startEntity, const plg::string& classname)
 {
-    CBaseEntity* pStartStart = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle(startEntity)));
-    /*if (!pStartStart)
-    {
-        return INVALID_EHANDLE_INDEX;
-    }*/
+	CBaseEntity* pStartStart = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle(startEntity)));
+	/*if (!pStartStart)
+	{
+		return INVALID_EHANDLE_INDEX;
+	}*/
 
-    CBaseEntity* pEntity = static_cast<CBaseEntity*>(addresses::CGameEntitySystem_FindEntityByClassName(g_pGameEntitySystem, pStartStart, classname.c_str()));
-    if (!pEntity)
-    {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(addresses::CGameEntitySystem_FindEntityByClassName(g_pGameEntitySystem, pStartStart, classname.c_str()));
+	if (!pEntity)
+	{
 		g_Logger.LogFormat(LS_WARNING, "Cannot 'FindEntityByClassname' with invalid entity classname: %d\n", classname.c_str());
-        return INVALID_EHANDLE_INDEX;
-    }
+		return INVALID_EHANDLE_INDEX;
+	}
 
-    return pEntity->GetRefEHandle().ToInt();
+	return pEntity->GetRefEHandle().ToInt();
 }
 
 /**
@@ -262,20 +263,20 @@ extern "C" PLUGIN_API int FindEntityByClassname(int startEntity, const plg::stri
  */
 extern "C" PLUGIN_API int FindEntityByName(int startEntity, const plg::string& name)
 {
-    CBaseEntity* pStartStart = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle(startEntity)));
-    /*if (!pStartStart)
-    {
-        return INVALID_EHANDLE_INDEX;
-    }*/
+	CBaseEntity* pStartStart = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle(startEntity)));
+	/*if (!pStartStart)
+	{
+		return INVALID_EHANDLE_INDEX;
+	}*/
 
-    CBaseEntity* pEntity = static_cast<CBaseEntity*>(addresses::CGameEntitySystem_FindEntityByName(g_pGameEntitySystem, pStartStart, name.c_str(), nullptr, nullptr, nullptr, nullptr));
-    if (!pEntity)
-    {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(addresses::CGameEntitySystem_FindEntityByName(g_pGameEntitySystem, pStartStart, name.c_str(), nullptr, nullptr, nullptr, nullptr));
+	if (!pEntity)
+	{
 		g_Logger.LogFormat(LS_WARNING, "Cannot 'FindEntityByName' with invalid entity name: %s\n", name.c_str());
-        return INVALID_EHANDLE_INDEX;
-    }
+		return INVALID_EHANDLE_INDEX;
+	}
 
-    return pEntity->GetRefEHandle().ToInt();
+	return pEntity->GetRefEHandle().ToInt();
 }
 
 /**
@@ -291,14 +292,14 @@ extern "C" PLUGIN_API int FindEntityByName(int startEntity, const plg::string& n
  */
 extern "C" PLUGIN_API int CreateEntityByName(const plg::string& className)
 {
-    CBaseEntity* pEntity = static_cast<CBaseEntity*>(addresses::CreateEntityByName(className.c_str(), -1));
-    if (!pEntity)
-    {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(addresses::CreateEntityByName(className.c_str(), -1));
+	if (!pEntity)
+	{
 		g_Logger.LogFormat(LS_WARNING, "Cannot 'CreateEntityByName' with invalid entity classname: %s\n", className.c_str());
-        return INVALID_EHANDLE_INDEX;
-    }
+		return INVALID_EHANDLE_INDEX;
+	}
 
-    return pEntity->GetRefEHandle().ToInt();
+	return pEntity->GetRefEHandle().ToInt();
 }
 
 /**
@@ -311,14 +312,14 @@ extern "C" PLUGIN_API int CreateEntityByName(const plg::string& className)
  */
 extern "C" PLUGIN_API void DispatchSpawn(int entityHandle)
 {
-    CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-    if (!pEntity)
-    {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	if (!pEntity)
+	{
 		g_Logger.LogFormat(LS_WARNING, "Cannot 'DispatchSpawn' on invalid entity handle: %d\n", entityHandle);
-        return;
-    }
+		return;
+	}
 
-    pEntity->DispatchSpawn();
+	pEntity->DispatchSpawn();
 }
 
 /**
@@ -331,14 +332,14 @@ extern "C" PLUGIN_API void DispatchSpawn(int entityHandle)
  */
 extern "C" PLUGIN_API void RemoveEntity(int entityHandle)
 {
-    CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-    if (!pEntity)
-    {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	if (!pEntity)
+	{
 		g_Logger.LogFormat(LS_WARNING, "Cannot 'RemoveEntity' on invalid entity handle: %d\n", entityHandle);
-        return;
-    }
+		return;
+	}
 
-    pEntity->Remove();
+	pEntity->Remove();
 }
 
 ///
@@ -571,9 +572,7 @@ extern "C" PLUGIN_API void SetEntityRenderColor(int entityHandle, int color)
 		return;
 	}
 
-	Color clr;
-	clr.SetRawColor(color);
-	pEntity->m_clrRender = clr;
+	pEntity->m_clrRender = *reinterpret_cast<Color*>(&color);
 }
 
 /**
@@ -862,7 +861,7 @@ extern "C" PLUGIN_API plg::vec3 GetEntityAngRotation(int entityHandle)
 	}
 
 	const QAngle& ang = pEntity->m_CBodyComponent->m_pSceneNode->m_angRotation();
-    return *reinterpret_cast<const plg::vec3*>(&ang);
+	return *reinterpret_cast<const plg::vec3*>(&ang);
 }
 
 /**
@@ -1055,6 +1054,178 @@ extern "C" PLUGIN_API void TeleportEntity(int entityHandle, const Vector* origin
 	}
 
 	pEntity->Teleport(origin, angles, velocity);
+}
+
+/**
+ * @brief Invokes a named input method on a specified entity.
+ *
+ * This function triggers an input action on an entity, allowing dynamic interaction
+ * between game objects or entities within the system. The input can be initiated
+ * by another entity (activator) or by a specific caller entity.
+ *
+ * @param entityHandle The handle of the target entity that will receive the input.
+ * @param inputName    The name of the input action to invoke.
+ * @param activatorHandle The handle of the entity that initiated the sequence of actions.
+ * @param callerHandle The handle of the entity sending this event. Use -1 to specify
+ * @param value        The value associated with the input action.
+ * @param type         The type or classification of the value.
+* @param outputId      An identifier for tracking the output of this operation.
+ */
+extern "C" PLUGIN_API void AcceptInput(int entityHandle, const plg::string& inputName, int activatorHandle, int callerHandle, const plg::any& value, FieldType type, int outputId)
+{
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	if (!pEntity)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot 'AcceptInput' on invalid entity handle: %d\n", entityHandle);
+		return;
+	}
+
+	variant_t variant;
+
+	switch (type)
+	{
+		case FieldType::Float32:
+			plg::visit([&variant](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_arithmetic_v<T>) variant = static_cast<float>(v);
+			}, value);
+			break;
+		case FieldType::Float64:
+			plg::visit([&variant](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_arithmetic_v<T>) variant = static_cast<double>(v);
+			}, value);
+			break;
+		case FieldType::Int32:
+			plg::visit([&variant](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_arithmetic_v<T>) variant = static_cast<int>(v);
+			}, value);
+			break;
+		case FieldType::UInt32:
+			plg::visit([&variant](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_arithmetic_v<T>) variant = static_cast<uint>(v);
+			}, value);
+			break;
+		case FieldType::Int64:
+			plg::visit([&variant](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_arithmetic_v<T>) variant = static_cast<int64>(v);
+			}, value);
+			break;
+		case FieldType::UInt64:
+			plg::visit([&variant](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_arithmetic_v<T>) variant = static_cast<uint64>(v);
+			}, value);
+			break;
+		case FieldType::Boolean:
+			plg::visit([&variant](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_arithmetic_v<T>) variant = static_cast<bool>(v);
+			}, value);
+			break;
+		case FieldType::Character:
+			plg::visit([&variant](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_arithmetic_v<T>) variant = static_cast<char>(v);
+			}, value);
+			break;
+		case FieldType::String:
+			plg::visit([&variant](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_same_v<T, plg::string>) variant = castable_string_t(v.c_str());
+			}, value);
+			break;
+		case FieldType::CString:
+			plg::visit([&variant](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_same_v<T, plg::string>) variant = v.c_str();
+			}, value);
+			break;
+		case FieldType::HScript:
+			plg::visit([&variant](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_pointer_v<T>) variant = reinterpret_cast<HSCRIPT>(v);
+			}, value);
+			break;
+		case FieldType::EHandle:
+			plg::visit([&variant](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_arithmetic_v<T>) variant = CEntityHandle((uint32)v);
+			}, value);
+			break;
+		case FieldType::Resource:
+			plg::visit([&variant](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_pointer_v<T>) variant = reinterpret_cast<ResourceHandle_t>(v);
+			}, value);
+			break;
+		case FieldType::Vector3d:
+			plg::visit([&variant](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_same_v<T, plg::vec3> || std::is_same_v<T, plg::vec4>) variant = *reinterpret_cast<const Vector*>(&v);
+			}, value);
+			break;
+		case FieldType::Vector2d:
+			plg::visit([&variant](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_same_v<T, plg::vec2> || std::is_same_v<T, plg::vec3> || std::is_same_v<T, plg::vec4>) variant = *reinterpret_cast<const Vector2D*>(&v);
+			}, value);
+			break;
+		case FieldType::Vector4d:
+			plg::visit([&variant](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_same_v<T, plg::vec4>) variant = *reinterpret_cast<const Vector4D*>(&v);
+			}, value);
+			break;
+		case FieldType::Color32:
+			plg::visit([&variant](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_same_v<T, int>) variant = *reinterpret_cast<const Color*>(&v);
+			}, value);
+			break;
+		case FieldType::QAngle:
+			plg::visit([&variant](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_same_v<T, plg::vec3> || std::is_same_v<T, plg::vec4>) variant = *reinterpret_cast<const QAngle*>(&v);
+			}, value);
+			break;
+		case FieldType::Quaternion:
+			plg::visit([&variant](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_same_v<T, plg::vec4>) variant = *reinterpret_cast<const Quaternion*>(&v);
+			}, value);
+			break;
+		default:
+			plg::visit([&variant](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_same_v<T, plg::string>) {
+					variant = v.c_str();
+				} else if constexpr (std::is_pointer_v<T>) {
+					variant = reinterpret_cast<int64>(v);
+				} else if constexpr (std::is_same_v<T, long>) {
+					variant = static_cast<int64>(v);
+				}  else if constexpr (std::is_same_v<T, unsigned long>) {
+					variant = static_cast<uint64>(v);
+				} else if constexpr (std::is_arithmetic_v<T>) {
+					variant = v;
+				} else if constexpr (std::is_same_v<T, plg::vec2>) {
+					variant = *reinterpret_cast<const Vector2D*>(&v);
+				} else if constexpr (std::is_same_v<T, plg::vec3>) {
+					variant = *reinterpret_cast<const Vector*>(&v);
+				} else if constexpr (std::is_same_v<T, plg::vec4>) {
+					variant = *reinterpret_cast<const Vector4D*>(&v);
+				}
+			}, value);
+			break;
+	}
+
+	CEntityInstance* pActivator = activatorHandle != INVALID_EHANDLE_INDEX ? g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)activatorHandle)) : nullptr;
+	CEntityInstance* pCaller = callerHandle != INVALID_EHANDLE_INDEX ? g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)callerHandle)) : nullptr;
+
+	pEntity->AcceptInput(inputName.c_str(), &variant, pActivator, pCaller, outputId);
 }
 
 PLUGIFY_WARN_POP()

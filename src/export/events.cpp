@@ -18,7 +18,7 @@ PLUGIFY_WARN_IGNORE(4190)
  */
 extern "C" PLUGIN_API int HookEvent(const plg::string& name, EventListenerCallback pCallback, bool post)
 {
-    return static_cast<int>(g_EventManager.HookEvent(name, pCallback, static_cast<HookMode>(post)));
+	return static_cast<int>(g_EventManager.HookEvent(name, pCallback, static_cast<HookMode>(post)));
 }
 
 /**
@@ -30,7 +30,7 @@ extern "C" PLUGIN_API int HookEvent(const plg::string& name, EventListenerCallba
  */
 extern "C" PLUGIN_API int UnhookEvent(const plg::string& name, EventListenerCallback pCallback, bool post)
 {
-    return static_cast<int>(g_EventManager.UnhookEvent(name, pCallback, static_cast<HookMode>(post)));
+	return static_cast<int>(g_EventManager.UnhookEvent(name, pCallback, static_cast<HookMode>(post)));
 }
 
 /**
@@ -41,7 +41,7 @@ extern "C" PLUGIN_API int UnhookEvent(const plg::string& name, EventListenerCall
  */
 extern "C" PLUGIN_API EventInfo* CreateEvent(const plg::string& name, bool force)
 {
-    return g_EventManager.CreateEvent(name, force);
+	return g_EventManager.CreateEvent(name, force);
 }
 
 /**
@@ -51,7 +51,7 @@ extern "C" PLUGIN_API EventInfo* CreateEvent(const plg::string& name, bool force
  */
 extern "C" PLUGIN_API void FireEvent(EventInfo* pInfo, bool bDontBroadcast)
 {
-    g_EventManager.FireEvent(pInfo, bDontBroadcast);
+	g_EventManager.FireEvent(pInfo, bDontBroadcast);
 }
 
 /**
@@ -61,7 +61,7 @@ extern "C" PLUGIN_API void FireEvent(EventInfo* pInfo, bool bDontBroadcast)
  */
 extern "C" PLUGIN_API void FireEventToClient(EventInfo* pInfo, int clientIndex)
 {
-    g_EventManager.FireEventToClient(pInfo, CPlayerSlot(clientIndex));
+	g_EventManager.FireEventToClient(pInfo, CPlayerSlot(clientIndex));
 }
 
 /**
@@ -70,7 +70,7 @@ extern "C" PLUGIN_API void FireEventToClient(EventInfo* pInfo, int clientIndex)
  */
 extern "C" PLUGIN_API void CancelCreatedEvent(EventInfo* pInfo)
 {
-    g_EventManager.CancelCreatedEvent(pInfo);
+	g_EventManager.CancelCreatedEvent(pInfo);
 }
 
 /**
@@ -81,7 +81,7 @@ extern "C" PLUGIN_API void CancelCreatedEvent(EventInfo* pInfo)
  */
 extern "C" PLUGIN_API bool GetEventBool(EventInfo* pInfo, const plg::string& key)
 {
-    return pInfo->pEvent->GetBool(GameEventKeySymbol_t::Make(key.c_str()));
+	return pInfo->pEvent->GetBool(GameEventKeySymbol_t::Make(key.c_str()));
 }
 
 /**
@@ -92,7 +92,7 @@ extern "C" PLUGIN_API bool GetEventBool(EventInfo* pInfo, const plg::string& key
  */
 extern "C" PLUGIN_API float GetEventFloat(EventInfo* pInfo, const plg::string& key)
 {
-    return pInfo->pEvent->GetFloat(GameEventKeySymbol_t::Make(key.c_str()));
+	return pInfo->pEvent->GetFloat(GameEventKeySymbol_t::Make(key.c_str()));
 }
 
 /**
@@ -103,7 +103,7 @@ extern "C" PLUGIN_API float GetEventFloat(EventInfo* pInfo, const plg::string& k
  */
 extern "C" PLUGIN_API int GetEventInt(EventInfo* pInfo, const plg::string& key)
 {
-    return pInfo->pEvent->GetInt(GameEventKeySymbol_t::Make(key.c_str()));
+	return pInfo->pEvent->GetInt(GameEventKeySymbol_t::Make(key.c_str()));
 }
 
 /**
@@ -114,7 +114,7 @@ extern "C" PLUGIN_API int GetEventInt(EventInfo* pInfo, const plg::string& key)
  */
 extern "C" PLUGIN_API uint64_t GetEventUInt64(EventInfo* pInfo, const plg::string& key)
 {
-    return pInfo->pEvent->GetUint64(GameEventKeySymbol_t::Make(key.c_str()));
+	return pInfo->pEvent->GetUint64(GameEventKeySymbol_t::Make(key.c_str()));
 }
 
 /**
@@ -136,7 +136,7 @@ extern "C" PLUGIN_API plg::string GetEventString(EventInfo* pInfo, const plg::st
  */
 extern "C" PLUGIN_API void* GetEventPtr(EventInfo* pInfo, const plg::string& key)
 {
-    return pInfo->pEvent->GetPtr(GameEventKeySymbol_t::Make(key.c_str()));
+	return pInfo->pEvent->GetPtr(GameEventKeySymbol_t::Make(key.c_str()));
 }
 
 /**
@@ -147,7 +147,7 @@ extern "C" PLUGIN_API void* GetEventPtr(EventInfo* pInfo, const plg::string& key
  */
 extern "C" PLUGIN_API CEntityInstance* GetEventPlayerController(EventInfo* pInfo, const plg::string& key)
 {
-    return pInfo->pEvent->GetPlayerController(GameEventKeySymbol_t::Make(key.c_str()));
+	return pInfo->pEvent->GetPlayerController(GameEventKeySymbol_t::Make(key.c_str()));
 }
 
 /**
@@ -158,7 +158,7 @@ extern "C" PLUGIN_API CEntityInstance* GetEventPlayerController(EventInfo* pInfo
  */
 extern "C" PLUGIN_API int GetEventPlayerIndex(EventInfo* pInfo, const plg::string& key)
 {
-    return pInfo->pEvent->GetPlayerSlot(GameEventKeySymbol_t::Make(key.c_str())).Get();
+	return pInfo->pEvent->GetPlayerSlot(GameEventKeySymbol_t::Make(key.c_str())).Get();
 }
 
 /**
@@ -169,7 +169,7 @@ extern "C" PLUGIN_API int GetEventPlayerIndex(EventInfo* pInfo, const plg::strin
  */
 extern "C" PLUGIN_API CEntityInstance* GetEventPlayerPawn(EventInfo* pInfo, const plg::string& key)
 {
-    return pInfo->pEvent->GetPlayerPawn(GameEventKeySymbol_t::Make(key.c_str()));
+	return pInfo->pEvent->GetPlayerPawn(GameEventKeySymbol_t::Make(key.c_str()));
 }
 
 /**
@@ -180,7 +180,7 @@ extern "C" PLUGIN_API CEntityInstance* GetEventPlayerPawn(EventInfo* pInfo, cons
  */
 extern "C" PLUGIN_API CEntityInstance* GetEventEntity(EventInfo* pInfo, const plg::string& key)
 {
-    return pInfo->pEvent->GetEntity(GameEventKeySymbol_t::Make(key.c_str()));
+	return pInfo->pEvent->GetEntity(GameEventKeySymbol_t::Make(key.c_str()));
 }
 
 /**
@@ -191,7 +191,7 @@ extern "C" PLUGIN_API CEntityInstance* GetEventEntity(EventInfo* pInfo, const pl
  */
 extern "C" PLUGIN_API int GetEventEntityIndex(EventInfo* pInfo, const plg::string& key)
 {
-    return pInfo->pEvent->GetEntityIndex(GameEventKeySymbol_t::Make(key.c_str())).Get();
+	return pInfo->pEvent->GetEntityIndex(GameEventKeySymbol_t::Make(key.c_str())).Get();
 }
 
 /**
@@ -202,7 +202,7 @@ extern "C" PLUGIN_API int GetEventEntityIndex(EventInfo* pInfo, const plg::strin
  */
 extern "C" PLUGIN_API int GetEventEntityHandle(EventInfo* pInfo, const plg::string& key)
 {
-    return pInfo->pEvent->GetEHandle(GameEventKeySymbol_t::Make(key.c_str())).ToInt();
+	return pInfo->pEvent->GetEHandle(GameEventKeySymbol_t::Make(key.c_str())).ToInt();
 }
 
 /**
@@ -212,7 +212,7 @@ extern "C" PLUGIN_API int GetEventEntityHandle(EventInfo* pInfo, const plg::stri
  */
 extern "C" PLUGIN_API plg::string GetEventName(EventInfo* pInfo)
 {
-    return pInfo->pEvent->GetName();
+	return pInfo->pEvent->GetName();
 }
 
 /**
@@ -223,7 +223,7 @@ extern "C" PLUGIN_API plg::string GetEventName(EventInfo* pInfo)
  */
 extern "C" PLUGIN_API void SetEventBool(EventInfo* pInfo, const plg::string& key, bool value)
 {
-    pInfo->pEvent->SetBool(GameEventKeySymbol_t::Make(key.c_str()), value);
+	pInfo->pEvent->SetBool(GameEventKeySymbol_t::Make(key.c_str()), value);
 }
 
 /**
@@ -234,7 +234,7 @@ extern "C" PLUGIN_API void SetEventBool(EventInfo* pInfo, const plg::string& key
  */
 extern "C" PLUGIN_API void SetEventFloat(EventInfo* pInfo, const plg::string& key, float value)
 {
-    pInfo->pEvent->SetFloat(GameEventKeySymbol_t::Make(key.c_str()), value);
+	pInfo->pEvent->SetFloat(GameEventKeySymbol_t::Make(key.c_str()), value);
 }
 
 /**
@@ -245,7 +245,7 @@ extern "C" PLUGIN_API void SetEventFloat(EventInfo* pInfo, const plg::string& ke
  */
 extern "C" PLUGIN_API void SetEventInt(EventInfo* pInfo, const plg::string& key, int value)
 {
-    pInfo->pEvent->SetInt(GameEventKeySymbol_t::Make(key.c_str()), value);
+	pInfo->pEvent->SetInt(GameEventKeySymbol_t::Make(key.c_str()), value);
 }
 
 /**
@@ -256,7 +256,7 @@ extern "C" PLUGIN_API void SetEventInt(EventInfo* pInfo, const plg::string& key,
  */
 extern "C" PLUGIN_API void SetEventUInt64(EventInfo* pInfo, const plg::string& key, uint64_t value)
 {
-    pInfo->pEvent->SetUint64(GameEventKeySymbol_t::Make(key.c_str()), value);
+	pInfo->pEvent->SetUint64(GameEventKeySymbol_t::Make(key.c_str()), value);
 }
 
 /**
@@ -267,7 +267,7 @@ extern "C" PLUGIN_API void SetEventUInt64(EventInfo* pInfo, const plg::string& k
  */
 extern "C" PLUGIN_API void SetEventString(EventInfo* pInfo, const plg::string& key, const plg::string& value)
 {
-    pInfo->pEvent->SetString(GameEventKeySymbol_t::Make(key.c_str()), value.c_str());
+	pInfo->pEvent->SetString(GameEventKeySymbol_t::Make(key.c_str()), value.c_str());
 }
 
 /**
@@ -278,7 +278,7 @@ extern "C" PLUGIN_API void SetEventString(EventInfo* pInfo, const plg::string& k
  */
 extern "C" PLUGIN_API void SetEventPtr(EventInfo* pInfo, const plg::string& key, void* value)
 {
-    pInfo->pEvent->SetPtr(GameEventKeySymbol_t::Make(key.c_str()), value);
+	pInfo->pEvent->SetPtr(GameEventKeySymbol_t::Make(key.c_str()), value);
 }
 
 /**
@@ -289,7 +289,7 @@ extern "C" PLUGIN_API void SetEventPtr(EventInfo* pInfo, const plg::string& key,
  */
 extern "C" PLUGIN_API void SetEventPlayerController(EventInfo* pInfo, const plg::string& key, CEntityInstance* value)
 {
-    pInfo->pEvent->SetPlayer(GameEventKeySymbol_t::Make(key.c_str()), value);
+	pInfo->pEvent->SetPlayer(GameEventKeySymbol_t::Make(key.c_str()), value);
 }
 
 /**
@@ -300,7 +300,7 @@ extern "C" PLUGIN_API void SetEventPlayerController(EventInfo* pInfo, const plg:
  */
 extern "C" PLUGIN_API void SetEventPlayerIndex(EventInfo* pInfo, const plg::string& key, int value)
 {
-    pInfo->pEvent->SetPlayer(GameEventKeySymbol_t::Make(key.c_str()), CPlayerSlot(value));
+	pInfo->pEvent->SetPlayer(GameEventKeySymbol_t::Make(key.c_str()), CPlayerSlot(value));
 }
 
 /**
@@ -311,7 +311,7 @@ extern "C" PLUGIN_API void SetEventPlayerIndex(EventInfo* pInfo, const plg::stri
  */
 extern "C" PLUGIN_API void SetEventEntity(EventInfo* pInfo, const plg::string& key, CEntityInstance* value)
 {
-    pInfo->pEvent->SetEntity(GameEventKeySymbol_t::Make(key.c_str()), value);
+	pInfo->pEvent->SetEntity(GameEventKeySymbol_t::Make(key.c_str()), value);
 }
 
 /**
@@ -322,7 +322,7 @@ extern "C" PLUGIN_API void SetEventEntity(EventInfo* pInfo, const plg::string& k
  */
 extern "C" PLUGIN_API void SetEventEntityIndex(EventInfo* pInfo, const plg::string& key, int value)
 {
-    pInfo->pEvent->SetEntity(GameEventKeySymbol_t::Make(key.c_str()), CEntityIndex(value));
+	pInfo->pEvent->SetEntity(GameEventKeySymbol_t::Make(key.c_str()), CEntityIndex(value));
 }
 
 /**
@@ -333,7 +333,7 @@ extern "C" PLUGIN_API void SetEventEntityIndex(EventInfo* pInfo, const plg::stri
  */
 extern "C" PLUGIN_API void SetEventEntityHandle(EventInfo* pInfo, const plg::string& key, int value)
 {
-    pInfo->pEvent->SetEntity(GameEventKeySymbol_t::Make(key.c_str()), CEntityHandle((uint32)value).Get());
+	pInfo->pEvent->SetEntity(GameEventKeySymbol_t::Make(key.c_str()), CEntityHandle((uint32)value).Get());
 }
 
 /**
@@ -343,7 +343,7 @@ extern "C" PLUGIN_API void SetEventEntityHandle(EventInfo* pInfo, const plg::str
  */
 extern "C" PLUGIN_API void SetEventBroadcast(EventInfo* pInfo, bool dontBroadcast)
 {
-    pInfo->bDontBroadcast = dontBroadcast;
+	pInfo->bDontBroadcast = dontBroadcast;
 }
 
 /**
@@ -354,7 +354,7 @@ extern "C" PLUGIN_API void SetEventBroadcast(EventInfo* pInfo, bool dontBroadcas
  */
 extern "C" PLUGIN_API int LoadEventsFromFile(const plg::string& path, bool searchAll)
 {
-    return g_pGameEventManager->LoadEventsFromFile(path.c_str(), searchAll);
+	return g_pGameEventManager->LoadEventsFromFile(path.c_str(), searchAll);
 }
 
 PLUGIFY_WARN_POP()

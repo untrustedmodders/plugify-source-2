@@ -227,13 +227,7 @@ extern "C" PLUGIN_API BaseConVar* CreateConVarDouble(const plg::string& name, do
  */
 extern "C" PLUGIN_API BaseConVar* CreateConVarColor(const plg::string& name, int defaultValue, const plg::string& description, int flags, bool hasMin, int min, bool hasMax, int max)
 {
-	Color defaultCol;
-	defaultCol.SetRawColor(defaultValue);
-	Color minCol;
-	defaultCol.SetRawColor(min);
-	Color maxCol;
-	defaultCol.SetRawColor(max);
-	return g_ConVarManager.CreateConVar<Color>(name, description, defaultCol, flags, hasMin, minCol, hasMax, maxCol);
+	return g_ConVarManager.CreateConVar<Color>(name, description, *reinterpret_cast<Color*>(&defaultValue), flags, hasMin, *reinterpret_cast<Color*>(&min), hasMax, *reinterpret_cast<Color*>(&max));
 }
 
 /**
@@ -963,7 +957,7 @@ extern "C" PLUGIN_API plg::string GetConVarString(BaseConVar* conVar)
  */
 extern "C" PLUGIN_API int GetConVarColor(BaseConVar* conVar)
 {
-    return utils::GetConVarValue<Color>(conVar).GetRawColor();
+	return utils::GetConVarValue<Color>(conVar).GetRawColor();
 }
 
 /**
@@ -975,7 +969,7 @@ extern "C" PLUGIN_API int GetConVarColor(BaseConVar* conVar)
 extern "C" PLUGIN_API plg::vec2 GetConVarVector2(BaseConVar* conVar)
 {
 	const Vector2D& vec = utils::GetConVarValue<Vector2D>(conVar);
-    return *reinterpret_cast<const plg::vec2*>(&vec);
+	return *reinterpret_cast<const plg::vec2*>(&vec);
 }
 
 /**
@@ -987,7 +981,7 @@ extern "C" PLUGIN_API plg::vec2 GetConVarVector2(BaseConVar* conVar)
 extern "C" PLUGIN_API plg::vec3 GetConVarVector(BaseConVar* conVar)
 {
 	const Vector& vec = utils::GetConVarValue<Vector>(conVar);
-    return *reinterpret_cast<const plg::vec3*>(&vec);
+	return *reinterpret_cast<const plg::vec3*>(&vec);
 }
 
 /**
@@ -999,7 +993,7 @@ extern "C" PLUGIN_API plg::vec3 GetConVarVector(BaseConVar* conVar)
 extern "C" PLUGIN_API plg::vec4 GetConVarVector4(BaseConVar* conVar)
 {
 	const Vector4D& vec = utils::GetConVarValue<Vector4D>(conVar);
-    return *reinterpret_cast<const plg::vec4*>(&vec);
+	return *reinterpret_cast<const plg::vec4*>(&vec);
 }
 
 /**
@@ -1011,7 +1005,7 @@ extern "C" PLUGIN_API plg::vec4 GetConVarVector4(BaseConVar* conVar)
 extern "C" PLUGIN_API plg::vec3 GetConVarQangle(BaseConVar* conVar)
 {
 	const QAngle& ang = utils::GetConVarValue<QAngle>(conVar);
-    return *reinterpret_cast<const plg::vec3*>(&ang);
+	return *reinterpret_cast<const plg::vec3*>(&ang);
 }
 
 /**
@@ -1217,9 +1211,7 @@ extern "C" PLUGIN_API void SetConVarString(BaseConVar* conVar, const plg::string
  */
 extern "C" PLUGIN_API void SetConVarColor(BaseConVar* conVar, int value, bool replicate, bool notify)
 {
-	Color color;
-	color.SetRawColor(value);
-	utils::SetConVar(conVar, color, replicate, notify);
+	utils::SetConVar(conVar, *reinterpret_cast<Color*>(&value), replicate, notify);
 }
 
 /**
