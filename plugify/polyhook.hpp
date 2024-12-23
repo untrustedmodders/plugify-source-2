@@ -195,6 +195,14 @@ namespace poly
 		return func(pClass, pAddr);
 	}
 
+	inline int GetVTableIndex(void* pFunc)
+	{
+		using GetVTableIndexFn = int (*)(void*);
+		static GetVTableIndexFn func = nullptr;
+		if (func == nullptr) plg::GetMethodPtr2("polyhook.GetVTableIndex", reinterpret_cast<void**>(&func));
+		return func(pFunc);
+	}
+
 	template <class T>
 	inline constexpr bool always_false_v = std::is_same_v<std::decay_t<T>, std::add_cv_t<std::decay_t<T>>>;
 
