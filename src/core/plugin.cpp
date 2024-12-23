@@ -90,7 +90,6 @@ void Source2SDK::OnPluginStart()
 
 	if (g_pGameEventManager != nullptr)
 	{
-		using enum poly::CallbackType;
 		g_PH.AddHookMemFunc(&IGameEventManager2::FireEvent, g_pGameEventManager, Hook_FireEvent, Pre, Post);
 	}
 
@@ -106,13 +105,13 @@ void Source2SDK::OnPluginStart()
 	g_PH.AddHookMemFunc(&IServerGameClients::ClientFullyConnect, g_pSource2GameClients, Hook_ClientFullyConnect, Post);
 	g_PH.AddHookMemFunc(&IServerGameClients::ClientConnect, g_pSource2GameClients, Hook_ClientConnect, Pre, Post);
 	g_PH.AddHookMemFunc(&INetworkServerService::StartupServer, g_pNetworkServerService, Hook_StartupServer, Post);
-	g_PH.AddHookMemFunc(&ISource2Server::ServerHibernationUpdate, g_pSource2Server, Hook_ServerHibernationUpdate, Post);
-	g_PH.AddHookMemFunc(&ISource2Server::GameServerSteamAPIActivated, g_pSource2Server, Hook_GameServerSteamAPIActivated, Post);
-	g_PH.AddHookMemFunc(&ISource2Server::GameServerSteamAPIDeactivated, g_pSource2Server, Hook_GameServerSteamAPIDeactivated, Post);
-	g_PH.AddHookMemFunc(&ISource2Server::OnHostNameChanged, g_pSource2Server, Hook_OnHostNameChanged, Post);
-	g_PH.AddHookMemFunc(&ISource2Server::PreFatalShutdown, g_pSource2Server, Hook_PreFatalShutdown, Post);
+	//g_PH.AddHookMemFunc(&ISource2Server::ServerHibernationUpdate, g_pSource2Server, Hook_ServerHibernationUpdate, Post);
+	//g_PH.AddHookMemFunc(&ISource2Server::GameServerSteamAPIActivated, g_pSource2Server, Hook_GameServerSteamAPIActivated, Post);
+	//g_PH.AddHookMemFunc(&ISource2Server::GameServerSteamAPIDeactivated, g_pSource2Server, Hook_GameServerSteamAPIDeactivated, Post);
+	//g_PH.AddHookMemFunc(&ISource2Server::OnHostNameChanged, g_pSource2Server, Hook_OnHostNameChanged, Post);
+	//g_PH.AddHookMemFunc(&ISource2Server::PreFatalShutdown, g_pSource2Server, Hook_PreFatalShutdown, Post);
 	g_PH.AddHookMemFunc(&ISource2Server::UpdateWhenNotInGame, g_pSource2Server, Hook_UpdateWhenNotInGame, Post);
-	g_PH.AddHookMemFunc(&ISource2Server::PreWorldUpdate, g_pSource2Server, Hook_PreWorldUpdate, Post);
+	//g_PH.AddHookMemFunc(&ISource2Server::PreWorldUpdate, g_pSource2Server, Hook_PreWorldUpdate, Post); // not hook that with poly, can broke plugify unload
 	g_PH.AddHookMemFunc(&ICvar::DispatchConCommand, g_pCVar, Hook_DispatchConCommand, Pre, Post);
 	g_PH.AddHookMemFunc(&IVEngineServer2::SetClientListening, g_pEngineServer2, Hook_SetClientListening, Pre);
 
@@ -153,13 +152,13 @@ void Source2SDK::OnPluginEnd()
 void Source2SDK::OnServerStartup()
 {
 	g_pGameEntitySystem = GameEntitySystem();
-	/*if (g_pGameEntitySystem != nullptr)
+	if (g_pGameEntitySystem != nullptr)
 	{
 		if (g_pGameEntitySystem->m_entityListeners.Find(&g_pEntityListener) == -1)
 		{
 			g_pGameEntitySystem->m_entityListeners.AddToTail(&g_pEntityListener);
 		}
-	}*/
+	}
 
 	if (g_pNetworkGameServer != nullptr)
 	{
@@ -382,7 +381,7 @@ poly::ReturnAction Source2SDK::Hook_ClientCommand(poly::CallbackType type, poly:
 	//CPlayerSlot nSlot, const CCommand& _cmd
 	GetOnCheckTransmitListenerManager().Notify();
 	return poly::ReturnAction::Ignored;
-}*/
+}
 
 poly::ReturnAction Source2SDK::Hook_ServerHibernationUpdate(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret)
 {
@@ -421,7 +420,7 @@ poly::ReturnAction Source2SDK::Hook_PreFatalShutdown(poly::CallbackType type, po
 	g_Logger.Log(LS_DEBUG, "PreFatalShutdown\n");
 	GetOnPreFatalShutdownListenerManager().Notify();
 	return poly::ReturnAction::Ignored;
-}
+}*/
 
 poly::ReturnAction Source2SDK::Hook_UpdateWhenNotInGame(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret)
 {
@@ -432,7 +431,7 @@ poly::ReturnAction Source2SDK::Hook_UpdateWhenNotInGame(poly::CallbackType type,
 	return poly::ReturnAction::Ignored;
 }
 
-poly::ReturnAction Source2SDK::Hook_PreWorldUpdate(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret)
+/*poly::ReturnAction Source2SDK::Hook_PreWorldUpdate(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret)
 {
 	// bool simulating
 	auto simulating = poly::GetArgument<bool>(params, 1);
@@ -442,7 +441,7 @@ poly::ReturnAction Source2SDK::Hook_PreWorldUpdate(poly::CallbackType type, poly
 
 	GetOnPreWorldUpdateListenerManager().Notify(simulating);
 	return poly::ReturnAction::Ignored;
-}
+}*/
 
 poly::ReturnAction Source2SDK::Hook_FireOutputInternal(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret)
 {
