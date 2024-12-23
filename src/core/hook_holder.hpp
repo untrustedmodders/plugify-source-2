@@ -126,6 +126,12 @@ public:
 		m_vhooks.clear();
 	}
 
+	template <typename F>
+	int GetVTableIndex(F func)
+	{
+		return poly::GetVTableIndex((void*&)func);
+	}
+
 private:
 	std::unordered_map<plg::string, std::unique_ptr<poly::CHook>> m_dhooks;
 	std::unordered_map<std::pair<void*, void*>, std::unique_ptr<poly::CHook>, utils::PairHash<void*, void*>> m_vhooks;
