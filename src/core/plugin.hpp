@@ -35,13 +35,13 @@ public:
 	static poly::ReturnAction Hook_ClientConnect(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 	static poly::ReturnAction Hook_ClientCommand(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 	// static poly::ReturnAction Hook_CheckTransmit(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
-	static poly::ReturnAction Hook_ServerHibernationUpdate(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
-	static poly::ReturnAction Hook_GameServerSteamAPIActivated(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
-	static poly::ReturnAction Hook_GameServerSteamAPIDeactivated(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
-	static poly::ReturnAction Hook_OnHostNameChanged(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
-	static poly::ReturnAction Hook_PreFatalShutdown(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	//static poly::ReturnAction Hook_ServerHibernationUpdate(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	//static poly::ReturnAction Hook_GameServerSteamAPIActivated(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	//static poly::ReturnAction Hook_GameServerSteamAPIDeactivated(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	//static poly::ReturnAction Hook_OnHostNameChanged(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	//static poly::ReturnAction Hook_PreFatalShutdown(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 	static poly::ReturnAction Hook_UpdateWhenNotInGame(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
-	static poly::ReturnAction Hook_PreWorldUpdate(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	//static poly::ReturnAction Hook_PreWorldUpdate(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 	static poly::ReturnAction Hook_FireOutputInternal(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 	//static poly::ReturnAction Hook_SayText2Filter(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret); // TODO: TEMP
 	static poly::ReturnAction Hook_DispatchConCommand(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
