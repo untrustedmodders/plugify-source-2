@@ -236,15 +236,15 @@ extern "C" PLUGIN_API void UnhookEntityOutput(const plg::string& szClassname, co
 extern "C" PLUGIN_API int FindEntityByClassname(int startEntity, const plg::string& classname)
 {
 	CBaseEntity* pStartStart = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)startEntity)));
-	if (!pStartStart)
+	/*if (!pStartStart)
 	{
 		return INVALID_EHANDLE_INDEX;
-	}
+	}*/
 
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(addresses::CGameEntitySystem_FindEntityByClassName(g_pGameEntitySystem, pStartStart, classname.c_str()));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'FindEntityByClassname' with invalid entity classname: %d\n", classname.c_str());
+		//g_Logger.LogFormat(LS_WARNING, "Cannot 'FindEntityByClassname' with invalid entity classname: %d\n", classname.c_str());
 		return INVALID_EHANDLE_INDEX;
 	}
 
@@ -264,15 +264,15 @@ extern "C" PLUGIN_API int FindEntityByClassname(int startEntity, const plg::stri
 extern "C" PLUGIN_API int FindEntityByName(int startEntity, const plg::string& name)
 {
 	CBaseEntity* pStartStart = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)startEntity)));
-	if (!pStartStart)
+	/*if (!pStartStart)
 	{
 		return INVALID_EHANDLE_INDEX;
-	}
+	}*/
 
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(addresses::CGameEntitySystem_FindEntityByName(g_pGameEntitySystem, pStartStart, name.c_str(), nullptr, nullptr, nullptr, nullptr));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'FindEntityByName' with invalid entity name: %s\n", name.c_str());
+		//g_Logger.LogFormat(LS_WARNING, "Cannot 'FindEntityByName' with invalid entity name: %s\n", name.c_str());
 		return INVALID_EHANDLE_INDEX;
 	}
 
