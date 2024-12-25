@@ -203,7 +203,7 @@ namespace utils
 	{
 		std::size_t operator()(std::pair<T1, T2> const& p) const
 		{
-			std::size_t seed;
+			std::size_t seed{};
 			hash_combine(seed, p.first, p.second);
 			return seed;
 		}
