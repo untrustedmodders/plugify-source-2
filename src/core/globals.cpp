@@ -2,6 +2,7 @@
 #include "globals.hpp"
 #include "core_config.hpp"
 #include "game_config.hpp"
+#include "hook_holder.hpp"
 
 #include <core/sdk/utils.h>
 #include <core/sdk/virtual.h>
@@ -24,8 +25,6 @@ CGameEntitySystem* g_pGameEntitySystem = nullptr;
 IEngineSound* g_pEngineSound = nullptr;
 CCSGameRules* g_pGameRules = nullptr;
 
-CBaseGameSystemFactory** CBaseGameSystemFactory::sm_pFirst = nullptr;
-
 #define RESOLVE_SIG(gameConfig, name, variable) \
 	variable = (decltype(variable))(void*)(gameConfig)->ResolveSignature(name)
 
@@ -40,7 +39,6 @@ namespace modules
 	CModule* networksystem = nullptr;
 } // namespace modules
 
-SourceHook::ISourceHook* g_SHPtr = nullptr;
 IMetamodListener* g_pMetamodListener = nullptr;
 CCoreConfig* g_pCoreConfig = nullptr;
 CGameConfig* g_pGameConfig = nullptr;
@@ -121,6 +119,7 @@ namespace globals
 		g_pSource2GameEntities = FindInterface<ISource2GameEntities>(modules::server, SOURCE2GAMEENTITIES_INTERFACE_VERSION);
 		g_pSource2GameClients = FindInterface<IServerGameClients>(modules::server, SOURCE2GAMECLIENTS_INTERFACE_VERSION);
 		g_pGameResourceServiceServer = FindInterface<IGameResourceService>(modules::engine, GAMERESOURCESERVICESERVER_INTERFACE_VERSION);
+		g_pEngineServiceMgr = FindInterface<IEngineServiceMgr>(modules::engine, ENGINESERVICEMGR_INTERFACE_VERSION);
 
 		g_pEngineServer2 = FindInterface<IVEngineServer2>(modules::engine, SOURCE2ENGINETOSERVER_INTERFACE_VERSION);
 		g_pFullFileSystem = FindInterface<IFileSystem>(modules::filesystem, FILESYSTEM_INTERFACE_VERSION);
@@ -133,13 +132,13 @@ namespace globals
 
 		CModule plugify("plugify");
 
+
 		using IMetamodListenerFn = IMetamodListener* (*)();
 		auto Plugify_ImmListener = plugify.GetFunctionByName("Plugify_ImmListener");
-		g_pMetamodListener = Plugify_ImmListener.CCast<IMetamodListenerFn>()();
-
-		using ISourceHookFn = SourceHook::ISourceHook* (*)();
-		auto Plugify_SourceHook = plugify.GetFunctionByName("Plugify_SourceHook");
-		g_SHPtr = Plugify_SourceHook.CCast<ISourceHookFn>()();
+		if (Plugify_ImmListener)
+		{
+			g_pMetamodListener = Plugify_ImmListener.CCast<IMetamodListenerFn>()();
+		}
 
 		g_pCoreConfig = new CCoreConfig(std::move(coreConfig));
 		g_pCoreConfig->Initialize();
@@ -153,13 +152,6 @@ namespace globals
 		}
 		g_pGameEventManager = *p_ppGameEventManager;
 
-		using RegisterGameSystemFn = void* (*)(CBaseGameSystemFactory**, CGameSystemEventDispatcher**);
-		auto Plugify_RegisterGameSystem = plugify.GetFunctionByName("Plugify_RegisterGameSystem");
-		CBaseGameSystemFactory** ppGameFactory = g_pGameConfig->GetAddress("CBaseGameSystemFactory::sm_pFirst").CCast<CBaseGameSystemFactory**>();
-		CBaseGameSystemFactory::sm_pFirst = ppGameFactory;
-		CGameSystemEventDispatcher** ppEventDispatcher = g_pGameConfig->GetAddress("&IGameSystem::sm_pEventDispatcher").RCast<CGameSystemEventDispatcher**>();
-		//Plugify_RegisterGameSystem.CCast<RegisterGameSystemFn>()(ppGameFactory, ppEventDispatcher);
-
 		// load more if needed
 		RESOLVE_SIG(g_pGameConfig, "LegacyGameEventListener", addresses::GetLegacyGameEventListener);
 		RESOLVE_SIG(g_pGameConfig, "CBasePlayerPawn_RemovePlayerItem", addresses::CBasePlayerPawn_RemovePlayerItem);
@@ -171,18 +163,13 @@ namespace globals
 		RESOLVE_SIG(g_pGameConfig, "CreateEntityByName", addresses::CreateEntityByName);
 		RESOLVE_SIG(g_pGameConfig, "DispatchSpawn", addresses::DispatchSpawn);
 		RESOLVE_SIG(g_pGameConfig, "UTIL_Remove", addresses::UTIL_Remove);
-		//RESOLVE_SIG(g_pGameConfig, "CEntitySystem_AddEntityIOEvent", addresses::CEntitySystem_AddEntityIOEvent);
 		RESOLVE_SIG(g_pGameConfig, "CEntityInstance_AcceptInput", addresses::CEntityInstance_AcceptInput);
 		RESOLVE_SIG(g_pGameConfig, "CGameRules_TerminateRound", addresses::CGameRules_TerminateRound);
 		RESOLVE_SIG(g_pGameConfig, "CEntityIdentity_SetEntityName", addresses::CEntityIdentity_SetEntityName);
 		RESOLVE_SIG(g_pGameConfig, "CBaseEntity_EmitSoundParams", addresses::CBaseEntity_EmitSoundParams);
 		RESOLVE_SIG(g_pGameConfig, "CBaseEntity_SetParent", addresses::CBaseEntity_SetParent);
-		//RESOLVE_SIG(g_pGameConfig, "DispatchParticleEffect", addresses::DispatchParticleEffect);
 		RESOLVE_SIG(g_pGameConfig, "CBaseEntity_EmitSoundFilter", addresses::CBaseEntity_EmitSoundFilter);
 		RESOLVE_SIG(g_pGameConfig, "CBaseEntity_SetMoveType", addresses::CBaseEntity_SetMoveType);
-		//RESOLVE_SIG(g_pGameConfig, "CTakeDamageInfo", addresses::CTakeDamageInfo_Constructor);
-		//RESOLVE_SIG(g_pGameConfig, "CNetworkStringTable_DeleteAllStrings", addresses::CNetworkStringTable_DeleteAllStrings);
-		//RESOLVE_SIG(g_pGameConfig, "TracePlayerBBox", addresses::TracePlayerBBox);
 	}
 
 	void Terminate()

@@ -15,9 +15,8 @@ public:
 	void OnPluginEnd() override;
 	static void OnServerStartup();
 
-	static poly::ReturnAction Hook_SetupHookLoop_Pre(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
-	static poly::ReturnAction Hook_SetupHookLoop_Post(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
-
+	static poly::ReturnAction Hook_RegisterLoopMode(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	static poly::ReturnAction Hook_UnregisterLoopMode(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 	static poly::ReturnAction Hook_StartupServer(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 	static poly::ReturnAction Hook_ActivateServer(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 	static poly::ReturnAction Hook_FireEvent(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);

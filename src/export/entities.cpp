@@ -244,7 +244,7 @@ extern "C" PLUGIN_API int FindEntityByClassname(int startEntity, const plg::stri
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(addresses::CGameEntitySystem_FindEntityByClassName(g_pGameEntitySystem, pStartStart, classname.c_str()));
 	if (!pEntity)
 	{
-		//g_Logger.LogFormat(LS_WARNING, "Cannot 'FindEntityByClassname' with invalid entity classname: %d\n", classname.c_str());
+		//g_Logger.LogFormat(LS_WARNING, "Cannot 'FindEntityByClassname' with invalid entity classname: %s\n", classname.c_str());
 		return INVALID_EHANDLE_INDEX;
 	}
 

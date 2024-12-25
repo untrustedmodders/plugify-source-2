@@ -60,7 +60,6 @@ namespace SourceHook
 	class ISourceHook;
 }
 
-extern SourceHook::ISourceHook* g_SHPtr;
 extern SourceMM::IMetamodListener* g_pMetamodListener;
 extern CCoreConfig* g_pCoreConfig;
 extern CGameConfig* g_pGameConfig;

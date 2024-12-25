@@ -82,20 +82,23 @@ void Source2SDK::OnPluginStart()
 
 	using enum poly::CallbackType;
 
-	g_PH.AddHookMemFunc(&SourceHook::Impl::CSourceHookImpl::SetupHookLoop, g_SHPtr, [](const poly::CHook& hook)
-	{
-		hook.AddCallback(Pre, Hook_SetupHookLoop_Pre);
-		hook.AddCallback(Post, Hook_SetupHookLoop_Post);
-	});
-
 	if (g_pGameEventManager != nullptr)
 	{
 		g_PH.AddHookMemFunc(&IGameEventManager2::FireEvent, g_pGameEventManager, Hook_FireEvent, Pre, Post);
 	}
 
+	if (g_pMetamodListener != nullptr)
+	{
+		g_PH.AddHookMemFunc(&IMetamodListener::OnLevelInit, g_pMetamodListener, Hook_OnLevelInit, Post);
+		g_PH.AddHookMemFunc(&IMetamodListener::OnLevelShutdown, g_pMetamodListener, Hook_OnLevelShutdown, Post);
+	}
+	else
+	{
+		g_PH.AddHookMemFunc(&IEngineServiceMgr::RegisterLoopMode, g_pEngineServiceMgr, Hook_RegisterLoopMode, Post);
+		g_PH.AddHookMemFunc(&IEngineServiceMgr::UnregisterLoopMode, g_pEngineServiceMgr, Hook_UnregisterLoopMode, Post);
+	}
+
 	g_PH.AddHookMemFunc(&IServerGameClients::ClientCommand, g_pSource2GameClients, Hook_ClientCommand, Pre);
-	g_PH.AddHookMemFunc(&IMetamodListener::OnLevelInit, g_pMetamodListener, Hook_OnLevelInit, Post);
-	g_PH.AddHookMemFunc(&IMetamodListener::OnLevelShutdown, g_pMetamodListener, Hook_OnLevelShutdown, Post);
 	g_PH.AddHookMemFunc(&IServerGameDLL::GameFrame, g_pSource2Server, Hook_GameFrame, Post);
 	g_PH.AddHookMemFunc(&IServerGameClients::ClientActive, g_pSource2GameClients, Hook_ClientActive, Post);
 	g_PH.AddHookMemFunc(&IServerGameClients::ClientDisconnect, g_pSource2GameClients, Hook_ClientDisconnect, Pre, Post);
@@ -111,7 +114,7 @@ void Source2SDK::OnPluginStart()
 	//g_PH.AddHookMemFunc(&ISource2Server::OnHostNameChanged, g_pSource2Server, Hook_OnHostNameChanged, Post);
 	//g_PH.AddHookMemFunc(&ISource2Server::PreFatalShutdown, g_pSource2Server, Hook_PreFatalShutdown, Post);
 	g_PH.AddHookMemFunc(&ISource2Server::UpdateWhenNotInGame, g_pSource2Server, Hook_UpdateWhenNotInGame, Post);
-	//g_PH.AddHookMemFunc(&ISource2Server::PreWorldUpdate, g_pSource2Server, Hook_PreWorldUpdate, Post); // not hook that with poly, can broke plugify unload
+	//g_PH.AddHookMemFunc(&ISource2Server::PreWorldUpdate, g_pSource2Server, Hook_PreWorldUpdate, Post);
 	g_PH.AddHookMemFunc(&ICvar::DispatchConCommand, g_pCVar, Hook_DispatchConCommand, Pre, Post);
 	g_PH.AddHookMemFunc(&IVEngineServer2::SetClientListening, g_pEngineServer2, Hook_SetClientListening, Pre);
 
@@ -123,7 +126,7 @@ void Source2SDK::OnPluginStart()
 
 	//m_pFactory = new CGameSystemStaticFactory<Source2SDK>("Plugify", this);
 
-	OnServerStartup(); // for late load
+	OnServerStartup(); // for late load*/
 }
 
 void Source2SDK::OnPluginEnd()
@@ -138,14 +141,6 @@ void Source2SDK::OnPluginEnd()
 			g_pGameEntitySystem->m_entityListeners.Remove(iListener);
 		}
 	}
-	/*CBaseGameSystemFactory::sm_pFirst = NULL;
-
-	if (m_pFactory)
-	{
-		m_pFactory->Shutdown();
-		m_pFactory->DestroyGameSystem(this);
-	}*/
-
 	g_Logger.Log(LS_DEBUG, "OnPluginEnd!\n");
 }
 
@@ -231,6 +226,34 @@ poly::ReturnAction Source2SDK::Hook_OnLevelShutdown(poly::CallbackType type, pol
 	GetOnLevelShutdownListenerManager().Notify();
 	return poly::ReturnAction::Ignored;
 };
+
+poly::ReturnAction Source2SDK::Hook_RegisterLoopMode(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret)
+{
+	auto pszLoopModeName = poly::GetArgument<const char*>(params, 1);
+	auto pLoopModeFactory = poly::GetArgument<ILoopModeFactory*>(params, 2);
+
+	if (!strcmp(pszLoopModeName, "game"))
+	{
+		g_PH.AddHookMemFunc(&ILoopMode::LoopInit, pLoopModeFactory, Hook_OnLevelInit, poly::CallbackType::Post);
+		g_PH.AddHookMemFunc(&ILoopMode::LoopShutdown, pLoopModeFactory, Hook_OnLevelShutdown, poly::CallbackType::Post);
+	}
+
+	return poly::ReturnAction::Ignored;
+}
+
+poly::ReturnAction Source2SDK::Hook_UnregisterLoopMode(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret)
+{
+	auto pszLoopModeName = poly::GetArgument<const char*>(params, 1);
+	auto pLoopModeFactory = poly::GetArgument<ILoopModeFactory*>(params, 2);
+
+	if (!strcmp(pszLoopModeName, "game"))
+	{
+		g_PH.RemoveHookMemFunc(&ILoopMode::LoopShutdown, pLoopModeFactory);
+		g_PH.RemoveHookMemFunc(&ILoopMode::LoopInit, pLoopModeFactory);
+	}
+
+	return poly::ReturnAction::Ignored;
+}
 
 poly::ReturnAction Source2SDK::Hook_GameFrame(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret)
 {
@@ -457,295 +480,3 @@ poly::ReturnAction Source2SDK::Hook_SetClientListening(poly::CallbackType type, 
 {
 	return CVoiceManager::Hook_SetClientListening(params, count, ret);
 }
-
-template<typename Tag, typename Tag::type M>
-struct Accessor
-{
-	friend typename Tag::type get(Tag)
-	{
-		return M;
-	}
-};
-
-struct CSourceHookFriend
-{
-	typedef SourceHook::Impl::HookContextStack SourceHook::Impl::CSourceHookImpl::*type;
-	friend type get(CSourceHookFriend);
-};
-
-template struct Accessor<CSourceHookFriend, &SourceHook::Impl::CSourceHookImpl::m_ContextStack>;
-
-poly::ReturnAction Source2SDK::Hook_SetupHookLoop_Pre(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret)
-{
-	return poly::ReturnAction::Supercede;
-}
-
-poly::ReturnAction Source2SDK::Hook_SetupHookLoop_Post(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret)
-{
-	SourceHook::Impl::CSourceHookImpl *sh = poly::GetArgument<SourceHook::Impl::CSourceHookImpl*>(params, 0);
-	SourceHook::Impl::CHookManager *hi = poly::GetArgument<SourceHook::Impl::CHookManager*>(params, 1);
-	void *vfnptr = poly::GetArgument<void*>(params, 2);
-	void *thisptr = poly::GetArgument<void*>(params, 3);
-	void **origCallAddr = poly::GetArgument<void**>(params, 4);
-	META_RES *statusPtr = poly::GetArgument<META_RES*>(params, 5);
-	META_RES *prevResPtr = poly::GetArgument<META_RES*>(params, 6);
-	META_RES *curResPtr = poly::GetArgument<META_RES*>(params, 7);
-	const void *origRetPtr = poly::GetArgument<META_RES*>(params, 8);
-	void *overrideRetPtr = poly::GetArgument<META_RES*>(params, 9);
-
-	using namespace SourceHook;
-	using namespace SourceHook::Impl;
-
-	HookContextStack& contextStack = sh->*get(CSourceHookFriend());
-	CHookContext* pCtx = NULL;
-	CHookContext* oldctx = contextStack.empty() ? NULL : &contextStack.front();
-	if (oldctx)
-	{
-		// SH_CALL
-		if (oldctx->m_State == CHookContext::State_Ignore)
-		{
-			*statusPtr = MRES_IGNORED;
-			oldctx->m_CallOrig = true;
-			oldctx->m_State = CHookContext::State_Dead;
-
-			List<CVfnPtr*>& vfnptr_list = hi->GetVfnPtrList();
-			List<CVfnPtr*>::iterator vfnptr_iter;
-			for (vfnptr_iter = vfnptr_list.begin();
-				 vfnptr_iter != vfnptr_list.end(); ++vfnptr_iter)
-			{
-				if (**vfnptr_iter == vfnptr)
-					break;
-			}
-
-			if (vfnptr_iter == vfnptr_list.end())
-			{
-				void* origPtr = poly::FindOriginalAddr(thisptr, *(void**)vfnptr);
-				if (origPtr != nullptr)
-				{
-					for (vfnptr_iter = vfnptr_list.begin();
-						 vfnptr_iter != vfnptr_list.end(); ++vfnptr_iter)
-					{
-						void** ptr = (void**)(*vfnptr_iter)->GetPtr();
-						if (*ptr == origPtr)
-							break;
-					}
-				}
-			}
-
-			if (vfnptr_iter == vfnptr_list.end())
-			{
-				// ASSERT
-			}
-			else
-			{
-				*origCallAddr = (*vfnptr_iter)->GetOrigCallAddr();
-				oldctx->pVfnPtr = *vfnptr_iter;
-			}
-
-			oldctx->pOrigRet = origRetPtr;
-
-			poly::SetReturn<IHookContext*>(ret, oldctx);
-			return poly::ReturnAction::Handled;
-		}
-		// Recall
-		if (oldctx->m_State >= CHookContext::State_Recall_Pre && oldctx->m_State <= CHookContext::State_Recall_PostVP)
-		{
-			pCtx = oldctx;
-
-			*statusPtr = *(oldctx->pStatus);
-			*prevResPtr = *(oldctx->pPrevRes);
-
-			pCtx->m_Iter = oldctx->m_Iter;
-
-			// Only have possibility of calling the orig func in pre recall mode
-			pCtx->m_CallOrig = (oldctx->m_State == CHookContext::State_Recall_Pre || oldctx->m_State == CHookContext::State_Recall_PreVP);
-
-			overrideRetPtr = pCtx->pOverrideRet;
-
-			// When the status is low so there's no override return value and we're in a post recall,
-			// give it the orig return value as override return value.
-			if (pCtx->m_State == CHookContext::State_Recall_Post || pCtx->m_State == CHookContext::State_Recall_PostVP)
-			{
-				origRetPtr = oldctx->pOrigRet;
-				if (*statusPtr < MRES_OVERRIDE)
-					overrideRetPtr = const_cast<void*>(pCtx->pOrigRet);
-			}
-		}
-	}
-	if (!pCtx)
-	{
-		pCtx = contextStack.make_next();
-		pCtx->m_State = CHookContext::State_Born;
-		pCtx->m_CallOrig = true;
-	}
-
-	pCtx->pIface = NULL;
-
-	List<CVfnPtr*>& vfnptr_list = hi->GetVfnPtrList();
-	List<CVfnPtr*>::iterator vfnptr_iter;
-	for (vfnptr_iter = vfnptr_list.begin();
-		 vfnptr_iter != vfnptr_list.end(); ++vfnptr_iter)
-	{
-		if (**vfnptr_iter == vfnptr)
-			break;
-	}
-
-	// Workaround for overhooking
-
-	if (vfnptr_iter == vfnptr_list.end())
-	{
-		void* origPtr = poly::FindOriginalAddr(thisptr, *(void**)vfnptr);
-		if (origPtr != nullptr)
-		{
-			for (vfnptr_iter = vfnptr_list.begin();
-				 vfnptr_iter != vfnptr_list.end(); ++vfnptr_iter)
-			{
-				void** ptr = (void**)(*vfnptr_iter)->GetPtr();
-				if (*ptr == origPtr)
-					break;
-			}
-		}
-	}
-
-	if (vfnptr_iter == vfnptr_list.end())
-	{
-		pCtx->m_State = CHookContext::State_Dead;
-	}
-	else
-	{
-		pCtx->pVfnPtr = *vfnptr_iter;
-		*origCallAddr = pCtx->pVfnPtr->GetOrigCallAddr();
-		pCtx->pIface = pCtx->pVfnPtr->FindIface(thisptr);
-	}
-
-	pCtx->pStatus = statusPtr;
-	pCtx->pPrevRes = prevResPtr;
-	pCtx->pCurRes = curResPtr;
-	pCtx->pThisPtr = thisptr;
-	pCtx->pOverrideRet = overrideRetPtr;
-	pCtx->pOrigRet = origRetPtr;
-
-	poly::SetReturn<IHookContext*>(ret, pCtx);
-	return poly::ReturnAction::Handled;
-}
-
-/*
-GS_EVENT_MEMBER(Source2SDK, GameInit)
-{
-}
-
-GS_EVENT_MEMBER(Source2SDK, GameShutdown)
-{
-}
-
-GS_EVENT_MEMBER(Source2SDK, GamePostInit)
-{
-}
-
-GS_EVENT_MEMBER(Source2SDK, GamePreShutdown)
-{
-}
-
-GS_EVENT_MEMBER(Source2SDK, BuildGameSessionManifest)
-{
-}
-
-GS_EVENT_MEMBER(Source2SDK, GameActivate)
-{
-}
-
-GS_EVENT_MEMBER(Source2SDK, ClientFullySignedOn)
-{
-}
-
-GS_EVENT_MEMBER(Source2SDK, Disconnect)
-{
-}
-
-GS_EVENT_MEMBER(Source2SDK, GameDeactivate)
-{
-}
-
-GS_EVENT_MEMBER(Source2SDK, SpawnGroupPrecache)
-{
-}
-
-GS_EVENT_MEMBER(Source2SDK, SpawnGroupUncache)
-{
-}
-
-GS_EVENT_MEMBER(Source2SDK, PreSpawnGroupLoad)
-{
-}
-
-GS_EVENT_MEMBER(Source2SDK, PostSpawnGroupLoad)
-{
-}
-
-GS_EVENT_MEMBER(Source2SDK, PreSpawnGroupUnload)
-{
-}
-
-GS_EVENT_MEMBER(Source2SDK, PostSpawnGroupUnload)
-{
-}
-
-GS_EVENT_MEMBER(Source2SDK, ActiveSpawnGroupChanged)
-{
-}
-
-GS_EVENT_MEMBER(Source2SDK, ClientPostDataUpdate)
-{
-}
-
-GS_EVENT_MEMBER(Source2SDK, ClientPreRender)
-{
-}
-
-GS_EVENT_MEMBER(Source2SDK, ClientPreEntityThink)
-{
-}
-
-GS_EVENT_MEMBER(Source2SDK, ClientUpdate)
-{
-}
-
-GS_EVENT_MEMBER(Source2SDK, ClientPostRender)
-{
-}
-
-GS_EVENT_MEMBER(Source2SDK, ServerPreEntityThink)
-{
-}
-
-GS_EVENT_MEMBER(Source2SDK, ServerPostEntityThink)
-{
-}
-
-GS_EVENT_MEMBER(Source2SDK, ServerPreClientUpdate)
-{
-}
-
-GS_EVENT_MEMBER(Source2SDK, ServerGamePostSimulate)
-{
-}
-
-GS_EVENT_MEMBER(Source2SDK, ClientGamePostSimulate)
-{
-}
-
-GS_EVENT_MEMBER(Source2SDK, GameFrameBoundary)
-{
-}
-
-GS_EVENT_MEMBER(Source2SDK, OutOfGameFrameBoundary)
-{
-}
-
-GS_EVENT_MEMBER(Source2SDK, SaveGame)
-{
-}
-
-GS_EVENT_MEMBER(Source2SDK, RestoreGame)
-{
-}*/

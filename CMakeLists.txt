@@ -105,7 +105,7 @@ set(PRECOMPILER_HEADERS
 		${SOURCE_DIR}/pch.h
 )
 
-add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${METAMOD_SOURCESDK_SOURCE_FILES})
+add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
 		C_STANDARD 11
@@ -139,8 +139,8 @@ set(S2SDK_VERSION "0" CACHE STRING "Set version name")
 set(S2SDK_PACKAGE "cs2sdk" CACHE STRING "Set package name")
 
 configure_file(
-		${CMAKE_SOURCE_DIR}/s2sdk.pplugin.in
-		${CMAKE_BINARY_DIR}/s2sdk.pplugin
+    ${CMAKE_SOURCE_DIR}/s2sdk.pplugin.in
+    ${CMAKE_BINARY_DIR}/s2sdk.pplugin
 )
 
 configure_file(${CMAKE_SOURCE_DIR}/assets/configs/core.txt ${CMAKE_BINARY_DIR}/core.txt COPYONLY)
