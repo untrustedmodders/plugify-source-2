@@ -88,7 +88,7 @@
         CreateConVarVector2;
         CreateConVarVector3;
         CreateConVarVector4;
-        CreateConVarQangle;
+        CreateConVarQAngle;
         FindConVar;
         HookConVarChange;
         UnhookConVarChange;
@@ -114,7 +114,7 @@
         GetConVarVector2;
         GetConVarVector;
         GetConVarVector4;
-        GetConVarQangle;
+        GetConVarQAngle;
         SetConVarValue;
         SetConVarBool;
         SetConVarInt16;
@@ -130,7 +130,7 @@
         SetConVarVector2;
         SetConVarVector3;
         SetConVarVector4;
-        SetConVarQangle;
+        SetConVarQAngle;
         SendConVarValue;
         GetClientConVarValue;
         SetFakeClientConVarValue;

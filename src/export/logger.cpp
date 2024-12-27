@@ -21,9 +21,9 @@ PLUGIFY_WARN_IGNORE(4190)
  * @param color The color for messages logged to this channel.
  * @return The ID of the newly created logging channel.
  */
-extern "C" PLUGIN_API int RegisterLoggingChannel(const plg::string& name, int iFlags, int verbosity, int color)
+extern "C" PLUGIN_API int RegisterLoggingChannel(const plg::string& name, int iFlags, LoggingVerbosity_t verbosity, int color)
 {
-	return LoggingSystem_RegisterLoggingChannel(name.c_str(), nullptr, iFlags, static_cast<LoggingVerbosity_t>(verbosity), *reinterpret_cast<Color*>(&color));
+	return LoggingSystem_RegisterLoggingChannel(name.c_str(), nullptr, iFlags, verbosity, *reinterpret_cast<Color*>(&color));
 }
 
 /**
@@ -65,9 +65,9 @@ extern "C" PLUGIN_API bool HasLoggerTag(int channelID, const plg::string& tag)
  * @param severity The severity level to check.
  * @return True if the channel is enabled for the specified severity, otherwise false.
  */
-extern "C" PLUGIN_API bool IsLoggerChannelEnabledBySeverity(int channelID, int severity)
+extern "C" PLUGIN_API bool IsLoggerChannelEnabledBySeverity(int channelID, LoggingSeverity_t severity)
 {
-	return LoggingSystem_IsChannelEnabled(channelID, static_cast<LoggingSeverity_t>(severity));
+	return LoggingSystem_IsChannelEnabled(channelID, severity);
 }
 
 /**
@@ -80,9 +80,9 @@ extern "C" PLUGIN_API bool IsLoggerChannelEnabledBySeverity(int channelID, int s
  * @param verbosity The verbosity level to check.
  * @return True if the channel is enabled for the specified verbosity, otherwise false.
  */
-extern "C" PLUGIN_API bool IsLoggerChannelEnabledByVerbosity(int channelID, int verbosity)
+extern "C" PLUGIN_API bool IsLoggerChannelEnabledByVerbosity(int channelID, LoggingVerbosity_t verbosity)
 {
-	return LoggingSystem_IsChannelEnabled(channelID, static_cast<LoggingSeverity_t>(verbosity));
+	return LoggingSystem_IsChannelEnabled(channelID, verbosity);
 }
 
 /**
@@ -107,9 +107,9 @@ extern "C" PLUGIN_API int GetLoggerChannelVerbosity(int channelID)
  * @param channelID The ID of the logging channel.
  * @param verbosity The new verbosity level to set.
  */
-extern "C" PLUGIN_API void SetLoggerChannelVerbosity(int channelID, int verbosity)
+extern "C" PLUGIN_API void SetLoggerChannelVerbosity(int channelID, LoggingVerbosity_t verbosity)
 {
-	return LoggingSystem_SetChannelVerbosity(channelID, static_cast<LoggingVerbosity_t>(verbosity));
+	return LoggingSystem_SetChannelVerbosity(channelID, verbosity);
 }
 
 /**
@@ -121,9 +121,9 @@ extern "C" PLUGIN_API void SetLoggerChannelVerbosity(int channelID, int verbosit
  * @param name The name of the logging channel.
  * @param verbosity The new verbosity level to set.
  */
-extern "C" PLUGIN_API void SetLoggerChannelVerbosityByName(int channelID, const plg::string& name, int verbosity)
+extern "C" PLUGIN_API void SetLoggerChannelVerbosityByName(int channelID, const plg::string& name, LoggingVerbosity_t verbosity)
 {
-	return LoggingSystem_SetChannelVerbosityByName(name.c_str(), static_cast<LoggingVerbosity_t>(verbosity));
+	return LoggingSystem_SetChannelVerbosityByName(name.c_str(), verbosity);
 }
 
 /**
@@ -135,9 +135,9 @@ extern "C" PLUGIN_API void SetLoggerChannelVerbosityByName(int channelID, const 
  * @param tag The name of the tag.
  * @param verbosity The new verbosity level to set.
  */
-extern "C" PLUGIN_API void SetLoggerChannelVerbosityByTag(int channelID, const plg::string& tag, int verbosity)
+extern "C" PLUGIN_API void SetLoggerChannelVerbosityByTag(int channelID, const plg::string& tag, LoggingVerbosity_t verbosity)
 {
-	LoggingSystem_SetChannelVerbosityByTag(tag.c_str(), static_cast<LoggingVerbosity_t>(verbosity));
+	LoggingSystem_SetChannelVerbosityByTag(tag.c_str(), verbosity);
 }
 
 /**
@@ -188,9 +188,9 @@ extern "C" PLUGIN_API int GetLoggerChannelFlags(int channelID)
  * @param channelID The ID of the logging channel.
  * @param eFlags The new flags to set for the channel.
  */
-extern "C" PLUGIN_API void SetLoggerChannelFlags(int channelID, int eFlags)
+extern "C" PLUGIN_API void SetLoggerChannelFlags(int channelID, LoggingChannelFlags_t eFlags)
 {
-	LoggingSystem_SetChannelFlags(channelID, static_cast<LoggingChannelFlags_t>(eFlags));
+	LoggingSystem_SetChannelFlags(channelID, eFlags);
 }
 
 /**
@@ -203,9 +203,9 @@ extern "C" PLUGIN_API void SetLoggerChannelFlags(int channelID, int eFlags)
  * @param message The message to log.
  * @return An integer indicating the result of the logging operation.
  */
-extern "C" PLUGIN_API int Log(int channelID, int severity, const plg::string& message)
+extern "C" PLUGIN_API int Log(int channelID, LoggingSeverity_t severity, const plg::string& message)
 {
-	return LoggingSystem_LogDirect(channelID, static_cast<LoggingSeverity_t>(severity), message.c_str());
+	return LoggingSystem_LogDirect(channelID, severity, message.c_str());
 }
 
 /**
@@ -220,9 +220,9 @@ extern "C" PLUGIN_API int Log(int channelID, int severity, const plg::string& me
  * @param message The message to log.
  * @return An integer indicating the result of the logging operation.
  */
-extern "C" PLUGIN_API int LogColored(int channelID, int severity, int color, const plg::string& message)
+extern "C" PLUGIN_API int LogColored(int channelID, LoggingSeverity_t severity, int color, const plg::string& message)
 {
-	return LoggingSystem_LogDirect(channelID, static_cast<LoggingSeverity_t>(severity), *reinterpret_cast<Color*>(&color), message.c_str());
+	return LoggingSystem_LogDirect(channelID, severity, *reinterpret_cast<Color*>(&color), message.c_str());
 }
 
 /**
@@ -239,10 +239,10 @@ extern "C" PLUGIN_API int LogColored(int channelID, int severity, int color, con
  * @param message The message to log.
  * @return An integer indicating the result of the logging operation.
  */
-extern "C" PLUGIN_API int LogFull(int channelID, int severity, const plg::string& file, int line, const plg::string& function, const plg::string& message)
+extern "C" PLUGIN_API int LogFull(int channelID, LoggingSeverity_t severity, const plg::string& file, int line, const plg::string& function, const plg::string& message)
 {
 	LeafCodeInfo_t codeInfo{file.c_str(), line, function.c_str()};
-	return LoggingSystem_LogDirect(channelID, static_cast<LoggingSeverity_t>(severity), codeInfo, message.c_str());
+	return LoggingSystem_LogDirect(channelID, severity, codeInfo, message.c_str());
 }
 
 /**
@@ -261,10 +261,10 @@ extern "C" PLUGIN_API int LogFull(int channelID, int severity, const plg::string
  * @param message The message to log.
  * @return An integer indicating the result of the logging operation.
  */
-extern "C" PLUGIN_API int LogFullColored(int channelID, int severity, const plg::string& file, int line, const plg::string& function, int color, const plg::string& message)
+extern "C" PLUGIN_API int LogFullColored(int channelID, LoggingSeverity_t severity, const plg::string& file, int line, const plg::string& function, int color, const plg::string& message)
 {
 	LeafCodeInfo_t codeInfo{file.c_str(), line, function.c_str()};
-	return LoggingSystem_LogDirect(channelID, static_cast<LoggingSeverity_t>(severity), codeInfo, *reinterpret_cast<Color*>(&color), message.c_str());
+	return LoggingSystem_LogDirect(channelID, severity, codeInfo, *reinterpret_cast<Color*>(&color), message.c_str());
 }
 
 PLUGIFY_WARN_POP()

@@ -32,12 +32,10 @@ public:
 	static poly::ReturnAction Hook_ClientConnect(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 	static poly::ReturnAction Hook_ClientCommand(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 	static poly::ReturnAction Hook_UpdateWhenNotInGame(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+	static poly::ReturnAction Hook_PreWorldUpdate(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 	static poly::ReturnAction Hook_FireOutputInternal(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 	static poly::ReturnAction Hook_DispatchConCommand(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 	static poly::ReturnAction Hook_SetClientListening(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
-
-private:
-	IGameSystemFactory *m_pFactory = NULL;
 };
 
 extern Source2SDK g_sdk;

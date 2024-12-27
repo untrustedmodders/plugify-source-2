@@ -89,10 +89,10 @@ extern "C" PLUGIN_API void* EntHandleToEntPointer(int entityHandle)
  * @brief Converts an entity index into an entity handle.
  *
  * This function converts a given entity index into its corresponding entity handle.
- * If the entity index is invalid, it returns INVALID_EHANDLE_INDEX.
+ * If the entity index is invalid, it returns -1.
  *
  * @param entityIndex The index of the entity to convert.
- * @return The entity handle as an integer, or INVALID_EHANDLE_INDEX if the entity index is invalid.
+ * @return The entity handle as an integer, or -1 if the entity index is invalid.
  */
 extern "C" PLUGIN_API int EntIndexToEntHandle(int entityIndex)
 {
@@ -705,7 +705,7 @@ extern "C" PLUGIN_API void SetTeamEntity(int entityHandle, int team)
  * @brief Retrieves the owner of an entity.
  *
  * This function returns the entity handle of the owner for the specified entity.
- * If the entity is invalid, it returns INVALID_EHANDLE_INDEX.
+ * If the entity is invalid, it returns -1.
  *
  * @param entityHandle The handle of the entity whose owner is to be retrieved.
  * @return The handle of the owner entity, or INVALID_EHANDLE_INDEX if the entity is invalid.
@@ -754,7 +754,7 @@ extern "C" PLUGIN_API void SetEntityOwner(int entityHandle, int ownerHandle)
  * @brief Retrieves the parent of an entity.
  *
  * This function returns the entity handle of the parent for the specified entity.
- * If the entity is invalid, it returns INVALID_EHANDLE_INDEX.
+ * If the entity is invalid, it returns -1.
  *
  * @param entityHandle The handle of the entity whose parent is to be retrieved.
  * @return The handle of the parent entity, or INVALID_EHANDLE_INDEX if the entity is invalid.
@@ -995,7 +995,7 @@ extern "C" PLUGIN_API float GetEntityWaterLevel(int entityHandle)
  * @brief Retrieves the ground entity of an entity.
  *
  * This function returns the handle of the ground entity for the specified entity.
- * If the entity is invalid, it returns INVALID_EHANDLE_INDEX.
+ * If the entity is invalid, it returns -1.
  *
  * @param entityHandle The handle of the entity whose ground entity is to be retrieved.
  * @return The handle of the ground entity, or INVALID_EHANDLE_INDEX if the entity is invalid.

@@ -1,4 +1,5 @@
 #include <core/event_manager.hpp>
+#include <entity2/entitysystem.h>
 #include <plugin_export.h>
 
 PLUGIFY_WARN_PUSH()
@@ -285,11 +286,17 @@ extern "C" PLUGIN_API void SetEventPtr(EventInfo* pInfo, const plg::string& key,
  * @brief Sets the player controller address of a game event's key.
  * @param pInfo A pointer to the EventInfo structure containing event data.
  * @param key The key for which to set the player controller address.
- * @param value A pointer to the player controller to set.
+ * @param value A handle to the player controller to set.
  */
-extern "C" PLUGIN_API void SetEventPlayerController(EventInfo* pInfo, const plg::string& key, CEntityInstance* value)
+extern "C" PLUGIN_API void SetEventPlayerController(EventInfo* pInfo, const plg::string& key, int value)
 {
-	pInfo->pEvent->SetPlayer(GameEventKeySymbol_t::Make(key.c_str()), value);
+	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)value));
+	if (!pEntity)
+	{
+		return;
+	}
+
+	pInfo->pEvent->SetPlayer(GameEventKeySymbol_t::Make(key.c_str()), pEntity);
 }
 
 /**
@@ -307,11 +314,17 @@ extern "C" PLUGIN_API void SetEventPlayerIndex(EventInfo* pInfo, const plg::stri
  * @brief Sets the entity address of a game event's key.
  * @param pInfo A pointer to the EventInfo structure containing event data.
  * @param key The key for which to set the entity address.
- * @param value A pointer to the entity to set.
+ * @param value A handle to the entity to set.
  */
-extern "C" PLUGIN_API void SetEventEntity(EventInfo* pInfo, const plg::string& key, CEntityInstance* value)
+extern "C" PLUGIN_API void SetEventEntity(EventInfo* pInfo, const plg::string& key, int value)
 {
-	pInfo->pEvent->SetEntity(GameEventKeySymbol_t::Make(key.c_str()), value);
+	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)value));
+	if (!pEntity)
+	{
+		return;
+	}
+
+	pInfo->pEvent->SetEntity(GameEventKeySymbol_t::Make(key.c_str()), pEntity);
 }
 
 /**

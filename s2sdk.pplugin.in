@@ -1,6 +1,6 @@
 {
   "fileVersion": 1,
-  "version": ${S2SDK_VERSION},
+  "version": 0,//${S2SDK_VERSION},
   "versionName": "v${S2SDK_VERSION}",
   "friendlyName": "CS2-SDK",
   "description": "Provides functionality for other plugins from Source 2 engine",
@@ -6731,7 +6731,38 @@
           "name": "verbosity",
           "type": "int32",
           "ref": false,
-          "description": "The verbosity level for the logging channel."
+          "description": "The verbosity level for the logging channel.",
+          "enum": {
+            "name": "LoggingVerbosity",
+            "description": "Enum representing the possible verbosity of a logger.",
+            "values": [
+              {
+                "value": 0,
+                "name": "Off",
+                "description": "Turns off all spew."
+              },
+              {
+                "value": 1,
+                "name": "Essential",
+                "description": "Turns on vital logs."
+              },
+              {
+                "value": 2,
+                "name": "Default",
+                "description": "Turns on most messages."
+              },
+              {
+                "value": 3,
+                "name": "Detailed",
+                "description": "Allows for walls of text that are usually useful."
+              },
+              {
+                "value": 4,
+                "name": "Max",
+                "description": "Allows everything."
+              }
+            ]
+          }
         },
         {
           "name": "color",
@@ -6808,7 +6839,43 @@
           "name": "severity",
           "type": "int32",
           "ref": false,
-          "description": "The severity level to check."
+          "description": "The severity of a logging operation.",
+          "enum": {
+            "name": "LoggingSeverity",
+            "description": "Enum representing the possible verbosity of a logger.",
+            "values": [
+              {
+                "value": 0,
+                "name": "Off",
+                "description": "Turns off all spew."
+              },
+              {
+                "value": 1,
+                "name": "Detailed",
+                "description": "A debug message."
+              },
+              {
+                "value": 2,
+                "name": "Message",
+                "description": "An informative logging message."
+              },
+              {
+                "value": 3,
+                "name": "Warning",
+                "description": "A warning, typically non-fatal."
+              },
+              {
+                "value": 4,
+                "name": "Assert",
+                "description": "A message caused by an Assert**() operation."
+              },
+              {
+                "value": 5,
+                "name": "Error",
+                "description": "An error, typically fatal/unrecoverable."
+              }
+            ]
+          }
         }
       ],
       "retType": {
@@ -6832,7 +6899,38 @@
           "name": "verbosity",
           "type": "int32",
           "ref": false,
-          "description": "The verbosity level to check."
+          "description": "The verbosity level to check.",
+          "enum": {
+            "name": "LoggingVerbosity",
+            "description": "Enum representing the possible verbosity of a logger.",
+            "values": [
+              {
+                "value": 0,
+                "name": "Off",
+                "description": "Turns off all spew."
+              },
+              {
+                "value": 1,
+                "name": "Essential",
+                "description": "Turns on vital logs."
+              },
+              {
+                "value": 2,
+                "name": "Default",
+                "description": "Turns on most messages."
+              },
+              {
+                "value": 3,
+                "name": "Detailed",
+                "description": "Allows for walls of text that are usually useful."
+              },
+              {
+                "value": 4,
+                "name": "Max",
+                "description": "Allows everything."
+              }
+            ]
+          }
         }
       ],
       "retType": {
@@ -6874,7 +6972,38 @@
           "name": "verbosity",
           "type": "int32",
           "ref": false,
-          "description": "The new verbosity level to set."
+          "description": "The new verbosity level to set.",
+          "enum": {
+            "name": "LoggingVerbosity",
+            "description": "Enum representing the possible verbosity of a logger.",
+            "values": [
+              {
+                "value": 0,
+                "name": "Off",
+                "description": "Turns off all spew."
+              },
+              {
+                "value": 1,
+                "name": "Essential",
+                "description": "Turns on vital logs."
+              },
+              {
+                "value": 2,
+                "name": "Default",
+                "description": "Turns on most messages."
+              },
+              {
+                "value": 3,
+                "name": "Detailed",
+                "description": "Allows for walls of text that are usually useful."
+              },
+              {
+                "value": 4,
+                "name": "Max",
+                "description": "Allows everything."
+              }
+            ]
+          }
         }
       ],
       "retType": {
@@ -6903,7 +7032,38 @@
           "name": "verbosity",
           "type": "int32",
           "ref": false,
-          "description": "The new verbosity level to set."
+          "description": "The new verbosity level to set.",
+          "enum": {
+            "name": "LoggingVerbosity",
+            "description": "Enum representing the possible verbosity of a logger.",
+            "values": [
+              {
+                "value": 0,
+                "name": "Off",
+                "description": "Turns off all spew."
+              },
+              {
+                "value": 1,
+                "name": "Essential",
+                "description": "Turns on vital logs."
+              },
+              {
+                "value": 2,
+                "name": "Default",
+                "description": "Turns on most messages."
+              },
+              {
+                "value": 3,
+                "name": "Detailed",
+                "description": "Allows for walls of text that are usually useful."
+              },
+              {
+                "value": 4,
+                "name": "Max",
+                "description": "Allows everything."
+              }
+            ]
+          }
         }
       ],
       "retType": {
@@ -6932,7 +7092,38 @@
           "name": "verbosity",
           "type": "int32",
           "ref": false,
-          "description": "The new verbosity level to set."
+          "description": "The new verbosity level to set.",
+          "enum": {
+            "name": "LoggingVerbosity",
+            "description": "Enum representing the possible verbosity of a logger.",
+            "values": [
+              {
+                "value": 0,
+                "name": "Off",
+                "description": "Turns off all spew."
+              },
+              {
+                "value": 1,
+                "name": "Essential",
+                "description": "Turns on vital logs."
+              },
+              {
+                "value": 2,
+                "name": "Default",
+                "description": "Turns on most messages."
+              },
+              {
+                "value": 3,
+                "name": "Detailed",
+                "description": "Allows for walls of text that are usually useful."
+              },
+              {
+                "value": 4,
+                "name": "Max",
+                "description": "Allows everything."
+              }
+            ]
+          }
         }
       ],
       "retType": {
@@ -7014,7 +7205,23 @@
           "name": "eFlags",
           "type": "int32",
           "ref": false,
-          "description": "The new flags to set for the channel."
+          "description": "The new flags to set for the channel.",
+          "enum": {
+            "name": "LoggingChannelFlags",
+            "description": "Logging channel behavior flags, set on channel creation.",
+            "values": [
+              {
+                "value": 1,
+                "name": "ConsoleOnly",
+                "description": "Indicates that the spew is only relevant to interactive consoles."
+              },
+              {
+                "value": 2,
+                "name": "DoNotEcho",
+                "description": "Indicates that spew should not be echoed to any output devices."
+              }
+            ]
+          }
         }
       ],
       "retType": {
@@ -7037,7 +7244,43 @@
           "name": "severity",
           "type": "int32",
           "ref": false,
-          "description": "The severity level for the log message."
+          "description": "The severity level for the log message.",
+          "enum": {
+            "name": "LoggingSeverity",
+            "description": "Enum representing the possible verbosity of a logger.",
+            "values": [
+              {
+                "value": 0,
+                "name": "Off",
+                "description": "Turns off all spew."
+              },
+              {
+                "value": 1,
+                "name": "Detailed",
+                "description": "A debug message."
+              },
+              {
+                "value": 2,
+                "name": "Message",
+                "description": "An informative logging message."
+              },
+              {
+                "value": 3,
+                "name": "Warning",
+                "description": "A warning, typically non-fatal."
+              },
+              {
+                "value": 4,
+                "name": "Assert",
+                "description": "A message caused by an Assert**() operation."
+              },
+              {
+                "value": 5,
+                "name": "Error",
+                "description": "An error, typically fatal/unrecoverable."
+              }
+            ]
+          }
         },
         {
           "name": "message",
@@ -7067,7 +7310,43 @@
           "name": "severity",
           "type": "int32",
           "ref": false,
-          "description": "The severity level for the log message."
+          "description": "The severity level for the log message.",
+          "enum": {
+            "name": "LoggingSeverity",
+            "description": "Enum representing the possible verbosity of a logger.",
+            "values": [
+              {
+                "value": 0,
+                "name": "Off",
+                "description": "Turns off all spew."
+              },
+              {
+                "value": 1,
+                "name": "Detailed",
+                "description": "A debug message."
+              },
+              {
+                "value": 2,
+                "name": "Message",
+                "description": "An informative logging message."
+              },
+              {
+                "value": 3,
+                "name": "Warning",
+                "description": "A warning, typically non-fatal."
+              },
+              {
+                "value": 4,
+                "name": "Assert",
+                "description": "A message caused by an Assert**() operation."
+              },
+              {
+                "value": 5,
+                "name": "Error",
+                "description": "An error, typically fatal/unrecoverable."
+              }
+            ]
+          }
         },
         {
           "name": "color",
@@ -7103,7 +7382,43 @@
           "name": "severity",
           "type": "int32",
           "ref": false,
-          "description": "The severity level for the log message."
+          "description": "The severity level for the log message.",
+          "enum": {
+            "name": "LoggingSeverity",
+            "description": "Enum representing the possible verbosity of a logger.",
+            "values": [
+              {
+                "value": 0,
+                "name": "Off",
+                "description": "Turns off all spew."
+              },
+              {
+                "value": 1,
+                "name": "Detailed",
+                "description": "A debug message."
+              },
+              {
+                "value": 2,
+                "name": "Message",
+                "description": "An informative logging message."
+              },
+              {
+                "value": 3,
+                "name": "Warning",
+                "description": "A warning, typically non-fatal."
+              },
+              {
+                "value": 4,
+                "name": "Assert",
+                "description": "A message caused by an Assert**() operation."
+              },
+              {
+                "value": 5,
+                "name": "Error",
+                "description": "An error, typically fatal/unrecoverable."
+              }
+            ]
+          }
         },
         {
           "name": "file",
@@ -7151,7 +7466,43 @@
           "name": "severity",
           "type": "int32",
           "ref": false,
-          "description": "The severity level for the log message."
+          "description": "The severity level for the log message.",
+          "enum": {
+            "name": "LoggingSeverity",
+            "description": "Enum representing the possible verbosity of a logger.",
+            "values": [
+              {
+                "value": 0,
+                "name": "Off",
+                "description": "Turns off all spew."
+              },
+              {
+                "value": 1,
+                "name": "Detailed",
+                "description": "A debug message."
+              },
+              {
+                "value": 2,
+                "name": "Message",
+                "description": "An informative logging message."
+              },
+              {
+                "value": 3,
+                "name": "Warning",
+                "description": "A warning, typically non-fatal."
+              },
+              {
+                "value": 4,
+                "name": "Assert",
+                "description": "A message caused by an Assert**() operation."
+              },
+              {
+                "value": 5,
+                "name": "Error",
+                "description": "An error, typically fatal/unrecoverable."
+              }
+            ]
+          }
         },
         {
           "name": "file",

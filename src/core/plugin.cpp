@@ -7,8 +7,6 @@
 #include <iserver.h>
 
 #include <ISmmPlugin.h>
-#include <sourcehook/sourcehook_impl.h>
-#include <sourcehook/sourcehook_impl_chookmaninfo.h>
 
 #include "con_command_manager.hpp"
 #include "con_var_manager.hpp"
@@ -114,17 +112,12 @@ void Source2SDK::OnPluginStart()
 	//g_PH.AddHookMemFunc(&ISource2Server::OnHostNameChanged, g_pSource2Server, Hook_OnHostNameChanged, Post);
 	//g_PH.AddHookMemFunc(&ISource2Server::PreFatalShutdown, g_pSource2Server, Hook_PreFatalShutdown, Post);
 	g_PH.AddHookMemFunc(&ISource2Server::UpdateWhenNotInGame, g_pSource2Server, Hook_UpdateWhenNotInGame, Post);
-	//g_PH.AddHookMemFunc(&ISource2Server::PreWorldUpdate, g_pSource2Server, Hook_PreWorldUpdate, Post);
+	g_PH.AddHookMemFunc(&ISource2Server::PreWorldUpdate, g_pSource2Server, Hook_PreWorldUpdate, Post);
 	g_PH.AddHookMemFunc(&ICvar::DispatchConCommand, g_pCVar, Hook_DispatchConCommand, Pre, Post);
 	g_PH.AddHookMemFunc(&IVEngineServer2::SetClientListening, g_pEngineServer2, Hook_SetClientListening, Pre);
 
 	using FireOutputInternal = void (*)(CEntityIOOutput* const, CEntityInstance*, CEntityInstance*, const CVariant* const, float);
 	g_PH.AddHookDetourFunc<FireOutputInternal>("CEntityIOOutput_FireOutputInternal", Hook_FireOutputInternal, Pre);
-
-	//using SayText2Filter = void (*)(IRecipientFilter &, CCSPlayerController *, uint64_t, const char *, const char *, const char *, const char *, const char *);
-	//g_HookManager.AddHookDetourFunc<SayText2Filter>("UTIL_SayText2Filter", Hook_SayText2Filter, Pre);
-
-	//m_pFactory = new CGameSystemStaticFactory<Source2SDK>("Plugify", this);
 
 	OnServerStartup(); // for late load*/
 }
@@ -146,15 +139,6 @@ void Source2SDK::OnPluginEnd()
 
 void Source2SDK::OnServerStartup()
 {
-	g_pGameEntitySystem = GameEntitySystem();
-	if (g_pGameEntitySystem != nullptr)
-	{
-		if (g_pGameEntitySystem->m_entityListeners.Find(&g_pEntityListener) == -1)
-		{
-			g_pGameEntitySystem->m_entityListeners.AddToTail(&g_pEntityListener);
-		}
-	}
-
 	if (g_pNetworkGameServer != nullptr)
 	{
 		g_PH.RemoveHookMemFunc(&INetworkGameServer::ActivateServer, g_pNetworkGameServer);
@@ -164,6 +148,18 @@ void Source2SDK::OnServerStartup()
 	{
 		gpGlobals = g_pNetworkGameServer->GetGlobals();
 		g_PH.AddHookMemFunc(&INetworkGameServer::ActivateServer, g_pNetworkGameServer, Hook_ActivateServer, poly::CallbackType::Post);
+	}
+
+	if (gpGlobals != nullptr)
+	{
+		g_pGameEntitySystem = GameEntitySystem();
+		if (g_pGameEntitySystem != nullptr)
+		{
+			if (g_pGameEntitySystem->m_entityListeners.Find(&g_pEntityListener) == -1)
+			{
+				g_pGameEntitySystem->m_entityListeners.AddToTail(&g_pEntityListener);
+			}
+		}
 	}
 }
 
@@ -387,6 +383,10 @@ poly::ReturnAction Source2SDK::Hook_ClientCommand(poly::CallbackType type, poly:
 	// CPlayerSlot nSlot, const CCommand& _cmd
 	auto slot = (CPlayerSlot)poly::GetArgument<int>(params, 1);
 	auto args = poly::GetArgument<const CCommand*>(params, 2);
+	if (args == nullptr)
+	{
+		return poly::ReturnAction::Ignored;
+	}
 
 	g_Logger.LogFormat(LS_DEBUG, "ClientCommand = %d, \"%s\"\n", slot.Get(), args->GetCommandString());
 	const char* cmd = args->Arg(0);
@@ -454,7 +454,7 @@ poly::ReturnAction Source2SDK::Hook_UpdateWhenNotInGame(poly::CallbackType type,
 	return poly::ReturnAction::Ignored;
 }
 
-/*poly::ReturnAction Source2SDK::Hook_PreWorldUpdate(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret)
+poly::ReturnAction Source2SDK::Hook_PreWorldUpdate(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret)
 {
 	// bool simulating
 	auto simulating = poly::GetArgument<bool>(params, 1);
@@ -464,7 +464,7 @@ poly::ReturnAction Source2SDK::Hook_UpdateWhenNotInGame(poly::CallbackType type,
 
 	GetOnPreWorldUpdateListenerManager().Notify(simulating);
 	return poly::ReturnAction::Ignored;
-}*/
+}
 
 poly::ReturnAction Source2SDK::Hook_FireOutputInternal(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret)
 {

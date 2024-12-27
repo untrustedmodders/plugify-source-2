@@ -97,13 +97,13 @@ extern "C" PLUGIN_API int GetSchemaClassSize(const plg::string& className)
 extern "C" PLUGIN_API int64_t GetEntData2(CEntityInstance* entity, int offset, int size)
 {
 	switch (size) {
-		case 1:
+		case sizeof(int8_t):
 			return *reinterpret_cast<int8_t*>(reinterpret_cast<intptr_t>(entity) + offset);
-		case 2:
+		case sizeof(int16_t):
 			return *reinterpret_cast<int16_t*>(reinterpret_cast<intptr_t>(entity) + offset);
-		case 4:
+		case sizeof(int32_t):
 			return *reinterpret_cast<int32_t*>(reinterpret_cast<intptr_t>(entity) + offset);
-		case 8:
+		case sizeof(int64_t):
 			return *reinterpret_cast<int64_t*>(reinterpret_cast<intptr_t>(entity) + offset);
 		default:
 			return 0;
@@ -135,13 +135,13 @@ extern "C" PLUGIN_API void SetEntData2(CEntityInstance* entity, int offset, int6
 	}
 
 	switch (size) {
-		case 1:
+		case sizeof(int8_t):
 			*reinterpret_cast<int8_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int8_t>(value);
-		case 2:
+		case sizeof(int16_t):
 			*reinterpret_cast<int16_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int16_t>(value);
-		case 4:
+		case sizeof(int32_t):
 			*reinterpret_cast<int32_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int32_t>(value);
-		case 8:
+		case sizeof(int64_t):
 			*reinterpret_cast<int64_t*>(reinterpret_cast<intptr_t>(entity) + offset) = value;
 		default:
 			break;
@@ -161,9 +161,9 @@ extern "C" PLUGIN_API void SetEntData2(CEntityInstance* entity, int offset, int6
 extern "C" PLUGIN_API double GetEntDataFloat2(CEntityInstance* entity, int offset, int size)
 {
 	switch (size) {
-		case 4:
+		case sizeof(int32_t):
 			return *reinterpret_cast<float*>(reinterpret_cast<intptr_t>(entity) + offset);
-		case 8:
+		case sizeof(int64_t):
 			return *reinterpret_cast<double*>(reinterpret_cast<intptr_t>(entity) + offset);
 		default:
 			return 0;
@@ -195,9 +195,9 @@ extern "C" PLUGIN_API void SetEntDataFloat2(CEntityInstance* entity, int offset,
 	}
 
 	switch (size) {
-		case 4:
+		case sizeof(int32_t):
 			*reinterpret_cast<float*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<float>(value);
-		case 8:
+		case sizeof(int64_t):
 			*reinterpret_cast<double*>(reinterpret_cast<intptr_t>(entity) + offset) = value;
 		default:
 			break;
@@ -611,7 +611,7 @@ extern "C" PLUGIN_API int GetEntSchemaArraySize2(CEntityInstance* entity, const 
 		case schema::ElementType::Array:
 			return static_cast<CSchemaType_FixedArray*>(type)->m_nElementCount;
 		case schema::ElementType::Collection:
-			return reinterpret_cast<CUtlVector<int8_t>*>(reinterpret_cast<intptr_t>(entity) + offset)->Count();
+			return reinterpret_cast<CUtlVector<intptr_t>*>(reinterpret_cast<intptr_t>(entity) + offset)->Count();
 		default:
 			return 0;
 	}
@@ -648,42 +648,45 @@ extern "C" PLUGIN_API int64_t GetEntSchema2(CEntityInstance* entity, const plg::
 		case schema::ElementType::Array:
 			switch (elementSize)
 			{
-				case 1:
+				case sizeof(int8_t):
 					return reinterpret_cast<int8_t*>(reinterpret_cast<intptr_t>(entity) + offset)[element];
-				case 2:
+				case sizeof(int16_t):
 					return reinterpret_cast<int16_t*>(reinterpret_cast<intptr_t>(entity) + offset)[element];
-				case 4:
+				case sizeof(int32_t):
 					return reinterpret_cast<int32_t*>(reinterpret_cast<intptr_t>(entity) + offset)[element];
-				case 8:
+				case sizeof(int64_t):
 					return reinterpret_cast<int64_t*>(reinterpret_cast<intptr_t>(entity) + offset)[element];
+				default:
+					return 0;
 			}
-			return 0;
 		case schema::ElementType::Collection:
 			switch (elementSize)
 			{
-				case 1:
+				case sizeof(int8_t):
 					return reinterpret_cast<CUtlVector<int8_t>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element);
-				case 2:
+				case sizeof(int16_t):
 					return reinterpret_cast<CUtlVector<int16_t>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element);
-				case 4:
+				case sizeof(int32_t):
 					return reinterpret_cast<CUtlVector<int32_t>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element);
-				case 8:
+				case sizeof(int64_t):
 					return reinterpret_cast<CUtlVector<int64_t>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element);
+				default:
+					return 0;
 			}
-			return 0;
 		case schema::ElementType::Single:
 			switch (size)
 			{
-				case 1:
+				case sizeof(int8_t):
 					return *reinterpret_cast<int8_t*>(reinterpret_cast<intptr_t>(entity) + offset);
-				case 2:
+				case sizeof(int16_t):
 					return *reinterpret_cast<int16_t*>(reinterpret_cast<intptr_t>(entity) + offset);
-				case 4:
+				case sizeof(int32_t):
 					return *reinterpret_cast<int32_t*>(reinterpret_cast<intptr_t>(entity) + offset);
-				case 8:
+				case sizeof(int64_t):
 					return *reinterpret_cast<int64_t*>(reinterpret_cast<intptr_t>(entity) + offset);
+				default:
+					return 0;
 			}
-			return 0;
 		case schema::ElementType::Class:
 			return reinterpret_cast<intptr_t>(entity) + offset;
 		default:
@@ -742,51 +745,55 @@ extern "C" PLUGIN_API void SetEntSchema2(CEntityInstance* entity, const plg::str
 		case schema::ElementType::Array:
 			switch (elementSize)
 			{
-				case 1:
+				case sizeof(int8_t):
 					reinterpret_cast<int8_t*>(reinterpret_cast<intptr_t>(entity) + offset)[element] = static_cast<int8_t>(value);
 					break;
-				case 2:
+				case sizeof(int16_t):
 					reinterpret_cast<int16_t*>(reinterpret_cast<intptr_t>(entity) + offset)[element] = static_cast<int16_t>(value);
 					break;
-				case 4:
+				case sizeof(int32_t):
 					reinterpret_cast<int32_t*>(reinterpret_cast<intptr_t>(entity) + offset)[element] = static_cast<int32_t>(value);
 					break;
-				case 8:
+				case sizeof(int64_t):
 					reinterpret_cast<int64_t*>(reinterpret_cast<intptr_t>(entity) + offset)[element] = value;
 					break;
+				default:
+					break;
 			}
-			break;
 		case schema::ElementType::Collection:
 			switch (elementSize)
 			{
-				case 1:
+				case sizeof(int8_t):
 					reinterpret_cast<CUtlVector<int8_t>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element) = static_cast<int8_t>(value);
 					break;
-				case 2:
+				case sizeof(int16_t):
 					reinterpret_cast<CUtlVector<int16_t>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element) = static_cast<int16_t>(value);
 					break;
-				case 4:
+				case sizeof(int32_t):
 					reinterpret_cast<CUtlVector<int32_t>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element) = static_cast<int32_t>(value);
 					break;
-				case 8:
+				case sizeof(int64_t):
 					reinterpret_cast<CUtlVector<int64_t>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element) = value;
 					break;
+				default:
+					break;
 			}
-			break;
 		case schema::ElementType::Single:
 			switch (size)
 			{
-				case 1:
+				case sizeof(int8_t):
 					*reinterpret_cast<int8_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int8_t>(value);
 					break;
-				case 2:
+				case sizeof(int16_t):
 					*reinterpret_cast<int16_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int16_t>(value);
 					break;
-				case 4:
+				case sizeof(int32_t):
 					*reinterpret_cast<int32_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int32_t>(value);
 					break;
-				case 8:
+				case sizeof(int64_t):
 					*reinterpret_cast<int64_t*>(reinterpret_cast<intptr_t>(entity) + offset) = value;
+					break;
+				default:
 					break;
 			}
 		default:
@@ -830,8 +837,9 @@ extern "C" PLUGIN_API double GetEntSchemaFloat2(CEntityInstance* entity, const p
 					return reinterpret_cast<float*>(reinterpret_cast<intptr_t>(entity) + offset)[element];
 				case sizeof(double):
 					return reinterpret_cast<double*>(reinterpret_cast<intptr_t>(entity) + offset)[element];
+				default:
+					return 0;
 			}
-			return 0;
 		case schema::ElementType::Collection:
 			switch (elementSize)
 			{
@@ -839,8 +847,9 @@ extern "C" PLUGIN_API double GetEntSchemaFloat2(CEntityInstance* entity, const p
 					return reinterpret_cast<CUtlVector<float>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element);
 				case sizeof(double):
 					return reinterpret_cast<CUtlVector<double>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element);
+				default:
+					return 0;
 			}
-			return 0;
 		case schema::ElementType::Single:
 			switch (size)
 			{
@@ -848,8 +857,9 @@ extern "C" PLUGIN_API double GetEntSchemaFloat2(CEntityInstance* entity, const p
 					return *reinterpret_cast<float*>(reinterpret_cast<intptr_t>(entity) + offset);
 				case sizeof(double):
 					return *reinterpret_cast<double*>(reinterpret_cast<intptr_t>(entity) + offset);
+				default:
+					return 0;
 			}
-			return 0;
 		default:
 			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a float, but '%s'", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
 			return 0;
@@ -912,8 +922,9 @@ extern "C" PLUGIN_API void SetEntSchemaFloat2(CEntityInstance* entity, const plg
 				case sizeof(double):
 					reinterpret_cast<double*>(reinterpret_cast<intptr_t>(entity) + offset)[element] = value;
 					break;
+				default:
+					break;
 			}
-			break;
 		case schema::ElementType::Collection:
 			switch (elementSize)
 			{
@@ -923,8 +934,9 @@ extern "C" PLUGIN_API void SetEntSchemaFloat2(CEntityInstance* entity, const plg
 				case sizeof(double):
 					reinterpret_cast<CUtlVector<double>*>(reinterpret_cast<intptr_t>(entity) + offset)->Element(element) = value;
 					break;
+				default:
+					break;
 			}
-			break;
 		case schema::ElementType::Single:
 			switch (size)
 			{
@@ -934,8 +946,9 @@ extern "C" PLUGIN_API void SetEntSchemaFloat2(CEntityInstance* entity, const plg
 				case sizeof(double):
 					*reinterpret_cast<double*>(reinterpret_cast<intptr_t>(entity) + offset) = value;
 					break;
+				default:
+					break;
 			}
-			break;
 		default:
 			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a float, but '%s'", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
 			break;

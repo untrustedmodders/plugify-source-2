@@ -19,9 +19,9 @@ PLUGIFY_WARN_IGNORE(4190)
  *
  * @param result A reference to a string where the game directory path will be stored.
  */
-extern "C" PLUGIN_API void GetGameDirectory(plg::string& result)
+extern "C" PLUGIN_API plg::string GetGameDirectory()
 {
-	std::construct_at(&result, Plat_GetGameDirectory());
+	return Plat_GetGameDirectory();
 }
 
 /**
@@ -29,12 +29,12 @@ extern "C" PLUGIN_API void GetGameDirectory(plg::string& result)
  *
  * @param result A reference to a string where the current map name will be stored.
  */
-extern "C" PLUGIN_API void GetCurrentMap(plg::string& result)
+extern "C" PLUGIN_API plg::string GetCurrentMap()
 {
 	if (gpGlobals == nullptr)
-		return;
+		return {};
 
-	std::construct_at(&result, gpGlobals->mapname.ToCStr());
+	return gpGlobals->mapname.ToCStr();
 }
 
 /**

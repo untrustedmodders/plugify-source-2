@@ -305,7 +305,7 @@ extern "C" PLUGIN_API BaseConVar* CreateConVarVector4(const plg::string& name, c
  * @param max The maximum value if hasMax is true.
  * @return A pointer to the created console variable data.
  */
-extern "C" PLUGIN_API BaseConVar* CreateConVarQangle(const plg::string& name, const QAngle& defaultValue, const plg::string& description, int flags, bool hasMin, const QAngle& min, bool hasMax, const QAngle& max)
+extern "C" PLUGIN_API BaseConVar* CreateConVarQAngle(const plg::string& name, const QAngle& defaultValue, const plg::string& description, int flags, bool hasMin, const QAngle& min, bool hasMax, const QAngle& max)
 {
 	return g_ConVarManager.CreateConVar<QAngle>(name, description, defaultValue, flags, hasMin, min, hasMax, max);
 }
@@ -447,7 +447,7 @@ extern "C" PLUGIN_API plg::string GetConVarBounds(BaseConVar* conVar, bool max)
 		return {};
 	}
 
-	plg::string value(256, '\0');
+	plg::string value(512, '\0');
 	if (max)
 	{
 		switch (conVar->GetType())
@@ -1002,7 +1002,7 @@ extern "C" PLUGIN_API plg::vec4 GetConVarVector4(BaseConVar* conVar)
  * @param conVar Pointer to the console variable data.
  * @return The current QAngle value of the console variable.
  */
-extern "C" PLUGIN_API plg::vec3 GetConVarQangle(BaseConVar* conVar)
+extern "C" PLUGIN_API plg::vec3 GetConVarQAngle(BaseConVar* conVar)
 {
 	const QAngle& ang = utils::GetConVarValue<QAngle>(conVar);
 	return *reinterpret_cast<const plg::vec3*>(&ang);
@@ -1261,7 +1261,7 @@ extern "C" PLUGIN_API void SetConVarVector4(BaseConVar* conVar, const Vector4D& 
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarQangle(BaseConVar* conVar, const QAngle& value, bool replicate, bool notify)
+extern "C" PLUGIN_API void SetConVarQAngle(BaseConVar* conVar, const QAngle& value, bool replicate, bool notify)
 {
 	utils::SetConVar(conVar, value, replicate, notify);
 }
