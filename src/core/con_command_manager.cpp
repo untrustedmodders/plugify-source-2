@@ -29,6 +29,8 @@ ConCommandInfo::ConCommandInfo(plg::string name, plg::string description) : name
 
 void CConCommandManager::AddCommandListener(const plg::string& name, CommandListenerCallback callback, HookMode mode)
 {
+	std::lock_guard<std::mutex> lock(m_registerCmdLock);
+
 	if (name.empty())
 	{
 		if (mode == HookMode::Pre)
@@ -50,8 +52,6 @@ void CConCommandManager::AddCommandListener(const plg::string& name, CommandList
 		{
 			return;
 		}
-
-		std::lock_guard<std::mutex> lock(m_registerCmdLock);
 
 		auto& commandInfo = *m_cmdLookup.emplace(name, std::make_unique<ConCommandInfo>(name)).first->second;
 		commandInfo.command = g_pCVar->GetCommand(hFoundCommand);
@@ -82,6 +82,8 @@ void CConCommandManager::AddCommandListener(const plg::string& name, CommandList
 
 void CConCommandManager::RemoveCommandListener(const plg::string& name, CommandListenerCallback callback, HookMode mode)
 {
+	std::lock_guard<std::mutex> lock(m_registerCmdLock);
+
 	if (name.empty())
 	{
 		if (mode == HookMode::Pre)
@@ -198,7 +200,7 @@ ResultType CConCommandManager::ExecuteCommandCallbacks(const plg::string& name, 
 
 	ResultType result = ResultType::Continue;
 
-	auto globalCallback = mode == HookMode::Pre ? m_globalPre : m_globalPost;
+	const auto& globalCallback = mode == HookMode::Pre ? m_globalPre : m_globalPost;
 
 	int size = args.ArgC();
 
@@ -246,7 +248,7 @@ ResultType CConCommandManager::ExecuteCommandCallbacks(const plg::string& name, 
 		return result;
 	}
 
-	auto callback = mode == HookMode::Pre ? commandInfo.callbackPre : commandInfo.callbackPost;
+	const auto& callback = mode == HookMode::Pre ? commandInfo.callbackPre : commandInfo.callbackPost;
 
 	for (size_t i = 0; i < callback.GetCount(); ++i)
 	{

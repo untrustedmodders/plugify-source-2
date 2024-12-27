@@ -53,6 +53,8 @@ BaseConVar* CConVarManager::FindConVar(const plg::string& name)
 
 void CConVarManager::HookConVarChange(const plg::string& name, ConVarChangeListenerCallback callback)
 {
+	std::lock_guard<std::mutex> lock(m_registerCnvLock);
+
 	if (name.empty())
 	{
 		if (m_global.Empty()) 
@@ -73,6 +75,8 @@ void CConVarManager::HookConVarChange(const plg::string& name, ConVarChangeListe
 
 void CConVarManager::UnhookConVarChange(const plg::string& name, ConVarChangeListenerCallback callback)
 {
+	std::lock_guard<std::mutex> lock(m_registerCnvLock);
+
 	if (name.empty())
 	{
 		m_global.Unregister(callback);

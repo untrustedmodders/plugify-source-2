@@ -2,13 +2,13 @@
 
 void CEntityOutputManager::HookEntityOutput(plg::string szClassname, plg::string szOutput, EntityListenerCallback callback, HookMode mode)
 {
+	std::lock_guard<std::mutex> lock(m_registerHookLock);
 	OutputKey outputKey{std::move(szClassname), std::move(szOutput)};
 	CallbackPair* pCallbackPair;
 
 	auto it = m_hookMap.find(outputKey);
 	if (it == m_hookMap.end())
 	{
-		std::lock_guard<std::mutex> lock(m_registerHookLock);
 		pCallbackPair = &m_hookMap.emplace(std::move(outputKey), CallbackPair{}).first->second;
 	}
 	else
@@ -22,6 +22,7 @@ void CEntityOutputManager::HookEntityOutput(plg::string szClassname, plg::string
 
 void CEntityOutputManager::UnhookEntityOutput(plg::string szClassname, plg::string szOutput, EntityListenerCallback callback, HookMode mode)
 {
+	std::lock_guard<std::mutex> lock(m_registerHookLock);
 	OutputKey outputKey{std::move(szClassname), std::move(szOutput)};
 
 	auto it = m_hookMap.find(outputKey);
@@ -34,7 +35,6 @@ void CEntityOutputManager::UnhookEntityOutput(plg::string szClassname, plg::stri
 
 		if (callbackPair.pre.Empty() && callbackPair.post.Empty())
 		{
-			std::lock_guard<std::mutex> lock(m_registerHookLock);
 			m_hookMap.erase(it);
 		}
 	}

@@ -37,7 +37,6 @@ public:
 		}
 		else
 		{
-			std::lock_guard<std::mutex> lock(m_mutex);
 			m_callables.emplace_back(callable);
 			return true;
 		}
@@ -55,7 +54,6 @@ public:
 		}
 		else
 		{
-			std::lock_guard<std::mutex> lock(m_mutex);
 			m_callables.erase(m_callables.begin() + index);
 			return true;
 		}
@@ -115,5 +113,4 @@ public:
 
 private:
 	std::vector<Func> m_callables;
-	std::mutex m_mutex;
 };
