@@ -43,6 +43,8 @@ public:
 			return std::get<ConVarInfoPtr>(*it)->conVar.get();
 		}
 
+		std::lock_guard<std::mutex> lock(m_registerCnvLock);
+
 		auto& conVarInfo = *m_cnvLookup.emplace(name, std::make_unique<ConVarInfo>(name, description)).first->second;
 		auto conVar = std::make_unique<ConVarRef<T>>(name.c_str());
 		if (conVar->GetHandle().IsValid())
