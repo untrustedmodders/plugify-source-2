@@ -2545,10 +2545,10 @@
       }
     },
     {
-      "name": "CreateConVarQangle",
+      "name": "CreateConVarQAngle",
       "group": "Cvars",
       "description": "Creates a new quaternion angle console variable.",
-      "funcName": "CreateConVarQangle",
+      "funcName": "CreateConVarQAngle",
       "paramTypes": [
         {
           "name": "name",
@@ -3148,10 +3148,10 @@
       }
     },
     {
-      "name": "GetConVarQangle",
+      "name": "GetConVarQAngle",
       "group": "Cvars",
       "description": "Retrieves the current value of a QAngle console variable.",
-      "funcName": "GetConVarQangle",
+      "funcName": "GetConVarQAngle",
       "paramTypes": [
         {
           "name": "conVar",
@@ -3691,10 +3691,10 @@
       }
     },
     {
-      "name": "SetConVarQangle",
+      "name": "SetConVarQAngle",
       "group": "Cvars",
       "description": "Sets the value of a quaternion angle console variable.",
-      "funcName": "SetConVarQangle",
+      "funcName": "SetConVarQAngle",
       "paramTypes": [
         {
           "name": "conVar",
