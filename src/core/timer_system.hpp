@@ -49,6 +49,7 @@ private:
 	float m_lastTickedTime{};
 	std::vector<CTimer*> m_onceOffTimers;
 	std::vector<CTimer*> m_repeatTimers;
+	std::mutex m_createTimerLock;
 };
 
 extern CTimerSystem g_TimerSystem;

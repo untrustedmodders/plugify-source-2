@@ -16,6 +16,8 @@ CEventManager::~CEventManager()
 
 EventHookError CEventManager::HookEvent(const plg::string& name, EventListenerCallback callback, HookMode mode)
 {
+	std::unique_lock<std::mutex> lock(m_registerEventLock);
+
 	if (!g_pGameEventManager->FindListener(this, name.c_str()))
 	{
 		if (!g_pGameEventManager->AddListener(this, name.c_str(), true))
@@ -80,6 +82,8 @@ EventHookError CEventManager::HookEvent(const plg::string& name, EventListenerCa
 
 EventHookError CEventManager::UnhookEvent(const plg::string& name, EventListenerCallback callback, HookMode mode)
 {
+	std::unique_lock<std::mutex> lock(m_registerEventLock);
+
 	auto it = m_eventHooks.find(name);
 	if (it == m_eventHooks.end())
 	{

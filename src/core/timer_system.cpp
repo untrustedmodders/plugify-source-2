@@ -160,6 +160,8 @@ CTimer* CTimerSystem::CreateTimer(float interval, TimerCallback callback, int fl
 
 	auto timer = new CTimer(interval, execTime, callback, flags, userData);
 
+	std::lock_guard<std::mutex> lock(m_createTimerLock);
+
 	if (flags & TIMER_FLAG_REPEAT)
 	{
 		m_repeatTimers.push_back(timer);
@@ -184,6 +186,8 @@ void CTimerSystem::KillTimer(CTimer* timer)
 
 	if (timer->m_killMe)
 		return;
+
+	std::lock_guard<std::mutex> lock(m_createTimerLock);
 
 	// If were executing, make sure it doesn't run again next time.
 	if (timer->m_inExec)

@@ -34,6 +34,7 @@ public:
 private:
 	std::unordered_map<OutputKey, CallbackPair, utils::PairHash<plg::string, plg::string>> m_hookMap;
 	std::vector<CallbackPair*> m_vecCallbackPairs;
+	std::mutex m_registerHookLock;
 };
 
 extern CEntityOutputManager g_OutputManager;

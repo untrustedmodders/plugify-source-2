@@ -115,4 +115,5 @@ private:
 	std::map<plg::string, ConVarInfoPtr, utils::CaseInsensitiveComparator> m_cnvLookup;
 	std::map<const BaseConVar*, const ConVarInfo*> m_cnvCache;
 	CListenerManager<ConVarChangeListenerCallback> m_global;
+	std::mutex m_registerCnvLock;
 };

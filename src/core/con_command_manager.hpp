@@ -54,6 +54,7 @@ private:
 	std::map<plg::string, CommandInfoPtr, utils::CaseInsensitiveComparator> m_cmdLookup;
 	CListenerManager<CommandListenerCallback> m_globalPre;
 	CListenerManager<CommandListenerCallback> m_globalPost;
+	std::mutex m_registerCmdLock;
 };
 
 extern CConCommandManager g_CommandManager;

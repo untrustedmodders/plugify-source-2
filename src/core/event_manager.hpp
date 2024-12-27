@@ -57,6 +57,7 @@ private:
 	std::stack<EventInfo*> m_freeEvents;
 	std::stack<EventHook*> m_eventStack;
 	std::stack<IGameEvent*> m_eventCopies;
+	std::mutex m_registerEventLock;
 };
 
 extern CEventManager g_EventManager;

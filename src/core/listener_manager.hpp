@@ -37,7 +37,8 @@ public:
 		}
 		else
 		{
-			m_Callables.emplace_back(callable);
+			std::lock_guard<std::mutex> lock(m_mutex);
+			m_callables.emplace_back(callable);
 			return true;
 		}
 	}
@@ -54,7 +55,8 @@ public:
 		}
 		else
 		{
-			m_Callables.erase(m_Callables.begin() + index);
+			std::lock_guard<std::mutex> lock(m_mutex);
+			m_callables.erase(m_callables.begin() + index);
 			return true;
 		}
 	}
@@ -62,9 +64,9 @@ public:
 	template <typename Callable>
 	ptrdiff_t Find(Callable&& callable) const
 	{
-		for (size_t i = 0; i < m_Callables.size(); ++i)
+		for (size_t i = 0; i < m_callables.size(); ++i)
 		{
-			if (callable == m_Callables[i])
+			if (callable == m_callables[i])
 			{
 				return static_cast<ptrdiff_t>(i);
 			}
@@ -80,37 +82,38 @@ public:
 
 	void Notify(Args... args) const
 	{
-		for (size_t i = 0; i < m_Callables.size(); ++i)
+		for (size_t i = 0; i < m_callables.size(); ++i)
 		{
-			m_Callables[i](std::forward<Args>(args)...);
+			m_callables[i](std::forward<Args>(args)...);
 		}
 	}
 
 	Ret Notify(size_t index, Args... args) const
 	{
-		return m_Callables[index](std::forward<Args>(args)...);
+		return m_callables[index](std::forward<Args>(args)...);
 	}
 
 	Ret operator()(size_t index, Args... args) const
 	{
-		return m_Callables[index](std::forward<Args>(args)...);
+		return m_callables[index](std::forward<Args>(args)...);
 	}
 
 	void Clear()
 	{
-		m_Callables.clear();
+		m_callables.clear();
 	}
 
 	size_t GetCount() const
 	{
-		return m_Callables.size();
+		return m_callables.size();
 	}
 
 	bool Empty() const
 	{
-		return m_Callables.empty();
+		return m_callables.empty();
 	}
 
 private:
-	std::vector<Func> m_Callables;
+	std::vector<Func> m_callables;
+	std::mutex m_mutex;
 };

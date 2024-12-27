@@ -51,6 +51,8 @@ void CConCommandManager::AddCommandListener(const plg::string& name, CommandList
 			return;
 		}
 
+		std::lock_guard<std::mutex> lock(m_registerCmdLock);
+
 		auto& commandInfo = *m_cmdLookup.emplace(name, std::make_unique<ConCommandInfo>(name)).first->second;
 		commandInfo.command = g_pCVar->GetCommand(hFoundCommand);
 		commandInfo.defaultCommand = true;
@@ -128,6 +130,8 @@ bool CConCommandManager::AddValveCommand(const plg::string& name, const plg::str
 		return false;
 	}
 
+	std::lock_guard<std::mutex> lock(m_registerCmdLock);
+
 	auto& commandInfo = *m_cmdLookup.emplace(name, std::make_unique<ConCommandInfo>(name, description)).first->second;
 	commandInfo.commandRef = std::make_unique<ConCommand>(commandInfo.name.c_str(), CommandCallback, commandInfo.description.c_str(), flags);
 	commandInfo.command = commandInfo.commandRef.get();
@@ -143,6 +147,8 @@ bool CConCommandManager::RemoveValveCommand(const plg::string& name)
 	{
 		return false;
 	}
+
+	std::lock_guard<std::mutex> lock(m_registerCmdLock);
 
 	auto it = m_cmdLookup.find(name);
 	if (it != m_cmdLookup.end())
