@@ -334,16 +334,6 @@
 				"windows"   "77"
 				"linux"     "79"
 			}
-			"CCSPlayer_WeaponServices::DropWeapon"
-			{
-				"windows"		"22"
-				"linux"			"23"
-			}
-			"CCSPlayer_WeaponServices::SelectItem"
-			{
-				"windows"		"24"
-				"linux"			"25"
-			}
 		}
 		"Addresses"
 		{

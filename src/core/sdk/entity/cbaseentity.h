@@ -258,7 +258,7 @@ public:
 		EmitSound_t params;
 		params.m_pSoundName = pszSound;
 		params.m_flVolume = flVolume;
-		params.m_nPitch = flPitch;
+		params.m_nPitch = static_cast<int>(flPitch);
 
 		return addresses::CBaseEntity_EmitSoundFilter(filter, entindex(), params);
 	}

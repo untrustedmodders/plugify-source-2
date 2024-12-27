@@ -35,9 +35,11 @@
         BanIdentity;
         GetClientActiveWeapon;
         GetClientWeapons;
-        DropWeapon;
         StripWeapons;
-        RemovePlayerItem;
+        DropWeapon;
+        BumpWeapon;
+        SwitchWeapon;
+        RemoveWeapon;
         GiveNamedItem;
         GetClientButtons;
         GetClientMoney;

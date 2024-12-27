@@ -56,7 +56,7 @@ public:
 
 			// If this is a map-spawned weapon (items), drop it
 			if (V_strcmp(pWeapon->m_sUniqueHammerID().Get(), "") && pWeapon->GetWeaponVData()->m_GearSlot() != GEAR_SLOT_KNIFE)
-				m_pWeaponServices()->DropWeapon(pWeapon);
+				m_pWeaponServices()->Drop(pWeapon);
 		}
 	}
 

@@ -22,7 +22,7 @@ extern "C" PLUGIN_API CCSWeaponBaseVData* GetWeaponVData(int entityHandle)
 	CBasePlayerWeapon* pWeapon = static_cast<CBasePlayerWeapon*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pWeapon)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetWeaponVData' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetWeaponVData' on invalid entity handle: %d\n", entityHandle);
 		return nullptr;
 	}
 
@@ -40,7 +40,7 @@ extern "C" PLUGIN_API uint16_t GetWeaponDefIndex(int entityHandle)
 	CBasePlayerWeapon* pWeapon = static_cast<CBasePlayerWeapon*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pWeapon)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetWeaponDefIndex' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetWeaponDefIndex' on invalid entity handle: %d\n", entityHandle);
 		return 0;
 	}
 

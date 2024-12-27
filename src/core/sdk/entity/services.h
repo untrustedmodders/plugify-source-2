@@ -110,6 +110,44 @@ class CPlayer_WeaponServices : public CPlayerPawnComponent
 public:
 	DECLARE_SCHEMA_CLASS(CPlayer_WeaponServices);
 
+private:
+	virtual void unk_00() = 0;
+#if S2SDK_PLATFORM_LINUX
+	virtual void unk_01() = 0;
+#endif
+public:
+	virtual ~CPlayer_WeaponServices() = 0;
+private:
+	virtual void unk_03() = 0;
+	virtual void unk_04() = 0;
+	virtual void unk_05() = 0;
+	virtual void unk_06() = 0;
+	virtual void unk_07() = 0;
+	virtual void unk_08() = 0;
+	virtual void unk_09() = 0;
+	virtual void unk_10() = 0;
+	virtual void unk_11() = 0;
+	virtual void unk_12() = 0;
+	virtual void unk_13() = 0;
+	virtual void unk_14() = 0;
+	virtual void unk_15() = 0;
+	virtual void unk_16() = 0;
+	virtual void unk_17() = 0;
+	virtual void unk_18() = 0;
+	virtual void unk_19() = 0;
+	virtual void unk_20() = 0;
+public:
+	virtual bool CanUse(CBasePlayerWeapon* pWeapon) = 0;
+	virtual void Drop(CBasePlayerWeapon* pWeapon, Vector* pVecTarget = nullptr, Vector* pVelocity = nullptr) = 0;
+	virtual int Bump(CBasePlayerWeapon* pWeapon) = 0; // May return 2 if CSGameRules()->IsPlayingGunGameDeathmatch, meaning that pWeapon will be deleted
+	virtual bool Switch(CBasePlayerWeapon* pWeapon, int a3 = 0) = 0; // If a3 is equal to 3 some code will be executed
+private:
+	virtual void unk_25() = 0;
+	virtual void unk_26() = 0;
+	virtual void unk_27() = 0;
+	virtual void unk_28() = 0;
+	virtual void unk_29() = 0;
+public:
 	SCHEMA_FIELD_POINTER(CUtlVector<CHandle<CBasePlayerWeapon>>, m_hMyWeapons)
 	SCHEMA_FIELD(CHandle<CBasePlayerWeapon>, m_hActiveWeapon)
 };
@@ -131,12 +169,6 @@ public:
 	SCHEMA_FIELD(bool, m_bIsBeingGivenItem)
 	SCHEMA_FIELD(bool, m_bIsPickingUpItemWithUse)
 	SCHEMA_FIELD(bool, m_bPickedUpWeapon)
-
-	void DropWeapon(CBasePlayerWeapon* pWeapon, Vector* pVecTarget = nullptr, Vector* pVelocity = nullptr)
-	{
-		static int offset = g_pGameConfig->GetOffset("CCSPlayer_WeaponServices::DropWeapon");
-		CALL_VIRTUAL(void, offset, this, pWeapon, pVecTarget, pVelocity);
-	}
 
 	void RemoveItem(CBasePlayerWeapon* pWeapon)
 	{

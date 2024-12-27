@@ -469,7 +469,7 @@ extern "C" PLUGIN_API void ChangeClientTeam(int clientIndex, int team)
 	auto pController = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex)));
 	if (!pController)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'ChangeClientTeam' on invalid client index: %d\n", clientIndex);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'ChangeClientTeam' on invalid client index: %d\n", clientIndex);
 		return;
 	}
 
@@ -487,7 +487,7 @@ extern "C" PLUGIN_API void SwitchClientTeam(int clientIndex, int team)
 	auto pController = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex)));
 	if (!pController)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'SwitchClientTeam' on invalid client index: %d\n", clientIndex);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SwitchClientTeam' on invalid client index: %d\n", clientIndex);
 		return;
 	}
 
@@ -504,7 +504,7 @@ extern "C" PLUGIN_API void RespawnClient(int clientIndex)
 	auto pController = utils::GetController(CPlayerSlot(clientIndex));
 	if (!pController)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'RespawnClient' on invalid client index: %d\n", clientIndex);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'RespawnClient' on invalid client index: %d\n", clientIndex);
 		return;
 	}
 
@@ -531,7 +531,7 @@ extern "C" PLUGIN_API void ForcePlayerSuicide(int clientIndex, bool explode, boo
 	auto pController = utils::GetController(CPlayerSlot(clientIndex));
 	if (!pController)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'ForcePlayerSuicide' on invalid client index: %d\n", clientIndex);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'ForcePlayerSuicide' on invalid client index: %d\n", clientIndex);
 		return;
 	}
 
@@ -583,7 +583,7 @@ extern "C" PLUGIN_API int GetClientActiveWeapon(int clientIndex)
 	auto pController = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex)));
 	if (!pController)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetClientActiveWeapon' on invalid client index: %d\n", clientIndex);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetClientActiveWeapon' on invalid client index: %d\n", clientIndex);
 		return INVALID_EHANDLE_INDEX;
 	}
 
@@ -607,7 +607,7 @@ extern "C" PLUGIN_API plg::vector<int> GetClientWeapons(int clientIndex)
 	auto pController = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex)));
 	if (!pController)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetClientWeapons' on invalid client index: %d\n", clientIndex);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetClientWeapons' on invalid client index: %d\n", clientIndex);
 		return {};
 	}
 
@@ -631,39 +631,6 @@ extern "C" PLUGIN_API plg::vector<int> GetClientWeapons(int clientIndex)
 }
 
 /**
- * @brief Forces a player to drop their weapon.
- *
- * @param clientIndex Index of the client.
- * @param weaponHandle Handle of weapon to drop.
- * @param target Target direction.
- * @param velocity Velocity to toss weapon or zero to just drop weapon.
- */
-extern "C" PLUGIN_API void DropWeapon(int clientIndex, int weaponHandle, const plg::vec3& target, const plg::vec3& velocity)
-{
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex)));
-	if (!pController)
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'DropWeapon' on invalid client index: %d\n", clientIndex);
-		return;
-	}
-
-	CBasePlayerWeapon* pWeapon = static_cast<CBasePlayerWeapon*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)weaponHandle)));
-	if (!pWeapon)
-	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'DropWeapon' on invalid weapon handle: %d\n", weaponHandle);
-		return;
-	}
-
-	auto pWeaponServices = pController->GetPawn()->m_pWeaponServices();
-	if (!pWeaponServices)
-	{
-		return;
-	}
-
-	pWeaponServices->DropWeapon(pWeapon, reinterpret_cast<Vector*>(const_cast<plg::vec3*>(&target)), reinterpret_cast<Vector*>(const_cast<plg::vec3*>(&velocity)));
-}
-
-/**
  * @brief Removes all weapons from a client, with an option to remove the suit as well.
  *
  * @param clientIndex The index of the client.
@@ -674,7 +641,7 @@ extern "C" PLUGIN_API void StripWeapons(int clientIndex, bool removeSuit)
 	auto pController = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex)));
 	if (!pController)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'StripWeapons' on invalid client index: %d\n", clientIndex);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'StripWeapons' on invalid client index: %d\n", clientIndex);
 		return;
 	}
 
@@ -688,24 +655,119 @@ extern "C" PLUGIN_API void StripWeapons(int clientIndex, bool removeSuit)
 }
 
 /**
- * @brief Removes a player's item.
+ * @brief Forces a player to drop their weapon.
  *
  * @param clientIndex Index of the client.
- * @param weaponHandle Handle of weapon to remove.
+ * @param weaponHandle Handle of weapon to drop.
+ * @param target Target direction.
+ * @param velocity Velocity to toss weapon or zero to just drop weapon.
  */
-extern "C" PLUGIN_API void RemovePlayerItem(int clientIndex, int weaponHandle)
+extern "C" PLUGIN_API void DropWeapon(int clientIndex, int weaponHandle, const plg::vec3& target, const plg::vec3& velocity)
 {
-	auto pController = utils::GetController(CPlayerSlot(clientIndex));
+	auto pController = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex)));
 	if (!pController)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'RemovePlayerItem' on invalid client index: %d\n", clientIndex);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'DropWeapon' on invalid client index: %d\n", clientIndex);
 		return;
 	}
 
 	CBasePlayerWeapon* pWeapon = static_cast<CBasePlayerWeapon*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)weaponHandle)));
 	if (!pWeapon)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'RemovePlayerItem' on invalid weapon handle: %d\n", weaponHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'DropWeapon' on invalid weapon handle: %d\n", weaponHandle);
+		return;
+	}
+
+	auto pWeaponServices = pController->GetPawn()->m_pWeaponServices();
+	if (!pWeaponServices)
+	{
+		return;
+	}
+
+	pWeaponServices->Drop(pWeapon, reinterpret_cast<Vector*>(const_cast<plg::vec3*>(&target)), reinterpret_cast<Vector*>(const_cast<plg::vec3*>(&velocity)));
+}
+
+/**
+ * @brief Bumps a player's weapon.
+ *
+ * @param clientIndex Index of the client.
+ * @param weaponHandle Handle of weapon to bump.
+ */
+extern "C" PLUGIN_API void BumpWeapon(int clientIndex, int weaponHandle)
+{
+	auto pController = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex)));
+	if (!pController)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SwitchWeapon' on invalid client index: %d\n", clientIndex);
+		return;
+	}
+
+	CBasePlayerWeapon* pWeapon = static_cast<CBasePlayerWeapon*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)weaponHandle)));
+	if (!pWeapon)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SwitchWeapon' on invalid weapon handle: %d\n", weaponHandle);
+		return;
+	}
+
+	auto pWeaponServices = pController->GetPawn()->m_pWeaponServices();
+	if (!pWeaponServices)
+	{
+		return;
+	}
+
+	pWeaponServices->Bump(pWeapon);
+}
+
+/**
+ * @brief Switches a player's weapon.
+ *
+ * @param clientIndex Index of the client.
+ * @param weaponHandle Handle of weapon to switch.
+ */
+extern "C" PLUGIN_API void SwitchWeapon(int clientIndex, int weaponHandle)
+{
+	auto pController = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex)));
+	if (!pController)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SwitchWeapon' on invalid client index: %d\n", clientIndex);
+		return;
+	}
+
+	CBasePlayerWeapon* pWeapon = static_cast<CBasePlayerWeapon*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)weaponHandle)));
+	if (!pWeapon)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SwitchWeapon' on invalid weapon handle: %d\n", weaponHandle);
+		return;
+	}
+
+	auto pWeaponServices = pController->GetPawn()->m_pWeaponServices();
+	if (!pWeaponServices)
+	{
+		return;
+	}
+
+	pWeaponServices->Switch(pWeapon);
+}
+
+/**
+ * @brief Removes a player's weapon.
+ *
+ * @param clientIndex Index of the client.
+ * @param weaponHandle Handle of weapon to remove.
+ */
+extern "C" PLUGIN_API void RemoveWeapon(int clientIndex, int weaponHandle)
+{
+	auto pController = utils::GetController(CPlayerSlot(clientIndex));
+	if (!pController)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'RemovePlayerItem' on invalid client index: %d\n", clientIndex);
+		return;
+	}
+
+	CBasePlayerWeapon* pWeapon = static_cast<CBasePlayerWeapon*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)weaponHandle)));
+	if (!pWeapon)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'RemovePlayerItem' on invalid weapon handle: %d\n", weaponHandle);
 		return;
 	}
 
@@ -730,7 +792,7 @@ extern "C" PLUGIN_API int GiveNamedItem(int clientIndex, const plg::string& item
 	auto pController = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex)));
 	if (!pController)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GiveNamedItem' on invalid client index: %d\n", clientIndex);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GiveNamedItem' on invalid client index: %d\n", clientIndex);
 		return INVALID_EHANDLE_INDEX;
 	}
 
@@ -743,7 +805,7 @@ extern "C" PLUGIN_API int GiveNamedItem(int clientIndex, const plg::string& item
 	CBaseEntity* pWeapon = pItemServices->GiveNamedItem(itemName.c_str());
 	if (!pWeapon)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GiveNamedItem' with invalid item: %s\n", itemName.c_str());
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GiveNamedItem' with invalid item: %s\n", itemName.c_str());
 		return INVALID_EHANDLE_INDEX;
 	}
 
@@ -762,13 +824,13 @@ extern "C" PLUGIN_API uint64_t GetClientButtons(int clientIndex, int buttonIndex
 	auto pController = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex)));
 	if (!pController)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetClientButtons' on invalid client index: %d\n", clientIndex);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetClientButtons' on invalid client index: %d\n", clientIndex);
 		return  0;
 	}
 
 	if (buttonIndex > 2 || buttonIndex < 0)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetClientButtons' on invalid button index: %d\n", buttonIndex);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetClientButtons' on invalid button index: %d\n", buttonIndex);
 		return  0;
 	}
 
@@ -792,7 +854,7 @@ extern "C" PLUGIN_API int GetClientMoney(int clientIndex)
 	auto pController = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex)));
 	if (!pController)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetClientMoney' on invalid client index: %d\n", clientIndex);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetClientMoney' on invalid client index: %d\n", clientIndex);
 		return  0;
 	}
 
@@ -816,7 +878,7 @@ extern "C" PLUGIN_API void SetClientMoney(int clientIndex, int money)
 	auto pController = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex)));
 	if (!pController)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'SetClientMoney' on invalid client index: %d\n", clientIndex);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetClientMoney' on invalid client index: %d\n", clientIndex);
 		return;
 	}
 
@@ -840,7 +902,7 @@ extern "C" PLUGIN_API int GetClientKills(int clientIndex)
 	auto pController = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex)));
 	if (!pController)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetClientKills' on invalid client index: %d\n", clientIndex);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetClientKills' on invalid client index: %d\n", clientIndex);
 		return 0;
 	}
 
@@ -864,7 +926,7 @@ extern "C" PLUGIN_API void SetClientKills(int clientIndex, int kills)
 	auto pController = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex)));
 	if (!pController)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'SetClientKills' on invalid client index: %d\n", clientIndex);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetClientKills' on invalid client index: %d\n", clientIndex);
 		return;
 	}
 
@@ -888,7 +950,7 @@ extern "C" PLUGIN_API int GetClientDeaths(int clientIndex)
 	auto pController = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex)));
 	if (!pController)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetClientDeaths' on invalid client index: %d\n", clientIndex);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetClientDeaths' on invalid client index: %d\n", clientIndex);
 		return  0;
 	}
 
@@ -912,7 +974,7 @@ extern "C" PLUGIN_API void SetClientDeaths(int clientIndex, int deaths)
 	auto pController = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex)));
 	if (!pController)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'SetClientDeaths' on invalid client index: %d\n", clientIndex);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetClientDeaths' on invalid client index: %d\n", clientIndex);
 		return;
 	}
 
@@ -936,7 +998,7 @@ extern "C" PLUGIN_API int GetClientAssists(int clientIndex)
 	auto pController = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex)));
 	if (!pController)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetClientAssists' on invalid client index: %d\n", clientIndex);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetClientAssists' on invalid client index: %d\n", clientIndex);
 		return  0;
 	}
 
@@ -960,7 +1022,7 @@ extern "C" PLUGIN_API void SetClientAssists(int clientIndex, int assists)
 	auto pController = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex)));
 	if (!pController)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'SetClientAssists' on invalid client index: %d\n", clientIndex);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetClientAssists' on invalid client index: %d\n", clientIndex);
 		return;
 	}
 
@@ -984,7 +1046,7 @@ extern "C" PLUGIN_API int GetClientDamage(int clientIndex)
 	auto pController = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex)));
 	if (!pController)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetClientDamage' on invalid client index: %d\n", clientIndex);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetClientDamage' on invalid client index: %d\n", clientIndex);
 		return  0;
 	}
 
@@ -1008,7 +1070,7 @@ extern "C" PLUGIN_API void SetClientDamage(int clientIndex, int damage)
 	auto pController = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(clientIndex)));
 	if (!pController)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'SetClientDamage' on invalid client index: %d\n", clientIndex);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetClientDamage' on invalid client index: %d\n", clientIndex);
 		return;
 	}
 

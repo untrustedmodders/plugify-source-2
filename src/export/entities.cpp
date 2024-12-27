@@ -1,7 +1,8 @@
 #include <core/output_manager.hpp>
-#include <core/sdk/utils.h>
 #include <core/sdk/entity/cbaseentity.h>
 #include <core/sdk/entity/cbasemodelentity.h>
+#include <core/sdk/utils.h>
+#include <entitykeyvalues.h>
 #include <plugin_export.h>
 
 PLUGIFY_WARN_PUSH()
@@ -244,7 +245,7 @@ extern "C" PLUGIN_API int FindEntityByClassname(int startEntity, const plg::stri
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(addresses::CGameEntitySystem_FindEntityByClassName(g_pGameEntitySystem, pStartStart, classname.c_str()));
 	if (!pEntity)
 	{
-		//g_Logger.LogFormat(LS_WARNING, "Cannot 'FindEntityByClassname' with invalid entity classname: %s\n", classname.c_str());
+		//g_Logger.LogFormat(LS_WARNING, "Cannot execute 'FindEntityByClassname' with invalid entity classname: %s\n", classname.c_str());
 		return INVALID_EHANDLE_INDEX;
 	}
 
@@ -272,7 +273,7 @@ extern "C" PLUGIN_API int FindEntityByName(int startEntity, const plg::string& n
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(addresses::CGameEntitySystem_FindEntityByName(g_pGameEntitySystem, pStartStart, name.c_str(), nullptr, nullptr, nullptr, nullptr));
 	if (!pEntity)
 	{
-		//g_Logger.LogFormat(LS_WARNING, "Cannot 'FindEntityByName' with invalid entity name: %s\n", name.c_str());
+		//g_Logger.LogFormat(LS_WARNING, "Cannot execute 'FindEntityByName' with invalid entity name: %s\n", name.c_str());
 		return INVALID_EHANDLE_INDEX;
 	}
 
@@ -295,7 +296,7 @@ extern "C" PLUGIN_API int CreateEntityByName(const plg::string& className)
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(addresses::CreateEntityByName(className.c_str(), -1));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'CreateEntityByName' with invalid entity classname: %s\n", className.c_str());
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'CreateEntityByName' with invalid entity classname: %s\n", className.c_str());
 		return INVALID_EHANDLE_INDEX;
 	}
 
@@ -315,11 +316,82 @@ extern "C" PLUGIN_API void DispatchSpawn(int entityHandle)
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'DispatchSpawn' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'DispatchSpawn' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
 
 	pEntity->DispatchSpawn();
+}
+
+/**
+ * @brief Spawns an entity into the game with key-value properties.
+ *
+ * This function spawns the specified entity into the game world.
+ * It requires a valid entity handle to function correctly.
+ *
+ * @param entityHandle The handle of the entity to spawn.
+ * @param keys A vector of keys representing the property names to set on the entity.
+ * @param values A vector of values corresponding to the keys, representing the property values to set on the entity.
+ */
+extern "C" PLUGIN_API void DispatchSpawn2(int entityHandle, const plg::vector<plg::string>& keys, const plg::vector<plg::any>& values)
+{
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
+	if (!pEntity)
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'DispatchSpawn2' on invalid entity handle: %d\n", entityHandle);
+		return;
+	}
+
+	if (keys.size() != values.size())
+	{
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'DispatchSpawn2': Mismatch between keys and values sizes. Keys size: %d, Values size: %d.", static_cast<int>(keys.size()), static_cast<int>(values.size()));
+		return;
+	}
+
+	CEntityKeyValues* pESKeyValues = new CEntityKeyValues(g_pGameEntitySystem->GetEntityKeyValuesAllocator(), EKV_ALLOCATOR_EXTERNAL);
+
+	g_pGameEntitySystem->AddRefKeyValues(pESKeyValues);
+
+	for (size_t i = 0; i < values.size(); ++i)
+	{
+		auto key = CKV3MemberName::Make(keys[i].c_str());
+		plg::visit([&](const auto& v) {
+			using T = std::decay_t<decltype(v)>;
+			if constexpr (std::is_same_v<T, plg::string>) {
+				pESKeyValues->SetString(key, v.c_str());
+			} else if constexpr (std::is_pointer_v<T>) {
+				pESKeyValues->SetPtr(key, v);
+			} else if constexpr (std::is_same_v<T, int32_t>) {
+				pESKeyValues->SetInt(key, v);
+			} else if constexpr (std::is_same_v<T, uint32_t>) {
+				pESKeyValues->SetUint(key, v);
+			} else if constexpr (std::is_same_v<T, int64_t>) {
+				pESKeyValues->SetInt64(key, v);
+			} else if constexpr (std::is_same_v<T, uint64_t>) {
+				pESKeyValues->SetUint64(key, v);
+			} else if constexpr (std::is_same_v<T, bool>) {
+				pESKeyValues->SetBool(key, v);
+			} else if constexpr (std::is_same_v<T, float>) {
+				pESKeyValues->SetFloat(key, v);
+			}  else if constexpr (std::is_same_v<T, double>) {
+				pESKeyValues->SetDouble(key, v);
+			} else if constexpr (std::is_same_v<T, plg::vec2>) {
+				pESKeyValues->SetVector2D(key, *reinterpret_cast<const Vector2D*>(&v));
+			} else if constexpr (std::is_same_v<T, plg::vec3>) {
+				pESKeyValues->SetVector(key, *reinterpret_cast<const Vector*>(&v));
+			} else if constexpr (std::is_same_v<T, plg::vec4>) {
+				pESKeyValues->SetVector4D(key, *reinterpret_cast<const Vector4D*>(&v));
+			} else if constexpr (std::is_same_v<T, plg::mat4x4>) {
+				pESKeyValues->SetMatrix3x4(key, *reinterpret_cast<const matrix3x4_t*>(&v));
+			} else if constexpr (std::is_arithmetic_v<T>) {
+				pESKeyValues->SetInt(key, static_cast<int>(v));
+			}
+		}, values[i]);
+	}
+
+	pEntity->DispatchSpawn(pESKeyValues);
+
+	g_pGameEntitySystem->ReleaseKeyValues(pESKeyValues);
 }
 
 /**
@@ -335,7 +407,7 @@ extern "C" PLUGIN_API void RemoveEntity(int entityHandle)
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'RemoveEntity' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'RemoveEntity' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
 
@@ -358,7 +430,7 @@ extern "C" PLUGIN_API plg::string GetEntityClassname(int entityHandle)
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetEntityClassname' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityClassname' on invalid entity handle: %d\n", entityHandle);
 		return {};
 	}
 
@@ -379,7 +451,7 @@ extern "C" PLUGIN_API plg::string GetEntityName(int entityHandle)
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetEntityName' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityName' on invalid entity handle: %d\n", entityHandle);
 		return {};
 	}
 
@@ -400,7 +472,7 @@ extern "C" PLUGIN_API void SetEntityName(int entityHandle, const plg::string& na
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'SetEntityName' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityName' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
 
@@ -421,7 +493,7 @@ extern "C" PLUGIN_API int GetEntityMoveType(int entityHandle)
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetEntityMoveType' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityMoveType' on invalid entity handle: %d\n", entityHandle);
 		return 0;
 	}
 
@@ -442,7 +514,7 @@ extern "C" PLUGIN_API void SetEntityMoveType(int entityHandle, int moveType)
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'SetEntityMoveType' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityMoveType' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
 
@@ -463,7 +535,7 @@ extern "C" PLUGIN_API float GetEntityGravity(int entityHandle)
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetEntityGravity' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityGravity' on invalid entity handle: %d\n", entityHandle);
 		return 0.0f;
 	}
 
@@ -484,7 +556,7 @@ extern "C" PLUGIN_API void SetEntityGravity(int entityHandle, float gravity)
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'SetEntityGravity' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityGravity' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
 
@@ -505,7 +577,7 @@ extern "C" PLUGIN_API int GetEntityFlags(int entityHandle)
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetEntityFlags' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityFlags' on invalid entity handle: %d\n", entityHandle);
 		return 0;
 	}
 
@@ -526,7 +598,7 @@ extern "C" PLUGIN_API void SetEntityFlags(int entityHandle, int flags)
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'SetEntityFlags' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityFlags' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
 
@@ -547,7 +619,7 @@ extern "C" PLUGIN_API int GetEntityRenderColor(int entityHandle)
 	CBaseModelEntity* pEntity = static_cast<CBaseModelEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetEntityRenderColor' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityRenderColor' on invalid entity handle: %d\n", entityHandle);
 		return 0;
 	}
 
@@ -568,7 +640,7 @@ extern "C" PLUGIN_API void SetEntityRenderColor(int entityHandle, int color)
 	CBaseModelEntity* pEntity = static_cast<CBaseModelEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'SetEntityRenderColor' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityRenderColor' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
 
@@ -589,7 +661,7 @@ extern "C" PLUGIN_API int8_t GetEntityRenderMode(int entityHandle)
 	CBaseModelEntity* pEntity = static_cast<CBaseModelEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetEntityRenderMode' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityRenderMode' on invalid entity handle: %d\n", entityHandle);
 		return 0;
 	}
 
@@ -610,7 +682,7 @@ extern "C" PLUGIN_API void SetEntityRenderMode(int entityHandle, int8_t renderMo
 	CBaseModelEntity* pEntity = static_cast<CBaseModelEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'SetEntityRenderMode' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityRenderMode' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
 
@@ -631,7 +703,7 @@ extern "C" PLUGIN_API int GetEntityHealth(int entityHandle)
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetEntityHealth' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityHealth' on invalid entity handle: %d\n", entityHandle);
 		return 0;
 	}
 
@@ -652,7 +724,7 @@ extern "C" PLUGIN_API void SetEntityHealth(int entityHandle, int health)
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'SetEntityHealth' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityHealth' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
 
@@ -673,7 +745,7 @@ extern "C" PLUGIN_API int GetTeamEntity(int entityHandle)
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetTeamEntity' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetTeamEntity' on invalid entity handle: %d\n", entityHandle);
 		return 0;
 	}
 
@@ -694,7 +766,7 @@ extern "C" PLUGIN_API void SetTeamEntity(int entityHandle, int team)
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'SetTeamEntity' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetTeamEntity' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
 
@@ -715,7 +787,7 @@ extern "C" PLUGIN_API int GetEntityOwner(int entityHandle)
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetEntityOwner' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityOwner' on invalid entity handle: %d\n", entityHandle);
 		return INVALID_EHANDLE_INDEX;
 	}
 
@@ -736,14 +808,14 @@ extern "C" PLUGIN_API void SetEntityOwner(int entityHandle, int ownerHandle)
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'SetEntityOwner' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityOwner' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
 
 	CBaseEntity* pOwner = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)ownerHandle)));
 	if (!pOwner)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'SetEntityOwner' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityOwner' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
 
@@ -764,7 +836,7 @@ extern "C" PLUGIN_API int GetEntityParent(int entityHandle)
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetEntityParent' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityParent' on invalid entity handle: %d\n", entityHandle);
 		return INVALID_EHANDLE_INDEX;
 	}
 
@@ -785,14 +857,14 @@ extern "C" PLUGIN_API void SetEntityParent(int entityHandle, int parentHandle)
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'SetEntityParent' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityParent' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
 
 	CBaseEntity* pNewParent = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)parentHandle)));
 	if (!pNewParent)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'SetEntityParent' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityParent' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
 
@@ -813,7 +885,7 @@ extern "C" PLUGIN_API plg::vec3 GetEntityAbsOrigin(int entityHandle)
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetEntityAbsOrigin' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityAbsOrigin' on invalid entity handle: %d\n", entityHandle);
 		return {};
 	}
 
@@ -835,7 +907,7 @@ extern "C" PLUGIN_API void SetEntityAbsOrigin(int entityHandle, const Vector& or
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'SetEntityAbsOrigin' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityAbsOrigin' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
 
@@ -856,7 +928,7 @@ extern "C" PLUGIN_API plg::vec3 GetEntityAngRotation(int entityHandle)
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetEntityAngRotation' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityAngRotation' on invalid entity handle: %d\n", entityHandle);
 		return {};
 	}
 
@@ -878,7 +950,7 @@ extern "C" PLUGIN_API void SetEntityAngRotation(int entityHandle, const QAngle& 
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'SetEntityAngRotation' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityAngRotation' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
 
@@ -899,7 +971,7 @@ extern "C" PLUGIN_API plg::vec3 GetEntityAbsVelocity(int entityHandle)
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetEntityAbsVelocity' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityAbsVelocity' on invalid entity handle: %d\n", entityHandle);
 		return {};
 	}
 
@@ -921,7 +993,7 @@ extern "C" PLUGIN_API void SetEntityAbsVelocity(int entityHandle, const Vector& 
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'SetEntityAbsVelocity' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityAbsVelocity' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
 
@@ -942,7 +1014,7 @@ extern "C" PLUGIN_API plg::string GetEntityModel(int entityHandle)
 	CBaseModelEntity* pEntity = static_cast<CBaseModelEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetEntityModel' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityModel' on invalid entity handle: %d\n", entityHandle);
 		return {};
 	}
 
@@ -963,7 +1035,7 @@ extern "C" PLUGIN_API void SetEntityModel(int entityHandle, const plg::string& m
 	CBaseModelEntity* pEntity = static_cast<CBaseModelEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'SetEntityModel' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityModel' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
 
@@ -984,7 +1056,7 @@ extern "C" PLUGIN_API float GetEntityWaterLevel(int entityHandle)
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetEntityWaterLevel' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityWaterLevel' on invalid entity handle: %d\n", entityHandle);
 		return 0.0f;
 	}
 
@@ -1005,7 +1077,7 @@ extern "C" PLUGIN_API int GetEntityGroundEntity(int entityHandle)
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetEntityGroundEntity' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityGroundEntity' on invalid entity handle: %d\n", entityHandle);
 		return INVALID_EHANDLE_INDEX;
 	}
 
@@ -1026,7 +1098,7 @@ extern "C" PLUGIN_API int GetEntityEffects(int entityHandle)
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'GetEntityEffects' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityEffects' on invalid entity handle: %d\n", entityHandle);
 		return 0;
 	}
 
@@ -1049,7 +1121,7 @@ extern "C" PLUGIN_API void TeleportEntity(int entityHandle, const Vector* origin
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'TeleportEntity' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'TeleportEntity' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
 
@@ -1076,7 +1148,7 @@ extern "C" PLUGIN_API void AcceptInput(int entityHandle, const plg::string& inpu
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
 	if (!pEntity)
 	{
-		g_Logger.LogFormat(LS_WARNING, "Cannot 'AcceptInput' on invalid entity handle: %d\n", entityHandle);
+		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'AcceptInput' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
 

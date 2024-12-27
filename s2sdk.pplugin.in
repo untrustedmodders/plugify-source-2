@@ -721,10 +721,56 @@
         }
     },
     {
-        "name": "RemovePlayerItem",
+        "name": "BumpWeapon",
         "group": "Clients",
-        "description": "Removes a player's item.",
-        "funcName": "RemovePlayerItem",
+        "description": "Bumps a player's weapon.",
+        "funcName": "BumpWeapon",
+        "paramTypes": [
+            {
+                "name": "clientIndex",
+                "type": "int32",
+                "ref": false,
+                "description": "The index of the client."
+            },
+            {
+                "name": "weaponHandle",
+                "type": "int32",
+                "ref": false,
+                "description": "Handle of weapon to bump."
+            }
+        ],
+        "retType": {
+            "type": "void"
+        }
+    },
+    {
+        "name": "SwitchWeapon",
+        "group": "Clients",
+        "description": "Switches a player's weapon.",
+        "funcName": "SwitchWeapon",
+        "paramTypes": [
+            {
+                "name": "clientIndex",
+                "type": "int32",
+                "ref": false,
+                "description": "The index of the client."
+            },
+            {
+                "name": "weaponHandle",
+                "type": "int32",
+                "ref": false,
+                "description": "Handle of weapon to switch."
+            }
+        ],
+        "retType": {
+            "type": "void"
+        }
+    },
+    {
+        "name": "RemoveWeapon",
+        "group": "Clients",
+        "description": "Removes a player's weapon.",
+        "funcName": "RemoveWeapon",
         "paramTypes": [
             {
                 "name": "clientIndex",
@@ -4705,6 +4751,35 @@
           "type": "int32",
           "ref": false,
           "description": "The handle of the entity to spawn."
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "DispatchSpawn2",
+      "group": "Entities",
+      "description": "Spawns an entity into the game with key-value properties.",
+      "funcName": "DispatchSpawn2",
+      "paramTypes": [
+        {
+          "name": "entityHandle",
+          "type": "int32",
+          "ref": false,
+          "description": "The handle of the entity to spawn."
+        },
+        {
+          "name": "keys",
+          "type": "string[]",
+          "ref": false,
+          "description": "A vector of keys representing the property names to set on the entity."
+        },
+        {
+          "name": "values",
+          "type": "any[]",
+          "ref": false,
+          "description": "A vector of values corresponding to the keys, representing the property values to set on the entity."
         }
       ],
       "retType": {
