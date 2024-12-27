@@ -1,6 +1,6 @@
 {
   "fileVersion": 1,
-  "version": 0,//${S2SDK_VERSION},
+  "version": ${S2SDK_VERSION},
   "versionName": "v${S2SDK_VERSION}",
   "friendlyName": "CS2-SDK",
   "description": "Provides functionality for other plugins from Source 2 engine",
