@@ -35,7 +35,7 @@ DEFINE_MANAGER_CREATOR(OnGameFrame, void, bool, bool, bool)
 //DEFINE_MANAGER_CREATOR(OnHostNameChanged, void, const char*)
 //DEFINE_MANAGER_CREATOR(OnPreFatalShutdown, void)
 DEFINE_MANAGER_CREATOR(OnUpdateWhenNotInGame, void, float)
-//DEFINE_MANAGER_CREATOR(OnPreWorldUpdate, void, bool)
+DEFINE_MANAGER_CREATOR(OnPreWorldUpdate, void, bool)
 
 /*DEFINE_MANAGER_CREATOR(OnNetworkidValidated)
 DEFINE_MANAGER_CREATOR(OnEdictAllocated)

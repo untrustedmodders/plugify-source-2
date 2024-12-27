@@ -709,9 +709,14 @@ extern "C" PLUGIN_API void RemovePlayerItem(int clientIndex, int weaponHandle)
 		return;
 	}
 
-	pController->GetPawn()->RemovePlayerItem(pWeapon);
-}
+	auto pWeaponServices = pController->GetPawn()->m_pWeaponServices;
+	if (!pWeaponServices)
+	{
+		return;
+	}
 
+	pWeaponServices->RemoveItem(pWeapon);
+}
 
 /**
  * @brief Gives a named item (e.g., weapon) to a client.

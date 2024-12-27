@@ -439,7 +439,7 @@ TargetType CPlayerManager::TargetPlayerString(int caller, const char* target, pl
 			if (!player || !player->IsController() || !player->IsConnected())
 				continue;
 
-			clients.push_back(i + 1);
+			clients.push_back(i);
 		}
 	}
 	else if (targetType >= TargetType::SPECTATOR)
@@ -457,7 +457,7 @@ TargetType CPlayerManager::TargetPlayerString(int caller, const char* target, pl
 			if (player->m_iTeamNum() != (targetType == TargetType::T ? CS_TEAM_T : targetType == TargetType::CT ? CS_TEAM_CT : CS_TEAM_SPECTATOR))
 				continue;
 
-			clients.push_back(i + 1);
+			clients.push_back(i);
 		}
 	}
 	else if (targetType >= TargetType::RANDOM && targetType <= TargetType::RANDOM_CT)
@@ -466,15 +466,15 @@ TargetType CPlayerManager::TargetPlayerString(int caller, const char* target, pl
 
 		while (clients.empty() == 0 && attempts < 10000)
 		{
-			int slot = rand() % (MaxClients() - 1);
+			int i = rand() % (MaxClients() - 1);
 
 			// Prevent infinite loop
 			attempts++;
 
-			if (!m_players[slot].IsConnected())
+			if (!m_players[i].IsConnected())
 				continue;
 
-			CBasePlayerController* player = utils::GetController(slot);
+			CBasePlayerController* player = utils::GetController(i);
 
 			if (!player || !player->IsController() || !player->IsConnected())
 				continue;
@@ -482,7 +482,7 @@ TargetType CPlayerManager::TargetPlayerString(int caller, const char* target, pl
 			if (targetType >= TargetType::RANDOM_T && (player->m_iTeamNum() != (targetType == TargetType::RANDOM_T ? CS_TEAM_T : CS_TEAM_CT)))
 				continue;
 
-			clients.push_back(slot + 1);
+			clients.push_back(i);
 		}
 	}
 	else if (*target == '#')
@@ -495,7 +495,7 @@ TargetType CPlayerManager::TargetPlayerString(int caller, const char* target, pl
 			CBasePlayerController* player = utils::GetController(GetSlotFromUserId(userid).Get());
 			if (player && player->IsController() && player->IsConnected())
 			{
-				clients.push_back(GetSlotFromUserId(userid).Get() + 1);
+				clients.push_back(GetSlotFromUserId(userid).Get());
 			}
 		}
 	}
@@ -514,7 +514,7 @@ TargetType CPlayerManager::TargetPlayerString(int caller, const char* target, pl
 			if (V_stristr(player->GetPlayerName(), target))
 			{
 				targetType = TargetType::PLAYER;
-				clients.push_back(i + 1);
+				clients.push_back(i);
 				break;
 			}
 		}

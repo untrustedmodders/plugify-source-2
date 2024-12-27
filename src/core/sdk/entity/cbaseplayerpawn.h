@@ -60,11 +60,6 @@ public:
 		}
 	}
 
-	void RemovePlayerItem(CBasePlayerWeapon* pWeapon)
-	{
-		addresses::CBasePlayerPawn_RemovePlayerItem(this, pWeapon);
-	}
-
 	void CommitSuicide(bool bExplode, bool bForce)
 	{
 		static int offset = g_pGameConfig->GetOffset("CommitSuicide");

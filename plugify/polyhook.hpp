@@ -50,8 +50,7 @@ namespace poly
 	{
 	private:
 		CHook(IHook* pHook, void* pFunc, void* pClass, int index) : m_hook(pHook), m_func(pFunc), m_class(pClass), m_index(index)
-		{
-		}
+		{}
 
 	public:
 		~CHook()

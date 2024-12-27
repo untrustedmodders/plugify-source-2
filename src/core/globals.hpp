@@ -90,6 +90,7 @@ namespace modules
 	extern CModule* networksystem;
 } // namespace modules
 
+class CPlayer_WeaponServices;
 class IEntityFindFilter;
 class CEntitySystem;
 class CCSPlayerPawn;
@@ -110,7 +111,7 @@ namespace addresses
 
 	//inline void (*TracePlayerBBox)(const Vector& start, const Vector& end, const bbox_t& bounds, CTraceFilterS2* filter, trace_t_s2& pm);
 
-	inline void (*CBasePlayerPawn_RemovePlayerItem)(CBasePlayerPawn* player, CBasePlayerWeapon* weapon);
+	inline void (*CCSPlayer_WeaponServices_RemoveItem)(CPlayer_WeaponServices* player, CBasePlayerWeapon* weapon);
 
 	inline void (*CCSPlayerController_SwitchTeam)(CCSPlayerController* controller, int team);
 

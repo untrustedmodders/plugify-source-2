@@ -11062,6 +11062,70 @@
       }
     },
     {
+      "name": "OnPreWorldUpdate_Register",
+      "group": "Listeners",
+      "description": "Register callback to event.",
+      "funcName": "OnPreWorldUpdate_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnPreWorldUpdateCallback",
+            "description": "",
+            "paramTypes": [
+              {
+                "name": "simulating",
+                "type": "bool",
+                "description": ""
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnPreWorldUpdate_Unregister",
+      "group": "Listeners",
+      "description": "Unregister callback to event.",
+      "funcName": "OnPreWorldUpdate_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnPreWorldUpdateCallback",
+            "description": "",
+            "paramTypes": [
+              {
+                "name": "simulating",
+                "type": "bool",
+                "description": ""
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
       "name": "GetGameRules",
       "group": "Gamerules",
       "description": "Retrieves the pointer to the current game rules instance.",
