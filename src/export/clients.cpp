@@ -587,7 +587,7 @@ extern "C" PLUGIN_API int GetClientActiveWeapon(int clientIndex)
 		return INVALID_EHANDLE_INDEX;
 	}
 
-	auto pWeaponServices = pController->GetPawn()->m_pWeaponServices;
+	auto pWeaponServices = pController->GetPawn()->m_pWeaponServices();
 	if (!pWeaponServices)
 	{
 		return INVALID_EHANDLE_INDEX;
@@ -709,7 +709,7 @@ extern "C" PLUGIN_API void RemovePlayerItem(int clientIndex, int weaponHandle)
 		return;
 	}
 
-	auto pWeaponServices = pController->GetPawn()->m_pWeaponServices;
+	auto pWeaponServices = pController->GetPawn()->m_pWeaponServices();
 	if (!pWeaponServices)
 	{
 		return;
