@@ -23,8 +23,7 @@ PLUGIFY_WARN_IGNORE(4190)
  * @param entityIndex The index of the entity to convert.
  * @return A pointer to the entity instance, or nullptr if the entity does not exist.
  */
-extern "C" PLUGIN_API void* EntIndexToEntPointer(int entityIndex)
-{
+extern "C" PLUGIN_API void* EntIndexToEntPointer(int entityIndex) {
 	return g_pGameEntitySystem->GetEntityInstance(CEntityIndex(entityIndex));
 }
 
@@ -37,10 +36,8 @@ extern "C" PLUGIN_API void* EntIndexToEntPointer(int entityIndex)
  * @param entity A pointer to the entity whose index is to be retrieved.
  * @return The index of the entity, or -1 if the entity is nullptr.
  */
-extern "C" PLUGIN_API int EntPointerToEntIndex(CEntityInstance* entity)
-{
-	if (!g_pGameEntitySystem->IsEntityPtr(entity))
-	{
+extern "C" PLUGIN_API int EntPointerToEntIndex(CEntityInstance* entity) {
+	if (!g_pGameEntitySystem->IsEntityPtr(entity)) {
 		return -1;
 	}
 
@@ -56,10 +53,8 @@ extern "C" PLUGIN_API int EntPointerToEntIndex(CEntityInstance* entity)
  * @param entity A pointer to the entity to convert.
  * @return The entity handle as an integer, or INVALID_EHANDLE_INDEX if the entity is nullptr.
  */
-extern "C" PLUGIN_API int EntPointerToEntHandle(CEntityInstance* entity)
-{
-	if (!g_pGameEntitySystem->IsEntityPtr(entity))
-	{
+extern "C" PLUGIN_API int EntPointerToEntHandle(CEntityInstance* entity) {
+	if (!g_pGameEntitySystem->IsEntityPtr(entity)) {
 		return INVALID_EHANDLE_INDEX;
 	}
 
@@ -75,11 +70,9 @@ extern "C" PLUGIN_API int EntPointerToEntHandle(CEntityInstance* entity)
  * @param entityHandle The entity handle to convert.
  * @return A pointer to the entity instance, or nullptr if the handle is invalid.
  */
-extern "C" PLUGIN_API void* EntHandleToEntPointer(int entityHandle)
-{
-	CEntityHandle handle((uint32)entityHandle);
-	if (!handle.IsValid())
-	{
+extern "C" PLUGIN_API void* EntHandleToEntPointer(int entityHandle) {
+	CEntityHandle handle((uint32) entityHandle);
+	if (!handle.IsValid()) {
 		return nullptr;
 	}
 
@@ -95,11 +88,9 @@ extern "C" PLUGIN_API void* EntHandleToEntPointer(int entityHandle)
  * @param entityIndex The index of the entity to convert.
  * @return The entity handle as an integer, or -1 if the entity index is invalid.
  */
-extern "C" PLUGIN_API int EntIndexToEntHandle(int entityIndex)
-{
+extern "C" PLUGIN_API int EntIndexToEntHandle(int entityIndex) {
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityIndex(entityIndex)));
-	if (!pEntity)
-	{
+	if (!pEntity) {
 		return INVALID_EHANDLE_INDEX;
 	}
 
@@ -115,17 +106,14 @@ extern "C" PLUGIN_API int EntIndexToEntHandle(int entityIndex)
  * @param entityHandle The entity handle from which to retrieve the index.
  * @return The index of the entity, or -1 if the handle is invalid.
  */
-extern "C" PLUGIN_API int EntHandleToEntIndex(int entityHandle)
-{
-	CEntityHandle handle((uint32)entityHandle);
-	if (!handle.IsValid())
-	{
+extern "C" PLUGIN_API int EntHandleToEntIndex(int entityHandle) {
+	CEntityHandle handle((uint32) entityHandle);
+	if (!handle.IsValid()) {
 		return -1;
 	}
 
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(handle));
-	if (!pEntity)
-	{
+	if (!pEntity) {
 		return -1;
 	}
 
@@ -141,11 +129,9 @@ extern "C" PLUGIN_API int EntHandleToEntIndex(int entityHandle)
  * @param entityHandle The entity handle to check.
  * @return True if the entity handle is valid, false otherwise.
  */
-extern "C" PLUGIN_API bool IsValidEntHandle(int entityHandle)
-{
-	CEntityHandle handle((uint32)entityHandle);
-	if (!handle.IsValid())
-	{
+extern "C" PLUGIN_API bool IsValidEntHandle(int entityHandle) {
+	CEntityHandle handle((uint32) entityHandle);
+	if (!handle.IsValid()) {
 		return false;
 	}
 
@@ -161,8 +147,7 @@ extern "C" PLUGIN_API bool IsValidEntHandle(int entityHandle)
  * @param entity The entity pointer to check.
  * @return True if the entity pointer is valid, false otherwise.
  */
-extern "C" PLUGIN_API bool IsValidEntPointer(CEntityInstance* entity)
-{
+extern "C" PLUGIN_API bool IsValidEntPointer(CEntityInstance* entity) {
 	return g_pGameEntitySystem->IsEntityPtr(entity);
 }
 
@@ -174,8 +159,7 @@ extern "C" PLUGIN_API bool IsValidEntPointer(CEntityInstance* entity)
  *
  * @return A pointer to the first active entity.
  */
-extern "C" PLUGIN_API void* GetFirstActiveEntity()
-{
+extern "C" PLUGIN_API void* GetFirstActiveEntity() {
 	return g_pGameEntitySystem->m_EntityList.m_pFirstActiveEntity;
 }
 
@@ -187,8 +171,7 @@ extern "C" PLUGIN_API void* GetFirstActiveEntity()
  *
  * @return A pointer to the entity list structure.
  */
-extern "C" PLUGIN_API void* GetConcreteEntityListPointer()
-{
+extern "C" PLUGIN_API void* GetConcreteEntityListPointer() {
 	return &g_pGameEntitySystem->m_EntityList;
 }
 
@@ -203,8 +186,7 @@ extern "C" PLUGIN_API void* GetConcreteEntityListPointer()
  * @param callback The callback function to invoke when the output is fired.
  * @param post Indicates whether the hook should be a post-hook (true) or pre-hook (false).
  */
-extern "C" PLUGIN_API void HookEntityOutput(const plg::string& szClassname, const plg::string& szOutput, EntityListenerCallback callback, bool post)
-{
+extern "C" PLUGIN_API void HookEntityOutput(const plg::string& szClassname, const plg::string& szOutput, EntityListenerCallback callback, bool post) {
 	g_OutputManager.HookEntityOutput(szClassname, szOutput, callback, static_cast<HookMode>(post));
 }
 
@@ -218,8 +200,7 @@ extern "C" PLUGIN_API void HookEntityOutput(const plg::string& szClassname, cons
  * @param callback The callback function that was previously hooked.
  * @param post Indicates whether the hook was a post-hook (true) or pre-hook (false).
  */
-extern "C" PLUGIN_API void UnhookEntityOutput(const plg::string& szClassname, const plg::string& szOutput, EntityListenerCallback callback, bool post)
-{
+extern "C" PLUGIN_API void UnhookEntityOutput(const plg::string& szClassname, const plg::string& szOutput, EntityListenerCallback callback, bool post) {
 	g_OutputManager.UnhookEntityOutput(szClassname, szOutput, callback, static_cast<HookMode>(post));
 }
 
@@ -234,17 +215,15 @@ extern "C" PLUGIN_API void UnhookEntityOutput(const plg::string& szClassname, co
  * @param classname The class name of the entity to search for.
  * @return The entity handle of the found entity, or INVALID_EHANDLE_INDEX if no entity is found.
  */
-extern "C" PLUGIN_API int FindEntityByClassname(int startEntity, const plg::string& classname)
-{
-	CBaseEntity* pStartStart = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)startEntity)));
+extern "C" PLUGIN_API int FindEntityByClassname(int startEntity, const plg::string& classname) {
+	CBaseEntity* pStartStart = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) startEntity)));
 	/*if (!pStartStart)
 	{
 		return INVALID_EHANDLE_INDEX;
 	}*/
 
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(addresses::CGameEntitySystem_FindEntityByClassName(g_pGameEntitySystem, pStartStart, classname.c_str()));
-	if (!pEntity)
-	{
+	if (!pEntity) {
 		//g_Logger.LogFormat(LS_WARNING, "Cannot execute 'FindEntityByClassname' with invalid entity classname: %s\n", classname.c_str());
 		return INVALID_EHANDLE_INDEX;
 	}
@@ -262,17 +241,15 @@ extern "C" PLUGIN_API int FindEntityByClassname(int startEntity, const plg::stri
  * @param name The name of the entity to search for.
  * @return The entity handle of the found entity, or INVALID_EHANDLE_INDEX if no entity is found.
  */
-extern "C" PLUGIN_API int FindEntityByName(int startEntity, const plg::string& name)
-{
-	CBaseEntity* pStartStart = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)startEntity)));
+extern "C" PLUGIN_API int FindEntityByName(int startEntity, const plg::string& name) {
+	CBaseEntity* pStartStart = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) startEntity)));
 	/*if (!pStartStart)
 	{
 		return INVALID_EHANDLE_INDEX;
 	}*/
 
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(addresses::CGameEntitySystem_FindEntityByName(g_pGameEntitySystem, pStartStart, name.c_str(), nullptr, nullptr, nullptr, nullptr));
-	if (!pEntity)
-	{
+	if (!pEntity) {
 		//g_Logger.LogFormat(LS_WARNING, "Cannot execute 'FindEntityByName' with invalid entity name: %s\n", name.c_str());
 		return INVALID_EHANDLE_INDEX;
 	}
@@ -291,11 +268,9 @@ extern "C" PLUGIN_API int FindEntityByName(int startEntity, const plg::string& n
  * @param className The class name of the entity to create.
  * @return The entity handle of the created entity, or INVALID_EHANDLE_INDEX if the entity could not be created.
  */
-extern "C" PLUGIN_API int CreateEntityByName(const plg::string& className)
-{
+extern "C" PLUGIN_API int CreateEntityByName(const plg::string& className) {
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(addresses::CreateEntityByName(className.c_str(), -1));
-	if (!pEntity)
-	{
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'CreateEntityByName' with invalid entity classname: %s\n", className.c_str());
 		return INVALID_EHANDLE_INDEX;
 	}
@@ -311,11 +286,9 @@ extern "C" PLUGIN_API int CreateEntityByName(const plg::string& className)
  *
  * @param entityHandle The handle of the entity to spawn.
  */
-extern "C" PLUGIN_API void DispatchSpawn(int entityHandle)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API void DispatchSpawn(int entityHandle) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'DispatchSpawn' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
@@ -333,17 +306,14 @@ extern "C" PLUGIN_API void DispatchSpawn(int entityHandle)
  * @param keys A vector of keys representing the property names to set on the entity.
  * @param values A vector of values corresponding to the keys, representing the property values to set on the entity.
  */
-extern "C" PLUGIN_API void DispatchSpawn2(int entityHandle, const plg::vector<plg::string>& keys, const plg::vector<plg::any>& values)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API void DispatchSpawn2(int entityHandle, const plg::vector<plg::string>& keys, const plg::vector<plg::any>& values) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'DispatchSpawn2' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
 
-	if (keys.size() != values.size())
-	{
+	if (keys.size() != values.size()) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'DispatchSpawn2': Mismatch between keys and values sizes. Keys size: %d, Values size: %d.", static_cast<int>(keys.size()), static_cast<int>(values.size()));
 		return;
 	}
@@ -352,8 +322,7 @@ extern "C" PLUGIN_API void DispatchSpawn2(int entityHandle, const plg::vector<pl
 
 	g_pGameEntitySystem->AddRefKeyValues(pESKeyValues);
 
-	for (size_t i = 0; i < values.size(); ++i)
-	{
+	for (size_t i = 0; i < values.size(); ++i) {
 		auto key = CKV3MemberName::Make(keys[i].c_str());
 		plg::visit([&](const auto& v) {
 			using T = std::decay_t<decltype(v)>;
@@ -373,7 +342,7 @@ extern "C" PLUGIN_API void DispatchSpawn2(int entityHandle, const plg::vector<pl
 				pESKeyValues->SetBool(key, v);
 			} else if constexpr (std::is_same_v<T, float>) {
 				pESKeyValues->SetFloat(key, v);
-			}  else if constexpr (std::is_same_v<T, double>) {
+			} else if constexpr (std::is_same_v<T, double>) {
 				pESKeyValues->SetDouble(key, v);
 			} else if constexpr (std::is_same_v<T, plg::vec2>) {
 				pESKeyValues->SetVector2D(key, *reinterpret_cast<const Vector2D*>(&v));
@@ -386,7 +355,8 @@ extern "C" PLUGIN_API void DispatchSpawn2(int entityHandle, const plg::vector<pl
 			} else if constexpr (std::is_arithmetic_v<T>) {
 				pESKeyValues->SetInt(key, static_cast<int>(v));
 			}
-		}, values[i]);
+		},
+				   values[i]);
 	}
 
 	pEntity->DispatchSpawn(pESKeyValues);
@@ -402,11 +372,9 @@ extern "C" PLUGIN_API void DispatchSpawn2(int entityHandle, const plg::vector<pl
  *
  * @param entityHandle The handle of the entity to be deleted.
  */
-extern "C" PLUGIN_API void RemoveEntity(int entityHandle)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API void RemoveEntity(int entityHandle) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'RemoveEntity' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
@@ -425,11 +393,9 @@ extern "C" PLUGIN_API void RemoveEntity(int entityHandle)
  * @param entityHandle The handle of the entity whose class name is to be retrieved.
  * @return A string where the class name will be stored.
  */
-extern "C" PLUGIN_API plg::string GetEntityClassname(int entityHandle)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API plg::string GetEntityClassname(int entityHandle) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityClassname' on invalid entity handle: %d\n", entityHandle);
 		return {};
 	}
@@ -446,11 +412,9 @@ extern "C" PLUGIN_API plg::string GetEntityClassname(int entityHandle)
  * @param entityHandle The handle of the entity whose name is to be retrieved.
  * @retrun A string where the entity name will be stored.
  */
-extern "C" PLUGIN_API plg::string GetEntityName(int entityHandle)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API plg::string GetEntityName(int entityHandle) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityName' on invalid entity handle: %d\n", entityHandle);
 		return {};
 	}
@@ -467,11 +431,9 @@ extern "C" PLUGIN_API plg::string GetEntityName(int entityHandle)
  * @param entityHandle The handle of the entity whose name is to be set.
  * @param name The new name to set for the entity.
  */
-extern "C" PLUGIN_API void SetEntityName(int entityHandle, const plg::string& name)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API void SetEntityName(int entityHandle, const plg::string& name) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityName' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
@@ -488,11 +450,9 @@ extern "C" PLUGIN_API void SetEntityName(int entityHandle, const plg::string& na
  * @param entityHandle The handle of the entity whose movement type is to be retrieved.
  * @return The movement type of the entity, or 0 if the entity is invalid.
  */
-extern "C" PLUGIN_API int GetEntityMoveType(int entityHandle)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API int GetEntityMoveType(int entityHandle) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityMoveType' on invalid entity handle: %d\n", entityHandle);
 		return 0;
 	}
@@ -509,11 +469,9 @@ extern "C" PLUGIN_API int GetEntityMoveType(int entityHandle)
  * @param entityHandle The handle of the entity whose movement type is to be set.
  * @param moveType The new movement type to set for the entity.
  */
-extern "C" PLUGIN_API void SetEntityMoveType(int entityHandle, int moveType)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API void SetEntityMoveType(int entityHandle, int moveType) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityMoveType' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
@@ -530,11 +488,9 @@ extern "C" PLUGIN_API void SetEntityMoveType(int entityHandle, int moveType)
  * @param entityHandle The handle of the entity whose gravity scale is to be retrieved.
  * @return The gravity scale of the entity, or 0.0f if the entity is invalid.
  */
-extern "C" PLUGIN_API float GetEntityGravity(int entityHandle)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API float GetEntityGravity(int entityHandle) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityGravity' on invalid entity handle: %d\n", entityHandle);
 		return 0.0f;
 	}
@@ -551,11 +507,9 @@ extern "C" PLUGIN_API float GetEntityGravity(int entityHandle)
  * @param entityHandle The handle of the entity whose gravity scale is to be set.
  * @param gravity The new gravity scale to set for the entity.
  */
-extern "C" PLUGIN_API void SetEntityGravity(int entityHandle, float gravity)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API void SetEntityGravity(int entityHandle, float gravity) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityGravity' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
@@ -572,11 +526,9 @@ extern "C" PLUGIN_API void SetEntityGravity(int entityHandle, float gravity)
  * @param entityHandle The handle of the entity whose flags are to be retrieved.
  * @return The flags of the entity, or 0 if the entity is invalid.
  */
-extern "C" PLUGIN_API int GetEntityFlags(int entityHandle)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API int GetEntityFlags(int entityHandle) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityFlags' on invalid entity handle: %d\n", entityHandle);
 		return 0;
 	}
@@ -593,11 +545,9 @@ extern "C" PLUGIN_API int GetEntityFlags(int entityHandle)
  * @param entityHandle The handle of the entity whose flags are to be set.
  * @param flags The new flags to set for the entity.
  */
-extern "C" PLUGIN_API void SetEntityFlags(int entityHandle, int flags)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API void SetEntityFlags(int entityHandle, int flags) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityFlags' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
@@ -614,11 +564,9 @@ extern "C" PLUGIN_API void SetEntityFlags(int entityHandle, int flags)
  * @param entityHandle The handle of the entity whose render color is to be retrieved.
  * @return The raw color value of the entity's render color, or 0 if the entity is invalid.
  */
-extern "C" PLUGIN_API int GetEntityRenderColor(int entityHandle)
-{
-	CBaseModelEntity* pEntity = static_cast<CBaseModelEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API int GetEntityRenderColor(int entityHandle) {
+	CBaseModelEntity* pEntity = static_cast<CBaseModelEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityRenderColor' on invalid entity handle: %d\n", entityHandle);
 		return 0;
 	}
@@ -635,11 +583,9 @@ extern "C" PLUGIN_API int GetEntityRenderColor(int entityHandle)
  * @param entityHandle The handle of the entity whose render color is to be set.
  * @param color The new raw color value to set for the entity's render color.
  */
-extern "C" PLUGIN_API void SetEntityRenderColor(int entityHandle, int color)
-{
-	CBaseModelEntity* pEntity = static_cast<CBaseModelEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API void SetEntityRenderColor(int entityHandle, int color) {
+	CBaseModelEntity* pEntity = static_cast<CBaseModelEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityRenderColor' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
@@ -656,11 +602,9 @@ extern "C" PLUGIN_API void SetEntityRenderColor(int entityHandle, int color)
  * @param entityHandle The handle of the entity whose render mode is to be retrieved.
  * @return The render mode of the entity, or 0 if the entity is invalid.
  */
-extern "C" PLUGIN_API int8_t GetEntityRenderMode(int entityHandle)
-{
-	CBaseModelEntity* pEntity = static_cast<CBaseModelEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API int8_t GetEntityRenderMode(int entityHandle) {
+	CBaseModelEntity* pEntity = static_cast<CBaseModelEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityRenderMode' on invalid entity handle: %d\n", entityHandle);
 		return 0;
 	}
@@ -677,11 +621,9 @@ extern "C" PLUGIN_API int8_t GetEntityRenderMode(int entityHandle)
  * @param entityHandle The handle of the entity whose render mode is to be set.
  * @param renderMode The new render mode to set for the entity.
  */
-extern "C" PLUGIN_API void SetEntityRenderMode(int entityHandle, int8_t renderMode)
-{
-	CBaseModelEntity* pEntity = static_cast<CBaseModelEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API void SetEntityRenderMode(int entityHandle, int8_t renderMode) {
+	CBaseModelEntity* pEntity = static_cast<CBaseModelEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityRenderMode' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
@@ -698,11 +640,9 @@ extern "C" PLUGIN_API void SetEntityRenderMode(int entityHandle, int8_t renderMo
  * @param entityHandle The handle of the entity whose health is to be retrieved.
  * @return The health of the entity, or 0 if the entity is invalid.
  */
-extern "C" PLUGIN_API int GetEntityHealth(int entityHandle)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API int GetEntityHealth(int entityHandle) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityHealth' on invalid entity handle: %d\n", entityHandle);
 		return 0;
 	}
@@ -719,11 +659,9 @@ extern "C" PLUGIN_API int GetEntityHealth(int entityHandle)
  * @param entityHandle The handle of the entity whose health is to be set.
  * @param health The new health value to set for the entity.
  */
-extern "C" PLUGIN_API void SetEntityHealth(int entityHandle, int health)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API void SetEntityHealth(int entityHandle, int health) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityHealth' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
@@ -740,11 +678,9 @@ extern "C" PLUGIN_API void SetEntityHealth(int entityHandle, int health)
  * @param entityHandle The handle of the entity whose team number is to be retrieved.
  * @return The team number of the entity, or 0 if the entity is invalid.
  */
-extern "C" PLUGIN_API int GetTeamEntity(int entityHandle)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API int GetTeamEntity(int entityHandle) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetTeamEntity' on invalid entity handle: %d\n", entityHandle);
 		return 0;
 	}
@@ -761,11 +697,9 @@ extern "C" PLUGIN_API int GetTeamEntity(int entityHandle)
  * @param entityHandle The handle of the entity whose team number is to be set.
  * @param team The new team number to set for the entity.
  */
-extern "C" PLUGIN_API void SetTeamEntity(int entityHandle, int team)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API void SetTeamEntity(int entityHandle, int team) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetTeamEntity' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
@@ -782,11 +716,9 @@ extern "C" PLUGIN_API void SetTeamEntity(int entityHandle, int team)
  * @param entityHandle The handle of the entity whose owner is to be retrieved.
  * @return The handle of the owner entity, or INVALID_EHANDLE_INDEX if the entity is invalid.
  */
-extern "C" PLUGIN_API int GetEntityOwner(int entityHandle)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API int GetEntityOwner(int entityHandle) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityOwner' on invalid entity handle: %d\n", entityHandle);
 		return INVALID_EHANDLE_INDEX;
 	}
@@ -803,18 +735,15 @@ extern "C" PLUGIN_API int GetEntityOwner(int entityHandle)
  * @param entityHandle The handle of the entity whose owner is to be set.
  * @param ownerHandle The handle of the new owner entity.
  */
-extern "C" PLUGIN_API void SetEntityOwner(int entityHandle, int ownerHandle)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API void SetEntityOwner(int entityHandle, int ownerHandle) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityOwner' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
 
-	CBaseEntity* pOwner = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)ownerHandle)));
-	if (!pOwner)
-	{
+	CBaseEntity* pOwner = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) ownerHandle)));
+	if (!pOwner) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityOwner' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
@@ -831,11 +760,9 @@ extern "C" PLUGIN_API void SetEntityOwner(int entityHandle, int ownerHandle)
  * @param entityHandle The handle of the entity whose parent is to be retrieved.
  * @return The handle of the parent entity, or INVALID_EHANDLE_INDEX if the entity is invalid.
  */
-extern "C" PLUGIN_API int GetEntityParent(int entityHandle)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API int GetEntityParent(int entityHandle) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityParent' on invalid entity handle: %d\n", entityHandle);
 		return INVALID_EHANDLE_INDEX;
 	}
@@ -852,18 +779,15 @@ extern "C" PLUGIN_API int GetEntityParent(int entityHandle)
  * @param entityHandle The handle of the entity whose parent is to be set.
  * @param parentHandle The handle of the new parent entity.
  */
-extern "C" PLUGIN_API void SetEntityParent(int entityHandle, int parentHandle)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API void SetEntityParent(int entityHandle, int parentHandle) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityParent' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
 
-	CBaseEntity* pNewParent = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)parentHandle)));
-	if (!pNewParent)
-	{
+	CBaseEntity* pNewParent = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) parentHandle)));
+	if (!pNewParent) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityParent' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
@@ -880,11 +804,9 @@ extern "C" PLUGIN_API void SetEntityParent(int entityHandle, int parentHandle)
  * @param entityHandle The handle of the entity whose absolute origin is to be retrieved.
  * @return A vector where the absolute origin will be stored.
  */
-extern "C" PLUGIN_API plg::vec3 GetEntityAbsOrigin(int entityHandle)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API plg::vec3 GetEntityAbsOrigin(int entityHandle) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityAbsOrigin' on invalid entity handle: %d\n", entityHandle);
 		return {};
 	}
@@ -902,11 +824,9 @@ extern "C" PLUGIN_API plg::vec3 GetEntityAbsOrigin(int entityHandle)
  * @param entityHandle The handle of the entity whose absolute origin is to be set.
  * @param origin The new absolute origin to set for the entity.
  */
-extern "C" PLUGIN_API void SetEntityAbsOrigin(int entityHandle, const Vector& origin)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API void SetEntityAbsOrigin(int entityHandle, const Vector& origin) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityAbsOrigin' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
@@ -923,11 +843,9 @@ extern "C" PLUGIN_API void SetEntityAbsOrigin(int entityHandle, const Vector& or
  * @param entityHandle The handle of the entity whose angular rotation is to be retrieved.
  * @return A QAngle where the angular rotation will be stored.
  */
-extern "C" PLUGIN_API plg::vec3 GetEntityAngRotation(int entityHandle)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API plg::vec3 GetEntityAngRotation(int entityHandle) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityAngRotation' on invalid entity handle: %d\n", entityHandle);
 		return {};
 	}
@@ -945,11 +863,9 @@ extern "C" PLUGIN_API plg::vec3 GetEntityAngRotation(int entityHandle)
  * @param entityHandle The handle of the entity whose angular rotation is to be set.
  * @param angle The new angular rotation to set for the entity.
  */
-extern "C" PLUGIN_API void SetEntityAngRotation(int entityHandle, const QAngle& angle)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API void SetEntityAngRotation(int entityHandle, const QAngle& angle) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityAngRotation' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
@@ -966,11 +882,9 @@ extern "C" PLUGIN_API void SetEntityAngRotation(int entityHandle, const QAngle& 
  * @param entityHandle The handle of the entity whose absolute velocity is to be retrieved.
  * @return A vector where the absolute velocity will be stored.
  */
-extern "C" PLUGIN_API plg::vec3 GetEntityAbsVelocity(int entityHandle)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API plg::vec3 GetEntityAbsVelocity(int entityHandle) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityAbsVelocity' on invalid entity handle: %d\n", entityHandle);
 		return {};
 	}
@@ -988,11 +902,9 @@ extern "C" PLUGIN_API plg::vec3 GetEntityAbsVelocity(int entityHandle)
  * @param entityHandle The handle of the entity whose absolute velocity is to be set.
  * @param velocity The new absolute velocity to set for the entity.
  */
-extern "C" PLUGIN_API void SetEntityAbsVelocity(int entityHandle, const Vector& velocity)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API void SetEntityAbsVelocity(int entityHandle, const Vector& velocity) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityAbsVelocity' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
@@ -1009,11 +921,9 @@ extern "C" PLUGIN_API void SetEntityAbsVelocity(int entityHandle, const Vector& 
  * @param entityHandle The handle of the entity whose model name is to be retrieved.
  * @return A string where the model name will be stored.
  */
-extern "C" PLUGIN_API plg::string GetEntityModel(int entityHandle)
-{
-	CBaseModelEntity* pEntity = static_cast<CBaseModelEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API plg::string GetEntityModel(int entityHandle) {
+	CBaseModelEntity* pEntity = static_cast<CBaseModelEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityModel' on invalid entity handle: %d\n", entityHandle);
 		return {};
 	}
@@ -1030,11 +940,9 @@ extern "C" PLUGIN_API plg::string GetEntityModel(int entityHandle)
  * @param entityHandle The handle of the entity whose model name is to be set.
  * @param model The new model name to set for the entity.
  */
-extern "C" PLUGIN_API void SetEntityModel(int entityHandle, const plg::string& model)
-{
-	CBaseModelEntity* pEntity = static_cast<CBaseModelEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API void SetEntityModel(int entityHandle, const plg::string& model) {
+	CBaseModelEntity* pEntity = static_cast<CBaseModelEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityModel' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
@@ -1051,11 +959,9 @@ extern "C" PLUGIN_API void SetEntityModel(int entityHandle, const plg::string& m
  * @param entityHandle The handle of the entity whose water level is to be retrieved.
  * @return The water level of the entity, or 0.0f if the entity is invalid.
  */
-extern "C" PLUGIN_API float GetEntityWaterLevel(int entityHandle)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API float GetEntityWaterLevel(int entityHandle) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityWaterLevel' on invalid entity handle: %d\n", entityHandle);
 		return 0.0f;
 	}
@@ -1072,11 +978,9 @@ extern "C" PLUGIN_API float GetEntityWaterLevel(int entityHandle)
  * @param entityHandle The handle of the entity whose ground entity is to be retrieved.
  * @return The handle of the ground entity, or INVALID_EHANDLE_INDEX if the entity is invalid.
  */
-extern "C" PLUGIN_API int GetEntityGroundEntity(int entityHandle)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API int GetEntityGroundEntity(int entityHandle) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityGroundEntity' on invalid entity handle: %d\n", entityHandle);
 		return INVALID_EHANDLE_INDEX;
 	}
@@ -1093,11 +997,9 @@ extern "C" PLUGIN_API int GetEntityGroundEntity(int entityHandle)
  * @param entityHandle The handle of the entity whose effects are to be retrieved.
  * @return The effect flags of the entity, or 0 if the entity is invalid.
  */
-extern "C" PLUGIN_API int GetEntityEffects(int entityHandle)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API int GetEntityEffects(int entityHandle) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityEffects' on invalid entity handle: %d\n", entityHandle);
 		return 0;
 	}
@@ -1116,11 +1018,9 @@ extern "C" PLUGIN_API int GetEntityEffects(int entityHandle)
  * @param angles A pointer to a QAngle representing the new orientation. Can be nullptr.
  * @param velocity A pointer to a Vector representing the new velocity. Can be nullptr.
  */
-extern "C" PLUGIN_API void TeleportEntity(int entityHandle, const Vector* origin, const QAngle* angles, const Vector* velocity)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API void TeleportEntity(int entityHandle, const Vector* origin, const QAngle* angles, const Vector* velocity) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'TeleportEntity' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
@@ -1143,132 +1043,148 @@ extern "C" PLUGIN_API void TeleportEntity(int entityHandle, const Vector* origin
  * @param type         The type or classification of the value.
 * @param outputId      An identifier for tracking the output of this operation.
  */
-extern "C" PLUGIN_API void AcceptInput(int entityHandle, const plg::string& inputName, int activatorHandle, int callerHandle, const plg::any& value, FieldType type, int outputId)
-{
-	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pEntity)
-	{
+extern "C" PLUGIN_API void AcceptInput(int entityHandle, const plg::string& inputName, int activatorHandle, int callerHandle, const plg::any& value, FieldType type, int outputId) {
+	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'AcceptInput' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
 
 	variant_t variant;
 
-	switch (type)
-	{
+	switch (type) {
 		case FieldType::Float32:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_arithmetic_v<T>) variant = static_cast<float>(v);
-			}, value);
+			},
+					   value);
 			break;
 		case FieldType::Float64:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_arithmetic_v<T>) variant = static_cast<double>(v);
-			}, value);
+			},
+					   value);
 			break;
 		case FieldType::Int32:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_arithmetic_v<T>) variant = static_cast<int>(v);
-			}, value);
+			},
+					   value);
 			break;
 		case FieldType::UInt32:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_arithmetic_v<T>) variant = static_cast<uint>(v);
-			}, value);
+			},
+					   value);
 			break;
 		case FieldType::Int64:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_arithmetic_v<T>) variant = static_cast<int64>(v);
-			}, value);
+			},
+					   value);
 			break;
 		case FieldType::UInt64:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_arithmetic_v<T>) variant = static_cast<uint64>(v);
-			}, value);
+			},
+					   value);
 			break;
 		case FieldType::Boolean:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_arithmetic_v<T>) variant = static_cast<bool>(v);
-			}, value);
+			},
+					   value);
 			break;
 		case FieldType::Character:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_arithmetic_v<T>) variant = static_cast<char>(v);
-			}, value);
+			},
+					   value);
 			break;
 		case FieldType::String:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_same_v<T, plg::string>) variant = castable_string_t(v.c_str());
-			}, value);
+			},
+					   value);
 			break;
 		case FieldType::CString:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_same_v<T, plg::string>) variant = v.c_str();
-			}, value);
+			},
+					   value);
 			break;
 		case FieldType::HScript:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_pointer_v<T>) variant = reinterpret_cast<HSCRIPT>(v);
-			}, value);
+			},
+					   value);
 			break;
 		case FieldType::EHandle:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
-				if constexpr (std::is_arithmetic_v<T>) variant = CEntityHandle((uint32)v);
-			}, value);
+				if constexpr (std::is_arithmetic_v<T>) variant = CEntityHandle((uint32) v);
+			},
+					   value);
 			break;
 		case FieldType::Resource:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_pointer_v<T>) variant = reinterpret_cast<ResourceHandle_t>(v);
-			}, value);
+			},
+					   value);
 			break;
 		case FieldType::Vector3d:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_same_v<T, plg::vec3> || std::is_same_v<T, plg::vec4>) variant = *reinterpret_cast<const Vector*>(&v);
-			}, value);
+			},
+					   value);
 			break;
 		case FieldType::Vector2d:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_same_v<T, plg::vec2> || std::is_same_v<T, plg::vec3> || std::is_same_v<T, plg::vec4>) variant = *reinterpret_cast<const Vector2D*>(&v);
-			}, value);
+			},
+					   value);
 			break;
 		case FieldType::Vector4d:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_same_v<T, plg::vec4>) variant = *reinterpret_cast<const Vector4D*>(&v);
-			}, value);
+			},
+					   value);
 			break;
 		case FieldType::Color32:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_same_v<T, int>) variant = *reinterpret_cast<const Color*>(&v);
-			}, value);
+			},
+					   value);
 			break;
 		case FieldType::QAngle:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_same_v<T, plg::vec3> || std::is_same_v<T, plg::vec4>) variant = *reinterpret_cast<const QAngle*>(&v);
-			}, value);
+			},
+					   value);
 			break;
 		case FieldType::Quaternion:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_same_v<T, plg::vec4>) variant = *reinterpret_cast<const Quaternion*>(&v);
-			}, value);
+			},
+					   value);
 			break;
 		default:
 			plg::visit([&variant](const auto& v) {
@@ -1279,7 +1195,7 @@ extern "C" PLUGIN_API void AcceptInput(int entityHandle, const plg::string& inpu
 					variant = reinterpret_cast<int64>(v);
 				} else if constexpr (std::is_same_v<T, long>) {
 					variant = static_cast<int64>(v);
-				}  else if constexpr (std::is_same_v<T, unsigned long>) {
+				} else if constexpr (std::is_same_v<T, unsigned long>) {
 					variant = static_cast<uint64>(v);
 				} else if constexpr (std::is_arithmetic_v<T>) {
 					variant = v;
@@ -1290,14 +1206,15 @@ extern "C" PLUGIN_API void AcceptInput(int entityHandle, const plg::string& inpu
 				} else if constexpr (std::is_same_v<T, plg::vec4>) {
 					variant = *reinterpret_cast<const Vector4D*>(&v);
 				}
-			}, value);
+			},
+					   value);
 			break;
 	}
 
-	CEntityInstance* pActivator = activatorHandle != INVALID_EHANDLE_INDEX ? g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)activatorHandle)) : nullptr;
-	CEntityInstance* pCaller = callerHandle != INVALID_EHANDLE_INDEX ? g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)callerHandle)) : nullptr;
+	CEntityInstance* pActivator = activatorHandle != INVALID_EHANDLE_INDEX ? g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) activatorHandle)) : nullptr;
+	CEntityInstance* pCaller = callerHandle != INVALID_EHANDLE_INDEX ? g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) callerHandle)) : nullptr;
 
-	pEntity->AcceptInput(inputName.c_str(), &variant, pActivator, pCaller, outputId);
+	pEntity->AcceptInput(inputName.c_str(), variant, pActivator, pCaller, outputId);
 }
 
 PLUGIFY_WARN_POP()

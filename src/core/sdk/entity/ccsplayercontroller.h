@@ -22,16 +22,15 @@
 #include "cbaseplayercontroller.h"
 #include <sharedInterface.h>
 
-class CCSPlayerController : public CBasePlayerController
-{
+class CCSPlayerController : public CBasePlayerController {
 public:
 	DECLARE_SCHEMA_CLASS(CCSPlayerController);
-	
+
 	SCHEMA_FIELD(CCSPlayerController_InGameMoneyServices*, m_pInGameMoneyServices)
 	SCHEMA_FIELD(CCSPlayerController_ActionTrackingServices*, m_pActionTrackingServices)
 	SCHEMA_FIELD(uint32_t, m_iPing)
 	SCHEMA_FIELD(CUtlSymbolLarge, m_szClan)
-	SCHEMA_FIELD_POINTER(char, m_szClanName) // char m_szClanName[32]
+	SCHEMA_FIELD_POINTER(char, m_szClanName)// char m_szClanName[32]
 	SCHEMA_FIELD(bool, m_bEverFullyConnected)
 	SCHEMA_FIELD(bool, m_bPawnIsAlive)
 	SCHEMA_FIELD(int32_t, m_nDisconnectionTick)
@@ -47,52 +46,46 @@ public:
 	SCHEMA_FIELD(float, m_flSmoothedPing)
 
 	// Returns the actual player pawn
-	CCSPlayerPawn* GetPlayerPawn()
-	{
-		return m_hPlayerPawn().Get();
+	CCSPlayerPawn* GetPlayerPawn() {
+		return m_hPlayerPawn();
 	}
 
-	/*CServerSideClient* GetServerSideClient()
-	{
-		return GetClientBySlot(GetPlayerSlot());
+	CCSPlayerPawnBase* GetObserverPawn() {
+		return m_hObserverPawn();
+	}
+
+	/*CServerSideClient* GetServerSideClient() {
+		return utils::GetClientBySlot(GetPlayerSlot());
 	}*/
 
-	bool IsBot()
-	{
+	bool IsBot() {
 		return m_fFlags() & FL_CONTROLLER_FAKECLIENT;
 	}
 
-	void ChangeTeam(int iTeam)
-	{
+	void ChangeTeam(int iTeam) {
 		static int offset = g_pGameConfig->GetOffset("ControllerChangeTeam");
 		CALL_VIRTUAL(void, offset, this, iTeam);
 	}
 
-	void SwitchTeam(int iTeam)
-	{
+	void SwitchTeam(int iTeam) {
 		if (!IsController())
 			return;
 
-		if (iTeam == CS_TEAM_SPECTATOR)
-		{
+		if (iTeam == CS_TEAM_SPECTATOR) {
 			ChangeTeam(iTeam);
-		}
-		else
-		{
+		} else {
 			addresses::CCSPlayerController_SwitchTeam(this, iTeam);
 		}
 	}
 
 	// Respawns the player if the player is not alive, does nothing otherwise.
-	void Respawn()
-	{
+	void Respawn() {
 		CCSPlayerPawn* pawn = m_hPlayerPawn.Get();
 		if (!pawn || pawn->IsAlive())
 			return;
 
 		SetPawn(pawn);
-		if (this->m_iTeamNum() != CS_TEAM_CT && this->m_iTeamNum() != CS_TEAM_T)
-		{
+		if (this->m_iTeamNum() != CS_TEAM_CT && this->m_iTeamNum() != CS_TEAM_T) {
 			SwitchTeam(RandomInt(CS_TEAM_T, CS_TEAM_CT));
 		}
 		static int offset = g_pGameConfig->GetOffset("ControllerRespawn");

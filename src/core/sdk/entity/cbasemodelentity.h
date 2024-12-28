@@ -21,8 +21,7 @@
 
 #include "cbaseentity.h"
 
-class CBaseModelEntity : public CBaseEntity
-{
+class CBaseModelEntity : public CBaseEntity {
 public:
 	DECLARE_SCHEMA_CLASS(CBaseModelEntity);
 
@@ -30,20 +29,61 @@ public:
 	SCHEMA_FIELD(Color, m_clrRender)
 	SCHEMA_FIELD(uint8, m_nRenderMode)
 
-	void SetModel(const char* szModel)
-	{
+	void SetModel(const char* szModel) {
 		addresses::CBaseModelEntity_SetModel(this, szModel);
 	}
 
-	const char* GetModelName()
-	{
-		return ((CSkeletonInstance*)m_CBodyComponent->m_pSceneNode.Get())->m_modelState().m_ModelName.Get().String();
+	const char* GetModelName() {
+		return ((CSkeletonInstance*) m_CBodyComponent->m_pSceneNode.Get())->m_modelState().m_ModelName.Get().String();
 	}
 };
 
-class CBaseViewModel : public CBaseModelEntity
-{
+class CBaseViewModel : public CBaseModelEntity {
 public:
 	DECLARE_SCHEMA_CLASS(CBaseViewModel);
 	SCHEMA_FIELD(int, m_nViewModelIndex);
+};
+
+class CBeam : public CBaseModelEntity {
+public:
+	DECLARE_SCHEMA_CLASS(CBeam);
+
+	SCHEMA_FIELD(float, m_fWidth);
+	SCHEMA_FIELD(Vector, m_vecEndPos);
+};
+
+class CBaseToggle : public CBaseModelEntity {
+public:
+	DECLARE_SCHEMA_CLASS(CBaseToggle);
+
+	SCHEMA_FIELD(float, m_flWait);
+};
+
+class CBaseTrigger : public CBaseToggle {
+public:
+	DECLARE_SCHEMA_CLASS(CBaseTrigger);
+};
+
+class CModelPointEntity : public CBaseModelEntity {
+public:
+	DECLARE_SCHEMA_CLASS(CModelPointEntity);
+};
+
+class CPointWorldText : public CModelPointEntity {
+public:
+	DECLARE_SCHEMA_CLASS(CPointWorldText);
+
+	SCHEMA_FIELD_POINTER(char, m_messageText);
+
+	void SetText(const char* msg) {
+		AcceptInput("SetMessage", msg);
+	}
+
+	void Enable() {
+		AcceptInput("Enable");
+	}
+
+	void Disable() {
+		AcceptInput("Disable");
+	}
 };

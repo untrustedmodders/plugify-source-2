@@ -8,8 +8,7 @@
 #include <igamesystemfactory.h>
 #include <networksystem/inetworkmessages.h>
 
-class Source2SDK : public plg::IPluginEntry, public CBaseGameSystem
-{
+class Source2SDK : public plg::IPluginEntry, public CBaseGameSystem {
 public:
 	void OnPluginStart() override;
 	void OnPluginEnd() override;

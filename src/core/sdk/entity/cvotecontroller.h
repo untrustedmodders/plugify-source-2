@@ -21,8 +21,7 @@
 
 #include "cbaseentity.h"
 
-class CVoteController : public CBaseEntity
-{
+class CVoteController : public CBaseEntity {
 public:
 	DECLARE_SCHEMA_CLASS(CVoteController);
 

@@ -21,8 +21,7 @@
 
 #include <core/sdk/schema.h>
 
-struct VPhysicsCollisionAttribute_t
-{
+struct VPhysicsCollisionAttribute_t {
 	DECLARE_SCHEMA_CLASS_INLINE(VPhysicsCollisionAttribute_t)
 
 	SCHEMA_FIELD(uint8, m_nCollisionGroup)
@@ -31,8 +30,7 @@ struct VPhysicsCollisionAttribute_t
 	SCHEMA_FIELD(uint64_t, m_nInteractsExclude)
 };
 
-class CCollisionProperty
-{
+class CCollisionProperty {
 public:
 	DECLARE_SCHEMA_CLASS_INLINE(CCollisionProperty)
 

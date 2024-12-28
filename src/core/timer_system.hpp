@@ -7,8 +7,7 @@ class CTimer;
 
 using TimerCallback = void (*)(CTimer*, const plg::vector<plg::any>&);
 
-class CTimer
-{
+class CTimer {
 	friend class CTimerSystem;
 
 public:
@@ -25,8 +24,7 @@ private:
 	plg::vector<plg::any> m_userData;
 };
 
-class CTimerSystem
-{
+class CTimerSystem {
 public:
 	CTimerSystem();
 	~CTimerSystem();

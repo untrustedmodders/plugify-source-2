@@ -19,12 +19,11 @@
 
 #pragma once
 
-#include <soundflags.h>
 #include <core/sdk/schema.h>
 #include <platform.h>
+#include <soundflags.h>
 
-enum InputBitMask_t : uint64_t
-{
+enum InputBitMask_t : uint64_t {
 	// MEnumeratorIsNotAFlag
 	IN_NONE = 0x0,
 	// MEnumeratorIsNotAFlag
@@ -51,8 +50,7 @@ enum InputBitMask_t : uint64_t
 	IN_LOOK_AT_WEAPON = 0x800000000,
 };
 
-enum EInButtonState : uint32_t
-{
+enum EInButtonState : uint32_t {
 	IN_BUTTON_UP = 0x0,
 	IN_BUTTON_DOWN = 0x1,
 	IN_BUTTON_DOWN_UP = 0x2,
@@ -64,15 +62,14 @@ enum EInButtonState : uint32_t
 	IN_BUTTON_STATE_COUNT = 0x8,
 };
 
-enum ParticleAttachment_t : uint32_t
-{
+enum ParticleAttachment_t : uint32_t {
 	PATTACH_INVALID = 0xffffffff,
-	PATTACH_ABSORIGIN = 0x0,		// Spawn at entity origin
-	PATTACH_ABSORIGIN_FOLLOW = 0x1, // Spawn at and follow entity origin
+	PATTACH_ABSORIGIN = 0x0,	   // Spawn at entity origin
+	PATTACH_ABSORIGIN_FOLLOW = 0x1,// Spawn at and follow entity origin
 	PATTACH_CUSTOMORIGIN = 0x2,
 	PATTACH_CUSTOMORIGIN_FOLLOW = 0x3,
-	PATTACH_POINT = 0x4,		// Spawn at attachment point
-	PATTACH_POINT_FOLLOW = 0x5, // Spawn at and follow attachment point
+	PATTACH_POINT = 0x4,	   // Spawn at attachment point
+	PATTACH_POINT_FOLLOW = 0x5,// Spawn at and follow attachment point
 	PATTACH_EYES_FOLLOW = 0x6,
 	PATTACH_OVERHEAD_FOLLOW = 0x7,
 	PATTACH_WORLDORIGIN = 0x8,
@@ -86,8 +83,7 @@ enum ParticleAttachment_t : uint32_t
 	MAX_PATTACH_TYPES = 0x10,
 };
 
-enum ObserverMode_t : uint8_t
-{
+enum ObserverMode_t : uint8_t {
 	OBS_MODE_NONE = 0x0,
 	OBS_MODE_FIXED = 0x1,
 	OBS_MODE_IN_EYE = 0x2,
@@ -98,15 +94,13 @@ enum ObserverMode_t : uint8_t
 };
 
 typedef uint32 SoundEventGuid_t;
-struct SndOpEventGuid_t
-{
+struct SndOpEventGuid_t {
 	SoundEventGuid_t m_nGuid;
 	uint64 m_hStackHash;
 };
 
 // used with EmitSound_t
-enum gender_t : uint8
-{
+enum gender_t : uint8 {
 	GENDER_NONE = 0x0,
 	GENDER_MALE = 0x1,
 	GENDER_FEMALE = 0x2,
@@ -130,8 +124,7 @@ enum gender_t : uint8
 	GENDER_LAST = 0x14,
 };
 
-struct EmitSound_t
-{
+struct EmitSound_t {
 	EmitSound_t() : m_nChannel(0),
 					m_pSoundName(0),
 					m_flVolume(VOL_NORM),
@@ -147,8 +140,7 @@ struct EmitSound_t
 					m_nSpeakerEntity(-1),
 					m_UtlVecSoundOrigin(),
 					m_nForceGuid(0),
-					m_SpeakerGender(GENDER_NONE)
-	{
+					m_SpeakerGender(GENDER_NONE) {
 	}
 	int m_nChannel;
 	const char* m_pSoundName;
@@ -176,22 +168,19 @@ public:
 	SCHEMA_FIELD(float, m_Value)
 };*/
 
-class CNetworkedQuantizedFloat
-{
+class CNetworkedQuantizedFloat {
 public:
 	float32 m_Value;
 	uint16 m_nEncoder;
 	bool m_bUnflattened;
 };
 
-class CNetworkTransmitComponent
-{
+class CNetworkTransmitComponent {
 public:
 	DECLARE_SCHEMA_CLASS_INLINE(CNetworkTransmitComponent)
 };
 
-class CNetworkVelocityVector
-{
+class CNetworkVelocityVector {
 public:
 	DECLARE_SCHEMA_CLASS_INLINE(CNetworkVelocityVector)
 
@@ -200,8 +189,7 @@ public:
 	SCHEMA_FIELD(float, m_vecZ)
 };
 
-class CNetworkOriginCellCoordQuantizedVector
-{
+class CNetworkOriginCellCoordQuantizedVector {
 public:
 	DECLARE_SCHEMA_CLASS_INLINE(CNetworkOriginCellCoordQuantizedVector)
 
@@ -216,8 +204,7 @@ public:
 	SCHEMA_FIELD(float, m_vecZ)
 };
 
-class CGlowProperty
-{
+class CGlowProperty {
 public:
 	DECLARE_SCHEMA_CLASS_INLINE(CGlowProperty)
 

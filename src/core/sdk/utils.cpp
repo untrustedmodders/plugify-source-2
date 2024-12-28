@@ -1,108 +1,151 @@
 #include "utils.h"
 
 #include <engine/igameeventsystem.h>
-#include <networkbasetypes.pb.h>
-#include <igameevents.h>
-#include <networksystem/inetworkmessages.h>
 #include <entity2/entitysystem.h>
+#include <igameevents.h>
+#include <iserver.h>
+#include <networkbasetypes.pb.h>
+#include <networksystem/inetworkmessages.h>
 
-#include "entity/globaltypes.h"
 #include "entity/cbaseplayerpawn.h"
 #include "entity/ccsplayercontroller.h"
+#include "entity/globaltypes.h"
 #include "entity/recipientfilters.h"
 
 #include <tier0/memdbgon.h>
 #undef CreateEvent
 
-CBaseEntity* utils::FindEntityByClassname(CEntityInstance* start, const char* name)
-{
-	if (!g_pGameEntitySystem)
-	{
+/*bool utils::TraceLine(const Vector& vecStart, const Vector& vecEnd, CEntityInstance* ignore1, CGameTrace* tr, uint64 traceLayer, uint64 excludeLayer) {
+	Ray_t ray;
+	CTraceFilter filter;
+	filter.SetPassEntity1(ignore1);
+	filter.m_nInteractsWith = traceLayer;
+	filter.m_nInteractsExclude = excludeLayer;
+
+	return MEM::CALL::TraceShape(ray, vecStart, vecEnd, filter, tr);
+}
+
+void utils::GetPlayerAiming(CCSPlayerPawnBase* pPlayer, CGameTrace& ret) {
+	Vector from = pPlayer->GetEyePosition();
+
+	Vector forward;
+	AngleVectors(pPlayer->m_angEyeAngles(), &forward);
+	Vector to = from + forward * MAX_COORD_FLOAT;
+
+	TraceLine(from, to, pPlayer, &ret, MASK_SOLID, CONTENTS_TRIGGER | CONTENTS_PLAYER);
+}
+
+CBaseEntity* utils::CreateBeam(const Vector& from, const Vector& to, Color color, float width, CBaseEntity* owner) {
+	CBeam* beam = (CBeam*)MEM::CALL::CreateEntityByName("beam");
+	if (!beam) {
+		return nullptr;
+	}
+
+	beam->Teleport(&from, nullptr, nullptr);
+
+	beam->m_clrRender(color);
+	beam->m_fWidth(width);
+	beam->m_vecEndPos(to);
+	beam->m_fadeMinDist(-1.0f);
+
+	if (owner != nullptr) {
+		beam->m_hOwnerEntity(owner->GetRefEHandle());
+	}
+
+	beam->DispatchSpawn();
+
+	return beam;
+}*/
+
+CBaseEntity* utils::FindEntityByClassname(CEntityInstance* start, const char* name) {
+	if (!g_pGameEntitySystem) {
 		return NULL;
 	}
 	EntityInstanceByClassIter_t iter(start, name);
-
 	return static_cast<CBaseEntity*>(iter.Next());
 }
 
 #define FCVAR_FLAGS_TO_REMOVE (FCVAR_HIDDEN | FCVAR_DEVELOPMENTONLY | FCVAR_MISSING0 | FCVAR_MISSING1 | FCVAR_MISSING2 | FCVAR_MISSING3)
 
-CBasePlayerController* utils::GetController(CBaseEntity* entity)
-{
+CBasePlayerController* utils::GetController(CBaseEntity* entity) {
 	CCSPlayerController* controller = nullptr;
-
-	if (entity->IsPawn())
-	{
+	if (!V_stricmp(entity->GetClassname(), "observer")) {
 		CBasePlayerPawn* pawn = static_cast<CBasePlayerPawn*>(entity);
-		if (!pawn->m_hController().IsValid() || pawn->m_hController.Get() == nullptr)
-		{
-			if (!gpGlobals)
-				return nullptr;
-
-			// Seems like the pawn lost its controller, we can try looping through the controllers to find this pawn instead.
-			for (int i = 0; i <= gpGlobals->maxClients; ++i)
-			{
+		if (!pawn->m_hController().IsValid() || pawn->m_hController() == nullptr) {
+			for (int i = 0; i <= gpGlobals->maxClients; i++) {
 				controller = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(i)));
-				if (controller && controller->m_hPlayerPawn() && controller->m_hPlayerPawn().Get() == entity)
-				{
+				if (controller && controller->m_hObserverPawn() && controller->m_hObserverPawn() == entity) {
 					return controller;
 				}
 			}
 			return nullptr;
 		}
-		return pawn->m_hController.Get();
+		return pawn->m_hController();
 	}
-	else if (entity->IsController())
-	{
+	if (entity->IsPawn()) {
+		CBasePlayerPawn* pawn = static_cast<CBasePlayerPawn*>(entity);
+		if (!pawn->m_hController().IsValid() || pawn->m_hController() == nullptr) {
+			// Seems like the pawn lost its controller, we can try looping through the controllers to find this pawn instead.
+			for (int i = 0; i <= gpGlobals->maxClients; i++) {
+				controller = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(i)));
+				if (controller && controller->m_hPlayerPawn() && controller->m_hPlayerPawn() == entity) {
+					return controller;
+				}
+			}
+			return nullptr;
+		}
+		return pawn->m_hController();
+	} else if (entity->IsController()) {
 		return static_cast<CBasePlayerController*>(entity);
-	}
-	else
-	{
+	} else {
 		return nullptr;
 	}
 }
 
-CBasePlayerController* utils::GetController(CPlayerSlot slot)
-{
-	if (!g_pGameEntitySystem || slot.Get() < 0 || slot.Get() > MAXPLAYERS)
-	{
+CBasePlayerController* utils::GetController(CPlayerSlot slot) {
+	if (!g_pGameEntitySystem || !IsPlayerSlot(slot)) {
 		return nullptr;
 	}
-	
+
 	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityIndex(slot.Get() + 1)));
-	if (!ent)
-	{
+	if (!ent) {
 		return nullptr;
 	}
-	
+
 	return ent->IsController() ? static_cast<CBasePlayerController*>(ent) : nullptr;
 }
 
-CPlayerSlot utils::GetEntityPlayerSlot(CBaseEntity* entity)
-{
+CPlayerSlot utils::GetSlotFromUserId(uint16 userid) {
+	return CPlayerSlot(userid & 0xFF);
+}
+
+CPlayerSlot utils::GetEntityPlayerSlot(CBaseEntity* entity) {
 	CBasePlayerController* controller = utils::GetController(entity);
-	if (!controller)
-	{
+	if (!controller) {
 		return -1;
-	}
-	else
-	{
+	} else {
 		return controller->m_pEntity->m_EHandle.GetEntryIndex() - 1;
 	}
 }
 
-/*CUtlVector<CServerSideClient *>* GetClientList()
-{
+bool utils::IsPlayerSlot(CPlayerSlot slot) {
+	int iSlot = slot.Get();
+	return iSlot >= 0 && iSlot < gpGlobals->maxClients;
+}
+
+CUtlVector<CServerSideClientBase*>* utils::GetClientList() {
 	if (!g_pNetworkGameServer)
 		return nullptr;
 
-	static int offset = g_pGameConfig->GetOffset("GetClientList");
-	return CALL_VIRTUAL(CUtlVector<CServerSideClient *> *, offset, g_pNetworkGameServer);
-}*/
+	return &(static_cast<CNetworkGameServerBase*>(g_pNetworkGameServer)->m_Clients);
+}
 
+CServerSideClientBase* utils::GetClientBySlot(CPlayerSlot slot) {
+	CUtlVector<CServerSideClientBase*>* clientList = GetClientList();
+	return (clientList && GetController(slot)) ? clientList->Element(slot.Get()) : nullptr;
+}
 
-void utils::PlaySoundToClient(CPlayerSlot player, int channel, const char* soundName, float volume, soundlevel_t soundLevel, int flags, int pitch, const Vector& origin, float soundTime)
-{
+void utils::PlaySoundToClient(CPlayerSlot player, int channel, const char* soundName, float volume, soundlevel_t soundLevel, int flags, int pitch, const Vector& origin, float soundTime) {
 	CSingleRecipientFilter filter(player.Get());
 	EmitSound_t soundParams;
 	soundParams.m_nChannel = channel;
@@ -116,8 +159,7 @@ void utils::PlaySoundToClient(CPlayerSlot player, int channel, const char* sound
 	addresses::CBaseEntity_EmitSoundFilter(filter, player.Get() + 1, soundParams);
 }
 
-float utils::NormalizeDeg(float a)
-{
+float utils::NormalizeDeg(float a) {
 	a = fmod(a, 360.0f);
 	if (a >= 180.0f)
 		a -= 360.0f;
@@ -126,47 +168,38 @@ float utils::NormalizeDeg(float a)
 	return a;
 }
 
-float utils::GetAngleDifference(float source, float target, float c, bool relative)
-{
+float utils::GetAngleDifference(float source, float target, float c, bool relative) {
 	if (relative)
 		return fmod((fmod(target - source, 2 * c) + 3 * c), 2 * c) - c;
 	return fmod(fabs(target - source) + c, 2 * c) - c;
 }
 
-void utils::NotifyConVar(BaseConVar* conVar, const char* value)
-{
+void utils::NotifyConVar(BaseConVar* conVar, const char* value) {
 	IGameEvent* pEvent = g_pGameEventManager->CreateEvent("server_cvar");
-	if (pEvent == nullptr)
-	{
+	if (pEvent == nullptr) {
 		return;
 	}
 
 	pEvent->SetString("cvarname", conVar->GetName());
-	if (conVar->IsFlagSet(FCVAR_PROTECTED))
-	{
+	if (conVar->IsFlagSet(FCVAR_PROTECTED)) {
 		pEvent->SetString("cvarvalue", "***PROTECTED***");
-	}
-	else
-	{
+	} else {
 		pEvent->SetString("cvarvalue", value);
 	}
 
 	g_pGameEventManager->FireEvent(pEvent);
 }
 
-void utils::ReplicateConVar(BaseConVar* conVar, const char* value)
-{
+void utils::ReplicateConVar(BaseConVar* conVar, const char* value) {
 	if (!gpGlobals)
 		return;
 
-	for (int i = 0; i <= gpGlobals->maxClients; ++i)
-	{
+	for (int i = 0; i <= gpGlobals->maxClients; ++i) {
 		utils::SendConVarValue(CPlayerSlot(i), conVar, value);
 	}
 }
 
-void utils::SendConVarValue(CPlayerSlot slot, BaseConVar* conVar, const char* value)
-{
+void utils::SendConVarValue(CPlayerSlot slot, BaseConVar* conVar, const char* value) {
 	INetworkMessageInternal* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("CNETMsg_SetConVar");
 	auto msg = pNetMsg->AllocateMessage()->ToPB<CNETMsg_SetConVar>();
 	CMsg_CVars_CVar* cvar = msg->mutable_convars()->add_cvars();
@@ -181,12 +214,10 @@ void utils::SendConVarValue(CPlayerSlot slot, BaseConVar* conVar, const char* va
 #endif
 }
 
-void utils::SendMultipleConVarValues(CPlayerSlot slot, BaseConVar** conVar, const char** value, uint32_t size)
-{
+void utils::SendMultipleConVarValues(CPlayerSlot slot, BaseConVar** conVar, const char** value, uint32_t size) {
 	INetworkMessageInternal* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("CNETMsg_SetConVar");
 	auto msg = pNetMsg->AllocateMessage()->ToPB<CNETMsg_SetConVar>();
-	for (uint32_t i = 0; i < size; ++i)
-	{
+	for (uint32_t i = 0; i < size; ++i) {
 		CMsg_CVars_CVar* cvar = msg->mutable_convars()->add_cvars();
 		cvar->set_name(conVar[i]->GetName());
 		cvar->set_value(value[i]);
@@ -199,8 +230,7 @@ void utils::SendMultipleConVarValues(CPlayerSlot slot, BaseConVar** conVar, cons
 #endif
 }
 
-bool utils::IsSpawnValid(const Vector& origin)
-{
+bool utils::IsSpawnValid(const Vector& origin) {
 	/*bbox_t bounds = {{-16.0f, -16.0f, 0.0f}, {16.0f, 16.0f, 72.0f}};
 	CTraceFilterS2 filter;
 	filter.attr.m_bHitSolid = true;
@@ -221,55 +251,42 @@ bool utils::IsSpawnValid(const Vector& origin)
 	return false;
 }
 
-bool utils::FindValidSpawn(Vector& origin, QAngle& angles)
-{
+bool utils::FindValidSpawn(Vector& origin, QAngle& angles) {
 	bool foundValidSpawn = false;
 	bool searchCT = false;
 	Vector spawnOrigin;
 	QAngle spawnAngles;
 	CBaseEntity* spawnEntity = nullptr;
-	while (!foundValidSpawn)
-	{
-		if (searchCT)
-		{
+	while (!foundValidSpawn) {
+		if (searchCT) {
 			spawnEntity = FindEntityByClassname(spawnEntity, "info_player_counterterrorist");
-		}
-		else
-		{
+		} else {
 			spawnEntity = FindEntityByClassname(spawnEntity, "info_player_terrorist");
 		}
 
-		if (spawnEntity != nullptr)
-		{
+		if (spawnEntity != nullptr) {
 			spawnOrigin = spawnEntity->m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin;
 			spawnAngles = spawnEntity->m_CBodyComponent->m_pSceneNode->m_angRotation;
-			if (utils::IsSpawnValid(spawnOrigin))
-			{
+			if (utils::IsSpawnValid(spawnOrigin)) {
 				origin = spawnOrigin;
 				angles = spawnAngles;
 				foundValidSpawn = true;
 			}
-		}
-		else if (!searchCT)
-		{
+		} else if (!searchCT) {
 			searchCT = true;
-		}
-		else
-		{
+		} else {
 			break;
 		}
 	}
 	return foundValidSpawn;
 }
 
-const plg::string& utils::GameDirectory()
-{
+const plg::string& utils::GameDirectory() {
 	static plg::string gameDirectory(Plat_GetGameDirectory());
 	return gameDirectory;
 }
 
-std::vector<plg::string> utils::Split(std::string_view strv, std::string_view delims)
-{
+std::vector<plg::string> utils::Split(std::string_view strv, std::string_view delims) {
 	std::vector<plg::string> output;
 	size_t first = 0;
 
@@ -277,7 +294,7 @@ std::vector<plg::string> utils::Split(std::string_view strv, std::string_view de
 		const size_t second = strv.find_first_of(delims, first);
 
 		if (first != second)
-			output.emplace_back(strv.substr(first, second-first));
+			output.emplace_back(strv.substr(first, second - first));
 
 		if (second == std::string_view::npos)
 			break;
@@ -304,7 +321,7 @@ bool utils::ConvertUtf8ToWide(plg::wstring& dest, std::string_view str) {
 	return true;
 }
 
-plg::wstring utils::ConvertUtf8ToWide(std::string_view str){
+plg::wstring utils::ConvertUtf8ToWide(std::string_view str) {
 	plg::wstring ret;
 	if (!ConvertUtf8ToWide(ret, str))
 		return {};

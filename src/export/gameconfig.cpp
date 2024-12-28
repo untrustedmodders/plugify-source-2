@@ -16,8 +16,7 @@ PLUGIFY_WARN_IGNORE(4190)
  *
  * @param pGameConfig A pointer to the game configuration to be closed.
  */
-extern "C" PLUGIN_API void CloseGameConfigFile(CGameConfig* pGameConfig)
-{
+extern "C" PLUGIN_API void CloseGameConfigFile(CGameConfig* pGameConfig) {
 	g_pGameConfigManager.CloseGameConfigFile(pGameConfig);
 }
 
@@ -29,8 +28,7 @@ extern "C" PLUGIN_API void CloseGameConfigFile(CGameConfig* pGameConfig)
  * @param file The path to the game configuration file to be loaded.
  * @return A pointer to the loaded CGameConfig object, or nullptr if loading fails.
  */
-extern "C" PLUGIN_API CGameConfig* LoadGameConfigFile(const plg::string& file)
-{
+extern "C" PLUGIN_API CGameConfig* LoadGameConfigFile(const plg::string& file) {
 	return g_pGameConfigManager.LoadGameConfigFile(file);
 }
 
@@ -43,8 +41,7 @@ extern "C" PLUGIN_API CGameConfig* LoadGameConfigFile(const plg::string& file)
  * @param pGameConfig A pointer to the game configuration whose path is to be retrieved.
  * @return A string where the path will be stored.
  */
-extern "C" PLUGIN_API plg::string GetGameConfigPath(CGameConfig* pGameConfig)
-{
+extern "C" PLUGIN_API plg::string GetGameConfigPath(CGameConfig* pGameConfig) {
 	return pGameConfig->GetPath();
 }
 
@@ -58,8 +55,7 @@ extern "C" PLUGIN_API plg::string GetGameConfigPath(CGameConfig* pGameConfig)
  * @param name The name of the library to be retrieved.
  * @return A string where the library will be stored.
  */
-extern "C" PLUGIN_API plg::string GetGameConfigLibrary(CGameConfig* pGameConfig, const plg::string& name)
-{
+extern "C" PLUGIN_API plg::string GetGameConfigLibrary(CGameConfig* pGameConfig, const plg::string& name) {
 	return pGameConfig->GetLibrary(name);
 }
 
@@ -73,8 +69,7 @@ extern "C" PLUGIN_API plg::string GetGameConfigLibrary(CGameConfig* pGameConfig,
  * @param name The name of the signature to be retrieved.
  * @return A string where the signature will be stored.
  */
-extern "C" PLUGIN_API plg::string GetGameConfigSignature(CGameConfig* pGameConfig, const plg::string& name)
-{
+extern "C" PLUGIN_API plg::string GetGameConfigSignature(CGameConfig* pGameConfig, const plg::string& name) {
 	return pGameConfig->GetSignature(name);
 }
 
@@ -88,8 +83,7 @@ extern "C" PLUGIN_API plg::string GetGameConfigSignature(CGameConfig* pGameConfi
  * @param name The name of the symbol to be retrieved.
  * @return A string where the symbol will be stored.
  */
-extern "C" PLUGIN_API plg::string GetGameConfigSymbol(CGameConfig* pGameConfig, const plg::string& name)
-{
+extern "C" PLUGIN_API plg::string GetGameConfigSymbol(CGameConfig* pGameConfig, const plg::string& name) {
 	return pGameConfig->GetSymbol(name);
 }
 
@@ -103,8 +97,7 @@ extern "C" PLUGIN_API plg::string GetGameConfigSymbol(CGameConfig* pGameConfig, 
  * @param name The name of the patch to be retrieved.
  * @return A string where the patch will be stored.
  */
-extern "C" PLUGIN_API plg::string GetGameConfigPatch(CGameConfig* pGameConfig, const plg::string& name)
-{
+extern "C" PLUGIN_API plg::string GetGameConfigPatch(CGameConfig* pGameConfig, const plg::string& name) {
 	return pGameConfig->GetPatch(name);
 }
 
@@ -117,8 +110,7 @@ extern "C" PLUGIN_API plg::string GetGameConfigPatch(CGameConfig* pGameConfig, c
  * @param name The name whose offset is to be retrieved.
  * @return The offset associated with the specified name.
  */
-extern "C" PLUGIN_API int GetGameConfigOffset(CGameConfig* pGameConfig, const plg::string& name)
-{
+extern "C" PLUGIN_API int GetGameConfigOffset(CGameConfig* pGameConfig, const plg::string& name) {
 	return pGameConfig->GetOffset(name);
 }
 
@@ -131,8 +123,7 @@ extern "C" PLUGIN_API int GetGameConfigOffset(CGameConfig* pGameConfig, const pl
  * @param name The name whose address is to be retrieved.
  * @return A pointer to the address associated with the specified name.
  */
-extern "C" PLUGIN_API void* GetGameConfigAddress(CGameConfig* pGameConfig, const plg::string& name)
-{
+extern "C" PLUGIN_API void* GetGameConfigAddress(CGameConfig* pGameConfig, const plg::string& name) {
 	return pGameConfig->GetAddress(name);
 }
 
@@ -145,8 +136,7 @@ extern "C" PLUGIN_API void* GetGameConfigAddress(CGameConfig* pGameConfig, const
  * @param name The name whose memory signature is to be resolved and retrieved.
  * @return A pointer to the memory signature associated with the specified name.
  */
-extern "C" PLUGIN_API void* GetGameConfigMemSig(CGameConfig* pGameConfig, const plg::string& name)
-{
+extern "C" PLUGIN_API void* GetGameConfigMemSig(CGameConfig* pGameConfig, const plg::string& name) {
 	return pGameConfig->ResolveSignature(name);
 }
 

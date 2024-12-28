@@ -21,8 +21,7 @@
 
 #include "cbaseentity.h"
 
-class CGamePlayerEquip : public CBaseEntity
-{
+class CGamePlayerEquip : public CBaseEntity {
 	DECLARE_SCHEMA_CLASS(CGamePlayerEquip)
 public:
 	static constexpr int MAX_EQUIPMENTS_SIZE = 32;

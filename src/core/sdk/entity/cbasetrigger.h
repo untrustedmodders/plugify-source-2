@@ -21,8 +21,7 @@
 
 #include "cbasemodelentity.h"
 
-class CBaseTrigger : public CBaseModelEntity
-{
+class CBaseTrigger : public CBaseModelEntity {
 public:
 	DECLARE_SCHEMA_CLASS(CBaseTrigger)
 
@@ -31,8 +30,7 @@ public:
 	SCHEMA_FIELD_POINTER(CUtlVector<CHandle<CBaseEntity>>, m_hTouchingEntities)
 	SCHEMA_FIELD(bool, m_bClientSidePredicted)
 
-	bool PassesTriggerFilters(CBaseEntity* pOther)
-	{
+	bool PassesTriggerFilters(CBaseEntity* pOther) {
 		static int offset = g_pGameConfig->GetOffset("PassesTriggerFilters");
 		return CALL_VIRTUAL(bool, offset, this, pOther);
 	}

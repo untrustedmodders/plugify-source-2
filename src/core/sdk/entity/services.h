@@ -25,8 +25,7 @@
 
 class CBaseEntity;
 
-struct CSPerRoundStats_t
-{
+struct CSPerRoundStats_t {
 public:
 	DECLARE_SCHEMA_CLASS_INLINE(CSPerRoundStats_t)
 
@@ -36,24 +35,21 @@ public:
 	SCHEMA_FIELD(int, m_iDamage)
 };
 
-struct CSMatchStats_t : public CSPerRoundStats_t
-{
+struct CSMatchStats_t : public CSPerRoundStats_t {
 public:
 	DECLARE_SCHEMA_CLASS_INLINE(CSMatchStats_t)
 
 	SCHEMA_FIELD(int32_t, m_iEntryWins);
 };
 
-class CCSPlayerController_ActionTrackingServices
-{
+class CCSPlayerController_ActionTrackingServices {
 public:
 	DECLARE_SCHEMA_CLASS(CCSPlayerController_ActionTrackingServices)
 
 	SCHEMA_FIELD(CSMatchStats_t, m_matchStats)
 };
 
-class CPlayerPawnComponent
-{
+class CPlayerPawnComponent {
 public:
 	DECLARE_SCHEMA_CLASS(CPlayerPawnComponent);
 
@@ -62,8 +58,7 @@ public:
 	CCSPlayerPawn* GetPawn() { return __m_pChainEntity; }
 };
 
-class CPlayer_MovementServices : public CPlayerPawnComponent
-{
+class CPlayer_MovementServices : public CPlayerPawnComponent {
 public:
 	DECLARE_SCHEMA_CLASS(CPlayer_MovementServices);
 
@@ -79,8 +74,7 @@ public:
 	SCHEMA_FIELD(float, m_flMaxspeed)
 };
 
-class CPlayer_MovementServices_Humanoid : public CPlayer_MovementServices
-{
+class CPlayer_MovementServices_Humanoid : public CPlayer_MovementServices {
 public:
 	DECLARE_SCHEMA_CLASS(CPlayer_MovementServices_Humanoid);
 
@@ -91,8 +85,7 @@ public:
 	SCHEMA_FIELD(float, m_flSurfaceFriction)
 };
 
-class CCSPlayer_MovementServices : public CPlayer_MovementServices_Humanoid
-{
+class CCSPlayer_MovementServices : public CPlayer_MovementServices_Humanoid {
 public:
 	DECLARE_SCHEMA_CLASS(CCSPlayer_MovementServices);
 
@@ -103,10 +96,32 @@ public:
 	SCHEMA_FIELD(bool, m_bDuckOverride)
 };
 
+class CPlayer_UseServices : public CPlayerPawnComponent {
+public:
+	DECLARE_SCHEMA_CLASS(CPlayer_UseServices);
+};
+
+class CPlayer_ViewModelServices : public CPlayerPawnComponent {
+public:
+	DECLARE_SCHEMA_CLASS(CPlayer_ViewModelServices);
+};
+
+class CPlayer_CameraServices : public CPlayerPawnComponent {
+public:
+	DECLARE_SCHEMA_CLASS(CPlayer_CameraServices);
+
+	SCHEMA_FIELD_POINTER(CHandle<CBaseEntity>, m_hViewEntity);
+	SCHEMA_FIELD(float, m_flOldPlayerViewOffsetZ);
+};
+
+class CCSPlayerBase_CameraServices : public CPlayer_CameraServices {
+public:
+	DECLARE_SCHEMA_CLASS(CCSPlayerBase_CameraServices);
+};
+
 class CBasePlayerWeapon;
 
-class CPlayer_WeaponServices : public CPlayerPawnComponent
-{
+class CPlayer_WeaponServices : public CPlayerPawnComponent {
 public:
 	DECLARE_SCHEMA_CLASS(CPlayer_WeaponServices);
 
@@ -117,6 +132,7 @@ private:
 #endif
 public:
 	virtual ~CPlayer_WeaponServices() = 0;
+
 private:
 	virtual void unk_03() = 0;
 	virtual void unk_04() = 0;
@@ -136,24 +152,25 @@ private:
 	virtual void unk_18() = 0;
 	virtual void unk_19() = 0;
 	virtual void unk_20() = 0;
+
 public:
 	virtual bool CanUse(CBasePlayerWeapon* pWeapon) = 0;
 	virtual void Drop(CBasePlayerWeapon* pWeapon, Vector* pVecTarget = nullptr, Vector* pVelocity = nullptr) = 0;
-	virtual int Bump(CBasePlayerWeapon* pWeapon) = 0; // May return 2 if CSGameRules()->IsPlayingGunGameDeathmatch, meaning that pWeapon will be deleted
-	virtual bool Switch(CBasePlayerWeapon* pWeapon, int a3 = 0) = 0; // If a3 is equal to 3 some code will be executed
+	virtual int Bump(CBasePlayerWeapon* pWeapon) = 0;				// May return 2 if CSGameRules()->IsPlayingGunGameDeathmatch, meaning that pWeapon will be deleted
+	virtual bool Switch(CBasePlayerWeapon* pWeapon, int a3 = 0) = 0;// If a3 is equal to 3 some code will be executed
 private:
 	virtual void unk_25() = 0;
 	virtual void unk_26() = 0;
 	virtual void unk_27() = 0;
 	virtual void unk_28() = 0;
 	virtual void unk_29() = 0;
+
 public:
 	SCHEMA_FIELD_POINTER(CUtlVector<CHandle<CBasePlayerWeapon>>, m_hMyWeapons)
 	SCHEMA_FIELD(CHandle<CBasePlayerWeapon>, m_hActiveWeapon)
 };
 
-class CCSPlayer_WeaponServices : public CPlayer_WeaponServices
-{
+class CCSPlayer_WeaponServices : public CPlayer_WeaponServices {
 public:
 	DECLARE_SCHEMA_CLASS(CCSPlayer_WeaponServices);
 
@@ -170,22 +187,19 @@ public:
 	SCHEMA_FIELD(bool, m_bIsPickingUpItemWithUse)
 	SCHEMA_FIELD(bool, m_bPickedUpWeapon)
 
-	void RemoveItem(CBasePlayerWeapon* pWeapon)
-	{
+	void RemoveItem(CBasePlayerWeapon* pWeapon) {
 		addresses::CCSPlayer_WeaponServices_RemoveItem(this, pWeapon);
 	}
 };
 
-class CCSPlayerController_InGameMoneyServices
-{
+class CCSPlayerController_InGameMoneyServices {
 public:
 	DECLARE_SCHEMA_CLASS(CCSPlayerController_InGameMoneyServices);
 
 	SCHEMA_FIELD(int, m_iAccount)
 };
 
-class CCSPlayer_ItemServices
-{
+class CCSPlayer_ItemServices {
 public:
 	DECLARE_SCHEMA_CLASS(CCSPlayer_ItemServices);
 
@@ -216,41 +230,54 @@ public:
 	virtual void StripPlayerWeapons(bool removeSuit) = 0;
 };
 
-// We need an exactly sized class to be able to iterate the vector, our schema system implementation can't do this
-class WeaponPurchaseCount_t
-{
-private:
-	virtual void unk01(){};
-	uint64_t unk1 = 0;	// 0x8
-	uint64_t unk2 = 0;	// 0x10
-	uint64_t unk3 = 0;	// 0x18
-	uint64_t unk4 = 0;	// 0x20
-	uint64_t unk5 = -1; // 0x28
+class CCSPlayer_DamageReactServices : public CPlayerPawnComponent {
 public:
-	uint16_t m_nItemDefIndex; // 0x30
-	uint16_t m_nCount;		  // 0x32
+	DECLARE_SCHEMA_CLASS(CCSPlayer_DamageReactServices);
+};
+
+class CBaseViewModel;
+
+class CCSPlayer_ViewModelServices : public CPlayer_ViewModelServices {
+public:
+	DECLARE_SCHEMA_CLASS(CCSPlayer_ViewModelServices);
+
+	SCHEMA_FIELD_POINTER(CHandle<CBaseViewModel>, m_hViewModel);
+
+	CBaseViewModel* GetViewModel(int iIndex = 0);
+	void SetViewModel(int iIndex, CBaseViewModel* pViewModel);
+};
+
+// We need an exactly sized class to be able to iterate the vector, our schema system implementation can't do this
+class WeaponPurchaseCount_t {
+private:
+	virtual void unk01() {};
+	uint64_t unk1 = 0; // 0x8
+	uint64_t unk2 = 0; // 0x10
+	uint64_t unk3 = 0; // 0x18
+	uint64_t unk4 = 0; // 0x20
+	uint64_t unk5 = -1;// 0x28
+public:
+	uint16_t m_nItemDefIndex;// 0x30
+	uint16_t m_nCount;		 // 0x32
 private:
 	uint32_t unk6 = 0;
 };
 
-struct WeaponPurchaseTracker_t
-{
+struct WeaponPurchaseTracker_t {
 public:
 	DECLARE_SCHEMA_CLASS_INLINE(WeaponPurchaseTracker_t)
 
 	SCHEMA_FIELD_POINTER(CUtlVector<WeaponPurchaseCount_t>, m_weaponPurchases)
 };
 
-class CCSPlayer_ActionTrackingServices
-{
+class CCSPlayer_ActionTrackingServices {
 public:
 	DECLARE_SCHEMA_CLASS(CCSPlayer_ActionTrackingServices)
 
 	SCHEMA_FIELD(WeaponPurchaseTracker_t, m_weaponPurchasesThisRound)
 };
 
-class CPlayer_ObserverServices
-{
+class CPlayer_ObserverServices {
 public:
 	DECLARE_SCHEMA_CLASS(CPlayer_ObserverServices)
 

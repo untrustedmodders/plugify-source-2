@@ -20,8 +20,7 @@ extern CCSGameRules* g_pGameRules;
  *
  * @return A pointer to the game rules object.
  */
-extern "C" PLUGIN_API void* GetGameRules()
-{
+extern "C" PLUGIN_API void* GetGameRules() {
 	return g_pGameRules;
 }
 
@@ -34,10 +33,8 @@ extern "C" PLUGIN_API void* GetGameRules()
  * @param delay Time (in seconds) to delay before the next round starts.
  * @param reason The reason for ending the round, defined by the CSRoundEndReason enum.
  */
-extern "C" PLUGIN_API void TerminateRound(float delay, CSRoundEndReason reason)
-{
-	if (g_pGameRules == nullptr)
-	{
+extern "C" PLUGIN_API void TerminateRound(float delay, CSRoundEndReason reason) {
+	if (g_pGameRules == nullptr) {
 		g_Logger.Log(LS_WARNING, "cs_gamerules not instantiated yet.\n");
 		return;
 	}

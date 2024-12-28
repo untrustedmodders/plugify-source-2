@@ -21,17 +21,14 @@ PLUGIFY_WARN_IGNORE(4190)
  * @param senderIndex The index of the client who will be sending audio.
  * @param listen The listening state override for the receiver with respect to the sender.
  */
-extern "C" PLUGIN_API void SetClientListening(int receiverIndex, int senderIndex, int8_t listen)
-{
-	if (senderIndex < 0 || senderIndex >= CPlayerManager::MaxClients())
-	{
+extern "C" PLUGIN_API void SetClientListening(int receiverIndex, int senderIndex, int8_t listen) {
+	if (senderIndex < 0 || senderIndex >= CPlayerManager::MaxClients()) {
 		g_Logger.Log(LS_WARNING, "Invalid sender\n");
 		return;
 	}
 
-	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(receiverIndex));
-	if (pPlayer == nullptr)
-	{
+	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(receiverIndex));
+	if (pPlayer == nullptr) {
 		g_Logger.Log(LS_WARNING, "Invalid receiver\n");
 		return;
 	}
@@ -50,17 +47,14 @@ extern "C" PLUGIN_API void SetClientListening(int receiverIndex, int senderIndex
  * @param senderIndex The index of the client who sends the audio.
  * @return The listening state override for the receiver with respect to the sender.
  */
-extern "C" PLUGIN_API int8_t GetClientListening(int receiverIndex, int senderIndex)
-{
-	if (senderIndex < 0 || senderIndex >= CPlayerManager::MaxClients())
-	{
+extern "C" PLUGIN_API int8_t GetClientListening(int receiverIndex, int senderIndex) {
+	if (senderIndex < 0 || senderIndex >= CPlayerManager::MaxClients()) {
 		g_Logger.Log(LS_WARNING, "Invalid sender\n");
 		return Listen_Default;
 	}
 
-	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(receiverIndex));
-	if (pPlayer == nullptr)
-	{
+	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(receiverIndex));
+	if (pPlayer == nullptr) {
 		g_Logger.Log(LS_WARNING, "Invalid receiver\n");
 		return Listen_Default;
 	}
@@ -78,11 +72,9 @@ extern "C" PLUGIN_API int8_t GetClientListening(int receiverIndex, int senderInd
  * @param clientIndex The index of the client for whom the voice flags are being set.
  * @param flags The voice flags to be set for the client.
  */
-extern "C" PLUGIN_API void SetClientVoiceFlags(int clientIndex, uint8_t flags)
-{
-	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex));
-	if (pPlayer == nullptr)
-	{
+extern "C" PLUGIN_API void SetClientVoiceFlags(int clientIndex, uint8_t flags) {
+	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(clientIndex));
+	if (pPlayer == nullptr) {
 		g_Logger.Log(LS_WARNING, "Invalid receiver\n");
 		return;
 	}
@@ -99,11 +91,9 @@ extern "C" PLUGIN_API void SetClientVoiceFlags(int clientIndex, uint8_t flags)
  * @param clientIndex The index of the client for whom the voice flags are being retrieved.
  * @return The current voice flags for the specified client.
  */
-extern "C" PLUGIN_API uint8_t GetClientVoiceFlags(int clientIndex)
-{
-	auto pPlayer = g_PlayerManager.GetPlayerBySlot(CPlayerSlot(clientIndex));
-	if (pPlayer == nullptr)
-	{
+extern "C" PLUGIN_API uint8_t GetClientVoiceFlags(int clientIndex) {
+	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(clientIndex));
+	if (pPlayer == nullptr) {
 		g_Logger.Log(LS_WARNING, "Invalid receiver\n");
 		return 0;
 	}

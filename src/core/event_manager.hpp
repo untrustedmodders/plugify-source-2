@@ -5,8 +5,7 @@
 
 #include <plugify/polyhook.hpp>
 
-struct EventInfo
-{
+struct EventInfo {
 	IGameEvent* pEvent{};
 	bool bDontBroadcast{};
 };
@@ -15,8 +14,7 @@ using EventListenerCallback = ResultType (*)(const plg::string& name, EventInfo*
 
 using HookCallback = CListenerManager<EventListenerCallback>;
 
-struct EventHook
-{
+struct EventHook {
 	plg::string name;
 	std::unique_ptr<HookCallback> preHook;
 	std::unique_ptr<HookCallback> postHook;
@@ -24,16 +22,14 @@ struct EventHook
 	bool postCopy{};
 };
 
-enum class EventHookError : int
-{
+enum class EventHookError : int {
 	Okay = 0,
 	InvalidEvent,
 	NotActive,
 	InvalidCallback,
 };
 
-class CEventManager : public IGameEventListener2
-{
+class CEventManager : public IGameEventListener2 {
 public:
 	CEventManager() = default;
 	~CEventManager() override;

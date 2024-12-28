@@ -17,12 +17,11 @@
 
 
 class CBaseEntity;
-class CServerSideClient;
+class CServerSideClientBase;
 
 #include <variant>
 
-namespace utils
-{
+namespace utils {
 	// ConVars
 	void SendConVarValue(CPlayerSlot slot, BaseConVar* cvar, const char* value);
 	void SendMultipleConVarValues(CPlayerSlot slot, BaseConVar** cvars, const char** values, uint32_t size);
@@ -31,9 +30,12 @@ namespace utils
 
 	CBasePlayerController* GetController(CBaseEntity* entity);
 	CBasePlayerController* GetController(CPlayerSlot slot);
+	bool IsPlayerSlot(CPlayerSlot slot);
 
+	CPlayerSlot GetSlotFromUserId(uint16 userid);
 	CPlayerSlot GetEntityPlayerSlot(CBaseEntity* entity);
-	//CUtlVector<CServerSideClient *>* GetClientList();
+	CUtlVector<CServerSideClientBase*>* GetClientList();
+	CServerSideClientBase* GetClientBySlot(CPlayerSlot slot);
 
 	// Normalize the angle between -180 and 180.
 	float NormalizeDeg(float a);
@@ -45,37 +47,29 @@ namespace utils
 	void ReplicateConVar(BaseConVar* conVar, const char* value);
 
 	template<typename T>
-	void SetConVar(BaseConVar* conVar, const T& value, bool replicate, bool notify)
-	{
-		if (conVar == nullptr)
-		{
+	void SetConVar(BaseConVar* conVar, const T& value, bool replicate, bool notify) {
+		if (conVar == nullptr) {
 			g_Logger.Log(LS_WARNING, "Invalid cvar pointer\n");
 			return;
 		}
 
 		auto* conVarData = conVar->GetConVarData();
-		if (conVarData == nullptr)
-		{
+		if (conVarData == nullptr) {
 			g_Logger.Log(LS_WARNING, "Invalid cvar data\n");
 			return;
 		}
 
-		if (conVarData->GetType() != TranslateConVarType<T>())
-		{
+		if (conVarData->GetType() != TranslateConVarType<T>()) {
 			g_Logger.Log(LS_WARNING, "Invalid cvar type\n");
 			return;
 		}
 
 		static_cast<ConVar<T>*>(conVar)->SetValue(value);
-		if constexpr (std::same_as<T, const char*>)
-		{
+		if constexpr (std::same_as<T, const char*>) {
 			if (replicate) ReplicateConVar(conVar, value);
 			if (notify) NotifyConVar(conVar, value);
-		}
-		else
-		{
-			if (replicate || notify)
-			{
+		} else {
+			if (replicate || notify) {
 				char val[512];
 				conVarData->Cast<T>()->GetStringValue(val, sizeof(val));
 				if (replicate) ReplicateConVar(conVar, val);
@@ -85,23 +79,19 @@ namespace utils
 	}
 
 	template<typename T>
-	void SetConVarString(BaseConVar* conVar, const plg::string& value, bool replicate, bool notify)
-	{
-		if (conVar == nullptr)
-		{
+	void SetConVarString(BaseConVar* conVar, const plg::string& value, bool replicate, bool notify) {
+		if (conVar == nullptr) {
 			g_Logger.Log(LS_WARNING, "Invalid cvar pointer\n");
 			return;
 		}
 
 		auto* conVarData = conVar->GetConVarData();
-		if (conVarData == nullptr)
-		{
+		if (conVarData == nullptr) {
 			g_Logger.Log(LS_WARNING, "Invalid cvar data\n");
 			return;
 		}
 
-		if (conVarData->GetType() != TranslateConVarType<T>())
-		{
+		if (conVarData->GetType() != TranslateConVarType<T>()) {
 			g_Logger.Log(LS_WARNING, "Invalid cvar type\n");
 			return;
 		}
@@ -112,17 +102,14 @@ namespace utils
 	}
 
 	template<typename T>
-	void SetConVarValue(BaseConVar* conVar, const T& value)
-	{
-		if (conVar == nullptr)
-		{
+	void SetConVarValue(BaseConVar* conVar, const T& value) {
+		if (conVar == nullptr) {
 			g_Logger.Log(LS_WARNING, "Invalid convar pointer.\n");
 			return;
 		}
 
 		auto* conVarData = conVar->GetConVarData();
-		if (conVarData == nullptr)
-		{
+		if (conVarData == nullptr) {
 			g_Logger.Log(LS_WARNING, "Invalid convar data.\n");
 			return;
 		}
@@ -131,17 +118,14 @@ namespace utils
 	}
 
 	template<typename T>
-	T GetConVarValue(BaseConVar* conVar)
-	{
-		if (conVar == nullptr)
-		{
+	T GetConVarValue(BaseConVar* conVar) {
+		if (conVar == nullptr) {
 			g_Logger.Log(LS_WARNING, "Invalid convar pointer.\n");
 			return {};
 		}
 
 		auto* conVarData = conVar->GetConVarData();
-		if (conVarData == nullptr)
-		{
+		if (conVarData == nullptr) {
 			g_Logger.Log(LS_WARNING, "Invalid convar data.\n");
 			return {};
 		}
@@ -156,12 +140,12 @@ namespace utils
 	void PrintChat(CPlayerSlot slot, const char* message);
 	void PrintCentre(CPlayerSlot slot, const char* message);
 	void PrintAlert(CPlayerSlot slot, const char* message);
-	void PrintHtmlCentre(CPlayerSlot slot, const char* message); // This one uses HTML formatting.
+	void PrintHtmlCentre(CPlayerSlot slot, const char* message);// This one uses HTML formatting.
 	void PrintConsoleAll(const char* message);
 	void PrintChatAll(const char* message);
 	void PrintCentreAll(const char* message);
 	void PrintAlertAll(const char* message);
-	void PrintHtmlCentreAll(const char* message); // This one uses HTML formatting.
+	void PrintHtmlCentreAll(const char* message);// This one uses HTML formatting.
 
 	// Color print
 	void CPrintChat(CPlayerSlot slot, const char* message);
@@ -188,40 +172,33 @@ namespace utils
 	bool ConvertWideToUtf8(plg::string& dest, std::wstring_view str);
 #endif
 
-	namespace
-	{
+	namespace {
 		template<typename T, typename... Rest>
-		void hash_combine(std::size_t& seed, const T& v, const Rest&... rest)
-		{
+		void hash_combine(std::size_t& seed, const T& v, const Rest&... rest) {
 			seed ^= std::hash<T>{}(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
 			(hash_combine(seed, rest), ...);
 		}
-	}
+	}// namespace
 
-	template <typename T1, typename T2>
-	struct PairHash
-	{
-		std::size_t operator()(std::pair<T1, T2> const& p) const
-		{
+	template<typename T1, typename T2>
+	struct PairHash {
+		std::size_t operator()(std::pair<T1, T2> const& p) const {
 			std::size_t seed{};
 			hash_combine(seed, p.first, p.second);
 			return seed;
 		}
 	};
 
-	struct CaseInsensitiveComparator
-	{
-		bool operator()(const plg::string& lhs, const plg::string& rhs) const
-		{
+	struct CaseInsensitiveComparator {
+		bool operator()(const plg::string& lhs, const plg::string& rhs) const {
 			return std::lexicographical_compare(
-				lhs.begin(), lhs.end(),
-				rhs.begin(), rhs.end(),
-				[](char a, char b)
-				{ return std::tolower(a) < std::tolower(b); });
+					lhs.begin(), lhs.end(),
+					rhs.begin(), rhs.end(),
+					[](char a, char b) { return std::tolower(a) < std::tolower(b); });
 		}
 	};
 
-} // namespace utils
+}// namespace utils
 
 enum class FieldType : int {
 	Auto,

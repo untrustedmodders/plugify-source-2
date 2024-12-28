@@ -21,39 +21,36 @@
 
 #include "cbasemodelentity.h"
 
-class CLightComponent
-{
+class CLightComponent {
 public:
 	DECLARE_SCHEMA_CLASS(CLightComponent)
 };
 
-class CLightEntity : public CBaseModelEntity
-{
+class CLightEntity : public CBaseModelEntity {
 public:
 	DECLARE_SCHEMA_CLASS(CLightEntity)
 
 	SCHEMA_FIELD(CLightComponent*, m_CLightComponent)
 };
 
-class CBarnLight : public CBaseModelEntity
-{
+class CBarnLight : public CBaseModelEntity {
 public:
 	DECLARE_SCHEMA_CLASS(CBarnLight)
 
 	SCHEMA_FIELD(bool, m_bEnabled)
-	SCHEMA_FIELD(int, m_nColorMode) // 0 = color, 1 = color temperature
+	SCHEMA_FIELD(int, m_nColorMode)// 0 = color, 1 = color temperature
 	SCHEMA_FIELD_POINTER(Color, m_Color)
-	SCHEMA_FIELD(float, m_flColorTemperature) // default 6500
+	SCHEMA_FIELD(float, m_flColorTemperature)// default 6500
 	SCHEMA_FIELD(float, m_flBrightness)
 	SCHEMA_FIELD(float, m_flBrightnessScale)
-	SCHEMA_FIELD(int, m_nDirectLight)	// Always set to 2 for dynamic
-	SCHEMA_FIELD(int, m_nCastShadows)	// 0 = no, 1 = dynamic (and baked but pointless here)
-	SCHEMA_FIELD(int, m_nShadowMapSize) // Shadowmap size in pixels (512 is a good starting value)
+	SCHEMA_FIELD(int, m_nDirectLight)  // Always set to 2 for dynamic
+	SCHEMA_FIELD(int, m_nCastShadows)  // 0 = no, 1 = dynamic (and baked but pointless here)
+	SCHEMA_FIELD(int, m_nShadowMapSize)// Shadowmap size in pixels (512 is a good starting value)
 	SCHEMA_FIELD(int, m_nShadowPriority)
 	SCHEMA_FIELD(bool, m_bContactShadow)
 	SCHEMA_FIELD(float, m_flRange)
-	SCHEMA_FIELD(float, m_flSkirt)	   // Falloff over the range
-	SCHEMA_FIELD(float, m_flSkirtNear) // Falloff from the source
+	SCHEMA_FIELD(float, m_flSkirt)	  // Falloff over the range
+	SCHEMA_FIELD(float, m_flSkirtNear)// Falloff from the source
 	SCHEMA_FIELD(float, m_flSoftX)
 	SCHEMA_FIELD(float, m_flSoftY)
 	SCHEMA_FIELD_POINTER(Vector, m_vSizeParams)
@@ -62,8 +59,7 @@ public:
 	SCHEMA_FIELD(float, m_flMinRoughness)
 };
 
-class COmniLight : public CBarnLight
-{
+class COmniLight : public CBarnLight {
 public:
 	DECLARE_SCHEMA_CLASS(COmniLight)
 

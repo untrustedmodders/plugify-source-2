@@ -30,8 +30,7 @@
 
 extern CGameConfig* g_pGameConfig;
 
-class CGameSceneNode
-{
+class CGameSceneNode {
 public:
 	DECLARE_SCHEMA_CLASS(CGameSceneNode)
 
@@ -46,8 +45,7 @@ public:
 	SCHEMA_FIELD(QAngle, m_angAbsRotation)
 	SCHEMA_FIELD(Vector, m_vRenderOrigin)
 
-	matrix3x4_t EntityToWorldTransform()
-	{
+	matrix3x4_t EntityToWorldTransform() {
 		matrix3x4_t mat;
 
 		// issues with this and im tired so hardcoded it
@@ -83,38 +81,33 @@ public:
 	}
 };
 
-class CBodyComponent
-{
+class CBodyComponent {
 public:
 	DECLARE_SCHEMA_CLASS(CBodyComponent)
 
 	SCHEMA_FIELD(CGameSceneNode*, m_pSceneNode)
 };
 
-class CModelState
-{
+class CModelState {
 public:
 	DECLARE_SCHEMA_CLASS(CModelState)
 
 	SCHEMA_FIELD(CUtlSymbolLarge, m_ModelName)
 };
 
-class CSkeletonInstance : CGameSceneNode
-{
+class CSkeletonInstance : CGameSceneNode {
 public:
 	DECLARE_SCHEMA_CLASS(CSkeletonInstance)
 
 	SCHEMA_FIELD(CModelState, m_modelState)
 };
 
-class CEntitySubclassVDataBase
-{
+class CEntitySubclassVDataBase {
 public:
 	DECLARE_SCHEMA_CLASS(CEntitySubclassVDataBase)
 };
 
-class CBaseEntity : public CEntityInstance
-{
+class CBaseEntity : public CEntityInstance {
 public:
 	DECLARE_SCHEMA_CLASS(CBaseEntity)
 
@@ -154,6 +147,7 @@ public:
 
 	int entindex() { return m_pEntity->m_EHandle.GetEntryIndex(); }
 
+	// TODO: Validate
 	Vector GetAbsOrigin() { return m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin; }
 	QAngle GetAbsRotation() { return m_CBodyComponent->m_pSceneNode->m_angAbsRotation; }
 	void SetAbsOrigin(Vector vecOrigin) { m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin = vecOrigin; }
@@ -162,13 +156,11 @@ public:
 	void SetAbsVelocity(Vector vecVelocity) { m_vecAbsVelocity = vecVelocity; }
 	void SetBaseVelocity(Vector vecVelocity) { m_vecBaseVelocity = vecVelocity; }
 
-	void SetName(const char* pName)
-	{
+	void SetName(const char* pName) {
 		addresses::CEntityIdentity_SetEntityName(m_pEntity, pName);
 	}
 
-	const char* GetName()
-	{
+	const char* GetName() {
 		return m_iGlobalname.Get().String();
 	}
 
@@ -177,8 +169,7 @@ public:
 		Detour_CBaseEntity_TakeDamageOld(this, &info);
 	}*/
 
-	void SetCollisionGroup(StandardCollisionGroups_t nCollisionGroup)
-	{
+	void SetCollisionGroup(StandardCollisionGroups_t nCollisionGroup) {
 		if (!m_pCollision())
 			return;
 
@@ -187,20 +178,17 @@ public:
 		CollisionRulesChanged();
 	}
 
-	bool IsPawn()
-	{
+	bool IsPawn() {
 		static int offset = g_pGameConfig->GetOffset("IsEntityPawn");
 		return CALL_VIRTUAL(bool, offset, this);
 	}
 
-	bool IsController()
-	{
+	bool IsController() {
 		static int offset = g_pGameConfig->GetOffset("IsEntityController");
 		return CALL_VIRTUAL(bool, offset, this);
 	}
 
-	bool IsAlive()
-	{
+	bool IsAlive() {
 		return this->m_lifeState() == LIFE_ALIVE;
 	}
 
@@ -209,30 +197,25 @@ public:
 		addresses::CEntityInstance_AcceptInput(this, pInputName, pActivator, pCaller, &value, 0);
 	}*/
 
-	void CollisionRulesChanged()
-	{
+	void CollisionRulesChanged() {
 		static int offset = g_pGameConfig->GetOffset("CollisionRulesChanged");
 		CALL_VIRTUAL(void, offset, this);
 	}
 
-	void StartTouch(CBaseEntity* pOther)
-	{
+	void StartTouch(CBaseEntity* pOther) {
 		static int offset = g_pGameConfig->GetOffset("StartTouch");
 		CALL_VIRTUAL(bool, offset, this, pOther);
 	}
-	void Touch(CBaseEntity* pOther)
-	{
+	void Touch(CBaseEntity* pOther) {
 		static int offset = g_pGameConfig->GetOffset("Touch");
 		CALL_VIRTUAL(bool, offset, this, pOther);
 	}
-	void EndTouch(CBaseEntity* pOther)
-	{
+	void EndTouch(CBaseEntity* pOther) {
 		static int offset = g_pGameConfig->GetOffset("EndTouch");
 		CALL_VIRTUAL(bool, offset, this, pOther);
 	}
 
-	void Teleport(const Vector* newPosition, const QAngle* newAngles, const Vector* newVelocity)
-	{
+	void Teleport(const Vector* newPosition, const QAngle* newAngles, const Vector* newVelocity) {
 		static int offset = g_pGameConfig->GetOffset("Teleport");
 		CALL_VIRTUAL(bool, offset, this, newPosition, newAngles, newVelocity);
 	}
@@ -240,21 +223,18 @@ public:
 	CHandle<CBaseEntity> GetHandle() { return m_pEntity->m_EHandle; }
 
 	// A double pointer to entity VData is available 4 bytes past m_nSubclassID, if applicable
-	CEntitySubclassVDataBase* GetVData() { return *(CEntitySubclassVDataBase**)((uint8*)(m_nSubclassID()) + 4); }
+	CEntitySubclassVDataBase* GetVData() { return *(CEntitySubclassVDataBase**) ((uint8*) (m_nSubclassID()) + 4); }
 
-	void DispatchSpawn(CEntityKeyValues* pEntityKeyValues = nullptr)
-	{
+	void DispatchSpawn(CEntityKeyValues* pEntityKeyValues = nullptr) {
 		addresses::DispatchSpawn(this, pEntityKeyValues);
 	}
 
 	// Emit a sound event
-	void EmitSound(const char* pszSound, int nPitch = 100, float flVolume = 1.0, float flDelay = 0.0)
-	{
+	void EmitSound(const char* pszSound, int nPitch = 100, float flVolume = 1.0, float flDelay = 0.0) {
 		addresses::CBaseEntity_EmitSoundParams(this, pszSound, nPitch, flVolume, flDelay);
 	}
 
-	SndOpEventGuid_t EmitSoundFilter(IRecipientFilter& filter, const char* pszSound, float flVolume = 1.0, float flPitch = 1.0)
-	{
+	SndOpEventGuid_t EmitSoundFilter(IRecipientFilter& filter, const char* pszSound, float flVolume = 1.0, float flPitch = 1.0) {
 		EmitSound_t params;
 		params.m_pSoundName = pszSound;
 		params.m_flVolume = flVolume;
@@ -263,42 +243,35 @@ public:
 		return addresses::CBaseEntity_EmitSoundFilter(filter, entindex(), params);
 	}
 
-	/*void DispatchParticle(const char* pszParticleName, IRecipientFilter* pFilter, ParticleAttachment_t nAttachType = PATTACH_POINT_FOLLOW, char iAttachmentPoint = 0, CUtlSymbolLarge iAttachmentName = "")
-	{
+	/*void DispatchParticle(const char* pszParticleName, IRecipientFilter* pFilter, ParticleAttachment_t nAttachType = PATTACH_POINT_FOLLOW, char iAttachmentPoint = 0, CUtlSymbolLarge iAttachmentName = "") {
 		addresses::DispatchParticleEffect(pszParticleName, nAttachType, this, iAttachmentPoint, iAttachmentName, false, 0, pFilter, 0);
 	}*/
 
 	// This was needed so we can parent to nameless entities using pointers
-	void SetParent(CBaseEntity* pNewParent)
-	{
+	void SetParent(CBaseEntity* pNewParent) {
 		addresses::CBaseEntity_SetParent(this, pNewParent, 0, nullptr);
 	}
 
-	void Remove()
-	{
+	void Remove() {
 		addresses::UTIL_Remove(this);
 	}
 
-	void AcceptInput(const char* pInputName, variant_t* value, CEntityInstance* pActivator = nullptr, CEntityInstance* pCaller = nullptr, int outputId = 0)
-	{
-		addresses::CEntityInstance_AcceptInput(this, pInputName, pActivator, pCaller, value, outputId);
+	void AcceptInput(const char* pInputName, const variant_t& value = variant_t(), CEntityInstance* pActivator = nullptr, CEntityInstance* pCaller = nullptr, int outputId = 0) {
+		addresses::CEntityInstance_AcceptInput(this, pInputName, pActivator, pCaller, const_cast<variant_t*>(&value), outputId);
 	}
 
-	void SetMoveType(MoveType_t nMoveType)
-	{
+	void SetMoveType(MoveType_t nMoveType) {
 		addresses::CBaseEntity_SetMoveType(this, nMoveType, m_MoveCollide);
 	}
 
-	void SetGroundEntity(CBaseEntity* pGround)
-	{
+	void SetGroundEntity(CBaseEntity* pGround) {
 		addresses::SetGroundEntity(this, pGround, nullptr);
 	}
 
 	const char* GetName() const { return m_pEntity->m_name.String(); }
 };
 
-class SpawnPoint : public CBaseEntity
-{
+class SpawnPoint : public CBaseEntity {
 public:
 	DECLARE_SCHEMA_CLASS(SpawnPoint);
 

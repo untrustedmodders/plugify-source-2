@@ -21,8 +21,7 @@
 
 #include "cbasemodelentity.h"
 
-class CParticleSystem : public CBaseModelEntity
-{
+class CParticleSystem : public CBaseModelEntity {
 public:
 	DECLARE_SCHEMA_CLASS(CParticleSystem);
 
@@ -32,11 +31,10 @@ public:
 	SCHEMA_FIELD(CUtlSymbolLarge, m_iszEffectName)
 	SCHEMA_FIELD(int, m_nTintCP)
 	SCHEMA_FIELD_POINTER(Color, m_clrTint)
-	SCHEMA_FIELD_POINTER(CHandle<CBaseEntity>, m_hControlPointEnts) // m_hControlPointEnts[64]
+	SCHEMA_FIELD_POINTER(CHandle<CBaseEntity>, m_hControlPointEnts)// m_hControlPointEnts[64]
 };
 
-class CEnvParticleGlow : public CParticleSystem
-{
+class CEnvParticleGlow : public CParticleSystem {
 public:
 	DECLARE_SCHEMA_CLASS(CEnvParticleGlow);
 

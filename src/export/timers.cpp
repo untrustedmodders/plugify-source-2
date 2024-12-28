@@ -22,8 +22,7 @@ PLUGIFY_WARN_IGNORE(4190)
  * @param userData An array intended to hold user-related data, allowing for elements of any type.
  * @return A pointer to the newly created CTimer object, or nullptr if the timer could not be created.
  */
-extern "C" PLUGIN_API CTimer* CreateTimer(float interval, TimerCallback callback, int flags, const plg::vector<plg::any>& userData)
-{
+extern "C" PLUGIN_API CTimer* CreateTimer(float interval, TimerCallback callback, int flags, const plg::vector<plg::any>& userData) {
 	return g_TimerSystem.CreateTimer(interval, callback, flags, userData);
 }
 
@@ -35,8 +34,7 @@ extern "C" PLUGIN_API CTimer* CreateTimer(float interval, TimerCallback callback
  *
  * @param timer A pointer to the CTimer object to be stopped and removed.
  */
-extern "C" PLUGIN_API void KillsTimer(CTimer* timer)
-{
+extern "C" PLUGIN_API void KillsTimer(CTimer* timer) {
 	g_TimerSystem.KillTimer(timer);
 }
 
@@ -45,8 +43,7 @@ extern "C" PLUGIN_API void KillsTimer(CTimer* timer)
  *
  * @return The tick interval value.
  */
-extern "C" PLUGIN_API float GetTickInterval()
-{
+extern "C" PLUGIN_API float GetTickInterval() {
 	return CTimerSystem::GetTickedInterval();
 }
 
@@ -55,8 +52,7 @@ extern "C" PLUGIN_API float GetTickInterval()
  *
  * @return The ticked time value.
  */
-extern "C" PLUGIN_API double GetTickedTime()
-{
+extern "C" PLUGIN_API double GetTickedTime() {
 	return CTimerSystem::GetTickedTime();
 }
 

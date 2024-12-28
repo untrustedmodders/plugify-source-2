@@ -21,62 +21,46 @@
 
 #include <core/sdk/schema.h>
 
-class CInButtonState
-{
+class CInButtonState {
 	DECLARE_SCHEMA_CLASS(CInButtonState);
 
 public:
 	SCHEMA_FIELD_POINTER(uint64, m_pButtonStates);
 
-	void GetButtons(uint64 buttons[3])
-	{
-		for (int i = 0; i < 3; ++i)
-		{
+	void GetButtons(uint64 buttons[3]) {
+		for (int i = 0; i < 3; ++i) {
 			buttons[i] = this->m_pButtonStates[i];
 		}
 	}
 
-	static bool IsButtonPressed(uint64 buttons[3], uint64 button, bool onlyDown = false)
-	{
-		if (onlyDown)
-		{
+	static bool IsButtonPressed(uint64 buttons[3], uint64 button, bool onlyDown = false) {
+		if (onlyDown) {
 			return buttons[0] & button;
-		}
-		else
-		{
+		} else {
 			bool multipleKeys = (button & (button - 1));
-			if (multipleKeys)
-			{
+			if (multipleKeys) {
 				uint64 currentButton = button;
 				uint64 key = 0;
-				if (button)
-				{
-					while (true)
-					{
-						if (currentButton & 1)
-						{
+				if (button) {
+					while (true) {
+						if (currentButton & 1) {
 							uint64 keyMask = 1ull << key;
-							EInButtonState keyState = (EInButtonState)(keyMask && buttons[0] + (keyMask && buttons[1]) * 2 + (keyMask && buttons[2]) * 4);
-							if (keyState > IN_BUTTON_DOWN_UP)
-							{
+							EInButtonState keyState = (EInButtonState) (keyMask && buttons[0] + (keyMask && buttons[1]) * 2 + (keyMask && buttons[2]) * 4);
+							if (keyState > IN_BUTTON_DOWN_UP) {
 								return true;
 							}
 						}
 						key++;
 						currentButton >>= 1;
-						if (!currentButton)
-						{
+						if (!currentButton) {
 							return !!(buttons[0] & button);
 						}
 					}
 				}
 				return false;
-			}
-			else
-			{
-				EInButtonState keyState = (EInButtonState)(!!(button & buttons[0]) + !!(button & buttons[1]) * 2 + !!(button & buttons[2]) * 4);
-				if (keyState > IN_BUTTON_DOWN_UP)
-				{
+			} else {
+				EInButtonState keyState = (EInButtonState) (!!(button & buttons[0]) + !!(button & buttons[1]) * 2 + !!(button & buttons[2]) * 4);
+				if (keyState > IN_BUTTON_DOWN_UP) {
 					return true;
 				}
 				return !!(buttons[0] & button);

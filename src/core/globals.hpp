@@ -11,11 +11,11 @@
 #define CS_TEAM_T 2
 #define CS_TEAM_CT 3
 
-#define HUD_PRINTNOTIFY		1
-#define HUD_PRINTCONSOLE	2
-#define HUD_PRINTTALK		3
-#define HUD_PRINTCENTER		4
-#define HUD_PRINTALERT		6
+#define HUD_PRINTNOTIFY 1
+#define HUD_PRINTCONSOLE 2
+#define HUD_PRINTTALK 3
+#define HUD_PRINTCENTER 4
+#define HUD_PRINTALERT 6
 
 #define MAXPLAYERS 64
 
@@ -50,13 +50,11 @@ extern CCSGameRules* g_pGameRules;
 class CCoreConfig;
 class CGameConfig;
 
-namespace SourceMM
-{
+namespace SourceMM {
 	class IMetamodListener;
 }
 
-namespace SourceHook
-{
+namespace SourceHook {
 	class ISourceHook;
 }
 
@@ -64,23 +62,20 @@ extern SourceMM::IMetamodListener* g_pMetamodListener;
 extern CCoreConfig* g_pCoreConfig;
 extern CGameConfig* g_pGameConfig;
 
-namespace globals
-{
+namespace globals {
 	void Initialize(plg::string coreConfig, plg::string gameConfig);
 	void Terminate();
-}
+}// namespace globals
 
-namespace DynLibUtils
-{
+namespace DynLibUtils {
 	class CMemory;
 	class CModule;
-}
+}// namespace DynLibUtils
 
 using CMemory = DynLibUtils::CMemory;
 using CModule = DynLibUtils::CModule;
 
-namespace modules
-{
+namespace modules {
 	extern CModule* engine;
 	extern CModule* tier0;
 	extern CModule* server;
@@ -88,7 +83,7 @@ namespace modules
 	extern CModule* filesystem;
 	extern CModule* vscript;
 	extern CModule* networksystem;
-} // namespace modules
+}// namespace modules
 
 class CPlayer_WeaponServices;
 class IEntityFindFilter;
@@ -105,8 +100,7 @@ class INetworkStringTable;
 class CBasePlayerPawn;
 class CBasePlayerWeapon;
 
-namespace addresses
-{
+namespace addresses {
 	inline IGameEventListener2* (*GetLegacyGameEventListener)(CPlayerSlot slot);
 
 	//inline void (*TracePlayerBBox)(const Vector& start, const Vector& end, const bbox_t& bounds, CTraceFilterS2* filter, trace_t_s2& pm);
@@ -143,7 +137,7 @@ namespace addresses
 
 	inline void (*CBaseEntity_SetParent)(CBaseEntity* pEntity, CBaseEntity* pNewParent, CUtlStringToken nBoneOrAttachName, matrix3x4a_t* pOffsetTransform);
 
-	inline SndOpEventGuid_t(*CBaseEntity_EmitSoundFilter)(IRecipientFilter& filter, CEntityIndex ent, const EmitSound_t& params);
+	inline SndOpEventGuid_t (*CBaseEntity_EmitSoundFilter)(IRecipientFilter& filter, CEntityIndex ent, const EmitSound_t& params);
 
 	inline void (*CBaseEntity_SetMoveType)(CBaseEntity* pThis, MoveType_t nMoveType, MoveCollide_t nMoveCollide);
 
@@ -152,4 +146,4 @@ namespace addresses
 	inline void (*CNetworkStringTable_DeleteAllStrings)(INetworkStringTable* pThis);
 
 	//inline void (*TracePlayerBBox)(const Vector& start, const Vector& end, const bbox_t& bounds, CTraceFilterS2* filter, trace_t_s2& pm);
-} // namespace addresses
+}// namespace addresses

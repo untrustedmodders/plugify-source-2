@@ -1,28 +1,22 @@
 #include "con_var_manager.hpp"
 
-CConVarManager::~CConVarManager()
-{
-	if (!g_pCVar)
-	{
+CConVarManager::~CConVarManager() {
+	if (!g_pCVar) {
 		return;
 	}
 
 	g_pCVar->RemoveGlobalChangeCallback(&ChangeGlobal);
-	for (const auto& [cv, _] : m_cnvCache)
-	{
+	for (const auto& [cv, _]: m_cnvCache) {
 		g_pCVar->UnregisterConVar(cv->GetHandle());
 	}
 }
 
-ConVarInfo::ConVarInfo(plg::string name, plg::string description) : name(std::move(name)), description(std::move(description))
-{
+ConVarInfo::ConVarInfo(plg::string name, plg::string description) : name(std::move(name)), description(std::move(description)) {
 }
 
-bool CConVarManager::RemoveConVar(const plg::string& name)
-{
+bool CConVarManager::RemoveConVar(const plg::string& name) {
 	auto it = m_cnvLookup.find(name);
-	if (it == m_cnvLookup.end())
-	{
+	if (it == m_cnvLookup.end()) {
 		return false;
 	}
 
@@ -34,11 +28,9 @@ bool CConVarManager::RemoveConVar(const plg::string& name)
 	return true;
 }
 
-BaseConVar* CConVarManager::FindConVar(const plg::string& name)
-{
+BaseConVar* CConVarManager::FindConVar(const plg::string& name) {
 	auto it = m_cnvLookup.find(name);
-	if (it != m_cnvLookup.end())
-	{
+	if (it != m_cnvLookup.end()) {
 		return std::get<ConVarInfoPtr>(*it)->conVar.get();
 	}
 
@@ -51,52 +43,43 @@ BaseConVar* CConVarManager::FindConVar(const plg::string& name)
 	return conVarInfo.conVar.get();
 }
 
-void CConVarManager::HookConVarChange(const plg::string& name, ConVarChangeListenerCallback callback)
-{
+void CConVarManager::HookConVarChange(const plg::string& name, ConVarChangeListenerCallback callback) {
 	std::lock_guard<std::mutex> lock(m_registerCnvLock);
 
-	if (name.empty())
-	{
-		if (m_global.Empty()) 
-		{
+	if (name.empty()) {
+		if (m_global.Empty()) {
 			g_pCVar->InstallGlobalChangeCallback(&ChangeGlobal);
 		}
 		m_global.Register(callback);
 		return;
 	}
-	
+
 	auto it = m_cnvLookup.find(name);
-	if (it != m_cnvLookup.end())
-	{
+	if (it != m_cnvLookup.end()) {
 		auto& conVarInfo = *std::get<ConVarInfoPtr>(*it);
 		conVarInfo.hook.Register(callback);
 	}
 }
 
-void CConVarManager::UnhookConVarChange(const plg::string& name, ConVarChangeListenerCallback callback)
-{
+void CConVarManager::UnhookConVarChange(const plg::string& name, ConVarChangeListenerCallback callback) {
 	std::lock_guard<std::mutex> lock(m_registerCnvLock);
 
-	if (name.empty())
-	{
+	if (name.empty()) {
 		m_global.Unregister(callback);
-		if (m_global.Empty()) 
-		{
+		if (m_global.Empty()) {
 			g_pCVar->RemoveGlobalChangeCallback(&ChangeGlobal);
 		}
 		return;
 	}
-	
+
 	auto it = m_cnvLookup.find(name);
-	if (it != m_cnvLookup.end())
-	{
+	if (it != m_cnvLookup.end()) {
 		auto& conVarInfo = *std::get<ConVarInfoPtr>(*it);
 		conVarInfo.hook.Unregister(callback);
 	}
 }
 
-void CConVarManager::ChangeGlobal(BaseConVar* ref, CSplitScreenSlot nSlot, const char* pNewValue, const char* pOldValue)
-{
+void CConVarManager::ChangeGlobal(BaseConVar* ref, CSplitScreenSlot nSlot, const char* pNewValue, const char* pOldValue) {
 	g_ConVarManager.m_global.Notify(ref, pNewValue, pOldValue);
 }
 

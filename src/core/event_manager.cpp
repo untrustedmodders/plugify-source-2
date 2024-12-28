@@ -1,43 +1,33 @@
 #include "event_manager.hpp"
 
-CEventManager::~CEventManager()
-{
-	while (!m_freeEvents.empty())
-	{
+CEventManager::~CEventManager() {
+	while (!m_freeEvents.empty()) {
 		delete m_freeEvents.top();
 		m_freeEvents.pop();
 	}
 
-	if (!m_eventHooks.empty())
-	{
+	if (!m_eventHooks.empty()) {
 		g_pGameEventManager->RemoveListener(this);
 	}
 }
 
-EventHookError CEventManager::HookEvent(const plg::string& name, EventListenerCallback callback, HookMode mode)
-{
+EventHookError CEventManager::HookEvent(const plg::string& name, EventListenerCallback callback, HookMode mode) {
 	std::unique_lock<std::mutex> lock(m_registerEventLock);
 
-	if (!g_pGameEventManager->FindListener(this, name.c_str()))
-	{
-		if (!g_pGameEventManager->AddListener(this, name.c_str(), true))
-		{
+	if (!g_pGameEventManager->FindListener(this, name.c_str())) {
+		if (!g_pGameEventManager->AddListener(this, name.c_str(), true)) {
 			return EventHookError::InvalidEvent;
 		}
 	}
 
 	auto it = m_eventHooks.find(name);
-	if (it == m_eventHooks.end())
-	{
+	if (it == m_eventHooks.end()) {
 		EventHook eventHook{name};
 
-		if (mode == HookMode::Pre)
-		{
+		if (mode == HookMode::Pre) {
 			eventHook.preHook = std::make_unique<HookCallback>();
 			eventHook.preHook->Register(callback);
-		}
-		else
-		{
+		} else {
 			eventHook.postHook = std::make_unique<HookCallback>();
 			eventHook.postHook->Register(callback);
 			eventHook.postCopy = (mode == HookMode::Post);
@@ -51,24 +41,18 @@ EventHookError CEventManager::HookEvent(const plg::string& name, EventListenerCa
 	}
 
 	auto& eventHook = std::get<EventHook>(*it);
-	if (mode == HookMode::Pre)
-	{
-		if (eventHook.preHook == nullptr)
-		{
+	if (mode == HookMode::Pre) {
+		if (eventHook.preHook == nullptr) {
 			eventHook.preHook = std::make_unique<HookCallback>();
 		}
 
 		eventHook.preHook->Register(callback);
-	}
-	else
-	{
-		if (eventHook.postHook == nullptr)
-		{
+	} else {
+		if (eventHook.postHook == nullptr) {
 			eventHook.postHook = std::make_unique<HookCallback>();
 		}
 
-		if (!eventHook.postCopy)
-		{
+		if (!eventHook.postCopy) {
 			eventHook.postCopy = (mode == HookMode::Post);
 		}
 
@@ -80,64 +64,50 @@ EventHookError CEventManager::HookEvent(const plg::string& name, EventListenerCa
 	return EventHookError::Okay;
 }
 
-EventHookError CEventManager::UnhookEvent(const plg::string& name, EventListenerCallback callback, HookMode mode)
-{
+EventHookError CEventManager::UnhookEvent(const plg::string& name, EventListenerCallback callback, HookMode mode) {
 	std::unique_lock<std::mutex> lock(m_registerEventLock);
 
 	auto it = m_eventHooks.find(name);
-	if (it == m_eventHooks.end())
-	{
+	if (it == m_eventHooks.end()) {
 		return EventHookError::NotActive;
 	}
 
 	std::unique_ptr<HookCallback>* pCallbackHook;
 	auto& eventHook = std::get<EventHook>(*it);
-	if (mode == HookMode::Pre)
-	{
+	if (mode == HookMode::Pre) {
 		pCallbackHook = &eventHook.preHook;
-	}
-	else
-	{
+	} else {
 		pCallbackHook = &eventHook.postHook;
 	}
 
-	if (*pCallbackHook == nullptr || !(*pCallbackHook)->Unregister(callback))
-	{
+	if (*pCallbackHook == nullptr || !(*pCallbackHook)->Unregister(callback)) {
 		return EventHookError::InvalidCallback;
 	}
 
-	if (--eventHook.refCount == 0)
-	{
+	if (--eventHook.refCount == 0) {
 		m_eventHooks.erase(it);
 	}
 
 	return EventHookError::Okay;
 }
 
-void CEventManager::FireGameEvent(IGameEvent* event)
-{
+void CEventManager::FireGameEvent(IGameEvent* event) {
 }
 
-void CEventManager::FireEvent(EventInfo* pInfo, bool bDontBroadcast)
-{
+void CEventManager::FireEvent(EventInfo* pInfo, bool bDontBroadcast) {
 	g_pGameEventManager->FireEvent(pInfo->pEvent, bDontBroadcast);
 
 	m_freeEvents.push(pInfo);
 }
 
-EventInfo* CEventManager::CreateEvent(const plg::string& name, bool force)
-{
+EventInfo* CEventManager::CreateEvent(const plg::string& name, bool force) {
 	EventInfo* pInfo;
 	IGameEvent* pEvent = g_pGameEventManager->CreateEvent(name.c_str(), force);
 
-	if (pEvent)
-	{
-		if (m_freeEvents.empty())
-		{
+	if (pEvent) {
+		if (m_freeEvents.empty()) {
 			pInfo = new EventInfo{};
-		}
-		else
-		{
+		} else {
 			pInfo = m_freeEvents.top();
 			m_freeEvents.pop();
 		}
@@ -151,22 +121,19 @@ EventInfo* CEventManager::CreateEvent(const plg::string& name, bool force)
 	return nullptr;
 }
 
-void CEventManager::FireEventToClient(EventInfo* pInfo, CPlayerSlot slot)
-{
+void CEventManager::FireEventToClient(EventInfo* pInfo, CPlayerSlot slot) {
 	IGameEventListener2* pListener = addresses::GetLegacyGameEventListener(slot);
 
 	pListener->FireGameEvent(pInfo->pEvent);
 }
 
-void CEventManager::CancelCreatedEvent(EventInfo* pInfo)
-{
+void CEventManager::CancelCreatedEvent(EventInfo* pInfo) {
 	g_pGameEventManager->FreeEvent(pInfo->pEvent);
 
 	m_freeEvents.push(pInfo);
 }
 
-poly::ReturnAction CEventManager::Hook_OnFireEvent(poly::Params& params, int count, poly::Return& ret)
-{
+poly::ReturnAction CEventManager::Hook_OnFireEvent(poly::Params& params, int count, poly::Return& ret) {
 	auto pEvent = poly::GetArgument<IGameEvent*>(params, 1);
 	auto bDontBroadcast = poly::GetArgument<bool>(params, 2);
 
@@ -177,25 +144,21 @@ poly::ReturnAction CEventManager::Hook_OnFireEvent(poly::Params& params, int cou
 	plg::string name(pEvent->GetName());
 
 	auto it = m_eventHooks.find(name);
-	if (it != m_eventHooks.end())
-	{
+	if (it != m_eventHooks.end()) {
 		auto& eventHook = std::get<EventHook>(*it);
 		eventHook.refCount++;
 		m_eventStack.push(&eventHook);
 
-		if (eventHook.preHook != nullptr)
-		{
+		if (eventHook.preHook != nullptr) {
 			g_Logger.LogFormat(LS_DEBUG, "Pushing event `%s` pointer: %p, dont broadcast: %d, post: %d\n", pEvent->GetName(), pEvent, bDontBroadcast, false);
 
 			EventInfo eventInfo{pEvent, bDontBroadcast};
 
-			for (size_t i = 0; i < eventHook.preHook->GetCount(); ++i)
-			{
+			for (size_t i = 0; i < eventHook.preHook->GetCount(); ++i) {
 				auto result = eventHook.preHook->Notify(i, name, &eventInfo, bDontBroadcast);
 				bLocalDontBroadcast = eventInfo.bDontBroadcast;
 
-				if (result >= ResultType::Handled)
-				{
+				if (result >= ResultType::Handled) {
 					// m_EventCopies.push(g_gameEventManager->DuplicateEvent(pEvent));
 					g_pGameEventManager->FreeEvent(pEvent);
 					return poly::ReturnAction::Supercede;
@@ -203,18 +166,14 @@ poly::ReturnAction CEventManager::Hook_OnFireEvent(poly::Params& params, int cou
 			}
 		}
 
-		if (eventHook.postCopy)
-		{
+		if (eventHook.postCopy) {
 			m_eventCopies.push(g_pGameEventManager->DuplicateEvent(pEvent));
 		}
-	}
-	else
-	{
+	} else {
 		m_eventStack.push(nullptr);
 	}
 
-	if (bLocalDontBroadcast != bDontBroadcast)
-	{
+	if (bLocalDontBroadcast != bDontBroadcast) {
 		poly::SetArgument<bool>(params, 2, bLocalDontBroadcast);
 		return poly::ReturnAction::Handled;
 	}
@@ -222,8 +181,7 @@ poly::ReturnAction CEventManager::Hook_OnFireEvent(poly::Params& params, int cou
 	return poly::ReturnAction::Ignored;
 }
 
-poly::ReturnAction CEventManager::Hook_OnFireEvent_Post(poly::Params& params, int count, poly::Return& ret)
-{
+poly::ReturnAction CEventManager::Hook_OnFireEvent_Post(poly::Params& params, int count, poly::Return& ret) {
 	auto pEvent = poly::GetArgument<IGameEvent*>(params, 1);
 	auto bDontBroadcast = poly::GetArgument<bool>(params, 2);
 
@@ -232,12 +190,9 @@ poly::ReturnAction CEventManager::Hook_OnFireEvent_Post(poly::Params& params, in
 
 	EventHook* pHook = m_eventStack.top();
 
-	if (pHook != nullptr)
-	{
-		if (pHook->postHook != nullptr)
-		{
-			if (pHook->postCopy)
-			{
+	if (pHook != nullptr) {
+		if (pHook->postHook != nullptr) {
+			if (pHook->postCopy) {
 				auto pEventCopy = m_eventCopies.top();
 				g_Logger.LogFormat(LS_DEBUG, "Pushing event `%s` pointer: %p, dont broadcast: %d, post: %d\n", pEventCopy->GetName(), pEventCopy, bDontBroadcast, true);
 				EventInfo eventInfo{pEventCopy, bDontBroadcast};
@@ -247,15 +202,12 @@ poly::ReturnAction CEventManager::Hook_OnFireEvent_Post(poly::Params& params, in
 				g_pGameEventManager->FreeEvent(eventInfo.pEvent);
 
 				m_eventCopies.pop();
-			}
-			else
-			{
+			} else {
 				pHook->postHook->Notify(pHook->name, nullptr, bDontBroadcast);
 			}
 		}
 
-		if (--pHook->refCount == 0)
-		{
+		if (--pHook->refCount == 0) {
 			AssertFatal(pHook->postHook == nullptr);
 			AssertFatal(pHook->preHook == nullptr);
 			m_eventHooks.erase(pHook->name);

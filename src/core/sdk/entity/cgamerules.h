@@ -22,8 +22,7 @@
 #include "cbaseentity.h"
 #include <platform.h>
 
-enum CSRoundEndReason
-{
+enum CSRoundEndReason {
 	TargetBombed = 1,	  /**< Target Successfully Bombed! */
 	VIPEscaped,			  /**< The VIP has escaped! - Doesn't exist on CS:GO */
 	VIPKilled,			  /**< VIP has been assassinated! - Doesn't exist on CS:GO */
@@ -48,14 +47,12 @@ enum CSRoundEndReason
 	SurvivalDraw
 };
 
-class CGameRules
-{
+class CGameRules {
 public:
 	DECLARE_SCHEMA_CLASS(CGameRules)
 };
 
-class CCSGameRules : public CGameRules
-{
+class CCSGameRules : public CGameRules {
 public:
 	DECLARE_SCHEMA_CLASS(CCSGameRules)
 
@@ -70,14 +67,12 @@ public:
 	SCHEMA_FIELD_POINTER(CUtlVector<SpawnPoint*>, m_CTSpawnPoints)
 	SCHEMA_FIELD_POINTER(CUtlVector<SpawnPoint*>, m_TerroristSpawnPoints)
 
-	void TerminateRound(float flDelay, CSRoundEndReason reason)
-	{
+	void TerminateRound(float flDelay, CSRoundEndReason reason) {
 		addresses::CGameRules_TerminateRound(this, flDelay, reason, 0, 0);
 	}
 };
 
-class CCSGameRulesProxy : public CBaseEntity
-{
+class CCSGameRulesProxy : public CBaseEntity {
 public:
 	DECLARE_SCHEMA_CLASS(CCSGameRulesProxy)
 

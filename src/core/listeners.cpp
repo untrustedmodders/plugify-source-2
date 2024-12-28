@@ -1,19 +1,16 @@
 #include "listeners.hpp"
 
-#define DEFINE_MANAGER_ACCESSOR(name, ret, ...)                 \
-	using Fn##name = ret (*)(__VA_ARGS__);                      \
-	CListenerManager<Fn##name>& Get##name##ListenerManager()    \
-	{                                                           \
-		static CListenerManager<Fn##name> s_##name;             \
-		return s_##name;                                        \
-	}                                                           \
-	extern "C" PLUGIN_API void name##_Register(Fn##name func)   \
-	{                                                           \
-		Get##name##ListenerManager().Register(func);            \
-	}                                                           \
-	extern "C" PLUGIN_API void name##_Unregister(Fn##name func) \
-	{                                                           \
-		Get##name##ListenerManager().Unregister(func);          \
+#define DEFINE_MANAGER_ACCESSOR(name, ret, ...)                   \
+	using Fn##name = ret (*)(__VA_ARGS__);                        \
+	CListenerManager<Fn##name>& Get##name##ListenerManager() {    \
+		static CListenerManager<Fn##name> s_##name;               \
+		return s_##name;                                          \
+	}                                                             \
+	extern "C" PLUGIN_API void name##_Register(Fn##name func) {   \
+		Get##name##ListenerManager().Register(func);              \
+	}                                                             \
+	extern "C" PLUGIN_API void name##_Unregister(Fn##name func) { \
+		Get##name##ListenerManager().Unregister(func);            \
 	}
 
 DEFINE_MANAGER_ACCESSOR(OnClientConnect, bool, int, const plg::string&, const plg::string&)

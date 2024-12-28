@@ -21,13 +21,11 @@
 
 #include "cbaseentity.h"
 
-class CPhysForce : public CBaseEntity
-{
+class CPhysForce : public CBaseEntity {
 	DECLARE_SCHEMA_CLASS(CPhysForce)
 public:
 	SCHEMA_FIELD(float, m_force)
 };
 
-class CPhysThruster : public CPhysForce
-{
+class CPhysThruster : public CPhysForce {
 };

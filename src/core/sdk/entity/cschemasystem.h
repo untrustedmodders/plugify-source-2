@@ -27,11 +27,9 @@ class CSchemaType;
 class CSchemaSystemTypeScope;
 class ISaveRestoreOps;
 
-class CSchemaSystemTypeScope2
-{
+class CSchemaSystemTypeScope2 {
 public:
-	SchemaClassInfoData_t* FindDeclaredClass(const char* pClass)
-	{
+	SchemaClassInfoData_t* FindDeclaredClass(const char* pClass) {
 #if S2SDK_PLATFORM_WINDOWS
 		SchemaClassInfoData_t* rv = nullptr;
 		CALL_VIRTUAL(void, 2, this, &rv, pClass);
@@ -42,11 +40,9 @@ public:
 	}
 };
 
-class CSchemaSystem
-{
+class CSchemaSystem {
 public:
-	CSchemaSystemTypeScope2* FindTypeScopeForModule(const char* module)
-	{
+	CSchemaSystemTypeScope2* FindTypeScopeForModule(const char* module) {
 		return CALL_VIRTUAL(CSchemaSystemTypeScope2*, 13, this, module, nullptr);
 	}
 };

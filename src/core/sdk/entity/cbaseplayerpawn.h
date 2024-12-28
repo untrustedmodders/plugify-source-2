@@ -27,8 +27,7 @@ class CCSPlayer_ItemServices;
 #include "cbasemodelentity.h"
 #include "ccsweaponbase.h"
 
-class CBasePlayerPawn : public CBaseModelEntity
-{
+class CBasePlayerPawn : public CBaseModelEntity {
 public:
 	DECLARE_SCHEMA_CLASS(CBasePlayerPawn);
 
@@ -40,34 +39,34 @@ public:
 
 	// Drops any map-spawned weapons the pawn is holding
 	// NOTE: Currently very broken with map items (entities parented to weapons?) due to a game bug..? Needs further investigation/work
-	void DropMapWeapons()
-	{
+	void DropMapWeapons() {
 		if (!m_pWeaponServices())
 			return;
 
 		CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = m_pWeaponServices()->m_hMyWeapons();
 
-		FOR_EACH_VEC(*weapons, i)
-		{
+		FOR_EACH_VEC(*weapons, i) {
 			CBasePlayerWeapon* pWeapon = (*weapons)[i].Get();
 
 			if (!pWeapon)
 				continue;
 
 			// If this is a map-spawned weapon (items), drop it
-			if (V_strcmp(pWeapon->m_sUniqueHammerID().Get(), "") && pWeapon->GetWeaponVData()->m_GearSlot() != GEAR_SLOT_KNIFE)
+			if (V_strcmp(pWeapon->m_sUniqueHammerID(), "") && pWeapon->GetWeaponVData()->m_GearSlot() != GEAR_SLOT_KNIFE)
 				m_pWeaponServices()->Drop(pWeapon);
 		}
 	}
 
-	void CommitSuicide(bool bExplode, bool bForce)
-	{
+	void CommitSuicide(bool bExplode, bool bForce) {
 		static int offset = g_pGameConfig->GetOffset("CommitSuicide");
 		CALL_VIRTUAL(void, offset, this, bExplode, bForce);
 	}
 
-	bool IsBot()
-	{
+	CBasePlayerController* GetController() {
+		return m_hController();
+	}
+
+	bool IsBot() {
 		return !!(this->m_fFlags() & FL_PAWN_FAKECLIENT);
 	}
 };

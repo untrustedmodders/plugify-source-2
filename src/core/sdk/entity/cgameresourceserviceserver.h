@@ -24,12 +24,10 @@
 class CGameEntitySystem;
 extern CGameConfig* g_pGameConfig;
 
-class CGameResourceService
-{
+class CGameResourceService {
 public:
-	CGameEntitySystem* GetGameEntitySystem()
-	{
+	CGameEntitySystem* GetGameEntitySystem() {
 		static int offset = g_pGameConfig->GetOffset("GameEntitySystem");
-		return *reinterpret_cast<CGameEntitySystem**>((uintptr_t)(this) + offset);
+		return *reinterpret_cast<CGameEntitySystem**>((uintptr_t) (this) + offset);
 	}
 };

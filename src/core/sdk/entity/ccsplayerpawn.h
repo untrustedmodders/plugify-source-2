@@ -21,8 +21,7 @@
 
 #include "cbaseplayerpawn.h"
 
-enum CSPlayerState
-{
+enum CSPlayerState {
 	STATE_ACTIVE = 0x0,
 	STATE_WELCOME = 0x1,
 	STATE_PICKINGTEAM = 0x2,
@@ -37,8 +36,7 @@ enum CSPlayerState
 
 class CCSPlayer_ViewModelServices;
 
-class CCSPlayerPawnBase : public CBasePlayerPawn
-{
+class CCSPlayerPawnBase : public CBasePlayerPawn {
 public:
 	DECLARE_SCHEMA_CLASS(CCSPlayerPawnBase);
 
@@ -50,27 +48,23 @@ public:
 	SCHEMA_FIELD(CHandle<CCSPlayerController>, m_hOriginalController)
 	SCHEMA_FIELD(CCSPlayer_ViewModelServices*, m_pViewModelServices)
 
-	CCSPlayerController* GetOriginalController()
-	{
-		return m_hOriginalController().Get();
+	CCSPlayerController* GetOriginalController() {
+		return m_hOriginalController();
 	}
 
-	bool IsBot()
-	{
+	bool IsBot() {
 		return m_fFlags() & FL_PAWN_FAKECLIENT;
 	}
 };
 
-class CCSPlayerPawn : public CCSPlayerPawnBase
-{
+class CCSPlayerPawn : public CCSPlayerPawnBase {
 public:
 	DECLARE_SCHEMA_CLASS(CCSPlayerPawn);
 
 	SCHEMA_FIELD(float, m_flVelocityModifier)
 	SCHEMA_FIELD(CCSPlayer_ActionTrackingServices*, m_pActionTrackingServices)
 
-	void Respawn()
-	{
+	void Respawn() {
 		static int offset = g_pGameConfig->GetOffset("Respawn");
 		CALL_VIRTUAL(void, offset, this);
 	}

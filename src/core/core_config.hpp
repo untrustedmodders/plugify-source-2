@@ -2,8 +2,7 @@
 
 #include <tier0/keyvalues.h>
 
-class CCoreConfig
-{
+class CCoreConfig {
 public:
 	explicit CCoreConfig(plg::string path);
 	~CCoreConfig() = default;

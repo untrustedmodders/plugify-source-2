@@ -20,9 +20,8 @@ PLUGIFY_WARN_IGNORE(4190)
  * @param flags Command flags that define the behavior of the command.
  * @param callback A callback function that is invoked when the command is executed.
  */
-extern "C" PLUGIN_API void AddAdminCommand(const plg::string& name, int64_t adminFlags, const plg::string& description, int64_t flags, CommandListenerCallback callback)
-{
-	g_Logger.LogFormat(LS_DEBUG, "Adding admin command %s, %d, %s, %d, %p\n", name.c_str(), (int)adminFlags, description.c_str(), (int)flags, (void*)callback);
+extern "C" PLUGIN_API void AddAdminCommand(const plg::string& name, int64_t adminFlags, const plg::string& description, int64_t flags, CommandListenerCallback callback) {
+	g_Logger.LogFormat(LS_DEBUG, "Adding admin command %s, %d, %s, %d, %p\n", name.c_str(), (int) adminFlags, description.c_str(), (int) flags, (void*) callback);
 
 	g_CommandManager.AddValveCommand(name, description, flags, adminFlags);
 	g_CommandManager.AddCommandListener(name, callback, HookMode::Pre);
@@ -36,9 +35,8 @@ extern "C" PLUGIN_API void AddAdminCommand(const plg::string& name, int64_t admi
  * @param flags Command flags that define the behavior of the command.
  * @param callback A callback function that is invoked when the command is executed.
  */
-extern "C" PLUGIN_API void AddConsoleCommand(const plg::string& name, const plg::string& description, int64_t flags, CommandListenerCallback callback)
-{
-	g_Logger.LogFormat(LS_DEBUG, "Adding command %s, %s, %d, %p\n", name.c_str(), description.c_str(), (int)flags, (void*)callback);
+extern "C" PLUGIN_API void AddConsoleCommand(const plg::string& name, const plg::string& description, int64_t flags, CommandListenerCallback callback) {
+	g_Logger.LogFormat(LS_DEBUG, "Adding command %s, %s, %d, %p\n", name.c_str(), description.c_str(), (int) flags, (void*) callback);
 
 	g_CommandManager.AddValveCommand(name, description, flags);
 	g_CommandManager.AddCommandListener(name, callback, HookMode::Pre);
@@ -50,8 +48,7 @@ extern "C" PLUGIN_API void AddConsoleCommand(const plg::string& name, const plg:
  * @param name The name of the command to be removed.
  * @param callback The callback function associated with the command to be removed.
  */
-extern "C" PLUGIN_API void RemoveCommand(const plg::string& name, CommandListenerCallback callback)
-{
+extern "C" PLUGIN_API void RemoveCommand(const plg::string& name, CommandListenerCallback callback) {
 	g_CommandManager.RemoveCommandListener(name, callback, HookMode::Pre);
 	g_CommandManager.RemoveValveCommand(name);
 }
@@ -63,8 +60,7 @@ extern "C" PLUGIN_API void RemoveCommand(const plg::string& name, CommandListene
  * @param callback The callback function that will be invoked when the command is executed.
  * @param post A boolean indicating whether the callback should fire after the command is executed.
  */
-extern "C" PLUGIN_API void AddCommandListener(const plg::string& name, CommandListenerCallback callback, bool post)
-{
+extern "C" PLUGIN_API void AddCommandListener(const plg::string& name, CommandListenerCallback callback, bool post) {
 	g_CommandManager.AddCommandListener(name, callback, static_cast<HookMode>(post));
 }
 
@@ -75,8 +71,7 @@ extern "C" PLUGIN_API void AddCommandListener(const plg::string& name, CommandLi
  * @param callback The callback function to be removed.
  * @param post A boolean indicating whether the callback should be removed for post-execution.
  */
-extern "C" PLUGIN_API void RemoveCommandListener(const plg::string& name, CommandListenerCallback callback, bool post)
-{
+extern "C" PLUGIN_API void RemoveCommandListener(const plg::string& name, CommandListenerCallback callback, bool post) {
 	g_CommandManager.RemoveCommandListener(name, callback, static_cast<HookMode>(post));
 }
 
@@ -85,8 +80,7 @@ extern "C" PLUGIN_API void RemoveCommandListener(const plg::string& name, Comman
  *
  * @param command The command to execute on the server.
  */
-extern "C" PLUGIN_API void ServerCommand(const plg::string& command)
-{
+extern "C" PLUGIN_API void ServerCommand(const plg::string& command) {
 	auto cleanCommand = command;
 	cleanCommand.append("\n\0");
 	g_pEngineServer2->ServerCommand(cleanCommand.c_str());
@@ -99,8 +93,7 @@ extern "C" PLUGIN_API void ServerCommand(const plg::string& command)
  * @param clientIndex The index of the client executing the command.
  * @param command The command to execute on the client.
  */
-extern "C" PLUGIN_API void ClientCommand(int clientIndex, const plg::string& command)
-{
+extern "C" PLUGIN_API void ClientCommand(int clientIndex, const plg::string& command) {
 	auto cleanCommand = command;
 	cleanCommand.append("\n\0");
 	g_pEngineServer2->ClientCommand(CPlayerSlot(clientIndex), "%s", cleanCommand.c_str());
@@ -112,12 +105,11 @@ extern "C" PLUGIN_API void ClientCommand(int clientIndex, const plg::string& com
  * @param clientIndex The index of the client.
  * @param command The command to be executed by the client.
  */
-extern "C" PLUGIN_API void FakeClientCommand(int clientIndex, const plg::string& command)
-{
+extern "C" PLUGIN_API void FakeClientCommand(int clientIndex, const plg::string& command) {
 	std::vector<const char*> a;
 	auto tokens = utils::Split(command, " ");
 	a.reserve(tokens.size());
-	for (const auto& token : tokens) {
+	for (const auto& token: tokens) {
 		a.emplace_back(token.c_str());
 	}
 

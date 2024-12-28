@@ -17,11 +17,9 @@ PLUGIFY_WARN_IGNORE(4190)
  * @return A pointer to the `CCSWeaponBaseVData` if the entity handle is valid and
  *         represents a player weapon; otherwise, nullptr.
  */
-extern "C" PLUGIN_API CCSWeaponBaseVData* GetWeaponVData(int entityHandle)
-{
-	CBasePlayerWeapon* pWeapon = static_cast<CBasePlayerWeapon*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pWeapon)
-	{
+extern "C" PLUGIN_API CCSWeaponBaseVData* GetWeaponVData(int entityHandle) {
+	CBasePlayerWeapon* pWeapon = static_cast<CBasePlayerWeapon*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pWeapon) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetWeaponVData' on invalid entity handle: %d\n", entityHandle);
 		return nullptr;
 	}
@@ -35,11 +33,9 @@ extern "C" PLUGIN_API CCSWeaponBaseVData* GetWeaponVData(int entityHandle)
  * @param entityHandle The handle of the entity from which to retrieve the weapon def index.
  * @return The weapon definition index as a `uint16_t`, or 0 if the entity handle is invalid.
  */
-extern "C" PLUGIN_API uint16_t GetWeaponDefIndex(int entityHandle)
-{
-	CBasePlayerWeapon* pWeapon = static_cast<CBasePlayerWeapon*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32)entityHandle)));
-	if (!pWeapon)
-	{
+extern "C" PLUGIN_API uint16_t GetWeaponDefIndex(int entityHandle) {
+	CBasePlayerWeapon* pWeapon = static_cast<CBasePlayerWeapon*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
+	if (!pWeapon) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetWeaponDefIndex' on invalid entity handle: %d\n", entityHandle);
 		return 0;
 	}

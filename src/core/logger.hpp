@@ -6,8 +6,7 @@
 #include <tier0/dbg.h>
 #include <tier0/logging.h>
 
-class CLogger final
-{
+class CLogger final {
 public:
 	CLogger(const char* name, RegisterTagsFunc registerTagsFunc, int flags = 0, LoggingVerbosity_t verbosity = LV_DEFAULT, const Color& defaultColor = UNSPECIFIED_LOGGING_COLOR);
 	~CLogger() = default;

@@ -26,10 +26,9 @@ IEngineSound* g_pEngineSound = nullptr;
 CCSGameRules* g_pGameRules = nullptr;
 
 #define RESOLVE_SIG(gameConfig, name, variable) \
-	variable = (decltype(variable))(void*)(gameConfig)->ResolveSignature(name)
+	variable = (decltype(variable)) (void*) (gameConfig)->ResolveSignature(name)
 
-namespace modules
-{
+namespace modules {
 	CModule* engine = nullptr;
 	CModule* tier0 = nullptr;
 	CModule* server = nullptr;
@@ -37,25 +36,22 @@ namespace modules
 	CModule* filesystem = nullptr;
 	CModule* vscript = nullptr;
 	CModule* networksystem = nullptr;
-} // namespace modules
+}// namespace modules
 
 IMetamodListener* g_pMetamodListener = nullptr;
 CCoreConfig* g_pCoreConfig = nullptr;
 CGameConfig* g_pGameConfig = nullptr;
 
-template <class T>
-static T* FindInterface(const CModule* module, const char* name)
-{
+template<class T>
+static T* FindInterface(const CModule* module, const char* name) {
 	auto CreateInterface = module->GetFunctionByName("CreateInterface");
-	if (!CreateInterface)
-	{
+	if (!CreateInterface) {
 		g_Logger.LogFormat(LS_ERROR, "Could not find \"%s\"\n", name);
 		return nullptr;
 	}
 
 	void* pInterface = CreateInterface.CCast<CreateInterfaceFn>()(name, nullptr);
-	if (!pInterface)
-	{
+	if (!pInterface) {
 		g_Logger.LogFormat(LS_ERROR, "Could not find interface %s in %s at \"%s\"\n", name, module->GetModuleName().data(), module->GetModulePath().data());
 		return nullptr;
 	}
@@ -70,12 +66,10 @@ struct String {
 };
 
 template<size_t N>
-constexpr auto ModulePath(const char (&str)[N])
-{
+constexpr auto ModulePath(const char (&str)[N]) {
 	constexpr auto length = N - 1;
 	String<N> result = {};
-	for (size_t i = 0; i < length; ++i)
-	{
+	for (size_t i = 0; i < length; ++i) {
 		result.c[i] = str[i];
 #if S2SDK_PLATFORM_WINDOWS
 		if (result.c[i] == '/')
@@ -90,21 +84,17 @@ constexpr auto ModulePath(const char (&str)[N])
 #undef GetModuleHandle
 #endif
 
-static CModule* CreateModule(const char* p)
-{
+static CModule* CreateModule(const char* p) {
 	plg::string path = utils::GameDirectory() + p;
 	auto* module = new CModule(path);
-	if (!module->GetModuleHandle())
-	{
+	if (!module->GetModuleHandle()) {
 		g_Logger.LogFormat(LS_ERROR, "Could not find module at \"%s\"\n", path.c_str());
 	}
 	return module;
 }
 
-namespace globals
-{
-	void Initialize(plg::string coreConfig, plg::string gameConfig)
-	{
+namespace globals {
+	void Initialize(plg::string coreConfig, plg::string gameConfig) {
 		modules::engine = CreateModule(ModulePath(S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "engine2").c);
 		modules::tier0 = CreateModule(ModulePath(S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "tier0").c);
 		modules::server = CreateModule(ModulePath(S2SDK_GAME_BINARY S2SDK_LIBRARY_PREFIX "server").c);
@@ -133,10 +123,9 @@ namespace globals
 		CModule plugify("plugify");
 
 
-		using IMetamodListenerFn = IMetamodListener* (*)();
+		using IMetamodListenerFn = IMetamodListener* (*) ();
 		auto Plugify_ImmListener = plugify.GetFunctionByName("Plugify_ImmListener");
-		if (Plugify_ImmListener)
-		{
+		if (Plugify_ImmListener) {
 			g_pMetamodListener = Plugify_ImmListener.CCast<IMetamodListenerFn>()();
 		}
 
@@ -172,8 +161,7 @@ namespace globals
 		RESOLVE_SIG(g_pGameConfig, "CBaseEntity_SetMoveType", addresses::CBaseEntity_SetMoveType);
 	}
 
-	void Terminate()
-	{
+	void Terminate() {
 		delete g_pGameConfig;
 		delete g_pCoreConfig;
 		delete modules::engine;
@@ -184,4 +172,4 @@ namespace globals
 		delete modules::vscript;
 	}
 
-} // namespace globals
+}// namespace globals

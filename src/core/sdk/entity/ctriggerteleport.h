@@ -21,8 +21,7 @@
 
 #include "cbasetrigger.h"
 
-class CTriggerTeleport : public CBaseTrigger
-{
+class CTriggerTeleport : public CBaseTrigger {
 public:
 	DECLARE_SCHEMA_CLASS(CTriggerTeleport);
 

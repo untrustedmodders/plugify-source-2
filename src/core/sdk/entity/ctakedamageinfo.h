@@ -22,8 +22,7 @@
 #include "ehandle.h"
 #include <platform.h>
 
-enum DamageTypes_t : uint32_t
-{
+enum DamageTypes_t : uint32_t {
 	DMG_GENERIC = 0x0,
 	DMG_CRUSH = 0x1,
 	DMG_BULLET = 0x2,
@@ -50,8 +49,7 @@ enum DamageTypes_t : uint32_t
 	DMG_DANGERZONE = 0x4000000,
 };
 
-enum TakeDamageFlags_t : uint32_t
-{
+enum TakeDamageFlags_t : uint32_t {
 	DFLAG_NONE = 0x0,
 	DFLAG_SUPPRESS_HEALTH_CHANGES = 0x1,
 	DFLAG_SUPPRESS_PHYSICS_FORCE = 0x2,
@@ -69,24 +67,20 @@ enum TakeDamageFlags_t : uint32_t
 };
 
 // No idea what this is meant to have, but OnTakeDamage_Alive expects this and we only care about pInfo
-struct CTakeDamageInfoContainer
-{
+struct CTakeDamageInfoContainer {
 	CTakeDamageInfo* pInfo;
 };
 
-class CTakeDamageInfo
-{
+class CTakeDamageInfo {
 private:
 	[[maybe_unused]] uint8_t __pad0000[0x8];
 
 public:
-	CTakeDamageInfo()
-	{
+	CTakeDamageInfo() {
 		addresses::CTakeDamageInfo_Constructor(this, nullptr, nullptr, nullptr, &vec3_origin, &vec3_origin, 0.f, 0, 0, nullptr);
 	}
 
-	CTakeDamageInfo(CBaseEntity* pInflictor, CBaseEntity* pAttacker, CBaseEntity* pAbility, float flDamage, DamageTypes_t bitsDamageType)
-	{
+	CTakeDamageInfo(CBaseEntity* pInflictor, CBaseEntity* pAttacker, CBaseEntity* pAbility, float flDamage, DamageTypes_t bitsDamageType) {
 		addresses::CTakeDamageInfo_Constructor(this, pInflictor, pAttacker, pAbility, &vec3_origin, &vec3_origin, flDamage, bitsDamageType, 0, nullptr);
 	}
 

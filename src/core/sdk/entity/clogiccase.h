@@ -21,14 +21,12 @@
 
 #include "cbaseentity.h"
 
-class CLogicCase : public CBaseEntity
-{
+class CLogicCase : public CBaseEntity {
 public:
 	DECLARE_SCHEMA_CLASS(CLogicCase)
 };
 
-class CGameUI : public CLogicCase
-{
+class CGameUI : public CLogicCase {
 public:
 	static constexpr int SF_GAMEUI_FREEZE_PLAYER = 32;
 	static constexpr int SF_GAMEUI_JUMP_DEACTIVATE = 256;

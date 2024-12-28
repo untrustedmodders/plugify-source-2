@@ -8,8 +8,7 @@
 using CMemory = DynLibUtils::CMemory;
 using CModule = DynLibUtils::CModule;
 
-class CGameConfig
-{
+class CGameConfig {
 public:
 	CGameConfig(plg::string game, plg::string path);
 	CGameConfig(CGameConfig&& other) = default;
@@ -29,8 +28,7 @@ public:
 	CMemory ResolveSignature(const plg::string& name) const;
 
 private:
-	struct AddressConf
-	{
+	struct AddressConf {
 		plg::string signature;
 		plg::vector<std::pair<int, bool>> read;
 		bool lastIsOffset;
@@ -47,8 +45,7 @@ private:
 	std::unordered_map<plg::string, plg::string> m_umPatches;
 };
 
-class CGameConfigManager
-{
+class CGameConfigManager {
 public:
 	CGameConfigManager() = default;
 	~CGameConfigManager() = default;

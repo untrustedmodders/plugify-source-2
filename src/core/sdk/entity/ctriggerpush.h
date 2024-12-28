@@ -23,8 +23,7 @@
 
 #define SF_TRIG_PUSH_ONCE 0x80
 
-class CTriggerPush : public CBaseTrigger
-{
+class CTriggerPush : public CBaseTrigger {
 public:
 	DECLARE_SCHEMA_CLASS(CTriggerPush);
 

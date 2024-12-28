@@ -3,8 +3,7 @@
 #include <eiface.h>
 #include <plugify/polyhook.hpp>
 
-class CVoiceManager
-{
+class CVoiceManager {
 public:
 	CVoiceManager() = delete;
 	~CVoiceManager() = delete;

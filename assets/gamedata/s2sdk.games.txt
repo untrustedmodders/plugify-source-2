@@ -329,11 +329,6 @@
 				"windows"   "137"
 				"linux"     "136"
 			}
-			"GetClientList"
-			{
-				"windows"   "77"
-				"linux"     "79"
-			}
 		}
 		"Addresses"
 		{

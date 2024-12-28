@@ -25,8 +25,7 @@
 
 class CCSPlayerPawn;
 
-enum class PlayerConnectedState : uint32_t
-{
+enum class PlayerConnectedState : uint32_t {
 	PlayerNeverConnected = 0xFFFFFFFF,
 	PlayerConnected = 0x0,
 	PlayerConnecting = 0x1,
@@ -36,8 +35,7 @@ enum class PlayerConnectedState : uint32_t
 	PlayerReserved = 0x5,
 };
 
-class CBasePlayerController : public CBaseEntity
-{
+class CBasePlayerController : public CBaseEntity {
 public:
 	DECLARE_SCHEMA_CLASS(CBasePlayerController);
 
@@ -48,13 +46,12 @@ public:
 	SCHEMA_FIELD(bool, m_bIsHLTV)
 	SCHEMA_FIELD(uint, m_iDesiredFOV)
 
-	CBasePlayerPawn* GetPawn() { return m_hPawn.Get(); }
+	CBasePlayerPawn* GetCurrentPawn() { return m_hPawn.Get(); }
 	const char* GetPlayerName() { return m_iszPlayerName(); }
 	int GetPlayerSlot() { return entindex() - 1; }
 	bool IsConnected() { return m_iConnected() == PlayerConnectedState::PlayerConnected; }
 
-	void SetPawn(CCSPlayerPawn* pawn)
-	{
+	void SetPawn(CCSPlayerPawn* pawn) {
 		addresses::CBasePlayerController_SetPawn(this, pawn, true, false);
 	}
 };

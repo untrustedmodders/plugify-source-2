@@ -6,8 +6,7 @@
 #include <convar.h>
 #include <plugify/polyhook.hpp>
 
-enum CommandCallingContext
-{
+enum CommandCallingContext {
 	Invalid = -1,
 	Console = 0,
 	Chat = 1,
@@ -15,9 +14,8 @@ enum CommandCallingContext
 
 using CommandListenerCallback = ResultType (*)(int caller, int context, const plg::vector<plg::string>& arguments);
 
-struct ConCommandInfo
-{
-	ConCommandInfo() = default;
+struct ConCommandInfo {
+	ConCommandInfo() = delete;
 	explicit ConCommandInfo(plg::string name, plg::string description = {});
 	~ConCommandInfo() = default;
 
@@ -33,8 +31,7 @@ struct ConCommandInfo
 
 using CommandInfoPtr = std::unique_ptr<ConCommandInfo>;
 
-class CConCommandManager
-{
+class CConCommandManager {
 public:
 	CConCommandManager() = default;
 	~CConCommandManager();

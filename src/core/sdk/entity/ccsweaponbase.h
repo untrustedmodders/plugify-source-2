@@ -20,10 +20,10 @@
 #pragma once
 
 #include "cbaseentity.h"
+#include "cbasemodelentity.h"
 #include "ccollisionproperty.h"
 
-enum gear_slot_t : uint32_t
-{
+enum gear_slot_t : uint32_t {
 	GEAR_SLOT_INVALID = 0xffffffff,
 	GEAR_SLOT_RIFLE = 0x0,
 	GEAR_SLOT_PISTOL = 0x1,
@@ -43,8 +43,7 @@ enum gear_slot_t : uint32_t
 	GEAR_SLOT_LAST = 0xc,
 };
 
-class CEconItemView
-{
+class CEconItemView {
 public:
 	DECLARE_SCHEMA_CLASS_INLINE(CEconItemView);
 
@@ -52,31 +51,37 @@ public:
 	SCHEMA_FIELD(bool, m_bInitialized)
 };
 
-class CAttributeContainer
-{
+class CAttributeContainer {
 public:
 	DECLARE_SCHEMA_CLASS_INLINE(CAttributeContainer);
 
 	SCHEMA_FIELD(CEconItemView, m_Item)
 };
 
-class CEconEntity : public CBaseEntity
-{
+class CBaseAnimGraph : public CBaseModelEntity {
+public:
+	DECLARE_SCHEMA_CLASS(CBaseAnimGraph);
+};
+
+class CBaseFlex : public CBaseAnimGraph {
+public:
+	DECLARE_SCHEMA_CLASS(CBaseFlex);
+};
+
+class CEconEntity : public CBaseFlex {
 public:
 	DECLARE_SCHEMA_CLASS(CEconEntity)
 
 	SCHEMA_FIELD(CAttributeContainer, m_AttributeManager)
 };
 
-class CBasePlayerWeaponVData : public CEntitySubclassVDataBase
-{
+class CBasePlayerWeaponVData : public CEntitySubclassVDataBase {
 public:
 	DECLARE_SCHEMA_CLASS(CBasePlayerWeaponVData)
 	SCHEMA_FIELD(int, m_iMaxClip1)
 };
 
-class CCSWeaponBaseVData : public CBasePlayerWeaponVData
-{
+class CCSWeaponBaseVData : public CBasePlayerWeaponVData {
 public:
 	DECLARE_SCHEMA_CLASS(CCSWeaponBaseVData)
 
@@ -85,16 +90,14 @@ public:
 	SCHEMA_FIELD(int, m_nPrimaryReserveAmmoMax);
 };
 
-class CBasePlayerWeapon : public CEconEntity
-{
+class CBasePlayerWeapon : public CEconEntity {
 public:
 	DECLARE_SCHEMA_CLASS(CBasePlayerWeapon)
 
-	CCSWeaponBaseVData* GetWeaponVData() { return (CCSWeaponBaseVData*)GetVData(); }
+	CCSWeaponBaseVData* GetWeaponVData() { return (CCSWeaponBaseVData*) GetVData(); }
 };
 
-class CCSWeaponBase : public CBasePlayerWeapon
-{
+class CCSWeaponBase : public CBasePlayerWeapon {
 public:
 	DECLARE_SCHEMA_CLASS(CCSWeaponBase)
 };
