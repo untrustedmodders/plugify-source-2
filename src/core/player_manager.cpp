@@ -232,7 +232,6 @@ void CPlayerManager::OnClientDisconnect(CPlayerSlot slot, ENetworkDisconnectionR
 void CPlayerManager::OnClientDisconnect_Post(CPlayerSlot slot, ENetworkDisconnectionReason reason, const char* pszName, uint64 xuid, const char* pszNetworkID) {
 	int client = slot.Get();
 	CPlayer& player = m_players[client];
-
 	if (!player.IsConnected()) {
 		/* We don't care, prevent a double call */
 		return;
