@@ -214,7 +214,7 @@ poly::ReturnAction CConCommandManager::Hook_DispatchConCommand(poly::Params& par
 	// auto cmd = poly::GetArgument<ConCommandHandle* const>(params, 1);
 	auto ctx = poly::GetArgument<const CCommandContext*>(params, 2);
 	auto args = poly::GetArgument<const CCommand*>(params, 3);
-	if (args == nullptr) {
+	if (ctx == nullptr || args == nullptr) {
 		return poly::ReturnAction::Ignored;
 	}
 
@@ -234,7 +234,7 @@ poly::ReturnAction CConCommandManager::Hook_DispatchConCommand_Post(poly::Params
 	// auto cmd = poly::GetArgument<ConCommandHandle* const>(params, 1);
 	auto ctx = poly::GetArgument<const CCommandContext*>(params, 2);
 	auto args = poly::GetArgument<const CCommand*>(params, 3);
-	if (args == nullptr) {
+	if (ctx == nullptr || args == nullptr) {
 		return poly::ReturnAction::Ignored;
 	}
 
