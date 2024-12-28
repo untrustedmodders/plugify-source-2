@@ -14,18 +14,34 @@ PLUGIFY_WARN_IGNORE("-Wreturn-type-c-linkage")
 PLUGIFY_WARN_IGNORE(4190)
 #endif
 
-//!
+/**
+ * @brief Retrieves the client index from a given entity pointer.
+ *
+ * This function checks if the provided entity pointer is valid and returns
+ * the corresponding client index. If the entity pointer is invalid, it returns -1.
+ *
+ * @param entity A pointer to the entity (CBaseEntity*).
+ * @return The client index if valid, otherwise -1.
+ */
 extern "C" PLUGIN_API int GetClientIndexFromEntityPointer(CBaseEntity* entity) {
 	if (!g_pGameEntitySystem->IsEntityPtr(entity)) {
 		return -1;
 	}
 
-	return utils::GetEntityPlayerSlot(entity).Get() + 1;
+	return utils::GetEntityPlayerSlot(entity).Get();
 }
 
-/*//! 
+/**
+ * @brief Retrieves the client object from a given client index.
+ *
+ * This function fetches the client object associated with the specified index.
+ * If the client list is unavailable, or the index is invalid, it returns nullptr.
+ *
+ * @param clientIndex The index of the client (0-based).
+ * @return A pointer to the client object if found, otherwise nullptr.
+ */
 extern "C" PLUGIN_API void* GetClientFromIndex(int clientIndex) {
-	CUtlVector<CServerSideClient *>* pClients = utils::GetClientList();
+	CUtlVector<CServerSideClientBase *>* pClients = utils::GetClientList();
 	if (!pClients) {
 		return nullptr;
 	}
@@ -33,19 +49,27 @@ extern "C" PLUGIN_API void* GetClientFromIndex(int clientIndex) {
 	return pClients->Element(clientIndex);
 }
 
-//! 
+/**
+ * @brief Retrieves the index of a given client object.
+ *
+ * This function finds the index of a specified client object within the client list.
+ * If the client is not found or the list is unavailable, it returns -1.
+ *
+ * @param client A pointer to the client object (CServerSideClient*).
+ * @return The client index if found, otherwise -1.
+ */
 extern "C" PLUGIN_API int GetIndexFromClient(CServerSideClient* client) {
-	CUtlVector<CServerSideClient *>* pClients = utils::GetClientList();
+	CUtlVector<CServerSideClientBase *>* pClients = utils::GetClientList();
 	if (!pClients) {
 		return -1;
 	}
 	
 	if (pClients->Find(client) != -1) {
-		return pController->GetEntityIndex().Get();
+		return client->GetPlayerSlot().Get();
 	}
 
 	return -1;
-}*/
+}
 
 /**
  * @brief Retrieves a client's authentication string (SteamID).

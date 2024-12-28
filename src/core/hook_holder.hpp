@@ -34,7 +34,6 @@ public:
 		}
 
 		callback(*ihook);
-		std::lock_guard<std::mutex> lock(m_mutex);
 		m_vhooks.emplace(name, std::move(ihook));
 		return true;
 	}
@@ -70,7 +69,6 @@ public:
 		}
 
 		callback(*ihook);
-		std::lock_guard<std::mutex> lock(m_mutex);
 		m_dhooks.emplace(name, std::move(ihook));
 		return true;
 	}
@@ -94,7 +92,6 @@ public:
 	bool RemoveHookDetourFunc(const plg::string& name) {
 		auto it = m_dhooks.find(name);
 		if (it != m_dhooks.end()) {
-			std::lock_guard<std::mutex> lock(m_mutex);
 			m_dhooks.erase(it);
 			return true;
 		}
@@ -105,7 +102,6 @@ public:
 	bool RemoveHookMemFunc(F func, void* ptr) {
 		auto it = m_vhooks.find(std::pair{(void*&) func, ptr});
 		if (it != m_vhooks.end()) {
-			std::lock_guard<std::mutex> lock(m_mutex);
 			m_vhooks.erase(it);
 			return true;
 		}
@@ -125,7 +121,6 @@ public:
 private:
 	std::unordered_map<plg::string, std::unique_ptr<poly::CHook>> m_dhooks;
 	std::unordered_map<std::pair<void*, void*>, std::unique_ptr<poly::CHook>, utils::PairHash<void*, void*>> m_vhooks;
-	std::mutex m_mutex;
 };
 
 extern CHookHolder g_PH;

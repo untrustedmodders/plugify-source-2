@@ -67,7 +67,7 @@ poly::ReturnAction CEntityOutputManager::Hook_FireOutputInternal(poly::Params& p
 	int activator = pActivator != nullptr ? pActivator->GetEntityIndex().Get() : -1;
 	int caller = pCaller != nullptr ? pCaller->GetEntityIndex().Get() : -1;
 
-	for (auto pCallbackPair: m_vecCallbackPairs) {
+	for (const auto& pCallbackPair: m_vecCallbackPairs) {
 		for (size_t i = 0; i < pCallbackPair->pre.GetCount(); ++i) {
 			auto thisResult = pCallbackPair->pre.Notify(i, activator, caller, flDelay);
 			if (thisResult >= ResultType::Stop) {
@@ -94,10 +94,10 @@ poly::ReturnAction CEntityOutputManager::Hook_FireOutputInternal_Post(poly::Para
 	//auto value = poly::GetArgument<const CVariant* const>(params, 3);
 	auto flDelay = poly::GetArgument<float>(params, 4);
 
-	int activator = pActivator != nullptr ? pActivator->GetEntityIndex().Get() : -1;
-	int caller = pCaller != nullptr ? pCaller->GetEntityIndex().Get() : -1;
+	int activator = pActivator != nullptr ? pActivator->GetRefEHandle().ToInt() : INVALID_EHANDLE_INDEX;
+	int caller = pCaller != nullptr ? pCaller->GetRefEHandle().ToInt() : INVALID_EHANDLE_INDEX;
 
-	for (auto pCallbackPair: m_vecCallbackPairs) {
+	for (const auto& pCallbackPair: m_vecCallbackPairs) {
 		pCallbackPair->post.Notify(activator, caller, flDelay);
 	}
 

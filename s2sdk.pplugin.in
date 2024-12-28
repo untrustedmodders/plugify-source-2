@@ -25,6 +25,60 @@
   ],
   "exportedMethods": [
     {
+      "name": "GetClientIndexFromEntityPointer",
+      "group": "Clients",
+      "description": "Retrieves the client index from a given entity pointer.",
+      "funcName": "GetClientIndexFromEntityPointer",
+      "paramTypes": [
+        {
+          "name": "entity",
+          "type": "ptr64",
+          "ref": false,
+          "description": "A pointer to the entity (CBaseEntity*)."
+        }
+      ],
+      "retType": {
+        "type": "int32",
+        "description": "The client index if valid, otherwise -1."
+      }
+    },
+    {
+      "name": "GetClientFromIndex",
+      "group": "Clients",
+      "description": "Retrieves the client object from a given client index.",
+      "funcName": "GetClientFromIndex",
+      "paramTypes": [
+        {
+          "name": "clientIndex",
+          "type": "int32",
+          "ref": false,
+          "description": "The index of the client."
+        }
+      ],
+      "retType": {
+        "type": "ptr64",
+        "description": "A pointer to the client object if found, otherwise nullptr."
+      }
+    },
+    {
+      "name": "GetIndexFromClient",
+      "group": "Clients",
+      "description": "Retrieves the index of a given client object.",
+      "funcName": "GetIndexFromClient",
+      "paramTypes": [
+        {
+          "name": "client",
+          "type": "ptr64",
+          "ref": false,
+          "description": "A pointer to the client object (CServerSideClient*)."
+        }
+      ],
+      "retType": {
+        "type": "int32",
+        "description": "The client index if found, otherwise -1."
+      }
+    },
+    {
       "name": "GetClientAuthId",
       "group": "Clients",
       "description": "Retrieves a client's authentication string (SteamID).",
@@ -1469,6 +1523,24 @@
       ],
       "retType": {
         "type": "void"
+      }
+    },
+    {
+      "name": "ServerCommandEx",
+      "group": "Commands",
+      "description": "Executes a server command as if it were on the server console (or RCON) and stores the printed text into buffer.",
+      "funcName": "ServerCommandEx",
+      "paramTypes": [
+        {
+          "name": "command",
+          "type": "string",
+          "ref": false,
+          "description": "The command to execute on the server."
+        }
+      ],
+      "retType": {
+        "type": "string",
+        "description": "String to store command result into."
       }
     },
     {
@@ -4530,12 +4602,12 @@
             "description": "This function is a callback handler for entity output events. It is triggered when a specific output event is activated, and it handles the process by passing the activator, the caller, and a delay parameter for the output.",
             "paramTypes": [
               {
-                "name": "activator",
+                "name": "activatorHandle",
                 "type": "int32",
                 "description": "The activator is an identifier for the entity or object that triggers the event. It is typically a reference to the entity that caused the output to occur."
               },
               {
-                "name": "caller",
+                "name": "callerHandle",
                 "type": "int32",
                 "description": "The caller represents the entity or object that calls the output function. It can be used to identify which entity initiated the action that caused the event."
               },
@@ -4616,12 +4688,12 @@
             "description": "This function is a callback handler for entity output events. It is triggered when a specific output event is activated, and it handles the process by passing the activator, the caller, and a delay parameter for the output.",
             "paramTypes": [
               {
-                "name": "activator",
+                "name": "activatorHandle",
                 "type": "int32",
                 "description": "The activator is an identifier for the entity or object that triggers the event. It is typically a reference to the entity that caused the output to occur."
               },
               {
-                "name": "caller",
+                "name": "callerHandle",
                 "type": "int32",
                 "description": "The caller represents the entity or object that calls the output function. It can be used to identify which entity initiated the action that caused the event."
               },
@@ -9843,100 +9915,6 @@
       "retType": {
         "type": "double",
         "description": "The ticked time value."
-      }
-    },
-    {
-      "name": "SetClientListening",
-      "group": "Voice",
-      "description": "Sets the listening state of a client with respect to another client.",
-      "funcName": "SetClientListening",
-      "paramTypes": [
-        {
-          "name": "receiverIndex",
-          "type": "int32",
-          "ref": false,
-          "description": "The index of the client who will receive the audio."
-        },
-        {
-          "name": "senderIndex",
-          "type": "int32",
-          "ref": false,
-          "description": "The index of the client who will be sending audio."
-        },
-        {
-          "name": "listen",
-          "type": "int8",
-          "ref": false,
-          "description": "The listening state override for the receiver with respect to the sender."
-        }
-      ],
-      "retType": {
-        "type": "void"
-      }
-    },
-    {
-      "name": "GetClientListening",
-      "group": "Voice",
-      "description": "Retrieves the listening state of a client with respect to another client.",
-      "funcName": "GetClientListening",
-      "paramTypes": [
-        {
-          "name": "receiverIndex",
-          "type": "int32",
-          "ref": false,
-          "description": "The index of the client who receives the audio."
-        },
-        {
-          "name": "senderIndex",
-          "type": "int32",
-          "ref": false,
-          "description": "The index of the client who sends the audio."
-        }
-      ],
-      "retType": {
-        "type": "int8",
-        "description": "The listening state override for the receiver with respect to the sender."
-      }
-    },
-    {
-      "name": "SetClientVoiceFlags",
-      "group": "Voice",
-      "description": "Sets the voice flags for a specified client.",
-      "funcName": "SetClientVoiceFlags",
-      "paramTypes": [
-        {
-          "name": "clientIndex",
-          "type": "int32",
-          "ref": false,
-          "description": "The index of the client for whom the voice flags are being set."
-        },
-        {
-          "name": "flags",
-          "type": "uint8",
-          "ref": false,
-          "description": "The voice flags to be set for the client."
-        }
-      ],
-      "retType": {
-        "type": "void"
-      }
-    },
-    {
-      "name": "GetClientVoiceFlags",
-      "group": "Voice",
-      "description": "Retrieves the voice flags for a specified client.",
-      "funcName": "GetClientVoiceFlags",
-      "paramTypes": [
-        {
-          "name": "clientIndex",
-          "type": "int32",
-          "ref": false,
-          "description": "The index of the client for whom the voice flags are being retrieved."
-        }
-      ],
-      "retType": {
-        "type": "uint8",
-        "description": "The current voice flags for the specified client."
       }
     },
 

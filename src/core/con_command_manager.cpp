@@ -8,7 +8,7 @@ CConCommandManager::~CConCommandManager() {
 		return;
 	}
 
-	for (const auto& [_, command]: m_cmdLookup) {
+	for (const auto& [_, command] : m_cmdLookup) {
 		if (!command->defaultCommand) {
 			g_pCVar->UnregisterConCommand(command->commandRef->GetHandle());
 		}

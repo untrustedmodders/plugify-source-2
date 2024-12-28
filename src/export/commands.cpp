@@ -1,4 +1,5 @@
 #include <core/con_command_manager.hpp>
+#include <core/console.hpp>
 #include <plugin_export.h>
 
 PLUGIFY_WARN_PUSH()
@@ -83,7 +84,28 @@ extern "C" PLUGIN_API void RemoveCommandListener(const plg::string& name, Comman
 extern "C" PLUGIN_API void ServerCommand(const plg::string& command) {
 	auto cleanCommand = command;
 	cleanCommand.append("\n\0");
-	g_pEngineServer2->ServerCommand(cleanCommand.c_str());
+	g_pEngineServer2->ServerCommand(command.c_str());
+}
+/**
+ * @brief Executes a server command as if it were on the server console (or RCON) and stores the printed text into buffer.
+ *
+ * @param command The command to execute on the server.
+ * @return String to store command result into.
+ */
+extern "C" PLUGIN_API plg::string ServerCommandEx(const plg::string& command) {
+	auto cleanCommand = command;
+	cleanCommand.append("\n\0");
+
+	if (!g_ShouldCatchSpew) {
+		g_ShouldCatchSpew = true;
+		g_pEngineServer2->ServerCommand("conhook_start\n");
+		g_pEngineServer2->ServerCommand(cleanCommand.c_str());
+		g_pEngineServer2->ServerCommand("conhook_stop\n");
+	} else {
+		g_pEngineServer2->ServerCommand(cleanCommand.c_str());
+	}
+
+	return g_ServerCommandBuffer;
 }
 
 /**

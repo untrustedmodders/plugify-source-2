@@ -44,13 +44,13 @@ CGameConfig* g_pGameConfig = nullptr;
 
 template<class T>
 static T* FindInterface(const CModule* module, const char* name) {
-	auto CreateInterface = module->GetFunctionByName("CreateInterface");
+	auto CreateInterface = module->GetFunctionByName("CreateInterface").CCast<CreateInterfaceFn>();
 	if (!CreateInterface) {
 		g_Logger.LogFormat(LS_ERROR, "Could not find \"%s\"\n", name);
 		return nullptr;
 	}
 
-	void* pInterface = CreateInterface.CCast<CreateInterfaceFn>()(name, nullptr);
+	void* pInterface = CreateInterface(name, nullptr);
 	if (!pInterface) {
 		g_Logger.LogFormat(LS_ERROR, "Could not find interface %s in %s at \"%s\"\n", name, module->GetModuleName().data(), module->GetModulePath().data());
 		return nullptr;
@@ -121,7 +121,6 @@ namespace globals {
 		ConVar_Register(FCVAR_RELEASE | FCVAR_SERVER_CAN_EXECUTE | FCVAR_GAMEDLL);
 
 		CModule plugify("plugify");
-
 
 		using IMetamodListenerFn = IMetamodListener* (*) ();
 		auto Plugify_ImmListener = plugify.GetFunctionByName("Plugify_ImmListener");

@@ -54,10 +54,6 @@ namespace SourceMM {
 	class IMetamodListener;
 }
 
-namespace SourceHook {
-	class ISourceHook;
-}
-
 extern SourceMM::IMetamodListener* g_pMetamodListener;
 extern CCoreConfig* g_pCoreConfig;
 extern CGameConfig* g_pGameConfig;

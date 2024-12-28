@@ -3,6 +3,7 @@
 #include "timer_system.hpp"
 
 #include <core/sdk/entity/cbaseplayercontroller.h>
+#include <core/sdk/entity/ccsplayercontroller.h>
 #include <core/sdk/utils.h>
 
 #include <eiface.h>
@@ -10,427 +11,370 @@
 #include <inetchannelinfo.h>
 #include <iserver.h>
 
-CPlayer::CPlayer() = default;
-CPlayer::~CPlayer() = default;
+CPlayerManager g_PlayerManager;
 
-void CPlayer::Initialize(plg::string name, plg::string ip, CPlayerSlot slot)
-{
-	m_bConnected = true;
-	m_iSlot = slot;
-	m_name = std::move(name);
-	m_ipAddress = std::move(ip);
-}
-
-const plg::string& CPlayer::GetName() const
-{
-	return m_name;
-}
-
-bool CPlayer::IsConnected() const
-{
-	return m_bConnected;
-}
-
-bool CPlayer::IsFakeClient() const
-{
-	return m_bFakeClient;
-}
-
-bool CPlayer::IsAuthorized() const
-{
-	return m_bAuthorized;
-}
-
-bool CPlayer::IsAuthStringValidated() const
-{
-	if (!IsFakeClient())
-	{
-		return g_pEngineServer2->IsClientFullyAuthenticated(m_iSlot);
+CCSPlayerController* CPlayer::GetController() const {
+	auto entIndex = GetEntityIndex();
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(entIndex));
+	if (!ent) {
+		return nullptr;
 	}
-	return false;
+
+	return ent->IsController() ? static_cast<CCSPlayerController*>(ent) : nullptr;
 }
 
-void CPlayer::Authorize()
-{
-	m_bAuthorized = true;
+CBasePlayerPawn* CPlayer::GetCurrentPawn() const {
+	auto controller = GetController();
+	return controller ? controller->GetCurrentPawn() : nullptr;
 }
 
-void CPlayer::SetName(plg::string name)
-{
-	m_name = std::move(name);
+CCSPlayerPawn* CPlayer::GetPlayerPawn() const {
+	auto controller = GetController();
+	return controller ? controller->GetPlayerPawn() : nullptr;
 }
 
-INetChannelInfo* CPlayer::GetNetInfo() const
-{
+CCSObserverPawn* CPlayer::GetObserverPawn() const {
+	auto controller = GetController();
+	return controller ? reinterpret_cast<CCSObserverPawn*>(controller->GetObserverPawn()) : nullptr;
+}
+
+CServerSideClientBase* CPlayer::GetClient() const {
+	return utils::GetClientBySlot(GetPlayerSlot());
+}
+
+bool CPlayer::IsAuthenticated() const {
+	auto client = GetClient();
+	return client && client->IsConnected() && !client->IsFakeClient() && g_pEngineServer->IsClientFullyAuthenticated(GetPlayerSlot());
+}
+
+bool CPlayer::IsConnected() const {
+	auto client = GetClient();
+	return client && client->IsConnected();
+}
+
+bool CPlayer::IsInGame() const {
+	auto client = GetClient();
+	return client && client->IsActive();
+}
+
+bool CPlayer::IsFakeClient() const {
+	auto client = GetClient();
+	return client && client->IsFakeClient();
+}
+
+bool CPlayer::IsSourceTV() const {
+	auto client = GetClient();
+	return client && client->IsHLTV();
+}
+
+bool CPlayer::IsAlive() const {
+	auto pawn = GetPlayerPawn();
+	return pawn && pawn->IsAlive();
+}
+
+bool CPlayer::IsValidClient() const {
+	if (!utils::IsPlayerSlot(m_iSlot)) {
+		return false;
+	}
+
+	CServerSideClientBase* client = GetClient();
+	if (!client) {
+		return false;
+	}
+
+	auto controller = utils::GetController(client->GetPlayerSlot());
+	return controller && controller->IsController() && client->IsConnected() && client->IsInGame() && !client->IsHLTV();
+}
+
+const char* CPlayer::GetName() const {
+	auto controller = GetController();
+	return controller ? controller->GetPlayerName() : "<blank>";
+}
+
+const char* CPlayer::GetIpAddress() const {
+	auto client = GetClient();
+	return client ? client->GetNetChannel()->GetRemoteAddress().ToString(true) : nullptr;
+}
+
+CSteamID CPlayer::GetSteamId(bool validated) const {
+	bool authenticated = IsAuthenticated();
+	if (validated && !authenticated) {
+		return k_steamIDNil;
+	}
+
+	CServerSideClientBase* client = GetClient();
+	if (client && authenticated) {
+		return client->GetClientSteamID();
+	}
+
+	return m_unauthenticatedSteamID;
+}
+
+INetChannelInfo* CPlayer::GetNetInfo() const {
 	return g_pEngineServer2->GetPlayerNetInfo(m_iSlot);
 }
 
-bool CPlayer::IsInGame() const
-{
-	return m_bInGame;
-}
-
-void CPlayer::Kick()
-{
-	g_pEngineServer2->DisconnectClient(m_iSlot, NETWORK_DISCONNECT_KICKED);
-}
-
-const char* CPlayer::GetKeyValue(const char* key) const
-{
-	return g_pEngineServer2->GetClientConVarValue(m_iSlot, key);
-}
-
-const plg::string& CPlayer::GetIpAddress() const
-{
-	return m_ipAddress;
-}
-
-float CPlayer::GetTimeConnected() const
-{
-	if (!IsConnected() || IsFakeClient())
-	{
+float CPlayer::GetTimeConnected() const {
+	if (!IsConnected() || IsFakeClient()) {
 		return 0;
 	}
 
 	return GetNetInfo()->GetTimeConnected();
 }
 
-float CPlayer::GetLatency() const
-{
+float CPlayer::GetLatency() const {
 	return GetNetInfo()->GetAvgLatency();
 }
 
-void CPlayer::SetListen(CPlayerSlot slot, ListenOverride listen)
-{
-	m_listenMap[slot.Get()] = listen;
+void CPlayer::Kick(const char* internalReason, ENetworkDisconnectionReason reason) const {
+	g_pEngineServer->KickClient(GetPlayerSlot(), internalReason, reason);
 }
 
-void CPlayer::SetVoiceFlags(VoiceFlag_t flags)
-{
-	m_voiceFlag = flags;
+void CPlayerManager::OnSteamAPIActivated() {
+	m_CallbackValidateAuthTicketResponse.Register(this, &CPlayerManager::OnValidateAuthTicket);
 }
 
-VoiceFlag_t CPlayer::GetVoiceFlags() const
-{
-	return m_voiceFlag;
-}
+void CPlayerManager::OnValidateAuthTicket(ValidateAuthTicketResponse_t* pResponse) {
+	uint64 iSteamId = pResponse->m_SteamID.ConvertToUint64();
 
-ListenOverride CPlayer::GetListen(CPlayerSlot slot) const
-{
-	return m_listenMap[slot.Get()];
-}
+	g_Logger.LogFormat(LS_DEBUG, "OnValidateAuthTicket %s: SteamID=%llu Response=%d\n", iSteamId, pResponse->m_eAuthSessionResponse);
 
-void CPlayer::Connect()
-{
-	if (m_bInGame)
-	{
-		return;
-	}
+	for (const CPlayer& player : m_players) {
+		if (!player.IsConnected() || player.IsFakeClient() || !(player.GetUnauthenticatedSteamId64() == iSteamId))
+			continue;
 
-	m_bInGame = true;
-}
-
-void CPlayer::Disconnect()
-{
-	m_bConnected = false;
-	m_bInGame = false;
-	m_name.clear();
-	m_bFakeClient = false;
-	m_bAuthorized = false;
-	m_ipAddress.clear();
-}
-
-const CSteamID* CPlayer::GetSteamId() const
-{
-	return m_steamId;
-}
-
-void CPlayer::SetSteamId(const CSteamID* steam_id)
-{
-	m_steamId = steam_id;
-}
-
-uint64 CPlayer::GetAdminFlags() const
-{
-	return m_iAdminFlags;
-}
-
-void CPlayer::SetAdminFlags(uint64 adminFlags)
-{
-	m_iAdminFlags = adminFlags;
-}
-
-bool CPlayer::IsAdminFlagSet(uint64 flag) const
-{
-	return !flag || (m_iAdminFlags & flag);
-}
-
-CPlayerManager::CPlayerManager() = default;
-
-void CPlayerManager::RunAuthChecks()
-{
-	if (CTimerSystem::GetTickedTime() - m_lastAuthCheckTime < 0.5)
-	{
-		return;
-	}
-
-	m_lastAuthCheckTime = static_cast<float>(CTimerSystem::GetTickedTime());
-
-	for (int i = 0; i <= MaxClients(); ++i)
-	{
-		auto& player = m_players[i];
-		if (player.IsConnected())
-		{
-			if (player.IsAuthorized() || player.IsFakeClient())
-				continue;
-
-			if (g_pEngineServer2->IsClientFullyAuthenticated(i))
-			{
-				player.Authorize();
-				player.SetSteamId(g_pEngineServer2->GetClientSteamID(i));
-				OnClientAuthorized(&player);
+		switch (pResponse->m_eAuthSessionResponse) {
+			case k_EAuthSessionResponseOK: {
+				GetOnClientAuthorizedListenerManager().Notify(player.GetPlayerSlot().Get(), player.GetSteamId().ConvertToUint64());
+				return;
 			}
+			default:
+				break;
 		}
 	}
 }
 
-void CPlayerManager::OnClientAuthorized(CPlayer* player) const
-{
-	g_Logger.LogFormat(LS_DEBUG, "[OnClientAuthorized] - %s, %lli\n", player->GetName().c_str(), player->GetSteamId()->ConvertToUint64());
-
-	GetOnClientAuthorizedListenerManager().Notify(player->m_iSlot.Get(), player->GetSteamId()->ConvertToUint64());
-}
-
-bool CPlayerManager::OnClientConnect(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, bool unk1, CBufferString* pRejectReason)
-{
-	g_Logger.LogFormat(LS_DEBUG, "[OnClientConnect] - %d, %s, %s\n", slot.Get(), pszName, pszNetworkID);
-
+bool CPlayerManager::OnClientConnect(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, bool unk1, CBufferString* pRejectReason) {
 	int client = slot.Get();
-	CPlayer* pPlayer = &m_players[client];
+	CPlayer& player = m_players[client];
 
-	if (pPlayer->IsConnected())
-	{
+	if (player.IsConnected()) {
 		OnClientDisconnect(slot, ENetworkDisconnectionReason::NETWORK_DISCONNECT_INVALID, pszName, xuid, pszNetworkID);
 		OnClientDisconnect_Post(slot, ENetworkDisconnectionReason::NETWORK_DISCONNECT_INVALID, pszName, xuid, pszNetworkID);
 	}
 
-	pPlayer->Initialize(pszName, pszNetworkID, slot);
+	player.Init(client);
+	player.SetUnauthenticatedSteamID(xuid);
 
-	m_bRefuseConnection = false;
+	m_refuseConnection.reset(client);
 
-	for (size_t i = 0; i < GetOnClientConnectListenerManager().GetCount(); ++i)
-	{
-		m_bRefuseConnection |= !GetOnClientConnectListenerManager().Notify(i, client, pszName, pszNetworkID);
+	for (size_t i = 0; i < GetOnClientConnectListenerManager().GetCount(); ++i) {
+		bool connected = GetOnClientConnectListenerManager().Notify(i, client, pszName, pszNetworkID);
+		if (!connected) {
+			m_refuseConnection.set(client);
+		}
 	}
 
-	return m_bRefuseConnection;
+	return !m_refuseConnection.test(client);
 }
 
-bool CPlayerManager::OnClientConnect_Post(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, bool unk1, CBufferString* pRejectReason, bool origRet)
-{
-	g_Logger.LogFormat(LS_DEBUG, "[OnClientConnect_Post] - %d, %s, %s\n", slot.Get(), pszName, pszNetworkID);
-
+bool CPlayerManager::OnClientConnect_Post(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, bool unk1, CBufferString* pRejectReason, bool origRet) {
 	int client = slot.Get();
-	CPlayer* pPlayer = &m_players[client];
+	CPlayer& player = m_players[client];
 
-	if (m_bRefuseConnection)
+	if (m_refuseConnection.test(client)) {
+		m_refuseConnection.reset(client);
 		origRet = false;
-
-	if (origRet)
-	{
-		GetOnClientConnect_PostListenerManager().Notify(pPlayer->m_iSlot.Get());
 	}
-	else
-	{
-		InvalidatePlayer(pPlayer);
+
+	if (origRet) {
+		GetOnClientConnect_PostListenerManager().Notify(player.GetPlayerSlot().Get());
+	} else {
+		player.Reset();
 	}
 
 	return origRet;
 }
 
-void CPlayerManager::OnClientConnected(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, const char* pszAddress, bool bFakePlayer)
-{
-	g_Logger.LogFormat(LS_DEBUG, "[OnClientConnected] - %d, %s, %s, %s\n", slot.Get(), pszName, pszNetworkID, pszAddress);
-
+void CPlayerManager::OnClientConnected(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, const char* pszAddress, bool bFakePlayer) {
 	int client = slot.Get();
-	CPlayer* pPlayer = &m_players[client];
-	//pPlayer->SetUnauthenticatedSteamId(new CSteamID(xuid));
+	CPlayer& player = m_players[client];
+	//player.SetUnauthenticatedSteamId(xuid);
 
-	GetOnClientConnectedListenerManager().Notify(pPlayer->m_iSlot.Get());
+	GetOnClientConnectedListenerManager().Notify(player.GetPlayerSlot().Get());
 }
 
-void CPlayerManager::OnClientPutInServer(CPlayerSlot slot, char const* pszName, int type, uint64 xuid)
-{
-	g_Logger.LogFormat(LS_DEBUG, "[OnClientPutInServer] - %d, %s, %d\n", slot.Get(), pszName, type);
-
+void CPlayerManager::OnClientPutInServer(CPlayerSlot slot, char const* pszName, int type, uint64 xuid) {
 	int client = slot.Get();
-	CPlayer* pPlayer = &m_players[client];
+	CPlayer& player = m_players[client];
 
-	if (!pPlayer->IsConnected())
-	{
-		pPlayer->m_bFakeClient = true;
-
-		/*CBufferStringGrowable<255> buffer;
-		if (!OnClientConnect(slot, pszName, 0, "127.0.0.1", false, &buffer))
-		{
-			pPlayer->Kick();
+	if (!player.IsConnected()) {
+		if (!OnClientConnect(slot, pszName, 0, "127.0.0.1", false, new CBufferStringGrowable<255>())) {
+			/* :TODO: kick the bot if it's rejected */
 			return;
-		}*/
+		}
 
-		GetOnClientConnect_PostListenerManager().Notify(pPlayer->m_iSlot.Get());
+		GetOnClientConnect_PostListenerManager().Notify(player.GetPlayerSlot().Get());
 	}
 
-	pPlayer->Connect();
-	m_playerCount++;
-
-	// pPlayer->m_info = playerinfo->GetPlayerInfo(pEntity);
-
-	GetOnClientPutInServerListenerManager().Notify(pPlayer->m_iSlot.Get());
+	GetOnClientPutInServerListenerManager().Notify(player.GetPlayerSlot().Get());
 }
 
-void CPlayerManager::OnClientDisconnect(CPlayerSlot slot, ENetworkDisconnectionReason reason, const char* pszName, uint64 xuid, const char* pszNetworkID)
-{
-	g_Logger.LogFormat(LS_DEBUG, "[OnClientDisconnect] - %d, %s, %s\n", slot.Get(), pszName, pszNetworkID);
-
+void CPlayerManager::OnClientDisconnect(CPlayerSlot slot, ENetworkDisconnectionReason reason, const char* pszName, uint64 xuid, const char* pszNetworkID) {
 	int client = slot.Get();
-	CPlayer* pPlayer = &m_players[client];
+	CPlayer& player = m_players[client];
 
-	if (pPlayer->IsConnected())
-	{
-		GetOnClientDisconnectListenerManager().Notify(pPlayer->m_iSlot.Get(), (int)reason);
-	}
-
-	if (pPlayer->IsInGame())
-	{
-		m_playerCount--;
+	if (player.IsConnected()) {
+		GetOnClientDisconnectListenerManager().Notify(player.GetPlayerSlot().Get(), (int) reason);
 	}
 }
 
-void CPlayerManager::OnClientDisconnect_Post(CPlayerSlot slot, ENetworkDisconnectionReason reason, const char* pszName, uint64 xuid, const char* pszNetworkID)
-{
-	g_Logger.LogFormat(LS_DEBUG, "[OnClientDisconnect_Post] - %d, %s, %s\n", slot.Get(), pszName, pszNetworkID);
-
+void CPlayerManager::OnClientDisconnect_Post(CPlayerSlot slot, ENetworkDisconnectionReason reason, const char* pszName, uint64 xuid, const char* pszNetworkID) {
 	int client = slot.Get();
-	CPlayer* pPlayer = &m_players[client];
-	if (!pPlayer->IsConnected())
-	{
+	CPlayer& player = m_players[client];
+
+	if (!player.IsConnected()) {
 		/* We don't care, prevent a double call */
 		return;
 	}
 
-	InvalidatePlayer(pPlayer);
+	GetOnClientDisconnect_PostListenerManager().Notify(player.GetPlayerSlot().Get(), (int) reason);
 
-	GetOnClientDisconnect_PostListenerManager().Notify(pPlayer->m_iSlot.Get(), (int)reason);
+	player.Reset();
 }
 
-void CPlayerManager::OnClientActive(CPlayerSlot slot, bool bLoadGame) const
-{
-	g_Logger.LogFormat(LS_DEBUG, "[OnClientActive] - %d\n", slot.Get());
-
+void CPlayerManager::OnClientActive(CPlayerSlot slot, bool bLoadGame) const {
 	GetOnClientActiveListenerManager().Notify(slot.Get(), bLoadGame);
 }
 
-void CPlayerManager::OnLevelShutdown()
-{
-	g_Logger.Log(LS_DEBUG, "[OnLevelShutdown]\n");
-
-	for (int i = 0; i <= MaxClients(); ++i)
-	{
+void CPlayerManager::OnLevelShutdown() {
+	for (int i = 0; i <= MaxClients(); ++i) {
 		auto& player = m_players[i];
-		if (player.IsConnected())
-		{
-			OnClientDisconnect(player.m_iSlot, ENetworkDisconnectionReason::NETWORK_DISCONNECT_INVALID, player.GetName().c_str(), 0, player.GetIpAddress().c_str());
-			OnClientDisconnect_Post(player.m_iSlot, ENetworkDisconnectionReason::NETWORK_DISCONNECT_INVALID, player.GetName().c_str(), 0, player.GetIpAddress().c_str());
+		if (player.IsConnected()) {
+			CPlayerSlot slot = player.GetPlayerSlot();
+			OnClientDisconnect(slot, ENetworkDisconnectionReason::NETWORK_DISCONNECT_INVALID, player.GetName(), 0, player.GetIpAddress());
+			OnClientDisconnect_Post(slot, ENetworkDisconnectionReason::NETWORK_DISCONNECT_INVALID, player.GetName(), 0, player.GetIpAddress());
 		}
 	}
-
-	m_playerCount = 0;
 }
 
-int CPlayerManager::NumPlayers() const
-{
-	return m_playerCount;
-}
-
-int CPlayerManager::MaxClients()
-{
+int CPlayerManager::MaxClients() {
 	return gpGlobals ? gpGlobals->maxClients : -1;
 }
 
-CPlayer* CPlayerManager::GetPlayerBySlot(CPlayerSlot slot) const
-{
-	int client = slot.Get();
+CPlayer* CPlayerManager::ToPlayer(CServerSideClientBase* pClient) const {
+	return ToPlayer(CPlayerSlot(pClient->GetPlayerSlot()));
+}
 
-	if (client > MaxClients() || client < 0)
-	{
+CPlayer* CPlayerManager::ToPlayer(CPlayerPawnComponent* component) const {
+	return ToPlayer(component->GetPawn());
+}
+
+CPlayer* CPlayerManager::ToPlayer(CBasePlayerController* controller) const {
+	if (!controller) {
 		return nullptr;
 	}
 
-	return const_cast<CPlayer*>(&m_players[client]);
+	return ToPlayer(CPlayerSlot(controller->GetPlayerSlot()));
 }
 
-// In userids, the lower byte is always the player slot
-CPlayerSlot CPlayerManager::GetSlotFromUserId(uint16 userid) const
-{
-	return CPlayerSlot(userid & 0xFF);
-}
-
-CPlayer* CPlayerManager::GetPlayerFromUserId(uint16 userid) const
-{
-	uint8 client = userid & 0xFF;
-
-	if (client >= MaxClients())
-	{
+CPlayer* CPlayerManager::ToPlayer(CBasePlayerPawn* pawn) const {
+	if (!pawn) {
 		return nullptr;
 	}
 
-	return const_cast<CPlayer*>(&m_players[client]);
+	CBasePlayerController* controller = pawn->GetController();
+	if (!controller) {
+		return nullptr;
+	}
+
+	return ToPlayer(controller);
 }
 
-CPlayer* CPlayerManager::GetPlayerFromSteamId(uint64 steamid) const
-{
-	for (int i = 0; i <= MaxClients(); ++i)
-	{
-		auto& player = m_players[i];
-		if (player.IsConnected() && player.IsAuthorized() && player.GetSteamId()->ConvertToUint64() == steamid)
-		{
-			return const_cast<CPlayer*>(&player);
+CPlayer* CPlayerManager::ToPlayer(CPlayerSlot slot) const {
+	if (utils::IsPlayerSlot(slot)) {
+		return const_cast<CPlayer*>(&m_players.at(slot.Get()));
+	}
+
+	return nullptr;
+}
+
+CPlayer* CPlayerManager::ToPlayer(CEntityIndex entIndex) const {
+	CBaseEntity* ent = static_cast<CBaseEntity*>(GameEntitySystem()->GetEntityInstance(entIndex));
+	if (!ent) {
+		return nullptr;
+	}
+
+	if (ent->IsPawn()) {
+		return ToPlayer(static_cast<CBasePlayerPawn*>(ent));
+	}
+
+	if (ent->IsController()) {
+		return ToPlayer(static_cast<CBasePlayerController*>(ent));
+	}
+
+	return nullptr;
+}
+
+CPlayer* CPlayerManager::ToPlayer(CPlayerUserId userID) const {
+	for (int slot = 0; slot < MaxClients(); slot++) {
+		if (g_pEngineServer->GetPlayerUserId(CPlayerSlot(slot)) == userID.Get()) {
+			return ToPlayer(CPlayerSlot(slot));
 		}
 	}
 
 	return nullptr;
 }
 
-TargetType CPlayerManager::TargetPlayerString(int caller, const char* target, plg::vector<int>& clients)
-{
+CPlayer* CPlayerManager::ToPlayer(CSteamID steamid, bool validate) const {
+	auto steam64 = steamid.ConvertToUint64();
+	for (auto& player: GetOnlinePlayers()) {
+		if (player->GetSteamId64(validate) == steam64) {
+			return player;
+		}
+	}
+
+	return nullptr;
+}
+
+std::vector<CPlayer*> CPlayerManager::GetOnlinePlayers() const {
+	std::vector<CPlayer*> players;
+	players.reserve(MAXPLAYERS);
+	for (auto& player: m_players) {
+		if (utils::IsPlayerSlot(player.GetPlayerSlot())) {
+			players.emplace_back(const_cast<CPlayer*>(&player));
+		}
+	}
+
+	return players;
+}
+
+TargetType CPlayerManager::TargetPlayerString(int caller, std::string_view target, plg::vector<int>& clients) {
 	TargetType targetType = TargetType::NONE;
-	if (!V_stricmp(target, "@me"))
+
+	if (target == "@me")
 		targetType = TargetType::SELF;
-	else if (!V_stricmp(target, "@all"))
+	else if (target == "@all")
 		targetType = TargetType::ALL;
-	else if (!V_stricmp(target, "@t"))
+	else if (target == "@t")
 		targetType = TargetType::T;
-	else if (!V_stricmp(target, "@ct"))
+	else if (target == "@ct")
 		targetType = TargetType::CT;
-	else if (!V_stricmp(target, "@spec"))
+	else if (target == "@spec")
 		targetType = TargetType::SPECTATOR;
-	else if (!V_stricmp(target, "@random"))
+	else if (target == "@random")
 		targetType = TargetType::RANDOM;
-	else if (!V_stricmp(target, "@randomt"))
+	else if (target == "@randomt")
 		targetType = TargetType::RANDOM_T;
-	else if (!V_stricmp(target, "@randomct"))
+	else if (target == "@randomct")
 		targetType = TargetType::RANDOM_CT;
 
 	clients.clear();
-	
-	if (targetType == TargetType::SELF && caller != -1)
-	{
+
+	if (targetType == TargetType::SELF && caller != -1) {
 		clients.push_back(caller);
-	}
-	else if (targetType == TargetType::ALL)
-	{
-		for (int i = 0; i < MaxClients(); ++i)
-		{
+	} else if (targetType == TargetType::ALL) {
+		for (int i = 0; i < MaxClients(); ++i) {
 			if (!m_players[i].IsConnected())
 				continue;
 
@@ -441,11 +385,8 @@ TargetType CPlayerManager::TargetPlayerString(int caller, const char* target, pl
 
 			clients.push_back(i);
 		}
-	}
-	else if (targetType >= TargetType::SPECTATOR)
-	{
-		for (int i = 0; i < MaxClients(); ++i)
-		{
+	} else if (targetType >= TargetType::SPECTATOR) {
+		for (int i = 0; i < MaxClients(); ++i) {
 			if (!m_players[i].IsConnected())
 				continue;
 
@@ -454,18 +395,16 @@ TargetType CPlayerManager::TargetPlayerString(int caller, const char* target, pl
 			if (!player || !player->IsController() || !player->IsConnected())
 				continue;
 
-			if (player->m_iTeamNum() != (targetType == TargetType::T ? CS_TEAM_T : targetType == TargetType::CT ? CS_TEAM_CT : CS_TEAM_SPECTATOR))
+			if (player->m_iTeamNum() != (targetType == TargetType::T ? CS_TEAM_T : targetType == TargetType::CT ? CS_TEAM_CT
+																												: CS_TEAM_SPECTATOR))
 				continue;
 
 			clients.push_back(i);
 		}
-	}
-	else if (targetType >= TargetType::RANDOM && targetType <= TargetType::RANDOM_CT)
-	{
+	} else if (targetType >= TargetType::RANDOM && targetType <= TargetType::RANDOM_CT) {
 		int attempts = 0;
 
-		while (clients.empty() == 0 && attempts < 10000)
-		{
+		while (clients.empty() == 0 && attempts < 10000) {
 			int i = rand() % (MaxClients() - 1);
 
 			// Prevent infinite loop
@@ -484,25 +423,19 @@ TargetType CPlayerManager::TargetPlayerString(int caller, const char* target, pl
 
 			clients.push_back(i);
 		}
-	}
-	else if (*target == '#')
-	{
-		int userid = V_StringToUint16(target + 1, -1);
+	} else if (target.starts_with('#')) {
+		int userid = V_StringToUint16(target.substr(1).data(), -1);
 
-		if (userid != -1)
-		{
+		if (userid != -1) {
 			targetType = TargetType::PLAYER;
-			CBasePlayerController* player = utils::GetController(GetSlotFromUserId(userid).Get());
-			if (player && player->IsController() && player->IsConnected())
-			{
-				clients.push_back(GetSlotFromUserId(userid).Get());
+			CPlayerSlot slot = utils::GetSlotFromUserId(userid);
+			CBasePlayerController* player = utils::GetController(slot);
+			if (player && player->IsController() && player->IsConnected()) {
+				clients.push_back(slot.Get());
 			}
 		}
-	}
-	else
-	{
-		for (int i = 0; i < MaxClients(); ++i)
-		{
+	} else {
+		for (int i = 0; i < MaxClients(); ++i) {
 			if (!m_players[i].IsConnected())
 				continue;
 
@@ -511,8 +444,7 @@ TargetType CPlayerManager::TargetPlayerString(int caller, const char* target, pl
 			if (!player || !player->IsController() || !player->IsConnected())
 				continue;
 
-			if (V_stristr(player->GetPlayerName(), target))
-			{
+			if (V_stristr(player->GetPlayerName(), target.data())) {
 				targetType = TargetType::PLAYER;
 				clients.push_back(i);
 				break;
@@ -522,10 +454,3 @@ TargetType CPlayerManager::TargetPlayerString(int caller, const char* target, pl
 
 	return targetType;
 }
-
-void CPlayerManager::InvalidatePlayer(CPlayer* pPlayer)
-{
-	pPlayer->Disconnect();
-}
-
-CPlayerManager g_PlayerManager;

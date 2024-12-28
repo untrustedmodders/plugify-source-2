@@ -164,8 +164,7 @@ public:
 		return m_iGlobalname.Get().String();
 	}
 
-	/*void TakeDamage(CTakeDamageInfo &info)
-	{
+	/*void TakeDamage(CTakeDamageInfo &info) {
 		Detour_CBaseEntity_TakeDamageOld(this, &info);
 	}*/
 

@@ -97,7 +97,8 @@ namespace schema {
 			for (int i = 0; i < fieldsSize; ++i) {
 				SchemaClassFieldData_t& field = pFields[i];
 
-				if (V_strcmp(field.m_pszName, "__m_pChainEntity") == 0) {
+				std::string_view name(field.m_pszName);
+				if (name == "__m_pChainEntity") {
 					return field.m_nSingleInheritanceOffset;
 				}
 			}

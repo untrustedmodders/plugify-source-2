@@ -15,11 +15,11 @@ CTimer::~CTimer() = default;
 CTimerSystem::CTimerSystem() = default;
 
 CTimerSystem::~CTimerSystem() {
-	for (auto timer: m_onceOffTimers) {
+	for (const auto& timer: m_onceOffTimers) {
 		delete timer;
 	}
 
-	for (auto timer: m_repeatTimers) {
+	for (const auto& timer: m_repeatTimers) {
 		delete timer;
 	}
 }

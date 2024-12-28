@@ -68,12 +68,12 @@ CBaseEntity* utils::FindEntityByClassname(CEntityInstance* start, const char* na
 #define FCVAR_FLAGS_TO_REMOVE (FCVAR_HIDDEN | FCVAR_DEVELOPMENTONLY | FCVAR_MISSING0 | FCVAR_MISSING1 | FCVAR_MISSING2 | FCVAR_MISSING3)
 
 CBasePlayerController* utils::GetController(CBaseEntity* entity) {
-	CCSPlayerController* controller = nullptr;
-	if (!V_stricmp(entity->GetClassname(), "observer")) {
+	std::string_view name(entity->GetClassname());
+	if (name == "observer") {
 		CBasePlayerPawn* pawn = static_cast<CBasePlayerPawn*>(entity);
 		if (!pawn->m_hController().IsValid() || pawn->m_hController() == nullptr) {
 			for (int i = 0; i <= gpGlobals->maxClients; i++) {
-				controller = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(i)));
+				CCSPlayerController* controller = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(i)));
 				if (controller && controller->m_hObserverPawn() && controller->m_hObserverPawn() == entity) {
 					return controller;
 				}
@@ -87,7 +87,7 @@ CBasePlayerController* utils::GetController(CBaseEntity* entity) {
 		if (!pawn->m_hController().IsValid() || pawn->m_hController() == nullptr) {
 			// Seems like the pawn lost its controller, we can try looping through the controllers to find this pawn instead.
 			for (int i = 0; i <= gpGlobals->maxClients; i++) {
-				controller = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(i)));
+				CCSPlayerController* controller = static_cast<CCSPlayerController*>(utils::GetController(CPlayerSlot(i)));
 				if (controller && controller->m_hPlayerPawn() && controller->m_hPlayerPawn() == entity) {
 					return controller;
 				}
@@ -141,6 +141,9 @@ CUtlVector<CServerSideClientBase*>* utils::GetClientList() {
 }
 
 CServerSideClientBase* utils::GetClientBySlot(CPlayerSlot slot) {
+	if (!utils::IsPlayerSlot(slot))
+		return nullptr;
+
 	CUtlVector<CServerSideClientBase*>* clientList = GetClientList();
 	return (clientList && GetController(slot)) ? clientList->Element(slot.Get()) : nullptr;
 }

@@ -43,7 +43,7 @@
 struct SchemaKey {
 	int32 offset;
 	bool networked;
-	int size;
+	int32 size;
 	CSchemaType* type;
 };
 
