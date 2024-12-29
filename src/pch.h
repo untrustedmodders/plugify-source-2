@@ -12,6 +12,7 @@
 #include <memory>
 #include <optional>
 #include <span>
+#include <mutex>
 #include <sstream>
 #include <stack>
 #include <string>

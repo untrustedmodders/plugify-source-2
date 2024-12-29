@@ -238,7 +238,7 @@ poly::ReturnAction Source2SDK::Hook_ClientActive(poly::CallbackType type, poly::
 	auto slot = (CPlayerSlot) poly::GetArgument<int>(params, 1);
 	auto bLoadGame = poly::GetArgument<bool>(params, 2);
 	auto pszName = poly::GetArgument<const char*>(params, 3);
-	auto xuid = poly::GetArgument<uint64>(params, 4);
+	auto xuid = (uint64) poly::GetArgument<uint64_t>(params, 4);
 
 	g_Logger.LogFormat(LS_DEBUG, "[OnClientActive] = %d, \"%s\", %lli\n", slot, pszName, xuid);
 
@@ -255,12 +255,13 @@ poly::ReturnAction Source2SDK::Hook_ClientDisconnect(poly::CallbackType type, po
 	auto pszName = poly::GetArgument<const char*>(params, 3);
 	auto xuid = poly::GetArgument<uint64_t>(params, 4);
 	auto pszNetworkID = poly::GetArgument<const char*>(params, 5);
+
 	g_Logger.LogFormat(LS_DEBUG, "[ClientDisconnect] = %d, %d, \"%s\", %lli, \"%s\"\n", slot, reason, pszName, xuid, pszNetworkID);
 
 	if (type == poly::CallbackType::Pre) {
-		g_PlayerManager.OnClientDisconnect(slot, reason, pszName, xuid, pszNetworkID);
+		g_PlayerManager.OnClientDisconnect(slot, reason);
 	} else {
-		g_PlayerManager.OnClientDisconnect_Post(slot, reason, pszName, xuid, pszNetworkID);
+		g_PlayerManager.OnClientDisconnect_Post(slot, reason);
 	}
 
 	return poly::ReturnAction::Ignored;
@@ -272,17 +273,19 @@ poly::ReturnAction Source2SDK::Hook_ClientPutInServer(poly::CallbackType type, p
 	auto pszName = poly::GetArgument<const char*>(params, 2);
 	auto conType = poly::GetArgument<int>(params, 3);
 	auto xuid = poly::GetArgument<uint64_t>(params, 4);
+
 	g_Logger.LogFormat(LS_DEBUG, "[ClientPutInServer] = %d, \"%s\", %d, %d, %lli\n", slot, pszName, conType, xuid);
 
-	g_PlayerManager.OnClientPutInServer(slot, pszName, conType, xuid);
-
+	g_PlayerManager.OnClientPutInServer(slot, pszName);
 	return poly::ReturnAction::Ignored;
 }
 
 poly::ReturnAction Source2SDK::Hook_ClientSettingsChanged(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
 	// CPlayerSlot slot
 	auto slot = (CPlayerSlot) poly::GetArgument<int>(params, 1);
+
 	g_Logger.LogFormat(LS_DEBUG, "[ClientSettingsChanged] = %d\n", slot.Get());
+
 	GetOnClientSettingsChangedListenerManager().Notify(slot.Get());
 	return poly::ReturnAction::Ignored;
 }
@@ -295,15 +298,19 @@ poly::ReturnAction Source2SDK::Hook_OnClientConnected(poly::CallbackType type, p
 	auto pszNetworkID = poly::GetArgument<const char*>(params, 4);
 	auto pszAddress = poly::GetArgument<const char*>(params, 5);
 	auto bFakePlayer = poly::GetArgument<bool>(params, 6);
+
 	g_Logger.LogFormat(LS_DEBUG, "[OnClientConnected] = %d, \"%s\", %lli, \"%s\", \"%s\", %d\n", slot, pszName, xuid, pszNetworkID, pszAddress, bFakePlayer);
-	g_PlayerManager.OnClientConnected(slot, pszName, xuid, pszNetworkID, pszAddress, bFakePlayer);
+
+	g_PlayerManager.OnClientConnected(slot);
 	return poly::ReturnAction::Ignored;
 }
 
 poly::ReturnAction Source2SDK::Hook_ClientFullyConnect(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
 	// CPlayerSlot slot
 	auto slot = (CPlayerSlot) poly::GetArgument<int>(params, 1);
+
 	g_Logger.LogFormat(LS_DEBUG, "[ClientFullyConnect] = %d\n", slot.Get());
+
 	GetOnClientFullyConnectListenerManager().Notify(slot.Get());
 	return poly::ReturnAction::Ignored;
 }
@@ -320,10 +327,10 @@ poly::ReturnAction Source2SDK::Hook_ClientConnect(poly::CallbackType type, poly:
 	g_Logger.LogFormat(LS_DEBUG, "[ClientConnect] = %d, \"%s\", %lli, \"%s\", %d, \"%s\" \n", slot, pszName, xuid, pszNetworkID, unk1, pRejectReason->ToGrowable()->Get());
 
 	if (type == poly::CallbackType::Pre) {
-		g_PlayerManager.OnClientConnect(slot, pszName, xuid, pszNetworkID, unk1, pRejectReason);
+		g_PlayerManager.OnClientConnect(slot, pszName, xuid, pszNetworkID);
 	} else {
 		bool origRet = poly::GetReturn<bool>(ret);
-		bool newRet = g_PlayerManager.OnClientConnect_Post(slot, pszName, xuid, pszNetworkID, unk1, pRejectReason, origRet);
+		bool newRet = g_PlayerManager.OnClientConnect_Post(slot, origRet);
 		if (newRet != origRet) {
 			poly::SetReturn<bool>(ret, newRet);
 			return poly::ReturnAction::Handled;

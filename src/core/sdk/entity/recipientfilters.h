@@ -66,7 +66,7 @@ public:
 
 	CPlayerSlot GetRecipientIndex(int slot) const override {
 		if (slot < 0 || slot >= GetRecipientCount())
-			return CPlayerSlot(-1);
+			return -1;
 
 		return m_Recipients[slot];
 	}

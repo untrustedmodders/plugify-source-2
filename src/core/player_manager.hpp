@@ -116,12 +116,12 @@ public:
 	CPlayer* ToPlayer(CSteamID steamid, bool validate = false) const;
 
 	void OnSteamAPIActivated();
-	bool OnClientConnect(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, bool unk1, CBufferString* pRejectReason);
-	bool OnClientConnect_Post(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, bool unk1, CBufferString* pRejectReason, bool origRet);
-	void OnClientConnected(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, const char* pszAddress, bool bFakePlayer);
-	void OnClientPutInServer(CPlayerSlot slot, char const* pszName, int type, uint64 xuid);
-	void OnClientDisconnect(CPlayerSlot slot, ENetworkDisconnectionReason reason, const char* pszName, uint64 xuid, const char* pszNetworkID);
-	void OnClientDisconnect_Post(CPlayerSlot slot, ENetworkDisconnectionReason reason, const char* pszName, uint64 xuid, const char* pszNetworkID);
+	bool OnClientConnect(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID);
+	bool OnClientConnect_Post(CPlayerSlot slot, bool bOrigRet);
+	void OnClientConnected(CPlayerSlot slot);
+	void OnClientPutInServer(CPlayerSlot slot, char const* pszName);
+	void OnClientDisconnect(CPlayerSlot slot, ENetworkDisconnectionReason reason);
+	void OnClientDisconnect_Post(CPlayerSlot slot, ENetworkDisconnectionReason reason);
 	void OnClientActive(CPlayerSlot slot, bool bLoadGame) const;
 	void OnLevelShutdown();
 
@@ -134,7 +134,6 @@ public:
 
 protected:
 	std::array<CPlayer, MAXPLAYERS> m_players;
-	std::bitset<MAXPLAYERS> m_refuseConnection{};
 };
 
 extern CPlayerManager g_PlayerManager;
