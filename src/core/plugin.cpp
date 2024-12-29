@@ -244,7 +244,7 @@ poly::ReturnAction Source2SDK::Hook_ClientActive(poly::CallbackType type, poly::
 
 	g_PlayerManager.OnClientActive(slot, bLoadGame);
 
-	GetOnClientActiveListenerManager().Notify(slot.Get(), bLoadGame);
+	GetOnClientActiveListenerManager().Notify(slot, bLoadGame);
 	return poly::ReturnAction::Ignored;
 }
 
@@ -284,9 +284,9 @@ poly::ReturnAction Source2SDK::Hook_ClientSettingsChanged(poly::CallbackType typ
 	// CPlayerSlot slot
 	auto slot = (CPlayerSlot) poly::GetArgument<int>(params, 1);
 
-	g_Logger.LogFormat(LS_DEBUG, "[ClientSettingsChanged] = %d\n", slot.Get());
+	g_Logger.LogFormat(LS_DEBUG, "[ClientSettingsChanged] = %d\n", slot);
 
-	GetOnClientSettingsChangedListenerManager().Notify(slot.Get());
+	GetOnClientSettingsChangedListenerManager().Notify(slot);
 	return poly::ReturnAction::Ignored;
 }
 
@@ -309,9 +309,9 @@ poly::ReturnAction Source2SDK::Hook_ClientFullyConnect(poly::CallbackType type, 
 	// CPlayerSlot slot
 	auto slot = (CPlayerSlot) poly::GetArgument<int>(params, 1);
 
-	g_Logger.LogFormat(LS_DEBUG, "[ClientFullyConnect] = %d\n", slot.Get());
+	g_Logger.LogFormat(LS_DEBUG, "[ClientFullyConnect] = %d\n", slot);
 
-	GetOnClientFullyConnectListenerManager().Notify(slot.Get());
+	GetOnClientFullyConnectListenerManager().Notify(slot);
 	return poly::ReturnAction::Ignored;
 }
 
@@ -348,7 +348,7 @@ poly::ReturnAction Source2SDK::Hook_ClientCommand(poly::CallbackType type, poly:
 		return poly::ReturnAction::Ignored;
 	}
 
-	g_Logger.LogFormat(LS_DEBUG, "[ClientCommand] = %d, \"%s\"\n", slot.Get(), args->GetCommandString());
+	g_Logger.LogFormat(LS_DEBUG, "[ClientCommand] = %d, \"%s\"\n", slot, args->GetCommandString());
 
 	const char* cmd = args->Arg(0);
 

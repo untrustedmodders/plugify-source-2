@@ -107,7 +107,7 @@ CBasePlayerController* utils::GetController(CPlayerSlot slot) {
 		return nullptr;
 	}
 
-	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityIndex(slot.Get() + 1)));
+	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityIndex(slot + 1)));
 	if (!ent) {
 		return nullptr;
 	}
@@ -129,7 +129,7 @@ CPlayerSlot utils::GetEntityPlayerSlot(CBaseEntity* entity) {
 }
 
 bool utils::IsPlayerSlot(CPlayerSlot slot) {
-	int iSlot = slot.Get();
+	int iSlot = slot;
 	return iSlot >= 0 && iSlot < gpGlobals->maxClients;
 }
 
@@ -145,7 +145,7 @@ CServerSideClientBase* utils::GetClientBySlot(CPlayerSlot slot) {
 		return nullptr;
 
 	CUtlVector<CServerSideClientBase*>* clientList = GetClientList();
-	return (clientList && GetController(slot)) ? clientList->Element(slot.Get()) : nullptr;
+	return (clientList && GetController(slot)) ? clientList->Element(slot) : nullptr;
 }
 
 void utils::PlaySoundToClient(CPlayerSlot player, int channel, const char* soundName, float volume, soundlevel_t soundLevel, int flags, int pitch, const Vector& origin, float soundTime) {

@@ -165,9 +165,7 @@ ResultType CConCommandManager::ExecuteCommandCallbacks(const plg::string& name, 
 		arguments.emplace_back(args.Arg(i));
 	}
 
-	CPlayerSlot slot = ctx.GetPlayerSlot();
-
-	int caller = slot.Get() + 1;
+	CPlayerSlot caller = ctx.GetPlayerSlot();
 
 	for (size_t i = 0; i < globalCallback.GetCount(); ++i) {
 		auto thisResult = globalCallback.Notify(i, caller, callingContext, arguments);
@@ -192,7 +190,7 @@ ResultType CConCommandManager::ExecuteCommandCallbacks(const plg::string& name, 
 
 	auto& commandInfo = *std::get<CommandInfoPtr>(*it);
 
-	if (!CheckCommandAccess(slot, commandInfo.adminFlags)) {
+	if (!CheckCommandAccess(caller, commandInfo.adminFlags)) {
 		return result;
 	}
 

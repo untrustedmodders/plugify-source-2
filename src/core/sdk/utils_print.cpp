@@ -222,7 +222,7 @@ void utils::PrintHtmlCentre(CPlayerSlot slot, const char* message) {
 
 	pEvent->SetString("loc_token", message);
 	pEvent->SetInt("duration", 5);
-	pEvent->SetInt("userid", slot.Get());
+	pEvent->SetInt("userid", slot);
 
 	IGameEventListener2* listener = addresses::GetLegacyGameEventListener(slot);
 	listener->FireGameEvent(pEvent);

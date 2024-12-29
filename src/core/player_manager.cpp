@@ -73,7 +73,7 @@ bool CPlayer::IsAlive() const {
 }
 
 bool CPlayer::IsValidClient() const {
-	if (!utils::IsPlayerSlot(m_iSlot)) {
+	if (!utils::IsPlayerSlot(GetPlayerSlot())) {
 		return false;
 	}
 
