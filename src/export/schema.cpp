@@ -564,7 +564,7 @@ extern "C" PLUGIN_API int64_t GetEntSchema2(CEntityInstance* entity, const plg::
 		return {};
 	}
 
-	auto [elementType, elementSize] = schema::IsIntType(type);
+	const auto [elementType, elementSize] = schema::IsIntType(type);
 	switch (elementType) {
 		case schema::ElementType::Array:
 			switch (elementSize) {
@@ -608,7 +608,7 @@ extern "C" PLUGIN_API int64_t GetEntSchema2(CEntityInstance* entity, const plg::
 		case schema::ElementType::Class:
 			return reinterpret_cast<intptr_t>(entity) + offset;
 		default:
-			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a integer, but '%s'", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
+			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a integer, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
 			return 0;
 	}
 }
@@ -647,7 +647,7 @@ extern "C" PLUGIN_API void SetEntSchema2(CEntityInstance* entity, const plg::str
 		}
 	}
 
-	auto [elementType, elementSize] = schema::IsIntType(type);
+	const auto [elementType, elementSize] = schema::IsIntType(type);
 	switch (elementType) {
 		case schema::ElementType::Array:
 			switch (elementSize) {
@@ -701,7 +701,7 @@ extern "C" PLUGIN_API void SetEntSchema2(CEntityInstance* entity, const plg::str
 					break;
 			}
 		default:
-			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a integer, but '%s'", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
+			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a integer, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
 			break;
 	}
 }
@@ -726,7 +726,7 @@ extern "C" PLUGIN_API double GetEntSchemaFloat2(CEntityInstance* entity, const p
 		return {};
 	}
 
-	auto [elementType, elementSize] = schema::IsFloatType(type);
+	const auto [elementType, elementSize] = schema::IsFloatType(type);
 	switch (elementType) {
 		case schema::ElementType::Array:
 			switch (elementSize) {
@@ -756,7 +756,7 @@ extern "C" PLUGIN_API double GetEntSchemaFloat2(CEntityInstance* entity, const p
 					return 0;
 			}
 		default:
-			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a float, but '%s'", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
+			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a float, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
 			return 0;
 	}
 }
@@ -795,7 +795,7 @@ extern "C" PLUGIN_API void SetEntSchemaFloat2(CEntityInstance* entity, const plg
 		}
 	}
 
-	auto [elementType, elementSize] = schema::IsFloatType(type);
+	const auto [elementType, elementSize] = schema::IsFloatType(type);
 	switch (elementType) {
 		case schema::ElementType::Array:
 			switch (elementSize) {
@@ -831,7 +831,7 @@ extern "C" PLUGIN_API void SetEntSchemaFloat2(CEntityInstance* entity, const plg
 					break;
 			}
 		default:
-			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a float, but '%s'", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
+			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a float, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
 			break;
 	}
 }
@@ -864,7 +864,7 @@ extern "C" PLUGIN_API plg::string GetEntSchemaString2(CEntityInstance* entity, c
 		case schema::ElementType::Single:
 			return reinterpret_cast<CUtlString*>(reinterpret_cast<intptr_t>(entity) + offset)->Get();
 		default:
-			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a string, but '%s'", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
+			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a string, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
 			return {};
 	}
 }
@@ -914,7 +914,7 @@ extern "C" PLUGIN_API void SetEntSchemaString2(CEntityInstance* entity, const pl
 			*reinterpret_cast<CUtlString*>(reinterpret_cast<intptr_t>(entity) + offset) = value.c_str();
 			break;
 		default:
-			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a string, but '%s'", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
+			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a string, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
 			break;
 	}
 }
@@ -947,7 +947,7 @@ extern "C" PLUGIN_API plg::vec3 GetEntSchemaVector3D2(CEntityInstance* entity, c
 		case schema::ElementType::Single:
 			return *reinterpret_cast<plg::vec3*>(reinterpret_cast<intptr_t>(entity) + offset);
 		default:
-			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a vector, but '%s'", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
+			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a vector, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
 			return {};
 	}
 }
@@ -997,7 +997,7 @@ extern "C" PLUGIN_API void SetEntSchemaVector3D2(CEntityInstance* entity, const 
 			*reinterpret_cast<plg::vec3*>(reinterpret_cast<intptr_t>(entity) + offset) = value;
 			break;
 		default:
-			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a vector, but '%s'", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
+			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a vector, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
 			break;
 	}
 }
@@ -1030,7 +1030,7 @@ extern "C" PLUGIN_API plg::vec2 GetEntSchemaVector2D2(CEntityInstance* entity, c
 		case schema::ElementType::Single:
 			return *reinterpret_cast<plg::vec2*>(reinterpret_cast<intptr_t>(entity) + offset);
 		default:
-			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a vector, but '%s'", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
+			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a vector, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
 			return {};
 	}
 }
@@ -1082,7 +1082,7 @@ extern "C" PLUGIN_API void SetEntSchemaVector2D2(CEntityInstance* entity, const 
 			*reinterpret_cast<plg::vec2*>(reinterpret_cast<intptr_t>(entity) + offset) = value;
 			break;
 		default:
-			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a vector, but '%s'", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
+			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a vector, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
 			break;
 	}
 }
@@ -1115,7 +1115,7 @@ extern "C" PLUGIN_API plg::vec4 GetEntSchemaVector4D2(CEntityInstance* entity, c
 		case schema::ElementType::Single:
 			return *reinterpret_cast<plg::vec4*>(reinterpret_cast<intptr_t>(entity) + offset);
 		default:
-			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a vector, but '%s'", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
+			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a vector, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
 			return {};
 	}
 }
@@ -1165,7 +1165,7 @@ extern "C" PLUGIN_API void SetEntSchemaVector4D2(CEntityInstance* entity, const 
 			*reinterpret_cast<plg::vec4*>(reinterpret_cast<intptr_t>(entity) + offset) = value;
 			break;
 		default:
-			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a vector, but '%s'", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
+			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a vector, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
 			break;
 	}
 }
@@ -1200,7 +1200,7 @@ extern "C" PLUGIN_API int GetEntSchemaEnt2(CEntityInstance* entity, const plg::s
 		case schema::ElementType::Single:
 			return reinterpret_cast<CEntityHandle*>(reinterpret_cast<intptr_t>(entity) + offset)->ToInt();
 		default:
-			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a entity handle, but '%s'", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
+			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a entity handle, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
 			return INVALID_EHANDLE_INDEX;
 	}
 }
@@ -1252,7 +1252,7 @@ extern "C" PLUGIN_API void SetEntSchemaEnt2(CEntityInstance* entity, const plg::
 			*reinterpret_cast<CEntityHandle*>(reinterpret_cast<intptr_t>(entity) + offset) = CEntityHandle((uint32) value);
 			break;
 		default:
-			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a entity handle, but '%s'", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
+			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a entity handle, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
 			break;
 	}
 }
@@ -1272,7 +1272,7 @@ extern "C" PLUGIN_API void SetEntSchemaEnt2(CEntityInstance* entity, const plg::
  * @param memberName The name of the member to be set.
  */
 extern "C" PLUGIN_API void NetworkStateChanged2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName) {
-	auto [offset, networked, size, type] = schema::GetOffset(className.c_str(), memberName.c_str());
+	const auto [offset, networked, size, type] = schema::GetOffset(className.c_str(), memberName.c_str());
 	if (networked) {
 		int chainOffset = schema::FindChainOffset(className.c_str());
 		if (chainOffset != 0) {
