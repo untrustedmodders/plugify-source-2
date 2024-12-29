@@ -1057,134 +1057,115 @@ extern "C" PLUGIN_API void AcceptInput(int entityHandle, const plg::string& inpu
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_arithmetic_v<T>) variant = static_cast<float>(v);
-			},
-					   value);
+			}, value);
 			break;
 		case FieldType::Float64:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_arithmetic_v<T>) variant = static_cast<double>(v);
-			},
-					   value);
+			}, value);
 			break;
 		case FieldType::Int32:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_arithmetic_v<T>) variant = static_cast<int>(v);
-			},
-					   value);
+			}, value);
 			break;
 		case FieldType::UInt32:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_arithmetic_v<T>) variant = static_cast<uint>(v);
-			},
-					   value);
+			}, value);
 			break;
 		case FieldType::Int64:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_arithmetic_v<T>) variant = static_cast<int64>(v);
-			},
-					   value);
+			}, value);
 			break;
 		case FieldType::UInt64:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_arithmetic_v<T>) variant = static_cast<uint64>(v);
-			},
-					   value);
+			}, value);
 			break;
 		case FieldType::Boolean:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_arithmetic_v<T>) variant = static_cast<bool>(v);
-			},
-					   value);
+			}, value);
 			break;
 		case FieldType::Character:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_arithmetic_v<T>) variant = static_cast<char>(v);
-			},
-					   value);
+			}, value);
 			break;
 		case FieldType::String:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_same_v<T, plg::string>) variant = castable_string_t(v.c_str());
-			},
-					   value);
+			}, value);
 			break;
 		case FieldType::CString:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_same_v<T, plg::string>) variant = v.c_str();
-			},
-					   value);
+			}, value);
 			break;
 		case FieldType::HScript:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_pointer_v<T>) variant = reinterpret_cast<HSCRIPT>(v);
-			},
-					   value);
+			}, value);
 			break;
 		case FieldType::EHandle:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_arithmetic_v<T>) variant = CEntityHandle((uint32) v);
-			},
-					   value);
+			}, value);
 			break;
 		case FieldType::Resource:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_pointer_v<T>) variant = reinterpret_cast<ResourceHandle_t>(v);
-			},
-					   value);
+			}, value);
 			break;
 		case FieldType::Vector3d:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_same_v<T, plg::vec3> || std::is_same_v<T, plg::vec4>) variant = *reinterpret_cast<const Vector*>(&v);
-			},
-					   value);
+			}, value);
 			break;
 		case FieldType::Vector2d:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_same_v<T, plg::vec2> || std::is_same_v<T, plg::vec3> || std::is_same_v<T, plg::vec4>) variant = *reinterpret_cast<const Vector2D*>(&v);
-			},
-					   value);
+			}, value);
 			break;
 		case FieldType::Vector4d:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_same_v<T, plg::vec4>) variant = *reinterpret_cast<const Vector4D*>(&v);
-			},
-					   value);
+			}, value);
 			break;
 		case FieldType::Color32:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_same_v<T, int>) variant = *reinterpret_cast<const Color*>(&v);
-			},
-					   value);
+			}, value);
 			break;
 		case FieldType::QAngle:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_same_v<T, plg::vec3> || std::is_same_v<T, plg::vec4>) variant = *reinterpret_cast<const QAngle*>(&v);
-			},
-					   value);
+			}, value);
 			break;
 		case FieldType::Quaternion:
 			plg::visit([&variant](const auto& v) {
 				using T = std::decay_t<decltype(v)>;
 				if constexpr (std::is_same_v<T, plg::vec4>) variant = *reinterpret_cast<const Quaternion*>(&v);
-			},
-					   value);
+			}, value);
 			break;
 		default:
 			plg::visit([&variant](const auto& v) {
@@ -1206,8 +1187,7 @@ extern "C" PLUGIN_API void AcceptInput(int entityHandle, const plg::string& inpu
 				} else if constexpr (std::is_same_v<T, plg::vec4>) {
 					variant = *reinterpret_cast<const Vector4D*>(&v);
 				}
-			},
-					   value);
+			}, value);
 			break;
 	}
 
