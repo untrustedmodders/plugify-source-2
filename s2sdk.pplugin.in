@@ -3014,6 +3014,24 @@
       }
     },
     {
+      "name": "GetConVar",
+      "group": "Cvars",
+      "description": "Retrieves the current value of a console variable and stores it in the output.",
+      "funcName": "GetConVar",
+      "paramTypes": [
+        {
+          "name": "conVar",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the console variable data."
+        }
+      ],
+      "retType": {
+        "type": "any",
+        "description": "The output value."
+      }
+    },
+    {
       "name": "GetConVarBool",
       "group": "Cvars",
       "description": "Retrieves the current value of a boolean console variable.",
@@ -3298,6 +3316,41 @@
         {
           "name": "value",
           "type": "string",
+          "ref": false,
+          "description": "The string value to set for the console variable."
+        },
+        {
+          "name": "replicate",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients."
+        },
+        {
+          "name": "notify",
+          "type": "bool",
+          "ref": false,
+          "description": "If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag."
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "SetConVar",
+      "group": "Cvars",
+      "description": "Sets the value of a console variable.",
+      "funcName": "SetConVar",
+      "paramTypes": [
+        {
+          "name": "conVar",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Pointer to the console variable data."
+        },
+        {
+          "name": "value",
+          "type": "any",
           "ref": false,
           "description": "The value to set for the console variable."
         },

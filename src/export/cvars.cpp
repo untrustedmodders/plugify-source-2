@@ -347,7 +347,7 @@ extern "C" PLUGIN_API void UnhookConVarChange(const plg::string& name, ConVarCha
  */
 extern "C" PLUGIN_API bool IsConVarFlagSet(BaseConVar* conVar, int64_t flag) {
 	if (conVar == nullptr) {
-		g_Logger.Log(LS_WARNING, "Invalid convar pointer\n");
+		g_Logger.Log(LS_WARNING, "Invalid convar pointer. Ensure the BaseConVar* is correctly initialized and not null.\n");
 		return false;
 	}
 
@@ -362,7 +362,7 @@ extern "C" PLUGIN_API bool IsConVarFlagSet(BaseConVar* conVar, int64_t flag) {
  */
 extern "C" PLUGIN_API void AddConVarFlags(BaseConVar* conVar, int64_t flags) {
 	if (conVar == nullptr) {
-		g_Logger.Log(LS_WARNING, "Invalid convar pointer\n");
+		g_Logger.Log(LS_WARNING, "Invalid convar pointer. Ensure the BaseConVar* is correctly initialized and not null.\n");
 		return;
 	}
 
@@ -377,7 +377,7 @@ extern "C" PLUGIN_API void AddConVarFlags(BaseConVar* conVar, int64_t flags) {
  */
 extern "C" PLUGIN_API void RemoveConVarFlags(BaseConVar* conVar, int64_t flags) {
 	if (conVar == nullptr) {
-		g_Logger.Log(LS_WARNING, "Invalid convar pointer\n");
+		g_Logger.Log(LS_WARNING, "Invalid convar pointer. Ensure the BaseConVar* is correctly initialized and not null.\n");
 		return;
 	}
 
@@ -392,7 +392,7 @@ extern "C" PLUGIN_API void RemoveConVarFlags(BaseConVar* conVar, int64_t flags) 
  */
 extern "C" PLUGIN_API int64_t GetConVarFlags(BaseConVar* conVar) {
 	if (conVar == nullptr) {
-		g_Logger.Log(LS_WARNING, "Invalid convar pointer\n");
+		g_Logger.Log(LS_WARNING, "Invalid convar pointer. Ensure the BaseConVar* is correctly initialized and not null.\n");
 		return 0;
 	}
 
@@ -408,13 +408,13 @@ extern "C" PLUGIN_API int64_t GetConVarFlags(BaseConVar* conVar) {
  */
 extern "C" PLUGIN_API plg::string GetConVarBounds(BaseConVar* conVar, bool max) {
 	if (conVar == nullptr) {
-		g_Logger.Log(LS_WARNING, "Invalid convar pointer.\n");
+		g_Logger.Log(LS_WARNING, "Invalid convar pointer. Ensure the BaseConVar* is correctly initialized and not null.\n");
 		return {};
 	}
 
 	auto* conVarData = conVar->GetConVarData();
 	if (conVarData == nullptr) {
-		g_Logger.Log(LS_WARNING, "Invalid convar data.\n");
+		g_Logger.Log(LS_WARNING, "Invalid convar data. Ensure the conVar has associated data correctly initialized.\n");
 		return {};
 	}
 
@@ -534,13 +534,13 @@ extern "C" PLUGIN_API plg::string GetConVarBounds(BaseConVar* conVar, bool max) 
  */
 extern "C" PLUGIN_API void SetConVarBounds(BaseConVar* conVar, bool max, const plg::string& value) {
 	if (conVar == nullptr) {
-		g_Logger.Log(LS_WARNING, "Invalid convar pointer.\n");
+		g_Logger.Log(LS_WARNING, "Invalid convar pointer. Ensure the BaseConVar* is correctly initialized and not null.\n");
 		return;
 	}
 
 	auto* conVarData = conVar->GetConVarData();
 	if (conVarData == nullptr) {
-		g_Logger.Log(LS_WARNING, "Invalid convar data.\n");
+		g_Logger.Log(LS_WARNING, "Invalid convar data. Ensure the conVar has associated data correctly initialized.\n");
 		return;
 	}
 
@@ -657,13 +657,13 @@ extern "C" PLUGIN_API void SetConVarBounds(BaseConVar* conVar, bool max, const p
  */
 extern "C" PLUGIN_API plg::string GetConVarDefault(BaseConVar* conVar) {
 	if (conVar == nullptr) {
-		g_Logger.Log(LS_WARNING, "Invalid convar pointer.\n");
+		g_Logger.Log(LS_WARNING, "Invalid convar pointer. Ensure the BaseConVar* is correctly initialized and not null.\n");
 		return {};
 	}
 
 	auto* conVarData = conVar->GetConVarData();
 	if (conVarData == nullptr) {
-		g_Logger.Log(LS_WARNING, "Invalid convar data.\n");
+		g_Logger.Log(LS_WARNING, "Invalid convar data. Ensure the conVar has associated data correctly initialized.\n");
 		return {};
 	}
 
@@ -708,9 +708,10 @@ extern "C" PLUGIN_API plg::string GetConVarDefault(BaseConVar* conVar) {
 			const auto& value = conVarData->Cast<QAngle>()->GetDefaultValue();
 			return std::format("{} {} {}", value.x, value.y, value.z);
 		}
-		default:
+		default: {
 			g_Logger.Log(LS_WARNING, "Invalid convar type.\n");
 			return {};
+		}
 	}
 }
 
@@ -722,13 +723,13 @@ extern "C" PLUGIN_API plg::string GetConVarDefault(BaseConVar* conVar) {
  */
 extern "C" PLUGIN_API plg::string GetConVarValue(BaseConVar* conVar) {
 	if (conVar == nullptr) {
-		g_Logger.Log(LS_WARNING, "Invalid convar pointer.\n");
+		g_Logger.Log(LS_WARNING, "Invalid convar pointer. Ensure the BaseConVar* is correctly initialized and not null.\n");
 		return {};
 	}
 
 	auto* conVarData = conVar->GetConVarData();
 	if (conVarData == nullptr) {
-		g_Logger.Log(LS_WARNING, "Invalid convar data.\n");
+		g_Logger.Log(LS_WARNING, "Invalid convar data. Ensure the conVar has associated data correctly initialized.\n");
 		return {};
 	}
 
@@ -773,9 +774,76 @@ extern "C" PLUGIN_API plg::string GetConVarValue(BaseConVar* conVar) {
 			const auto& value = conVarData->Cast<QAngle>()->GetValue();
 			return std::format("{} {} {}", value.x, value.y, value.z);
 		}
-		default:
+		default: {
 			g_Logger.Log(LS_WARNING, "Invalid convar type.\n");
 			return {};
+		}
+	}
+}
+
+/**
+ * @brief Retrieves the current value of a console variable and stores it in the output.
+ *
+ * @param conVar Pointer to the console variable data.
+ * @return The output value.
+ */
+extern "C" PLUGIN_API plg::any GetConVar(BaseConVar* conVar) {
+	if (conVar == nullptr) {
+		g_Logger.Log(LS_WARNING, "Invalid convar pointer. Ensure the BaseConVar* is correctly initialized and not null.\n");
+		return {};
+	}
+
+	auto* conVarData = conVar->GetConVarData();
+	if (conVarData == nullptr) {
+		g_Logger.Log(LS_WARNING, "Invalid convar data. Ensure the conVar has associated data correctly initialized.\n");
+		return {};
+	}
+
+	switch (conVarData->GetType()) {
+		case EConVarType_Bool:
+			return conVarData->Cast<bool>()->GetValue();
+		case EConVarType_Int16:
+			return conVarData->Cast<int16_t>()->GetValue();
+		case EConVarType_UInt16:
+			return conVarData->Cast<uint16_t>()->GetValue();
+		case EConVarType_Int32:
+			return conVarData->Cast<int32_t>()->GetValue();
+		case EConVarType_UInt32:
+			return conVarData->Cast<uint16_t>();
+		case EConVarType_Int64:
+			return conVarData->Cast<int64_t>()->GetValue();
+		case EConVarType_UInt64:
+			return conVarData->Cast<uint64_t>()->GetValue();
+		case EConVarType_Float32:
+			return conVarData->Cast<float>()->GetValue();
+		case EConVarType_Float64:
+			return conVarData->Cast<double>()->GetValue();
+		case EConVarType_String:
+			return conVarData->Cast<const char*>()->GetValue();
+		case EConVarType_Color: {
+			const auto& value = conVarData->Cast<Color>()->GetValue();
+			return *reinterpret_cast<const int*>(&value);
+		}
+		case EConVarType_Vector2: {
+			const auto& value = conVarData->Cast<Vector2D>()->GetValue();
+			return *reinterpret_cast<const plg::vec2*>(&value);
+		}
+		case EConVarType_Vector3: {
+			const auto& value = conVarData->Cast<Vector>()->GetValue();
+			return *reinterpret_cast<const plg::vec3*>(&value);
+		}
+		case EConVarType_Vector4: {
+			const auto& value = conVarData->Cast<Vector4D>()->GetValue();
+			return *reinterpret_cast<const plg::vec4*>(&value);
+		}
+		case EConVarType_Qangle: {
+			const auto& value = conVarData->Cast<QAngle>()->GetValue();
+			return *reinterpret_cast<const plg::vec3*>(&value);
+		}
+		default: {
+			g_Logger.Log(LS_WARNING, "Invalid convar type.\n");
+			return {};
+		}
 	}
 }
 
@@ -937,7 +1005,7 @@ extern "C" PLUGIN_API plg::vec3 GetConVarQAngle(BaseConVar* conVar) {
  * @brief Sets the value of a console variable.
  *
  * @param conVar Pointer to the console variable data.
- * @param value The value to set for the console variable.
+ * @param value The string value to set for the console variable.
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
@@ -987,6 +1055,129 @@ extern "C" PLUGIN_API void SetConVarValue(BaseConVar* conVar, const plg::string&
 			break;
 		case EConVarType_Qangle:
 			utils::SetConVarString<QAngle>(conVar, value, replicate, notify);
+			break;
+		default:
+			g_Logger.Log(LS_WARNING, "Invalid convar type.\n");
+			return;
+	}
+}
+
+/**
+ * @brief Sets the value of a console variable.
+ *
+ * @param conVar Pointer to the console variable data.
+ * @param value The value to set for the console variable.
+ * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
+ * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
+ */
+extern "C" PLUGIN_API void SetConVar(BaseConVar* conVar, const plg::any& value, bool replicate, bool notify) {
+	switch (conVar->GetType()) {
+		case EConVarType_Bool:
+			plg::visit([&](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_arithmetic_v<T>)
+					utils::SetConVar<bool>(conVar, static_cast<bool>(v), replicate, notify);
+			}, value);
+			break;
+		case EConVarType_Int16:
+			plg::visit([&](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_arithmetic_v<T>)
+					utils::SetConVar<int16_t>(conVar, static_cast<int16_t>(v), replicate, notify);
+			}, value);
+			break;
+		case EConVarType_UInt16:
+			plg::visit([&](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_arithmetic_v<T>)
+					utils::SetConVar<uint16_t>(conVar, static_cast<uint16_t>(v), replicate, notify);
+			}, value);
+			break;
+		case EConVarType_Int32:
+			plg::visit([&](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_arithmetic_v<T>)
+					utils::SetConVar<int32_t>(conVar, static_cast<int32_t>(v), replicate, notify);
+			}, value);
+			break;
+		case EConVarType_UInt32:
+			plg::visit([&](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_arithmetic_v<T>)
+					utils::SetConVar<uint32_t>(conVar, static_cast<uint32_t>(v), replicate, notify);
+			}, value);
+			break;
+		case EConVarType_Int64:
+			plg::visit([&](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_arithmetic_v<T>)
+					utils::SetConVar<int64_t>(conVar, static_cast<int64_t>(v), replicate, notify);
+			}, value);
+			break;
+		case EConVarType_UInt64:
+			plg::visit([&](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_arithmetic_v<T>)
+					utils::SetConVar<uint64_t>(conVar, static_cast<uint64_t>(v), replicate, notify);
+			}, value);
+			break;
+		case EConVarType_Float32:
+			plg::visit([&](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_arithmetic_v<T>)
+					utils::SetConVar<float>(conVar, static_cast<float>(v), replicate, notify);
+			}, value);
+			break;
+		case EConVarType_Float64:
+			plg::visit([&](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_arithmetic_v<T>)
+					utils::SetConVar<double>(conVar, static_cast<double>(v), replicate, notify);
+			}, value);
+			break;
+		case EConVarType_String:
+			plg::visit([&](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_same_v<T, plg::string>)
+					utils::SetConVar<const char*>(conVar, v.c_str(), replicate, notify);
+			}, value);
+			break;
+		case EConVarType_Color:
+			plg::visit([&](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_arithmetic_v<T>) {
+					int color = static_cast<int>(v);
+					utils::SetConVar<Color>(conVar, *reinterpret_cast<Color*>(&color), replicate, notify);
+				}
+			}, value);
+			break;
+		case EConVarType_Vector2:
+			plg::visit([&](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_same_v<T, plg::vec2> || std::is_same_v<T, plg::vec3> || std::is_same_v<T, plg::vec4>)
+					utils::SetConVar<Vector2D>(conVar, *reinterpret_cast<const Vector2D*>(&v), replicate, notify);
+			}, value);
+			break;
+		case EConVarType_Vector3:
+			plg::visit([&](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_same_v<T, plg::vec3> || std::is_same_v<T, plg::vec4>)
+					utils::SetConVar<Vector>(conVar, *reinterpret_cast<const Vector*>(&v), replicate, notify);
+			}, value);
+			break;
+		case EConVarType_Vector4:
+			plg::visit([&](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_same_v<T, plg::vec4>)
+					utils::SetConVar<Vector4D>(conVar, *reinterpret_cast<const Vector4D*>(&v), replicate, notify);
+			}, value);
+			break;
+		case EConVarType_Qangle:
+			plg::visit([&](const auto& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_same_v<T, plg::vec3> || std::is_same_v<T, plg::vec4>)
+					utils::SetConVar<QAngle>(conVar, *reinterpret_cast<const QAngle*>(&v), replicate, notify);
+			}, value);
 			break;
 		default:
 			g_Logger.Log(LS_WARNING, "Invalid convar type.\n");

@@ -49,18 +49,18 @@ namespace utils {
 	template<typename T>
 	void SetConVar(BaseConVar* conVar, const T& value, bool replicate, bool notify) {
 		if (conVar == nullptr) {
-			g_Logger.Log(LS_WARNING, "Invalid cvar pointer\n");
+			g_Logger.Log(LS_WARNING, "Invalid convar pointer. Ensure the BaseConVar* is correctly initialized and not null.\n");
 			return;
 		}
 
 		auto* conVarData = conVar->GetConVarData();
 		if (conVarData == nullptr) {
-			g_Logger.Log(LS_WARNING, "Invalid cvar data\n");
+			g_Logger.Log(LS_WARNING, "Invalid convar data. Ensure the conVar has associated data correctly initialized.\n");
 			return;
 		}
 
 		if (conVarData->GetType() != TranslateConVarType<T>()) {
-			g_Logger.Log(LS_WARNING, "Invalid cvar type\n");
+			g_Logger.LogFormat(LS_WARNING, "Invalid cvar type for variable '%s'. Expected: '%s', but got: '%s'. Please ensure the type matches the expected type.\n", conVar->GetName(), GetConVarTypeName(conVarData->GetType()), GetConVarTypeName(TranslateConVarType<T>()));
 			return;
 		}
 
@@ -81,18 +81,18 @@ namespace utils {
 	template<typename T>
 	void SetConVarString(BaseConVar* conVar, const plg::string& value, bool replicate, bool notify) {
 		if (conVar == nullptr) {
-			g_Logger.Log(LS_WARNING, "Invalid cvar pointer\n");
+			g_Logger.Log(LS_WARNING, "Invalid convar pointer. Ensure the BaseConVar* is correctly initialized and not null.\n");
 			return;
 		}
 
 		auto* conVarData = conVar->GetConVarData();
 		if (conVarData == nullptr) {
-			g_Logger.Log(LS_WARNING, "Invalid cvar data\n");
+			g_Logger.Log(LS_WARNING, "Invalid convar data. Ensure the conVar has associated data correctly initialized.\n");
 			return;
 		}
 
 		if (conVarData->GetType() != TranslateConVarType<T>()) {
-			g_Logger.Log(LS_WARNING, "Invalid cvar type\n");
+			g_Logger.LogFormat(LS_WARNING, "Invalid cvar type for variable '%s'. Expected: '%s', but got: '%s'. Please ensure the type matches the expected type.\n", conVar->GetName(), GetConVarTypeName(conVarData->GetType()), GetConVarTypeName(TranslateConVarType<T>()));
 			return;
 		}
 
@@ -104,13 +104,18 @@ namespace utils {
 	template<typename T>
 	void SetConVarValue(BaseConVar* conVar, const T& value) {
 		if (conVar == nullptr) {
-			g_Logger.Log(LS_WARNING, "Invalid convar pointer.\n");
+			g_Logger.Log(LS_WARNING, "Invalid convar pointer. Ensure the BaseConVar* is correctly initialized and not null.\n");
 			return;
 		}
 
 		auto* conVarData = conVar->GetConVarData();
 		if (conVarData == nullptr) {
-			g_Logger.Log(LS_WARNING, "Invalid convar data.\n");
+			g_Logger.Log(LS_WARNING, "Invalid convar data. Ensure the conVar has associated data correctly initialized.\n");
+			return;
+		}
+
+		if (conVarData->GetType() != TranslateConVarType<T>()) {
+			g_Logger.LogFormat(LS_WARNING, "Invalid cvar type for variable '%s'. Expected: '%s', but got: '%s'. Please ensure the type matches the expected type.\n", conVar->GetName(), GetConVarTypeName(conVarData->GetType()), GetConVarTypeName(TranslateConVarType<T>()));
 			return;
 		}
 
@@ -120,13 +125,18 @@ namespace utils {
 	template<typename T>
 	T GetConVarValue(BaseConVar* conVar) {
 		if (conVar == nullptr) {
-			g_Logger.Log(LS_WARNING, "Invalid convar pointer.\n");
+			g_Logger.Log(LS_WARNING, "Invalid convar pointer. Ensure the BaseConVar* is correctly initialized and not null.\n");
 			return {};
 		}
 
 		auto* conVarData = conVar->GetConVarData();
 		if (conVarData == nullptr) {
-			g_Logger.Log(LS_WARNING, "Invalid convar data.\n");
+			g_Logger.Log(LS_WARNING, "Invalid convar data. Ensure the conVar has associated data correctly initialized.\n");
+			return {};
+		}
+
+		if (conVarData->GetType() != TranslateConVarType<T>()) {
+			g_Logger.LogFormat(LS_WARNING, "Invalid cvar type for variable '%s'. Expected: '%s', but got: '%s'. Please ensure the type matches the expected type.\n", conVar->GetName(), GetConVarTypeName(conVarData->GetType()), GetConVarTypeName(TranslateConVarType<T>()));
 			return {};
 		}
 
