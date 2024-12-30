@@ -379,8 +379,7 @@ TargetType CPlayerManager::TargetPlayerString(int caller, std::string_view targe
 			if (!player || !player->IsController() || !player->IsConnected())
 				continue;
 
-			if (player->m_iTeamNum() != (targetType == TargetType::T ? CS_TEAM_T : targetType == TargetType::CT ? CS_TEAM_CT
-																												: CS_TEAM_SPECTATOR))
+			if (player->m_iTeamNum() != (targetType == TargetType::T ? CS_TEAM_T : targetType == TargetType::CT ? CS_TEAM_CT : CS_TEAM_SPECTATOR))
 				continue;
 
 			clients.push_back(i);
