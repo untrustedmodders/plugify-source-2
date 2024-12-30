@@ -1,24 +1,30 @@
 #pragma once
 
-#define TIMER_FLAG_REPEAT (1 << 0)		 /**< Timer will repeat until stopped */
-#define TIMER_FLAG_NO_MAPCHANGE (1 << 1) /**< Timer will not carry over mapchanges */
+enum TimerFlag : int {
+	Default = 0,
+	Repeat = (1 << 0),
+	NoMapChange = (1 << 1)
+};
 
 class CTimer;
 
-using TimerCallback = void (*)(CTimer*, const plg::vector<plg::any>&);
+using TimerCallback = void (*)(Handle, const plg::vector<plg::any>&);
 
 class CTimer {
 	friend class CTimerSystem;
 
 public:
-	CTimer(float interval, float execTime, TimerCallback callback, int flags, const plg::vector<plg::any>& userData);
+	CTimer() = delete;
+	CTimer(double interval, double execTime, TimerCallback callback, TimerFlag flags, const plg::vector<plg::any>& userData);
 	~CTimer();
 
 private:
+	bool KillMe(TimerFlag flag);
+
 	TimerCallback m_callback;
-	float m_interval;
-	float m_execTime;
-	int m_flags;
+	double m_execTime;
+	double m_interval;
+	TimerFlag m_flags;
 	bool m_inExec{};
 	bool m_killMe{};
 	plg::vector<plg::any> m_userData;
@@ -26,27 +32,24 @@ private:
 
 class CTimerSystem {
 public:
-	CTimerSystem();
-	~CTimerSystem();
-
 	void OnLevelShutdown();
 	void OnGameFrame(bool simulating);
 
 	void RunFrame();
 	void RemoveMapChangeTimers();
-	static double CalculateNextThink(double lastThinkTime, float interval);
+	static double CalculateNextThink(double lastThinkTime, double interval);
 	static double GetTickedTime();
-	static float GetTickedInterval();
+	static double GetTickedInterval();
 
-	CTimer* CreateTimer(float interval, TimerCallback callback, int flags, const plg::vector<plg::any>&);
-	void KillTimer(CTimer* timer);
+	Handle CreateTimer(double interval, TimerCallback callback, TimerFlag flags, const plg::vector<plg::any>&);
+	void KillTimer(Handle handle);
 
 private:
 	bool m_hasMapTicked{};
 	bool m_hasMapSimulated{};
 	float m_lastTickedTime{};
-	std::vector<CTimer*> m_onceOffTimers;
-	std::vector<CTimer*> m_repeatTimers;
+	std::unordered_map<Handle, CTimer> m_onceOffTimers;
+	std::unordered_map<Handle, CTimer> m_repeatTimers;
 	std::mutex m_createTimerLock;
 };
 

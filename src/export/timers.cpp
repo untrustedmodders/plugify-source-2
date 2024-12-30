@@ -20,9 +20,9 @@ PLUGIFY_WARN_IGNORE(4190)
  * @param callback The function to be called when the timer expires.
  * @param flags Flags that modify the behavior of the timer (e.g., no-map change, repeating).
  * @param userData An array intended to hold user-related data, allowing for elements of any type.
- * @return A pointer to the newly created CTimer object, or nullptr if the timer could not be created.
+ * @return A handle of the newly created CTimer object, or -1 if the timer could not be created.
  */
-extern "C" PLUGIN_API CTimer* CreateTimer(float interval, TimerCallback callback, int flags, const plg::vector<plg::any>& userData) {
+extern "C" PLUGIN_API Handle CreateTimer(double interval, TimerCallback callback, TimerFlag flags, const plg::vector<plg::any>& userData) {
 	return g_TimerSystem.CreateTimer(interval, callback, flags, userData);
 }
 
@@ -32,10 +32,10 @@ extern "C" PLUGIN_API CTimer* CreateTimer(float interval, TimerCallback callback
  * This function terminates the specified timer, preventing it from calling
  * its callback function. Once killed, the timer cannot be reused.
  *
- * @param timer A pointer to the CTimer object to be stopped and removed.
+ * @param handle A handle of the CTimer object to be stopped and removed.
  */
-extern "C" PLUGIN_API void KillsTimer(CTimer* timer) {
-	g_TimerSystem.KillTimer(timer);
+extern "C" PLUGIN_API void KillsTimer(Handle handle) {
+	g_TimerSystem.KillTimer(handle);
 }
 
 /**
@@ -43,7 +43,7 @@ extern "C" PLUGIN_API void KillsTimer(CTimer* timer) {
  *
  * @return The tick interval value.
  */
-extern "C" PLUGIN_API float GetTickInterval() {
+extern "C" PLUGIN_API double GetTickInterval() {
 	return CTimerSystem::GetTickedInterval();
 }
 

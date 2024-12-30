@@ -4,24 +4,27 @@
 
 double universalTime = 0.0f;
 double timerNextThink = 0.0f;
-const float engineFixedTickInterval = 0.015625f;
+const double engineFixedTickInterval = 0.015625;
 
-CTimer::CTimer(float interval, float execTime, TimerCallback callback, int flags, const plg::vector<plg::any>& userData)
+CTimer::CTimer(double interval, double execTime, TimerCallback callback, TimerFlag flags, const plg::vector<plg::any>& userData)
 	: m_callback(callback), m_userData(userData), m_interval(interval), m_execTime(execTime), m_flags(flags) {
 }
 
 CTimer::~CTimer() = default;
 
-CTimerSystem::CTimerSystem() = default;
+bool CTimer::KillMe(TimerFlag flag) {
+	if (!flag || m_flags & flag) {
+		if (m_killMe)
+			return true;
 
-CTimerSystem::~CTimerSystem() {
-	for (const auto& timer: m_onceOffTimers) {
-		delete timer;
+		// If were executing, make sure it doesn't run again next time.
+		if (m_inExec) {
+			m_killMe = true;
+			return true;
+		}
 	}
 
-	for (const auto& timer: m_repeatTimers) {
-		delete timer;
-	}
+	return false;
 }
 
 void CTimerSystem::OnLevelShutdown() {
@@ -45,11 +48,11 @@ void CTimerSystem::OnGameFrame(bool simulating) {
 	// Handle timer tick
 	if (universalTime >= timerNextThink) {
 		RunFrame();
-		timerNextThink = CalculateNextThink(timerNextThink, 0.1f);
+		timerNextThink = CalculateNextThink(timerNextThink, 0.1);
 	}
 }
 
-double CTimerSystem::CalculateNextThink(double lastThinkTime, float interval) {
+double CTimerSystem::CalculateNextThink(double lastThinkTime, double interval) {
 	if (universalTime - lastThinkTime - interval <= 0.1) {
 		return lastThinkTime + interval;
 	} else {
@@ -58,123 +61,98 @@ double CTimerSystem::CalculateNextThink(double lastThinkTime, float interval) {
 }
 
 void CTimerSystem::RunFrame() {
-	for (int i = static_cast<int>(m_onceOffTimers.size()) - 1; i >= 0; i--) {
-		auto timer = m_onceOffTimers[i];
-		if (universalTime >= timer->m_execTime) {
-			timer->m_inExec = true;
-			timer->m_callback(timer, timer->m_userData);
-
-			m_onceOffTimers.erase(m_onceOffTimers.begin() + i);
-			delete timer;
+	for (auto it = m_onceOffTimers.begin(); it != m_onceOffTimers.end();) {
+		auto& [handle, timer] = *it;
+		if (universalTime >= timer.m_execTime) {
+			timer.m_inExec = true;
+			timer.m_callback(handle, timer.m_userData);
+			it = m_onceOffTimers.erase(it);
+			continue;
 		}
+
+		++it;
 	}
 
-	for (int i = static_cast<int>(m_repeatTimers.size()) - 1; i >= 0; i--) {
-		auto timer = m_repeatTimers[i];
-		if (universalTime >= timer->m_execTime) {
-			timer->m_inExec = true;
-			timer->m_callback(timer, timer->m_userData);
+	for (auto it = m_repeatTimers.begin(); it != m_repeatTimers.end();) {
+		auto& [handle, timer] = *it;
+		if (universalTime >= timer.m_execTime) {
+			timer.m_inExec = true;
+			timer.m_callback(handle, timer.m_userData);
 
-			if (timer->m_killMe) {
-				m_repeatTimers.erase(m_repeatTimers.begin() + i);
-				delete timer;
+			if (timer.m_killMe) {
+				it = m_repeatTimers.erase(it);
 				continue;
 			}
 
-			timer->m_inExec = false;
-			timer->m_execTime = static_cast<float>(CalculateNextThink(timer->m_execTime, timer->m_interval));
+			timer.m_inExec = false;
+			timer.m_execTime = CalculateNextThink(timer.m_execTime, timer.m_interval);
 		}
+
+		++it;
 	}
 }
 
 void CTimerSystem::RemoveMapChangeTimers() {
-	for (int i = static_cast<int>(m_onceOffTimers.size()) - 1; i >= 0; i--) {
-		auto timer = m_onceOffTimers[i];
-		if (timer->m_flags & TIMER_FLAG_NO_MAPCHANGE) {
-			if (timer->m_killMe)
-				continue;
-
-			// If were executing, make sure it doesn't run again next time.
-			if (timer->m_inExec) {
-				timer->m_killMe = true;
-				continue;
-			}
-
-			m_onceOffTimers.erase(m_onceOffTimers.begin() + i);
-			delete timer;
+	for (auto it = m_onceOffTimers.begin(); it != m_onceOffTimers.end();) {
+		auto& [_, timer] = *it;
+		if (timer.KillMe(TimerFlag::NoMapChange)) {
+			it = m_onceOffTimers.erase(it);
+		} else {
+			++it;
 		}
 	}
 
-	for (int i = static_cast<int>(m_repeatTimers.size()) - 1; i >= 0; i--) {
-		auto timer = m_repeatTimers[i];
-		if (timer->m_flags & TIMER_FLAG_NO_MAPCHANGE) {
-			if (timer->m_killMe)
-				continue;
-
-			// If were executing, make sure it doesn't run again next time.
-			if (timer->m_inExec) {
-				timer->m_killMe = true;
-				continue;
-			}
-
-			m_repeatTimers.erase(m_repeatTimers.begin() + i);
-			delete timer;
+	for (auto it = m_repeatTimers.begin(); it != m_repeatTimers.end();) {
+		auto& [_, timer] = *it;
+		if (timer.KillMe(TimerFlag::NoMapChange)) {
+			it = m_repeatTimers.erase(it);
+		} else {
+			++it;
 		}
 	}
 }
 
-CTimer* CTimerSystem::CreateTimer(float interval, TimerCallback callback, int flags, const plg::vector<plg::any>& userData) {
-	float execTime = static_cast<float>(universalTime) + interval;
-
-	auto timer = new CTimer(interval, execTime, callback, flags, userData);
+Handle CTimerSystem::CreateTimer(double interval, TimerCallback callback, TimerFlag flags, const plg::vector<plg::any>& userData) {
+	double execTime = universalTime + interval;
+	Handle handle = CreateHandle();
 
 	std::lock_guard<std::mutex> lock(m_createTimerLock);
-
-	if (flags & TIMER_FLAG_REPEAT) {
-		m_repeatTimers.push_back(timer);
+	if (flags & TimerFlag::Repeat) {
+		m_repeatTimers.emplace(handle, CTimer(interval, execTime, callback, flags, userData));
 	} else {
-		m_onceOffTimers.push_back(timer);
+		m_onceOffTimers.emplace(handle, CTimer(interval, execTime, callback, flags, userData));
 	}
 
-	return timer;
+	return handle;
 }
 
-void CTimerSystem::KillTimer(CTimer* timer) {
-	if (!timer)
-		return;
-
-	auto it1 = std::find(m_repeatTimers.begin(), m_repeatTimers.end(), timer);
-	auto it2 = std::find(m_onceOffTimers.begin(), m_onceOffTimers.end(), timer);
-	if (it1 == m_repeatTimers.end() && it2 == m_onceOffTimers.end())
-		return;
-
-	if (timer->m_killMe)
-		return;
-
-	std::lock_guard<std::mutex> lock(m_createTimerLock);
-
-	// If were executing, make sure it doesn't run again next time.
-	if (timer->m_inExec) {
-		timer->m_killMe = true;
+void CTimerSystem::KillTimer(Handle handle) {
+	if (auto it = m_repeatTimers.find(handle); it != m_repeatTimers.end()) {
+		auto& [_, timer] = *it;
+		if (!timer.KillMe(TimerFlag::Default)) {
+			std::lock_guard<std::mutex> lock(m_createTimerLock);
+			m_repeatTimers.erase(it);
+		}
 		return;
 	}
 
-	if (timer->m_flags & TIMER_FLAG_REPEAT) {
-		if (it1 != m_repeatTimers.end())
-			m_repeatTimers.erase(it1);
-	} else {
-		if (it2 != m_onceOffTimers.end())
-			m_onceOffTimers.erase(it2);
+	if (auto it = m_onceOffTimers.find(handle); it != m_onceOffTimers.end()) {
+		auto& [_, timer] = *it;
+		if (!timer.KillMe(TimerFlag::Default)) {
+			std::lock_guard<std::mutex> lock(m_createTimerLock);
+			m_onceOffTimers.erase(it);
+		}
+		return;
 	}
 
-	delete timer;
+	g_Logger.LogFormat(LS_WARNING, "KillTimer: Timer with handle %u was not found.", handle);
 }
 
 double CTimerSystem::GetTickedTime() {
 	return universalTime;
 }
 
-float CTimerSystem::GetTickedInterval() {
+double CTimerSystem::GetTickedInterval() {
 	return engineFixedTickInterval;
 }
 
