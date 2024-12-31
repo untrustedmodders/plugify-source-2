@@ -13,6 +13,7 @@
 #include <optional>
 #include <span>
 #include <mutex>
+#include <atomic>
 #include <sstream>
 #include <stack>
 #include <string>
