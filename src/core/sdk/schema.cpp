@@ -87,6 +87,7 @@ namespace schema {
 
 	SchemaKey GetOffset(const plg::string& className, const plg::string& memberName) {
 		static SchemaTableMap schemaTableMap;
+
 		auto tableIt = schemaTableMap.find(className);
 		if (tableIt == schemaTableMap.end()) {
 			if (InitSchemaFieldsForClass(schemaTableMap, className))
@@ -96,12 +97,11 @@ namespace schema {
 
 		const auto& tableMap = std::get<SchemaKeyValueMap>(*tableIt);
 		auto memberIt = tableMap.find(memberName);
-		if (memberIt == tableMap.end()) {
-			g_Logger.LogFormat(LS_WARNING, "schema::GetOffset(): '%s' was not found in '%s'!\n", memberName.c_str(), className.c_str());
-			return {};
+		if (memberIt != tableMap.end()) {
+			return std::get<SchemaKey>(*memberIt);
 		}
 
-		return std::get<SchemaKey>(*memberIt);
+		return {};
 	}
 
 	void NetworkStateChanged(intptr_t chainEntity, uint nLocalOffset, int nArrayIndex) {
