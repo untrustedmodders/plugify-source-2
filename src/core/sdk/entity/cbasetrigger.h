@@ -21,7 +21,14 @@
 
 #include "cbasemodelentity.h"
 
-class CBaseTrigger : public CBaseModelEntity {
+class CBaseToggle : public CBaseModelEntity {
+public:
+	DECLARE_SCHEMA_CLASS(CBaseToggle);
+
+	SCHEMA_FIELD(float, m_flWait);
+};
+
+class CBaseTrigger : public CBaseToggle {
 public:
 	DECLARE_SCHEMA_CLASS(CBaseTrigger)
 
@@ -35,6 +42,6 @@ public:
 		return CALL_VIRTUAL(bool, offset, this, pOther);
 	}
 
-	bool IsStartZone() { return !V_stricmp(this->GetClassname(), "trigger_multiple") && this->m_pEntity->NameMatches("timer_startzone"); }
-	bool IsEndZone() { return !V_stricmp(this->GetClassname(), "trigger_multiple") && this->m_pEntity->NameMatches("timer_endzone"); }
+	//bool IsStartZone() { return !V_stricmp(this->GetClassname(), "trigger_multiple") && this->m_pEntity->NameMatches("timer_startzone"); }
+	//bool IsEndZone() { return !V_stricmp(this->GetClassname(), "trigger_multiple") && this->m_pEntity->NameMatches("timer_endzone"); }
 };

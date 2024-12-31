@@ -53,18 +53,6 @@ public:
 	SCHEMA_FIELD(Vector, m_vecEndPos);
 };
 
-class CBaseToggle : public CBaseModelEntity {
-public:
-	DECLARE_SCHEMA_CLASS(CBaseToggle);
-
-	SCHEMA_FIELD(float, m_flWait);
-};
-
-class CBaseTrigger : public CBaseToggle {
-public:
-	DECLARE_SCHEMA_CLASS(CBaseTrigger);
-};
-
 class CModelPointEntity : public CBaseModelEntity {
 public:
 	DECLARE_SCHEMA_CLASS(CModelPointEntity);
