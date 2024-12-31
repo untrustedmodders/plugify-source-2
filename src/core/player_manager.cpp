@@ -407,12 +407,7 @@ TargetType CPlayerManager::TargetPlayerString(int caller, std::string_view targe
 			clients.push_back(i);
 		}
 	} else if (target.starts_with('#')) {
-		std::string_view str(target.substr(1));
-
-		int slot = -1;
-		auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), slot);
-
-		if (ec == std::errc() && ptr == str.data() + str.size()) {
+		if (int slot; utils::ParseInt(target.substr(1), slot)) {
 			targetType = TargetType::PLAYER;
 			CBasePlayerController* player = utils::GetController(slot);
 			if (player && player->IsController() && player->IsConnected()) {

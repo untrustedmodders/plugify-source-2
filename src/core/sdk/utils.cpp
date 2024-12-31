@@ -304,6 +304,11 @@ std::vector<plg::string> utils::Split(std::string_view strv, std::string_view de
 	return output;
 }
 
+bool utils::ParseInt(std::string_view str, int& out, int base) {
+	auto [ptr, err] = std::from_chars(str.data(), str.data() + str.size(), out, base);
+	return err == std::errc{};
+}
+
 #if S2SDK_PLATFORM_WINDOWS
 
 #include <Windows.h>

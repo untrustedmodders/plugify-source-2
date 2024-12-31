@@ -149,6 +149,8 @@ namespace utils {
 
 	std::vector<plg::string> Split(std::string_view strv, std::string_view delims);
 
+	bool ParseInt(std::string_view str, int& out, int base = 10);
+
 #if S2SDK_PLATFORM_WINDOWS
 	/// Converts the specified UTF-8 string to a wide string.
 	plg::wstring ConvertUtf8ToWide(std::string_view str);
