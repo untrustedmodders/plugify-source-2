@@ -1,6 +1,7 @@
 #pragma once
 
 #include "listener_manager.hpp"
+#include "con_var_manager.hpp"
 #include <core/sdk/utils.h>
 
 #include <convar.h>
@@ -39,7 +40,7 @@ public:
 	void AddCommandListener(const plg::string& name, CommandListenerCallback callback, HookMode mode);
 	void RemoveCommandListener(const plg::string& name, CommandListenerCallback callback, HookMode mode);
 	bool IsValidValveCommand(const plg::string& name) const;
-	bool AddValveCommand(const plg::string& name, const plg::string& description, int64 flags = 0, uint64 adminFlags = 0);
+	bool AddValveCommand(const plg::string& name, const plg::string& description, ConVarFlag flags = ConVarFlag::None, uint64 adminFlags = 0);
 	bool RemoveValveCommand(const plg::string& name);
 
 	poly::ReturnAction Hook_DispatchConCommand(poly::Params& params, int count, poly::Return& ret);

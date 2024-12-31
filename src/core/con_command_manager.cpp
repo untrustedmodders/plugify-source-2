@@ -84,7 +84,7 @@ void CConCommandManager::RemoveCommandListener(const plg::string& name, CommandL
 	}
 }
 
-bool CConCommandManager::AddValveCommand(const plg::string& name, const plg::string& description, int64 flags, uint64 adminFlags) {
+bool CConCommandManager::AddValveCommand(const plg::string& name, const plg::string& description, ConVarFlag flags, uint64 adminFlags) {
 	if (name.empty() || g_pCVar->FindConVar(name.c_str()).IsValid()) {
 		return false;
 	}

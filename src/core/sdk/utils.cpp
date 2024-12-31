@@ -177,14 +177,14 @@ float utils::GetAngleDifference(float source, float target, float c, bool relati
 	return fmod(fabs(target - source) + c, 2 * c) - c;
 }
 
-void utils::NotifyConVar(BaseConVar* conVar, const char* value) {
+void utils::NotifyConVar(const BaseConVar& conVar, const char* value) {
 	IGameEvent* pEvent = g_pGameEventManager->CreateEvent("server_cvar");
 	if (pEvent == nullptr) {
 		return;
 	}
 
-	pEvent->SetString("cvarname", conVar->GetName());
-	if (conVar->IsFlagSet(FCVAR_PROTECTED)) {
+	pEvent->SetString("cvarname", conVar.GetName());
+	if (conVar.IsFlagSet(FCVAR_PROTECTED)) {
 		pEvent->SetString("cvarvalue", "***PROTECTED***");
 	} else {
 		pEvent->SetString("cvarvalue", value);
@@ -193,20 +193,20 @@ void utils::NotifyConVar(BaseConVar* conVar, const char* value) {
 	g_pGameEventManager->FireEvent(pEvent);
 }
 
-void utils::ReplicateConVar(BaseConVar* conVar, const char* value) {
+void utils::ReplicateConVar(const BaseConVar& conVar, const char* value) {
 	if (!gpGlobals)
 		return;
 
 	for (int i = 0; i <= gpGlobals->maxClients; ++i) {
-		utils::SendConVarValue(CPlayerSlot(i), conVar, value);
+		utils::SendConVarValue(CPlayerSlot(i), conVar.GetName(), value);
 	}
 }
 
-void utils::SendConVarValue(CPlayerSlot slot, BaseConVar* conVar, const char* value) {
+void utils::SendConVarValue(CPlayerSlot slot, const char* name, const char* value) {
 	INetworkMessageInternal* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("CNETMsg_SetConVar");
 	auto msg = pNetMsg->AllocateMessage()->ToPB<CNETMsg_SetConVar>();
 	CMsg_CVars_CVar* cvar = msg->mutable_convars()->add_cvars();
-	cvar->set_name(conVar->GetName());
+	cvar->set_name(name);
 	cvar->set_value(value);
 
 	CSingleRecipientFilter filter(slot);
@@ -217,12 +217,12 @@ void utils::SendConVarValue(CPlayerSlot slot, BaseConVar* conVar, const char* va
 #endif
 }
 
-void utils::SendMultipleConVarValues(CPlayerSlot slot, BaseConVar** conVar, const char** value, uint32_t size) {
+void utils::SendMultipleConVarValues(CPlayerSlot slot, const char** names, const char** value, uint32_t size) {
 	INetworkMessageInternal* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("CNETMsg_SetConVar");
 	auto msg = pNetMsg->AllocateMessage()->ToPB<CNETMsg_SetConVar>();
 	for (uint32_t i = 0; i < size; ++i) {
 		CMsg_CVars_CVar* cvar = msg->mutable_convars()->add_cvars();
-		cvar->set_name(conVar[i]->GetName());
+		cvar->set_name(names[i]);
 		cvar->set_value(value[i]);
 	}
 	CSingleRecipientFilter filter(slot);

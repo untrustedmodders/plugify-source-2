@@ -28,10 +28,10 @@ bool CConVarManager::RemoveConVar(const plg::string& name) {
 	return true;
 }
 
-BaseConVar* CConVarManager::FindConVar(const plg::string& name) {
+ConVarHandle CConVarManager::FindConVar(const plg::string& name) {
 	auto it = m_cnvLookup.find(name);
 	if (it != m_cnvLookup.end()) {
-		return std::get<ConVarInfoPtr>(*it)->conVar.get();
+		return std::get<ConVarInfoPtr>(*it)->conVar->GetHandle();
 	}
 
 	std::lock_guard<std::mutex> lock(m_registerCnvLock);
@@ -40,7 +40,7 @@ BaseConVar* CConVarManager::FindConVar(const plg::string& name) {
 	conVarInfo.conVar = std::make_unique<ConVarRef<bool>>(name.c_str());
 	m_cnvCache.emplace(conVarInfo.conVar.get(), &conVarInfo);
 
-	return conVarInfo.conVar.get();
+	return conVarInfo.conVar->GetHandle();
 }
 
 void CConVarManager::HookConVarChange(const plg::string& name, ConVarChangeListenerCallback callback) {
@@ -80,7 +80,7 @@ void CConVarManager::UnhookConVarChange(const plg::string& name, ConVarChangeLis
 }
 
 void CConVarManager::ChangeGlobal(BaseConVar* ref, CSplitScreenSlot nSlot, const char* pNewValue, const char* pOldValue) {
-	g_ConVarManager.m_global.Notify(ref, pNewValue, pOldValue);
+	g_ConVarManager.m_global.Notify(ref->GetHandle(), pNewValue, pOldValue);
 }
 
 CConVarManager g_ConVarManager;
