@@ -115,10 +115,6 @@ CBasePlayerController* utils::GetController(CPlayerSlot slot) {
 	return ent->IsController() ? static_cast<CBasePlayerController*>(ent) : nullptr;
 }
 
-CPlayerSlot utils::GetSlotFromUserId(uint16 userid) {
-	return CPlayerSlot(userid & 0xFF);
-}
-
 CPlayerSlot utils::GetEntityPlayerSlot(CBaseEntity* entity) {
 	CBasePlayerController* controller = utils::GetController(entity);
 	if (!controller) {

@@ -32,7 +32,6 @@ namespace utils {
 	CBasePlayerController* GetController(CPlayerSlot slot);
 	bool IsPlayerSlot(CPlayerSlot slot);
 
-	CPlayerSlot GetSlotFromUserId(uint16 userid);
 	CPlayerSlot GetEntityPlayerSlot(CBaseEntity* entity);
 	CUtlVector<CServerSideClientBase*>* GetClientList();
 	CServerSideClientBase* GetClientBySlot(CPlayerSlot slot);
