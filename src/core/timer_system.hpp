@@ -21,9 +21,9 @@ public:
 private:
 	bool KillMe(TimerFlag flag);
 
-	TimerCallback m_callback;
-	double m_execTime;
 	double m_interval;
+	double m_execTime;
+	TimerCallback m_callback;
 	TimerFlag m_flags;
 	bool m_inExec{};
 	bool m_killMe{};

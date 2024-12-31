@@ -7,7 +7,7 @@ double timerNextThink = 0.0f;
 const double engineFixedTickInterval = 0.015625;
 
 CTimer::CTimer(double interval, double execTime, TimerCallback callback, TimerFlag flags, const plg::vector<plg::any>& userData)
-	: m_callback(callback), m_userData(userData), m_interval(interval), m_execTime(execTime), m_flags(flags) {
+	: m_interval(interval), m_execTime(execTime), m_callback(callback), m_flags(flags), m_userData(userData) {
 }
 
 CTimer::~CTimer() = default;
@@ -94,7 +94,7 @@ void CTimerSystem::RunFrame() {
 
 void CTimerSystem::RemoveMapChangeTimers() {
 	for (auto it = m_onceOffTimers.begin(); it != m_onceOffTimers.end();) {
-		auto& [_, timer] = *it;
+		auto& timer = std::get<CTimer>(*it);
 		if (timer.KillMe(TimerFlag::NoMapChange)) {
 			it = m_onceOffTimers.erase(it);
 		} else {
@@ -103,7 +103,7 @@ void CTimerSystem::RemoveMapChangeTimers() {
 	}
 
 	for (auto it = m_repeatTimers.begin(); it != m_repeatTimers.end();) {
-		auto& [_, timer] = *it;
+		auto& timer = std::get<CTimer>(*it);
 		if (timer.KillMe(TimerFlag::NoMapChange)) {
 			it = m_repeatTimers.erase(it);
 		} else {
@@ -128,7 +128,7 @@ Handle CTimerSystem::CreateTimer(double interval, TimerCallback callback, TimerF
 
 void CTimerSystem::KillTimer(Handle handle) {
 	if (auto it = m_repeatTimers.find(handle); it != m_repeatTimers.end()) {
-		auto& [_, timer] = *it;
+		auto& timer = std::get<CTimer>(*it);
 		if (!timer.KillMe(TimerFlag::Default)) {
 			std::lock_guard<std::mutex> lock(m_createTimerLock);
 			m_repeatTimers.erase(it);
@@ -137,7 +137,7 @@ void CTimerSystem::KillTimer(Handle handle) {
 	}
 
 	if (auto it = m_onceOffTimers.find(handle); it != m_onceOffTimers.end()) {
-		auto& [_, timer] = *it;
+		auto& timer = std::get<CTimer>(*it);
 		if (!timer.KillMe(TimerFlag::Default)) {
 			std::lock_guard<std::mutex> lock(m_createTimerLock);
 			m_onceOffTimers.erase(it);
