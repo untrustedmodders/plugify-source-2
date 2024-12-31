@@ -23,7 +23,7 @@ extern "C" PLUGIN_API void PrintToServer(const plg::string& msg) {
  * @param message The message to be sent to the client's console.
  */
 extern "C" PLUGIN_API void PrintToConsole(int clientIndex, const plg::string& message) {
-	utils::PrintConsole(CPlayerSlot(clientIndex), message.c_str());
+	utils::PrintConsole(clientIndex, message.c_str());
 }
 
 /**
@@ -32,7 +32,7 @@ extern "C" PLUGIN_API void PrintToConsole(int clientIndex, const plg::string& me
  * @param message The message to be printed in the chat area.
  */
 extern "C" PLUGIN_API void PrintToChat(int clientIndex, const plg::string& message) {
-	utils::PrintChat(CPlayerSlot(clientIndex), message.c_str());
+	utils::PrintChat(clientIndex, message.c_str());
 }
 
 /**
@@ -41,7 +41,7 @@ extern "C" PLUGIN_API void PrintToChat(int clientIndex, const plg::string& messa
  * @param message The message to be printed in the center of the screen.
  */
 extern "C" PLUGIN_API void PrintCenterText(int clientIndex, const plg::string& message) {
-	utils::PrintCentre(CPlayerSlot(clientIndex), message.c_str());
+	utils::PrintCentre(clientIndex, message.c_str());
 }
 
 /**
@@ -50,7 +50,7 @@ extern "C" PLUGIN_API void PrintCenterText(int clientIndex, const plg::string& m
  * @param message The message to be printed in the alert box.
  */
 extern "C" PLUGIN_API void PrintAlertText(int clientIndex, const plg::string& message) {
-	utils::PrintAlert(CPlayerSlot(clientIndex), message.c_str());
+	utils::PrintAlert(clientIndex, message.c_str());
 }
 
 /**
@@ -59,7 +59,7 @@ extern "C" PLUGIN_API void PrintAlertText(int clientIndex, const plg::string& me
  * @param message The HTML-formatted message to be printed.
  */
 extern "C" PLUGIN_API void PrintCentreHtml(int clientIndex, const plg::string& message) {
-	utils::PrintHtmlCentre(CPlayerSlot(clientIndex), message.c_str());
+	utils::PrintHtmlCentre(clientIndex, message.c_str());
 }
 
 /**
@@ -108,7 +108,7 @@ extern "C" PLUGIN_API void PrintCentreHtmlAll(const plg::string& message) {
  * @param message The message to be printed in the chat area with color.
  */
 extern "C" PLUGIN_API void PrintToChatColored(int clientIndex, const plg::string& message) {
-	utils::CPrintChat(CPlayerSlot(clientIndex), message.c_str());
+	utils::CPrintChat(clientIndex, message.c_str());
 }
 
 /**

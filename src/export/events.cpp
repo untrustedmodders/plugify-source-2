@@ -57,7 +57,7 @@ extern "C" PLUGIN_API void FireEvent(EventInfo* pInfo, bool bDontBroadcast) {
  * @param clientIndex The index of the client to fire the event to.
  */
 extern "C" PLUGIN_API void FireEventToClient(EventInfo* pInfo, int clientIndex) {
-	g_EventManager.FireEventToClient(pInfo, CPlayerSlot(clientIndex));
+	g_EventManager.FireEventToClient(pInfo, clientIndex);
 }
 
 /**

@@ -450,11 +450,11 @@ extern "C" PLUGIN_API void SetEntityName(int entityHandle, const plg::string& na
  * @param entityHandle The handle of the entity whose movement type is to be retrieved.
  * @return The movement type of the entity, or 0 if the entity is invalid.
  */
-extern "C" PLUGIN_API int GetEntityMoveType(int entityHandle) {
+extern "C" PLUGIN_API MoveType_t GetEntityMoveType(int entityHandle) {
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
 	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetEntityMoveType' on invalid entity handle: %d\n", entityHandle);
-		return 0;
+		return MOVETYPE_NONE;
 	}
 
 	return pEntity->m_MoveType();
@@ -469,14 +469,14 @@ extern "C" PLUGIN_API int GetEntityMoveType(int entityHandle) {
  * @param entityHandle The handle of the entity whose movement type is to be set.
  * @param moveType The new movement type to set for the entity.
  */
-extern "C" PLUGIN_API void SetEntityMoveType(int entityHandle, int moveType) {
+extern "C" PLUGIN_API void SetEntityMoveType(int entityHandle, MoveType_t moveType) {
 	CBaseEntity* pEntity = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
 	if (!pEntity) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetEntityMoveType' on invalid entity handle: %d\n", entityHandle);
 		return;
 	}
 
-	pEntity->SetMoveType(static_cast<MoveType_t>(moveType));
+	pEntity->SetMoveType(moveType);
 }
 
 /**
@@ -533,7 +533,7 @@ extern "C" PLUGIN_API int GetEntityFlags(int entityHandle) {
 		return 0;
 	}
 
-	return pEntity->m_fFlags();
+	return static_cast<int>(pEntity->m_fFlags());
 }
 
 /**
@@ -552,7 +552,7 @@ extern "C" PLUGIN_API void SetEntityFlags(int entityHandle, int flags) {
 		return;
 	}
 
-	pEntity->m_fFlags = flags;
+	pEntity->m_fFlags = static_cast<uint32>(flags);
 }
 
 /**
