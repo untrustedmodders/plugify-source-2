@@ -28,110 +28,83 @@
 extern CSchemaSystem* g_pSchemaSystem2;
 extern CGlobalVars* gpGlobals;
 
-using SchemaKeyValueMap_t = CUtlMap<uint32_t, SchemaKey>;
-using SchemaTableMap_t = CUtlMap<uint32_t, SchemaKeyValueMap_t*>;
+using SchemaKeyValueMap = std::unordered_map<plg::string, SchemaKey>;
+using SchemaTableMap = std::unordered_map<plg::string, SchemaKeyValueMap>;
 
 namespace {
-	bool IsFieldNetworked(SchemaClassFieldData_t& field) {
+	bool IsFieldNetworked(const SchemaClassFieldData_t& field) {
 		for (int i = 0; i < field.m_nStaticMetadataCount; ++i) {
-			static auto networkEnabled = hash_32_fnv1a_const("MNetworkEnable");
-			if (networkEnabled == hash_32_fnv1a_const(field.m_pStaticMetadata[i].m_pszName))
+			std::string_view fieldName(field.m_pStaticMetadata[i].m_pszName);
+			if (fieldName == "MNetworkEnable")
 				return true;
 		}
 
 		return false;
 	}
 
-	bool InitSchemaFieldsForClass(SchemaTableMap_t* tableMap, const char* className, uint32_t classKey) {
+	bool InitSchemaFieldsForClass(SchemaTableMap& tableMap, const plg::string& className) {
 		CSchemaSystemTypeScope2* pType = g_pSchemaSystem2->FindTypeScopeForModule(S2SDK_LIBRARY_PREFIX "server" S2SDK_LIBRARY_SUFFIX);
-
 		if (!pType)
 			return false;
 
-		SchemaClassInfoData_t* pClassInfo = pType->FindDeclaredClass(className);
-
+		SchemaClassInfoData_t* pClassInfo = pType->FindDeclaredClass(className.c_str());
 		if (!pClassInfo) {
-			SchemaKeyValueMap_t* map = new SchemaKeyValueMap_t(0, 0, DefLessFunc(uint32_t));
-			tableMap->Insert(classKey, map);
+			tableMap.emplace(className, SchemaKeyValueMap());
 
-			g_Logger.LogFormat(LS_ERROR, "InitSchemaFieldsForClass(): '%s' was not found!\n", className);
+			g_Logger.LogFormat(LS_ERROR, "InitSchemaFieldsForClass(): '%s' was not found!\n", className.c_str());
 			return false;
 		}
 
-		int fieldsSize = static_cast<int>(pClassInfo->m_nFieldCount);
+		size_t fieldsSize = pClassInfo->m_nFieldCount;
 		SchemaClassFieldData_t* pFields = pClassInfo->m_pFields;
 
-		SchemaKeyValueMap_t* keyValueMap = new SchemaKeyValueMap_t(0, 0, DefLessFunc(uint32_t));
-		keyValueMap->EnsureCapacity(fieldsSize);
-		tableMap->Insert(classKey, keyValueMap);
+		SchemaKeyValueMap keyValueMap;
+		keyValueMap.reserve(fieldsSize);
 
-		int nSize = 0;
-		uint8 nAlignment = 0;
+		for (size_t i = 0; i < fieldsSize; ++i) {
+			const SchemaClassFieldData_t& field = pFields[i];
 
-		for (int i = 0; i < fieldsSize; ++i) {
-			SchemaClassFieldData_t& field = pFields[i];
-
+			int nSize = 0;
+			uint8 nAlignment = 0;
 			field.m_pType->GetSizeAndAlignment(nSize, nAlignment);
+			keyValueMap.emplace(field.m_pszName, SchemaKey{field.m_nSingleInheritanceOffset, IsFieldNetworked(field), nSize, field.m_pType});
 
-			g_Logger.LogFormat(LS_DEBUG, "%s::%s found at -> 0x%X - %llx\n", className, field.m_pszName, field.m_nSingleInheritanceOffset, &field);
-
-			keyValueMap->Insert(hash_32_fnv1a_const(field.m_pszName), {field.m_nSingleInheritanceOffset, IsFieldNetworked(field), nSize, field.m_pType});
+			g_Logger.LogFormat(LS_DEBUG, "%s::%s found at -> 0x%X - %llx\n", className.c_str(), field.m_pszName, field.m_nSingleInheritanceOffset, &field);
 		}
+
+		tableMap.emplace(className, std::move(keyValueMap));
 
 		return true;
 	}
+
 }// namespace
 
 namespace schema {
-	int32_t FindChainOffset(const char* className) {
-		CSchemaSystemTypeScope2* pType = g_pSchemaSystem2->FindTypeScopeForModule(S2SDK_LIBRARY_PREFIX "server" S2SDK_LIBRARY_SUFFIX);
-
-		if (!pType)
-			return false;
-
-		SchemaClassInfoData_t* pClassInfo = pType->FindDeclaredClass(className);
-
-		do {
-			SchemaClassFieldData_t* pFields = pClassInfo->m_pFields;
-			uint16 fieldsSize = pClassInfo->m_nFieldCount;
-			for (int i = 0; i < fieldsSize; ++i) {
-				SchemaClassFieldData_t& field = pFields[i];
-
-				std::string_view name(field.m_pszName);
-				if (name == "__m_pChainEntity") {
-					return field.m_nSingleInheritanceOffset;
-				}
-			}
-		} while ((pClassInfo = pClassInfo->GetParent()) != nullptr);
-
-		return 0;
+	int32_t FindChainOffset(const plg::string& className) {
+		const auto schemaKey = GetOffset(className, "__m_pChainEntity");
+		return schemaKey.offset;
 	}
 
-	SchemaKey GetOffset(const char* className, const char* memberName) {
-		return GetOffset(className, hash_32_fnv1a_const(className), memberName, hash_32_fnv1a_const(memberName));
-	}
-
-	SchemaKey GetOffset(const char* className, uint32_t classKey, const char* memberName, uint32_t memberKey) {
-		static SchemaTableMap_t schemaTableMap(0, 0, DefLessFunc(uint32_t));
-		int16_t tableMapIndex = schemaTableMap.Find(classKey);
-		if (!schemaTableMap.IsValidIndex(tableMapIndex)) {
-			if (InitSchemaFieldsForClass(&schemaTableMap, className, classKey))
-				return GetOffset(className, classKey, memberName, memberKey);
-
-			return {0, false};
+	SchemaKey GetOffset(const plg::string& className, const plg::string& memberName) {
+		static SchemaTableMap schemaTableMap;
+		auto tableIt = schemaTableMap.find(className);
+		if (tableIt == schemaTableMap.end()) {
+			if (InitSchemaFieldsForClass(schemaTableMap, className))
+				return GetOffset(className, memberName);
+			return {};
 		}
 
-		SchemaKeyValueMap_t* tableMap = schemaTableMap[tableMapIndex];
-		int16_t memberIndex = tableMap->Find(memberKey);
-		if (!tableMap->IsValidIndex(memberIndex)) {
-			g_Logger.LogFormat(LS_WARNING, "schema::GetOffset(): '%s' was not found in '%s'!\n", memberName, className);
-			return {0, false};
+		const auto& tableMap = std::get<SchemaKeyValueMap>(*tableIt);
+		auto memberIt = tableMap.find(memberName);
+		if (memberIt == tableMap.end()) {
+			g_Logger.LogFormat(LS_WARNING, "schema::GetOffset(): '%s' was not found in '%s'!\n", memberName.c_str(), className.c_str());
+			return {};
 		}
 
-		return tableMap->Element(memberIndex);
+		return std::get<SchemaKey>(*memberIt);
 	}
 
-	void NetworkStateChanged(int64 chainEntity, uint32 nLocalOffset, int nArrayIndex) {
+	void NetworkStateChanged(intptr_t chainEntity, uint nLocalOffset, int nArrayIndex) {
 		CNetworkVarChainer* chainEnt = reinterpret_cast<CNetworkVarChainer*>(chainEntity);
 		CEntityInstance* pEntity = chainEnt->GetObject();
 		if (pEntity && !(pEntity->m_pEntity->m_flags & EF_IS_CONSTRUCTION_IN_PROGRESS)) {
