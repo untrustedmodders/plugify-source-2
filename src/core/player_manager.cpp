@@ -407,11 +407,13 @@ TargetType CPlayerManager::TargetPlayerString(int caller, std::string_view targe
 			clients.push_back(i);
 		}
 	} else if (target.starts_with('#')) {
-		int userid = V_StringToUint16(target.substr(1).data(), -1);
+		std::string_view str(target.substr(1));
 
-		if (userid != -1) {
+		int slot = -1;
+		auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), slot);
+
+		if (ec == std::errc() && ptr == str.data() + str.size()) {
 			targetType = TargetType::PLAYER;
-			CPlayerSlot slot = utils::GetSlotFromUserId(userid);
 			CBasePlayerController* player = utils::GetController(slot);
 			if (player && player->IsController() && player->IsConnected()) {
 				clients.push_back(slot);
@@ -427,7 +429,8 @@ TargetType CPlayerManager::TargetPlayerString(int caller, std::string_view targe
 			if (!player || !player->IsController() || !player->IsConnected())
 				continue;
 
-			if (V_stristr(player->GetPlayerName(), target.data())) {
+			std::string_view playerName(player->GetPlayerName());
+			if (playerName.find(playerName) != std::string_view::npos) {
 				targetType = TargetType::PLAYER;
 				clients.push_back(i);
 				break;
