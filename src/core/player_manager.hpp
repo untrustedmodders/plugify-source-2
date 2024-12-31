@@ -20,22 +20,6 @@ enum class TargetType {
 	CT,
 };
 
-enum ListenOverride : int8_t {
-	Listen_Default = 0,
-	Listen_Mute,
-	Listen_Hear
-};
-
-enum VoiceFlagValue {
-	Speak_Normal = 0,
-	Speak_Muted = 1 << 0,
-	Speak_All = 1 << 1,
-	Speak_ListenAll = 1 << 2,
-	Speak_Team = 1 << 3,
-	Speak_ListenTeam = 1 << 4,
-};
-
-using VoiceFlag_t = uint8_t;
 class CPlayerPawnComponent;
 class CCSObserverPawn;
 
