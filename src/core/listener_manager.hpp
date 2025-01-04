@@ -65,17 +65,17 @@ public:
 		return Find(callable) != -1;
 	}
 
-	void Notify(Args&&... args) const {
+	void Notify(Args... args) const {
 		for (size_t i = 0; i < m_callables.size(); ++i) {
 			m_callables[i](std::forward<Args>(args)...);
 		}
 	}
 
-	Ret Notify(size_t index, Args&&... args) const {
+	Ret Notify(size_t index, Args... args) const {
 		return m_callables[index](std::forward<Args>(args)...);
 	}
 
-	Ret operator()(size_t index, Args&&... args) const {
+	Ret operator()(size_t index, Args... args) const {
 		return m_callables[index](std::forward<Args>(args)...);
 	}
 
