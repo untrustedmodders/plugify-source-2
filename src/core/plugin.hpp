@@ -36,6 +36,9 @@ public:
 	static poly::ReturnAction Hook_PreWorldUpdate(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 	static poly::ReturnAction Hook_FireOutputInternal(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 	static poly::ReturnAction Hook_DispatchConCommand(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+#if S2SDK_PLATFORM_WINDOWS
+	static poly::ReturnAction Hook_PreloadLibrary(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
+#endif
 };
 
 extern Source2SDK g_sdk;

@@ -4,6 +4,11 @@
 	{
 		"Signatures"
 		{
+			"PreloadLibrary"
+			{
+				"library"	"engine"
+				"windows"	"48 89 4C 24 08 53 56 57 48 83 EC 60"
+			}
 			// String: "CCSPlayerPawnBase::SwitchTeam", just keep in mind this is actually CCSPlayerController::SwitchTeam
 			"CCSPlayerController_SwitchTeam"
 			{

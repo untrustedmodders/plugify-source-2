@@ -108,6 +108,11 @@ void Source2SDK::OnPluginStart() {
 	using FireOutputInternal = void (*)(CEntityIOOutput* const, CEntityInstance*, CEntityInstance*, const CVariant* const, float);
 	g_PH.AddHookDetourFunc<FireOutputInternal>("CEntityIOOutput_FireOutputInternal", Hook_FireOutputInternal, Pre);
 
+#if S2SDK_PLATFORM_WINDOWS
+	using PreloadLibrary = void (*)(void* const);
+	g_PH.AddHookDetourFunc<PreloadLibrary>("PreloadLibrary", Hook_PreloadLibrary, Pre);
+#endif
+
 	OnServerStartup();// for late load*/
 }
 
@@ -407,3 +412,30 @@ poly::ReturnAction Source2SDK::Hook_FireOutputInternal(poly::CallbackType type, 
 poly::ReturnAction Source2SDK::Hook_DispatchConCommand(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
 	return type == poly::CallbackType::Post ? g_CommandManager.Hook_DispatchConCommand_Post(params, count, ret) : g_CommandManager.Hook_DispatchConCommand(params, count, ret);
 }
+
+#if S2SDK_PLATFORM_WINDOWS
+
+#if PLUGIFY_ARCH_BITS == 64
+const WORD PE_FILE_MACHINE = IMAGE_FILE_MACHINE_AMD64;
+const WORD PE_NT_OPTIONAL_HDR_MAGIC = IMAGE_NT_OPTIONAL_HDR64_MAGIC;
+#else
+const WORD PE_FILE_MACHINE = IMAGE_FILE_MACHINE_I386;
+const WORD PE_NT_OPTIONAL_HDR_MAGIC = IMAGE_NT_OPTIONAL_HDR32_MAGIC;
+#endif // PLUGIFY_ARCH_BITS
+
+poly::ReturnAction Source2SDK::Hook_PreloadLibrary(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
+	HMODULE hModule = (HMODULE) poly::GetArgument<void*>(params, 0);
+
+	IMAGE_DOS_HEADER* pDOSHeader = reinterpret_cast<IMAGE_DOS_HEADER*>(hModule);
+	IMAGE_NT_HEADERS* pNTHeaders = reinterpret_cast<IMAGE_NT_HEADERS*>(reinterpret_cast<uintptr_t>(hModule) + pDOSHeader->e_lfanew);
+	IMAGE_OPTIONAL_HEADER* pOptionalHeader = &pNTHeaders->OptionalHeader;
+
+	IMAGE_DATA_DIRECTORY clrRuntimeHeader = pOptionalHeader->DataDirectory[IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR];
+	if (clrRuntimeHeader.VirtualAddress != 0 && clrRuntimeHeader.Size != 0) {
+		return poly::ReturnAction::Supercede;
+	}
+
+	return poly::ReturnAction::Ignored;
+}
+
+#endif
