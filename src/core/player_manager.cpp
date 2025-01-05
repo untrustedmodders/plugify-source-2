@@ -135,6 +135,9 @@ void CPlayerManager::OnSteamAPIActivated() {
 }
 
 void CPlayerManager::OnValidateAuthTicket(ValidateAuthTicketResponse_t* pResponse) {
+	if (!pResponse)
+		return;
+
 	uint64 iSteamId = pResponse->m_SteamID.ConvertToUint64();
 
 	g_Logger.LogFormat(LS_DEBUG, "OnValidateAuthTicket %s: SteamID=%llu Response=%d\n", iSteamId, pResponse->m_eAuthSessionResponse);
