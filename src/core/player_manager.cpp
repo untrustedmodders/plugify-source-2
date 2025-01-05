@@ -225,7 +225,7 @@ void CPlayerManager::OnClientConnected(CPlayerSlot slot) {
 void CPlayerManager::OnClientPutInServer(CPlayerSlot slot, char const* pszName) {
 	CPlayer* pPlayer = ToPlayer(slot);
 	if (pPlayer) {
-		if (!pPlayer->IsConnected()) {
+		if (pPlayer->IsFakeClient()) {
 			if (!OnClientConnect(slot, pszName, 0, "127.0.0.1"))
 				return;
 
