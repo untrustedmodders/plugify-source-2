@@ -44,7 +44,7 @@ CServerSideClientBase* CPlayer::GetClient() const {
 
 bool CPlayer::IsAuthenticated() const {
 	auto client = GetClient();
-	return client && client->IsConnected() && !client->IsFakeClient() && g_pEngineServer->IsClientFullyAuthenticated(GetPlayerSlot());
+	return client && client->IsConnected() && !client->IsFakeClient() && g_pEngineServer2->IsClientFullyAuthenticated(GetPlayerSlot());
 }
 
 bool CPlayer::IsConnected() const {
@@ -127,7 +127,7 @@ float CPlayer::GetLatency() const {
 }
 
 void CPlayer::Kick(const char* internalReason, ENetworkDisconnectionReason reason) const {
-	g_pEngineServer->KickClient(GetPlayerSlot(), internalReason, reason);
+	g_pEngineServer2->KickClient(GetPlayerSlot(), internalReason, reason);
 }
 
 void CPlayerManager::RunAuthChecks() {
@@ -325,7 +325,7 @@ CPlayer* CPlayerManager::ToPlayer(CEntityIndex entIndex) const {
 
 CPlayer* CPlayerManager::ToPlayer(CPlayerUserId userID) const {
 	for (int slot = 0; slot < MaxClients(); slot++) {
-		if (g_pEngineServer->GetPlayerUserId(slot) == userID) {
+		if (g_pEngineServer2->GetPlayerUserId(slot) == userID) {
 			return ToPlayer(CPlayerSlot(slot));
 		}
 	}
