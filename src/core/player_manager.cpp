@@ -130,7 +130,27 @@ void CPlayer::Kick(const char* internalReason, ENetworkDisconnectionReason reaso
 	g_pEngineServer->KickClient(GetPlayerSlot(), internalReason, reason);
 }
 
-void CPlayerManager::OnSteamAPIActivated() {
+void CPlayerManager::RunAuthChecks() {
+	if (CTimerSystem::GetTickedTime() - m_lastAuthCheckTime < 0.1) {
+		return;
+	}
+
+	m_lastAuthCheckTime = CTimerSystem::GetTickedTime();
+
+	for (const CPlayer& player : m_players) {
+		if (player.IsConnected()) {
+			if (player.IsAuthenticated() || player.IsFakeClient())
+				continue;
+
+			CPlayerSlot slot = player.GetPlayerSlot();
+			if (g_pEngineServer2->IsClientFullyAuthenticated(slot)) {
+				GetOnClientAuthenticatedListenerManager().Notify(slot, player.GetSteamId().ConvertToUint64());
+			}
+		}
+	}
+}
+
+/*void CPlayerManager::OnSteamAPIActivated() {
 	m_CallbackValidateAuthTicketResponse.Register(this, &CPlayerManager::OnValidateAuthTicket);
 }
 
@@ -148,14 +168,14 @@ void CPlayerManager::OnValidateAuthTicket(ValidateAuthTicketResponse_t* pRespons
 
 		switch (pResponse->m_eAuthSessionResponse) {
 			case k_EAuthSessionResponseOK: {
-				GetOnClientAuthorizedListenerManager().Notify(player.GetPlayerSlot(), player.GetSteamId().ConvertToUint64());
+				GetOnClientAuthenticatedListenerManager().Notify(player.GetPlayerSlot(), player.GetSteamId().ConvertToUint64());
 				return;
 			}
 			default:
 				break;
 		}
 	}
-}
+}*/
 
 thread_local bool s_refuseConnection;
 

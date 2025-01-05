@@ -233,6 +233,7 @@ poly::ReturnAction Source2SDK::Hook_GameFrame(poly::CallbackType type, poly::Par
 
 	g_ServerManager.OnGameFrame();
 	g_TimerSystem.OnGameFrame(simulating);
+	g_PlayerManager.RunAuthChecks();
 
 	GetOnGameFrameListenerManager().Notify(simulating, bFirstTick, bLastTick);
 	return poly::ReturnAction::Ignored;
@@ -368,10 +369,10 @@ poly::ReturnAction Source2SDK::Hook_ClientCommand(poly::CallbackType type, poly:
 poly::ReturnAction Source2SDK::Hook_GameServerSteamAPIActivated(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
 	g_Logger.Log(LS_DEBUG, "[GameServerSteamAPIActivated]\n");
 
-	g_steamAPI.Init();
-	g_http = g_steamAPI.SteamHTTP();
+	//g_steamAPI.Init();
+	//g_http = g_steamAPI.SteamHTTP();
 
-	g_PlayerManager.OnSteamAPIActivated();
+	//g_PlayerManager.OnSteamAPIActivated();
 
 	//GetOnGameServerSteamAPIActivatedListenerManager().Notify();
 	return poly::ReturnAction::Ignored;
@@ -380,7 +381,7 @@ poly::ReturnAction Source2SDK::Hook_GameServerSteamAPIActivated(poly::CallbackTy
 poly::ReturnAction Source2SDK::Hook_GameServerSteamAPIDeactivated(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
 	g_Logger.Log(LS_DEBUG, "[GameServerSteamAPIDeactivated]\n");
 
-	g_http = nullptr;
+	//g_http = nullptr;
 
 	//GetOnGameServerSteamAPIDeactivatedListenerManager().Notify();
 	return poly::ReturnAction::Ignored;

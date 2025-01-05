@@ -22,7 +22,7 @@ DEFINE_MANAGER_ACCESSOR(OnClientDisconnect_Post, void, int, int)
 DEFINE_MANAGER_ACCESSOR(OnClientActive, void, int, bool)
 DEFINE_MANAGER_ACCESSOR(OnClientFullyConnect, void, int)
 DEFINE_MANAGER_ACCESSOR(OnClientSettingsChanged, void, int)
-DEFINE_MANAGER_ACCESSOR(OnClientAuthorized, void, int, uint64)
+DEFINE_MANAGER_ACCESSOR(OnClientAuthenticated, void, int, uint64)
 
 DEFINE_MANAGER_ACCESSOR(OnLevelInit, void, const plg::string&, const plg::string&)
 DEFINE_MANAGER_ACCESSOR(OnLevelShutdown, void)

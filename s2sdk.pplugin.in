@@ -14123,6 +14123,144 @@
       }
     },
     {
+      "name": "OnClientSettingsChanged_Register",
+      "group": "Listeners",
+      "description": "Register callback to event.",
+      "funcName": "OnClientSettingsChanged_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnClientSettingsChangedCallback",
+            "description": "Called whenever the client's settings are changed.",
+            "paramTypes": [
+              {
+                "name": "clientIndex",
+                "type": "int32",
+                "description": "The client index"
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnClientSettingsChanged_Unregister",
+      "group": "Listeners",
+      "description": "Unregister callback to event.",
+      "funcName": "OnClientSettingsChanged_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnClientSettingsChangedCallback",
+            "description": "Called whenever the client's settings are changed.",
+            "paramTypes": [
+              {
+                "name": "clientIndex",
+                "type": "int32",
+                "description": "The client index"
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnClientAuthenticated_Register",
+      "group": "Listeners",
+      "description": "Register callback to event.",
+      "funcName": "OnClientAuthenticated_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnClientAuthenticatedCallback",
+            "description": "Called when a client is fully connected to the game.",
+            "paramTypes": [
+              {
+                "name": "clientIndex",
+                "type": "int32",
+                "description": "The client index"
+              },
+              {
+                "name": "steam",
+                "type": "uint64",
+                "description": "Steam account ID or 0 if not available."
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnClientAuthenticated_Unregister",
+      "group": "Listeners",
+      "description": "Unregister callback to event.",
+      "funcName": "OnClientAuthenticated_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnClientAuthenticatedCallback",
+            "description": "Called when a client receives an auth ID.",
+            "paramTypes": [
+              {
+                "name": "clientIndex",
+                "type": "int32",
+                "description": "The client index"
+              },
+              {
+                "name": "steam",
+                "type": "uint64",
+                "description": "Steam account ID or 0 if not available."
+              }
+            ],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
       "name": "OnLevelInit_Register",
       "group": "Listeners",
       "description": "Register callback to event.",

@@ -16,7 +16,7 @@ DEFINE_MANAGER_CREATOR(OnClientDisconnect_Post, void, int, int)
 DEFINE_MANAGER_CREATOR(OnClientActive, void, int, bool)
 DEFINE_MANAGER_CREATOR(OnClientFullyConnect, void, int)
 DEFINE_MANAGER_CREATOR(OnClientSettingsChanged, void, int)
-DEFINE_MANAGER_CREATOR(OnClientAuthorized, void, int, uint64)
+DEFINE_MANAGER_CREATOR(OnClientAuthenticated, void, int, uint64)
 
 DEFINE_MANAGER_CREATOR(OnLevelInit, void, const plg::string&, const plg::string&)
 DEFINE_MANAGER_CREATOR(OnLevelShutdown, void)
