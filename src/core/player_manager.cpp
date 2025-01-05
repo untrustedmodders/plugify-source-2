@@ -225,10 +225,11 @@ void CPlayerManager::OnClientConnected(CPlayerSlot slot) {
 void CPlayerManager::OnClientPutInServer(CPlayerSlot slot, char const* pszName) {
 	CPlayer* pPlayer = ToPlayer(slot);
 	if (pPlayer) {
-		if (pPlayer->IsFakeClient()) {
-			if (!OnClientConnect(slot, pszName, 0, "127.0.0.1"))
-				return;
+		// For bots only
+		if (pPlayer->GetPlayerSlot() == CPlayerSlot{-1}) {
+			pPlayer->Init(slot, 0);
 
+			GetOnClientConnectListenerManager().Notify(slot, pszName, "127.0.0.1");
 			GetOnClientConnect_PostListenerManager().Notify(slot);
 		}
 
