@@ -87,8 +87,8 @@ bool CPlayer::IsValidClient() const {
 }
 
 const char* CPlayer::GetName() const {
-	auto controller = GetController();
-	return controller ? controller->GetPlayerName() : "<blank>";
+	auto client = GetClient();
+	return client ? client->GetClientName() : "<blank>";
 }
 
 const char* CPlayer::GetIpAddress() const {
@@ -182,8 +182,7 @@ thread_local bool s_refuseConnection;
 bool CPlayerManager::OnClientConnect(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID) {
 	CPlayer* pPlayer = ToPlayer(slot);
 	if (pPlayer) {
-		pPlayer->Init(slot);
-		pPlayer->SetUnauthenticatedSteamID(xuid);
+		pPlayer->Init(slot, xuid);
 
 		if (pPlayer->IsConnected()) {
 			OnClientDisconnect(slot, ENetworkDisconnectionReason::NETWORK_DISCONNECT_INVALID);

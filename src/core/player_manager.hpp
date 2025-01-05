@@ -28,8 +28,9 @@ public:
 	CPlayer() = default;
 	~CPlayer() = default;
 
-	void Init(int slot) {
+	void Init(int slot, uint64 xuid) {
 		m_iSlot = slot;
+		m_unauthenticatedSteamID = CSteamID(xuid);
 	}
 
 	void Reset() {
@@ -64,14 +65,6 @@ public:
 		return GetSteamId(validated).ConvertToUint64();
 	}
 
-	void SetUnauthenticatedSteamID(uint64 xuid) {
-		m_unauthenticatedSteamID = CSteamID(xuid);
-	}
-
-	const CSteamID& GetUnauthenticatedSteamId64() const {
-		return m_unauthenticatedSteamID;
-	}
-
 	CPlayerSlot GetPlayerSlot() const {
 		return m_iSlot;
 	}
@@ -82,7 +75,7 @@ public:
 
 private:
 	int m_iSlot{-1};
-	CSteamID m_unauthenticatedSteamID{};
+	CSteamID m_unauthenticatedSteamID;
 };
 
 class CPlayerManager {
