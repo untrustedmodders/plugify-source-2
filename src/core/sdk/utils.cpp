@@ -141,7 +141,7 @@ CServerSideClientBase* utils::GetClientBySlot(CPlayerSlot slot) {
 		return nullptr;
 
 	CUtlVector<CServerSideClientBase*>* clientList = GetClientList();
-	return clientList ? clientList->Element(slot) : nullptr;
+	return (clientList && GetController(slot)) ? clientList->Element(slot) : nullptr;
 }
 
 void utils::PlaySoundToClient(CPlayerSlot player, int channel, const char* soundName, float volume, soundlevel_t soundLevel, int flags, int pitch, const Vector& origin, float soundTime) {
