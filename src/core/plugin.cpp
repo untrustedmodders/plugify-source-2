@@ -121,7 +121,7 @@ void Source2SDK::OnPluginEnd() {
 	g_PH.UnhookAll();
 
 	if (g_pGameEntitySystem != nullptr) {
-		g_pGameEntitySystem->AddListenerEntity(&g_pEntityListener);
+		g_pGameEntitySystem->RemoveListenerEntity(&g_pEntityListener);
 	}
 
 	g_Logger.Log(LS_DEBUG, "[OnPluginEnd] = Source2SDK!\n");
@@ -140,7 +140,7 @@ void Source2SDK::OnServerStartup() {
 
 	g_pGameEntitySystem = GameEntitySystem();
 	if (g_pGameEntitySystem != nullptr) {
-		g_pGameEntitySystem->RemoveListenerEntity(&g_pEntityListener);
+		g_pGameEntitySystem->AddListenerEntity(&g_pEntityListener);
 	}
 }
 
