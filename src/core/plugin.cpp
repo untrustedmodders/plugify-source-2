@@ -26,7 +26,7 @@
 Source2SDK g_sdk;
 EXPOSE_PLUGIN(PLUGIN_API, &g_sdk)
 
-ISteamHTTP* g_http = nullptr;
+//ISteamHTTP* g_http = nullptr;
 CSteamGameServerAPIContext g_steamAPI;
 
 CGameEntitySystem* GameEntitySystem() {
@@ -43,19 +43,19 @@ class CEntityListener : public IEntityListener {
 		std::string_view name(pEntity->GetClassname());
 		if (name == "cs_gamerules")
 			g_pGameRules = ((CCSGameRulesProxy*) pEntity)->m_pGameRules;
-		GetOnEntityCreatedListenerManager().Notify(pEntity);
+		GetOnEntityCreatedListenerManager().Notify(pEntity->GetRefEHandle().ToInt());
 	}
 	void OnEntityDeleted(CEntityInstance* pEntity) override {
 		std::string_view name(pEntity->GetClassname());
 		if (name == "cs_gamerules")
 			g_pGameRules = nullptr;
-		GetOnEntityDeletedListenerManager().Notify(pEntity);
+		GetOnEntityDeletedListenerManager().Notify(pEntity->GetRefEHandle().ToInt());
 	}
 	void OnEntitySpawned(CEntityInstance* pEntity) override {
-		GetOnEntitySpawnedListenerManager().Notify(pEntity);
+		GetOnEntitySpawnedListenerManager().Notify(pEntity->GetRefEHandle().ToInt());
 	}
 	void OnEntityParentChanged(CEntityInstance* pEntity, CEntityInstance* pNewParent) override {
-		GetOnEntityParentChangedListenerManager().Notify(pEntity, pNewParent);
+		GetOnEntityParentChangedListenerManager().Notify(pEntity->GetRefEHandle().ToInt(), pNewParent ? pNewParent->GetRefEHandle().ToInt() : INVALID_EHANDLE_INDEX);
 	}
 } g_pEntityListener;
 
@@ -192,7 +192,6 @@ poly::ReturnAction Source2SDK::Hook_OnLevelInit(poly::CallbackType type, poly::P
 poly::ReturnAction Source2SDK::Hook_OnLevelShutdown(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
 	g_Logger.Log(LS_DEBUG, "[OnLevelShutdown]\n");
 	g_TimerSystem.OnLevelShutdown();
-	g_PlayerManager.OnLevelShutdown();
 	GetOnLevelShutdownListenerManager().Notify();
 	return poly::ReturnAction::Ignored;
 };
@@ -233,7 +232,6 @@ poly::ReturnAction Source2SDK::Hook_GameFrame(poly::CallbackType type, poly::Par
 
 	g_ServerManager.OnGameFrame();
 	g_TimerSystem.OnGameFrame(simulating);
-	g_PlayerManager.RunAuthChecks();
 
 	GetOnGameFrameListenerManager().Notify(simulating, bFirstTick, bLastTick);
 	return poly::ReturnAction::Ignored;
@@ -369,10 +367,10 @@ poly::ReturnAction Source2SDK::Hook_ClientCommand(poly::CallbackType type, poly:
 poly::ReturnAction Source2SDK::Hook_GameServerSteamAPIActivated(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
 	g_Logger.Log(LS_DEBUG, "[GameServerSteamAPIActivated]\n");
 
-	//g_steamAPI.Init();
+	g_steamAPI.Init();
 	//g_http = g_steamAPI.SteamHTTP();
 
-	//g_PlayerManager.OnSteamAPIActivated();
+	g_PlayerManager.OnSteamAPIActivated();
 
 	//GetOnGameServerSteamAPIActivatedListenerManager().Notify();
 	return poly::ReturnAction::Ignored;

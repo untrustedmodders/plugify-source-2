@@ -191,11 +191,6 @@ public:
 		return this->m_lifeState() == LIFE_ALIVE;
 	}
 
-	/*void AcceptInput(const char* pInputName, variant_t value = variant_t(""), CEntityInstance* pActivator = nullptr, CEntityInstance* pCaller = nullptr)
-	{
-		addresses::CEntityInstance_AcceptInput(this, pInputName, pActivator, pCaller, &value, 0);
-	}*/
-
 	void CollisionRulesChanged() {
 		static int offset = g_pGameConfig->GetOffset("CollisionRulesChanged");
 		CALL_VIRTUAL(void, offset, this);

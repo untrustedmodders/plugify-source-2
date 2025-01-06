@@ -75,7 +75,7 @@ public:
 
 private:
 	int m_iSlot{-1};
-	CSteamID m_unauthenticatedSteamID;
+	CSteamID m_unauthenticatedSteamID{k_steamIDNil};
 };
 
 class CPlayerManager {
@@ -92,7 +92,7 @@ public:
 	CPlayer* ToPlayer(CPlayerUserId userID) const;
 	CPlayer* ToPlayer(CSteamID steamid, bool validate = false) const;
 
-	//void OnSteamAPIActivated();
+	void OnSteamAPIActivated();
 	bool OnClientConnect(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID);
 	bool OnClientConnect_Post(CPlayerSlot slot, bool bOrigRet);
 	void OnClientConnected(CPlayerSlot slot);
@@ -100,10 +100,8 @@ public:
 	void OnClientDisconnect(CPlayerSlot slot, ENetworkDisconnectionReason reason);
 	void OnClientDisconnect_Post(CPlayerSlot slot, ENetworkDisconnectionReason reason);
 	void OnClientActive(CPlayerSlot slot, bool bLoadGame) const;
-	void OnLevelShutdown();
-	void RunAuthChecks();
 
-	//STEAM_GAMESERVER_CALLBACK_MANUAL(CPlayerManager, OnValidateAuthTicket, ValidateAuthTicketResponse_t, m_CallbackValidateAuthTicketResponse);
+	STEAM_GAMESERVER_CALLBACK_MANUAL(CPlayerManager, OnValidateAuthTicket, ValidateAuthTicketResponse_t, m_CallbackValidateAuthTicketResponse);
 
 	std::vector<CPlayer*> GetOnlinePlayers() const;
 	static int MaxClients();
@@ -111,8 +109,8 @@ public:
 	TargetType TargetPlayerString(int caller, std::string_view target, plg::vector<int>& clients);
 
 protected:
-	std::array<CPlayer, MAXPLAYERS> m_players;
-	double m_lastAuthCheckTime;
+	std::array<CPlayer, MAXPLAYERS + 1> m_players{};
+	bool m_callbackRegistered{};
 };
 
 extern CPlayerManager g_PlayerManager;

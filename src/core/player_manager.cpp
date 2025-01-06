@@ -130,52 +130,26 @@ void CPlayer::Kick(const char* internalReason, ENetworkDisconnectionReason reaso
 	g_pEngineServer2->KickClient(GetPlayerSlot(), internalReason, reason);
 }
 
-void CPlayerManager::RunAuthChecks() {
-	if (CTimerSystem::GetTickedTime() - m_lastAuthCheckTime < 0.1) {
+void CPlayerManager::OnSteamAPIActivated() {
+	if (m_callbackRegistered)
 		return;
-	}
 
-	m_lastAuthCheckTime = CTimerSystem::GetTickedTime();
-
-	for (const CPlayer& player : m_players) {
-		if (player.IsConnected()) {
-			if (player.IsAuthenticated() || player.IsFakeClient())
-				continue;
-
-			CPlayerSlot slot = player.GetPlayerSlot();
-			if (g_pEngineServer2->IsClientFullyAuthenticated(slot)) {
-				GetOnClientAuthenticatedListenerManager().Notify(slot, player.GetSteamId().ConvertToUint64());
-			}
-		}
-	}
-}
-
-/*void CPlayerManager::OnSteamAPIActivated() {
+	m_callbackRegistered = true;
 	m_CallbackValidateAuthTicketResponse.Register(this, &CPlayerManager::OnValidateAuthTicket);
 }
 
 void CPlayerManager::OnValidateAuthTicket(ValidateAuthTicketResponse_t* pResponse) {
-	if (!pResponse)
+	if (pResponse->m_eAuthSessionResponse != k_EAuthSessionResponseOK)
 		return;
 
-	uint64 iSteamId = pResponse->m_SteamID.ConvertToUint64();
-
-	g_Logger.LogFormat(LS_DEBUG, "OnValidateAuthTicket %s: SteamID=%llu Response=%d\n", iSteamId, pResponse->m_eAuthSessionResponse);
-
 	for (const CPlayer& player : m_players) {
-		if (!player.IsConnected() || player.IsFakeClient() || !(player.GetUnauthenticatedSteamId64() == iSteamId))
-			continue;
-
-		switch (pResponse->m_eAuthSessionResponse) {
-			case k_EAuthSessionResponseOK: {
-				GetOnClientAuthenticatedListenerManager().Notify(player.GetPlayerSlot(), player.GetSteamId().ConvertToUint64());
-				return;
-			}
-			default:
-				break;
+		CSteamID steamID = player.GetSteamId();
+		if (steamID == pResponse->m_SteamID) {
+			GetOnClientAuthenticatedListenerManager().Notify(player.GetPlayerSlot(), steamID.ConvertToUint64());
+			return;
 		}
 	}
-}*/
+}
 
 thread_local bool s_refuseConnection;
 
@@ -183,11 +157,6 @@ bool CPlayerManager::OnClientConnect(CPlayerSlot slot, const char* pszName, uint
 	CPlayer* pPlayer = ToPlayer(slot);
 	if (pPlayer) {
 		pPlayer->Init(slot, xuid);
-
-		if (pPlayer->IsConnected()) {
-			OnClientDisconnect(slot, ENetworkDisconnectionReason::NETWORK_DISCONNECT_INVALID);
-			OnClientDisconnect_Post(slot, ENetworkDisconnectionReason::NETWORK_DISCONNECT_INVALID);
-		}
 
 		s_refuseConnection = false;
 
@@ -228,9 +197,6 @@ void CPlayerManager::OnClientPutInServer(CPlayerSlot slot, char const* pszName) 
 		// For bots only
 		if (pPlayer->GetPlayerSlot() == CPlayerSlot{-1}) {
 			pPlayer->Init(slot, 0);
-
-			GetOnClientConnectListenerManager().Notify(slot, pszName, "127.0.0.1");
-			GetOnClientConnect_PostListenerManager().Notify(slot);
 		}
 
 		GetOnClientPutInServerListenerManager().Notify(slot);
@@ -252,17 +218,6 @@ void CPlayerManager::OnClientDisconnect_Post(CPlayerSlot slot, ENetworkDisconnec
 
 void CPlayerManager::OnClientActive(CPlayerSlot slot, bool bLoadGame) const {
 	GetOnClientActiveListenerManager().Notify(slot, bLoadGame);
-}
-
-void CPlayerManager::OnLevelShutdown() {
-	for (int i = 0; i <= MaxClients(); ++i) {
-		CPlayer& player = m_players[i];
-		CPlayerSlot slot = player.GetPlayerSlot();
-		if (utils::IsPlayerSlot(slot)) {
-			OnClientDisconnect(slot, ENetworkDisconnectionReason::NETWORK_DISCONNECT_INVALID);
-			OnClientDisconnect_Post(slot, ENetworkDisconnectionReason::NETWORK_DISCONNECT_INVALID);
-		}
-	}
 }
 
 int CPlayerManager::MaxClients() {

@@ -79,7 +79,7 @@ extern "C" PLUGIN_API int GetIndexFromClient(CServerSideClient* client) {
  */
 extern "C" PLUGIN_API plg::string GetClientAuthId(int clientIndex) {
 	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(clientIndex));
-	if (pPlayer == nullptr || !pPlayer->IsAuthenticated()) {
+	if (pPlayer == nullptr) {
 		return {};
 	}
 
@@ -94,7 +94,7 @@ extern "C" PLUGIN_API plg::string GetClientAuthId(int clientIndex) {
  */
 extern "C" PLUGIN_API uint64_t GetClientAccountId(int clientIndex) {
 	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(clientIndex));
-	if (pPlayer == nullptr || !pPlayer->IsAuthenticated()) {
+	if (pPlayer == nullptr) {
 		return 0;
 	}
 
