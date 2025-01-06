@@ -14402,9 +14402,9 @@
             "description": "Called when an entity is spawned.",
             "paramTypes": [
               {
-                "name": "entity",
-                "type": "ptr64",
-                "description": "The spawned entity instance"
+                "name": "entityHandle",
+                "type": "int32",
+                "description": "The spawned entity handle"
               }
             ],
             "retType": {
@@ -14434,9 +14434,9 @@
             "description": "Called when an entity is spawned.",
             "paramTypes": [
               {
-                "name": "entity",
-                "type": "ptr64",
-                "description": "The spawned entity instance"
+                "name": "entityHandle",
+                "type": "int32",
+                "description": "The spawned entity handle"
               }
             ],
             "retType": {
@@ -14466,9 +14466,9 @@
             "description": "Called when an entity is created.",
             "paramTypes": [
               {
-                "name": "entity",
-                "type": "ptr64",
-                "description": "The created entity instance"
+                "name": "entityHandle",
+                "type": "int32",
+                "description": "The created entity handle"
               }
             ],
             "retType": {
@@ -14498,9 +14498,9 @@
             "description": "Called when an entity is created.",
             "paramTypes": [
               {
-                "name": "entity",
-                "type": "ptr64",
-                "description": "The created entity instance"
+                "name": "entityHandle",
+                "type": "int32",
+                "description": "The created entity handle"
               }
             ],
             "retType": {
@@ -14530,9 +14530,9 @@
             "description": "Called when when an entity is destroyed.",
             "paramTypes": [
               {
-                "name": "entity",
-                "type": "ptr64",
-                "description": "The deleted entity instance"
+                "name": "entityHandle",
+                "type": "int32",
+                "description": "The deleted entity handle"
               }
             ],
             "retType": {
@@ -14562,9 +14562,9 @@
             "description": "Called when when an entity is destroyed.",
             "paramTypes": [
               {
-                "name": "entity",
-                "type": "ptr64",
-                "description": "The deleted entity instance"
+                "name": "entityHandle",
+                "type": "int32",
+                "description": "The deleted entity handle"
               }
             ],
             "retType": {
@@ -14594,14 +14594,14 @@
             "description": "When an entity is reparented to another entity.",
             "paramTypes": [
               {
-                "name": "entity",
-                "type": "ptr64",
+                "name": "entityHandle",
+                "type": "int32",
                 "description": "The entity whose parent changed"
               },
               {
-                "name": "newParent",
-                "type": "ptr64",
-                "description": "The new parent entity instance"
+                "name": "parentHandle",
+                "type": "int32",
+                "description": "The new parent entity handle"
               }
             ],
             "retType": {
@@ -14631,14 +14631,14 @@
             "description": "When an entity is reparented to another entity.",
             "paramTypes": [
               {
-                "name": "entity",
-                "type": "ptr64",
+                "name": "entityHandle",
+                "type": "int32",
                 "description": "The entity whose parent changed"
               },
               {
-                "name": "newParent",
-                "type": "ptr64",
-                "description": "The new parent entity instance"
+                "name": "parentHandle",
+                "type": "int32",
+                "description": "The new parent entity handle"
               }
             ],
             "retType": {
