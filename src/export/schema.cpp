@@ -864,6 +864,26 @@ extern "C" PLUGIN_API plg::string GetEntSchemaString2(CEntityInstance* entity, c
 		case schema::ElementType::Single:
 			return reinterpret_cast<CUtlString*>(reinterpret_cast<intptr_t>(entity) + offset)->Get();
 		default:
+			const auto [elementType, elementSize] = schema::IsIntType(type);
+			switch (elementType) {
+				case schema::ElementType::Array:
+					if (elementSize == sizeof(char)) {
+						return reinterpret_cast<char*>(reinterpret_cast<intptr_t>(entity) + offset);
+					}
+					break;
+				case schema::ElementType::Collection:
+					if (elementSize == sizeof(char)) {
+						return reinterpret_cast<CUtlVector<char>*>(reinterpret_cast<intptr_t>(entity) + offset)->Base();
+					}
+					break;
+				case schema::ElementType::Single:
+					if (size == sizeof(char)) {
+						return plg::string(1, *reinterpret_cast<char*>(reinterpret_cast<intptr_t>(entity) + offset));
+					}
+					break;
+				default:
+					break;
+			}
 			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a string, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
 			return {};
 	}
@@ -914,6 +934,29 @@ extern "C" PLUGIN_API void SetEntSchemaString2(CEntityInstance* entity, const pl
 			*reinterpret_cast<CUtlString*>(reinterpret_cast<intptr_t>(entity) + offset) = value.c_str();
 			break;
 		default:
+			const auto [elementType, elementSize] = schema::IsIntType(type);
+			switch (elementType) {
+				case schema::ElementType::Array:
+					if (elementSize == sizeof(char)) {
+						value.copy(reinterpret_cast<char*>(reinterpret_cast<intptr_t>(entity) + offset), size - 1);
+						return;
+					}
+					break;
+				case schema::ElementType::Collection:
+					if (elementSize == sizeof(char)) {
+						reinterpret_cast<CUtlVector<char>*>(reinterpret_cast<intptr_t>(entity) + offset)->CopyArray(value.data(), static_cast<CUtlVector<char>::IndexType_t>(value.size()));
+						return;
+					}
+					break;
+				case schema::ElementType::Single:
+					if (size == sizeof(char)) {
+						*reinterpret_cast<char*>(reinterpret_cast<intptr_t>(entity) + offset) = value.empty() ? 0 : *value.begin();
+						return;
+					}
+					break;
+				default:
+					break;
+			}
 			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a string, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
 			break;
 	}
