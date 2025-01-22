@@ -328,7 +328,7 @@ poly::ReturnAction Source2SDK::Hook_ClientConnect(poly::CallbackType type, poly:
 	bool unk1 = poly::GetArgument<bool>(params, 5);
 	auto pRejectReason = poly::GetArgument<CBufferString*>(params, 6);
 
-	g_Logger.LogFormat(LS_DEBUG, "[ClientConnect] = %d, \"%s\", %lli, \"%s\", %d, \"%s\" \n", slot, pszName, xuid, pszNetworkID, unk1, pRejectReason->ToGrowable()->Get());
+	g_Logger.LogFormat(LS_DEBUG, "[ClientConnect] = %d, \"%s\", %lli, \"%s\", %d, \"%s\" \n", slot, pszName, xuid, pszNetworkID, unk1, pRejectReason->Get());
 
 	if (type == poly::CallbackType::Pre) {
 		g_PlayerManager.OnClientConnect(slot, pszName, xuid, pszNetworkID);

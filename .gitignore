@@ -1,6 +1,8 @@
 # IDEs
 .idea
 .vs
+.vscode
+.PVS-Studio
 
 # CMake
 CMakeUserPresets.json

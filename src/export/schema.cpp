@@ -868,7 +868,7 @@ extern "C" PLUGIN_API plg::string GetEntSchemaString2(CEntityInstance* entity, c
 			switch (elementType) {
 				case schema::ElementType::Array:
 					if (elementSize == sizeof(char)) {
-						return reinterpret_cast<char*>(reinterpret_cast<intptr_t>(entity) + offset);
+						return plg::string(reinterpret_cast<char*>(reinterpret_cast<intptr_t>(entity) + offset), size - 1);
 					}
 					break;
 				case schema::ElementType::Collection:
