@@ -26,8 +26,8 @@
 			"CBasePlayerController_SetPawn"
 			{
 				"library"	"server"
-				"windows"	"48 ? ? 55 53 56 57 41 ? 48 ? ? ? 48 ? ? ? ? ? ? 4C 89 68"
-				"linux"		"55 48 89 E5 41 56 41 55 41 54 53 48 89 FB 48 83 EC 30 E8 ? ? ? ?"
+				"windows"	"48 89 74 24 2A 55 41 54 41 55 41 56 41 57 48 8D 6C 24 2A 48 81 EC 2A 2A 2A 2A 4C 8B F9"
+				"linux"		"55 48 89 E5 41 57 41 56 41 55 49 89 FD 41 54 45 89 C4"
 			}
 			// Function with 5 arguments next to sv_walkable_normal references
 			"TracePlayerBBox"
