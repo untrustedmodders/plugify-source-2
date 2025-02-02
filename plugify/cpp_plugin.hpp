@@ -8,6 +8,7 @@
 #include <vector>
 
 #include <plugify/any.hpp>
+#include <plugify/version.hpp>
 
 namespace std::filesystem {
 #if _WIN32
@@ -28,8 +29,8 @@ namespace plg {
 	using GetMethodPtrFn = void* (*)(std::string_view);
 	using GetMethodPtr2Fn = void (*)(std::string_view, void**);
 	using GetBaseDirFn = std::filesystem::path_view (*)();
-	using IsModuleLoadedFn = bool (*)(std::string_view, std::optional<int32_t>, bool);
-	using IsPluginLoadedFn = bool (*)(std::string_view, std::optional<int32_t>, bool);
+	using IsModuleLoadedFn = bool (*)(std::string_view, std::optional<plg::version>, bool);
+	using IsPluginLoadedFn = bool (*)(std::string_view, std::optional<plg::version>, bool);
 
 	extern GetMethodPtrFn GetMethodPtr;
 	extern GetMethodPtr2Fn GetMethodPtr2;
@@ -79,6 +80,7 @@ namespace plg {
 		std::optional<std::filesystem::path_view> FindResource(std::filesystem::path_view path) const { return plugin::FindResource(plugin::handle, path); }
 
 		virtual void OnPluginStart() {};
+		virtual void OnPluginUpdate(float) {};
 		virtual void OnPluginEnd() {};
 	};
 
@@ -131,6 +133,10 @@ namespace plg {
 	extern "C" \
 	plugin_api void Plugify_PluginStart() { \
 		GetPluginEntry()->OnPluginStart(); \
+	} \
+	extern "C" \
+	plugin_api void Plugify_PluginUpdate(float dt) { \
+		GetPluginEntry()->OnPluginUpdate(dt); \
 	} \
 	extern "C" \
 	plugin_api void Plugify_PluginEnd() { \

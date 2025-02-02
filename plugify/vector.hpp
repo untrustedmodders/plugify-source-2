@@ -5,12 +5,10 @@
 #include <utility>
 #include <memory>
 #include <initializer_list>
-#include <memory_resource>
 #include <algorithm>
 #include <span>
 #include <limits>
 #include <optional>
-#include <algorithm>
 
 #include <cstdint>
 #include <cstddef>
@@ -94,25 +92,25 @@ namespace plg {
 		constexpr friend bool operator==(const vector_iterator<Alloc>& lhs, const vector_iterator<Alloc>& rhs) noexcept;
 		template<typename Alloc>
 		constexpr friend auto operator<=>(const vector_iterator<Alloc>& lhs, const vector_iterator<Alloc>& rhs) noexcept;
-		operator const pointer() const noexcept {
+		[[nodiscard]] operator const pointer() const noexcept {
 			return _current;
 		}
-		pointer base() const noexcept {
+		[[nodiscard]] pointer base() const noexcept {
 			return _current;
 		}
 	};
 
 	template<typename Allocator>
-	constexpr typename vector_iterator<Allocator>::difference_type operator-(const vector_iterator<Allocator>& lhs, const vector_iterator<Allocator>& rhs) noexcept {
+	[[nodiscard]] constexpr typename vector_iterator<Allocator>::difference_type operator-(const vector_iterator<Allocator>& lhs, const vector_iterator<Allocator>& rhs) noexcept {
 		using difference_type = typename vector_iterator<Allocator>::difference_type;
 		return difference_type(lhs.base() - rhs.base());
 	}
 	template<typename Allocator>
-	constexpr bool operator==(const vector_iterator<Allocator>& lhs, const vector_iterator<Allocator>& rhs) noexcept {
+	[[nodiscard]] constexpr bool operator==(const vector_iterator<Allocator>& lhs, const vector_iterator<Allocator>& rhs) noexcept {
 		return lhs.base() == rhs.base();
 	}
 	template<typename Allocator>
-	constexpr auto operator<=>(const vector_iterator<Allocator>& lhs, const vector_iterator<Allocator>& rhs) noexcept {
+	[[nodiscard]] constexpr auto operator<=>(const vector_iterator<Allocator>& lhs, const vector_iterator<Allocator>& rhs) noexcept {
 		return lhs.base() <=> rhs.base();
 	}
 
@@ -190,38 +188,38 @@ namespace plg {
 		constexpr friend bool operator==(const vector_const_iterator<Alloc>& lhs, const vector_iterator<Alloc>& rhs) noexcept;
 		template<typename Alloc>
 		constexpr friend auto operator<=>(const vector_const_iterator<Alloc>& lhs, const vector_iterator<Alloc>& rhs) noexcept;
-		operator const pointer() const noexcept {
+		[[nodiscard]] operator const pointer() const noexcept {
 			return _current;
 		}
-		pointer base() const noexcept {
+		[[nodiscard]] pointer base() const noexcept {
 			return _current;
 		}
 	};
 
 	template<typename Allocator>
-	constexpr typename vector_const_iterator<Allocator>::difference_type operator-(const vector_const_iterator<Allocator>& lhs, const vector_const_iterator<Allocator>& rhs) noexcept {
+	[[nodiscard]] constexpr typename vector_const_iterator<Allocator>::difference_type operator-(const vector_const_iterator<Allocator>& lhs, const vector_const_iterator<Allocator>& rhs) noexcept {
 		using difference_type = typename vector_const_iterator<Allocator>::difference_type;
 		return difference_type(lhs.base() - rhs.base());
 	}
 	template<typename Allocator>
-	constexpr bool operator==(const vector_const_iterator<Allocator>& lhs, const vector_const_iterator<Allocator>& rhs) noexcept {
+	[[nodiscard]] constexpr bool operator==(const vector_const_iterator<Allocator>& lhs, const vector_const_iterator<Allocator>& rhs) noexcept {
 		return lhs.base() == rhs.base();
 	}
 	template<typename Allocator>
-	constexpr auto operator<=>(const vector_const_iterator<Allocator>& lhs, const vector_const_iterator<Allocator>& rhs) noexcept {
+	[[nodiscard]] constexpr auto operator<=>(const vector_const_iterator<Allocator>& lhs, const vector_const_iterator<Allocator>& rhs) noexcept {
 		return lhs.base() <=> rhs.base();
 	}
 	template<typename Allocator>
-	constexpr typename vector_const_iterator<Allocator>::difference_type operator-(const vector_const_iterator<Allocator>& lhs, const vector_iterator<Allocator>& rhs) noexcept {
+	[[nodiscard]] constexpr typename vector_const_iterator<Allocator>::difference_type operator-(const vector_const_iterator<Allocator>& lhs, const vector_iterator<Allocator>& rhs) noexcept {
 		using difference_type = typename vector_const_iterator<Allocator>::difference_type;
 		return difference_type(lhs.base() - rhs.base());
 	}
 	template<typename Allocator>
-	constexpr bool operator==(const vector_const_iterator<Allocator>& lhs, const vector_iterator<Allocator>& rhs) noexcept {
+	[[nodiscard]] constexpr bool operator==(const vector_const_iterator<Allocator>& lhs, const vector_iterator<Allocator>& rhs) noexcept {
 		return lhs.base() == rhs.base();
 	}
 	template<typename Allocator>
-	constexpr auto operator<=>(const vector_const_iterator<Allocator>& lhs, const vector_iterator<Allocator>& rhs) noexcept {
+	[[nodiscard]] constexpr auto operator<=>(const vector_const_iterator<Allocator>& lhs, const vector_iterator<Allocator>& rhs) noexcept {
 		return lhs.base() <=> rhs.base();
 	}
 
@@ -280,16 +278,16 @@ namespace plg {
 			_end = _begin + count;
 		}
 
-		constexpr bool is_full() const {
+		[[nodiscard]] constexpr bool is_full() const {
 			return _end == _capacity;
 		}
 
-		constexpr size_type calculate_new_capacity() const {
+		[[nodiscard]] constexpr size_type calculate_new_capacity() const {
 			const size_type old_capacity = capacity();
 			return old_capacity == 0 ? 1 : growth_factor * old_capacity;
 		}
 
-		constexpr iterator const_iterator_cast(const_iterator iter) noexcept {
+		[[nodiscard]] constexpr iterator const_iterator_cast(const_iterator iter) noexcept {
 			return begin() + (iter - cbegin());
 		}
 
@@ -547,116 +545,116 @@ namespace plg {
 #endif // PLUGIFY_VECTOR_CONTAINERS_RANGES
 
 		// get_allocator
-		constexpr allocator_type get_allocator() const {
+		[[nodiscard]] constexpr allocator_type get_allocator() const {
 			return _allocator;
 		}
 
 		// element access
-		constexpr reference at(size_type position) {
+		[[nodiscard]] constexpr reference at(size_type position) {
 			PLUGIFY_ASSERT(position < size(), "plg::vector::at(): input index is out of bounds", std::out_of_range);
 			return *(_begin + position);
 		}
 
-		constexpr const_reference at(size_type position) const {
+		[[nodiscard]] constexpr const_reference at(size_type position) const {
 			PLUGIFY_ASSERT(position < size(), "plg::vector::at(): input index is out of bounds", std::out_of_range);
 			return *(_begin + position);
 		}
 
-		constexpr reference operator[](size_type position) noexcept {
+		[[nodiscard]] constexpr reference operator[](size_type position) noexcept {
 			return *(_begin + position);
 		}
 
-		constexpr const_reference operator[](size_type position) const noexcept {
+		[[nodiscard]] constexpr const_reference operator[](size_type position) const noexcept {
 			return *(_begin + position);
 		}
 
-		constexpr reference front() {
+		[[nodiscard]] constexpr reference front() {
 			PLUGIFY_ASSERT(!empty(), "plg::vector::front(): vector is empty", std::length_error);
 			return *_begin;
 		}
 
-		constexpr const_reference front() const {
+		[[nodiscard]] constexpr const_reference front() const {
 			PLUGIFY_ASSERT(!empty(), "plg::vector::front(): vector is empty", std::length_error);
 			return *_begin;
 		}
 
-		constexpr reference back() {
+		[[nodiscard]] constexpr reference back() {
 			PLUGIFY_ASSERT(!empty(), "plg::vector::back(): vector is empty", std::length_error);
 			return *(_end - 1);
 		}
 
-		constexpr const_reference back() const {
+		[[nodiscard]] constexpr const_reference back() const {
 			PLUGIFY_ASSERT(!empty(), "plg::vector::back(): vector is empty", std::length_error);
 			return *(_end - 1);
 		}
 
-		constexpr T* data() noexcept {
+		[[nodiscard]] constexpr T* data() noexcept {
 			return _begin;
 		}
 
-		constexpr const T* data() const noexcept {
+		[[nodiscard]] constexpr const T* data() const noexcept {
 			return _begin;
 		}
 
 		// iterators
-		constexpr iterator begin() noexcept {
+		[[nodiscard]] constexpr iterator begin() noexcept {
 			return iterator(_begin);
 		}
 
-		constexpr const_iterator begin() const noexcept {
+		[[nodiscard]] constexpr const_iterator begin() const noexcept {
 			return const_iterator(_begin);
 		}
 
-		constexpr const_iterator cbegin() const noexcept {
+		[[nodiscard]] constexpr const_iterator cbegin() const noexcept {
 			return const_iterator(_begin);
 		}
 
-		constexpr iterator end() noexcept {
+		[[nodiscard]] constexpr iterator end() noexcept {
 			return iterator(_end);
 		}
 
-		constexpr const_iterator end() const noexcept {
+		[[nodiscard]] constexpr const_iterator end() const noexcept {
 			return const_iterator(_end);
 		}
 
-		constexpr const_iterator cend() const noexcept {
+		[[nodiscard]] constexpr const_iterator cend() const noexcept {
 			return const_iterator(_end);
 		}
 
-		constexpr reverse_iterator rbegin() noexcept {
+		[[nodiscard]] constexpr reverse_iterator rbegin() noexcept {
 			return reverse_iterator(_end);
 		}
 
-		constexpr const_reverse_iterator rbegin() const noexcept {
+		[[nodiscard]] constexpr const_reverse_iterator rbegin() const noexcept {
 			return const_reverse_iterator(_end);
 		}
 
-		constexpr const_reverse_iterator crbegin() const noexcept {
+		[[nodiscard]] constexpr const_reverse_iterator crbegin() const noexcept {
 			return const_reverse_iterator(_end);
 		}
 
-		constexpr reverse_iterator rend() noexcept {
+		[[nodiscard]] constexpr reverse_iterator rend() noexcept {
 			return reverse_iterator(_begin);
 		}
 
-		constexpr const_reverse_iterator rend() const noexcept {
+		[[nodiscard]] constexpr const_reverse_iterator rend() const noexcept {
 			return const_reverse_iterator(_begin);
 		}
 
-		constexpr const_reverse_iterator crend() const noexcept {
+		[[nodiscard]] constexpr const_reverse_iterator crend() const noexcept {
 			return const_reverse_iterator(_begin);
 		}
 
 		// capacity
-		constexpr bool empty() const {
+		[[nodiscard]] constexpr bool empty() const {
 			return (_begin == _end);
 		}
 
-		constexpr size_type size() const noexcept {
+		[[nodiscard]] constexpr size_type size() const noexcept {
 			return static_cast<size_type>(_end - _begin);
 		}
 
-		constexpr size_type max_size() const noexcept {
+		[[nodiscard]] constexpr size_type max_size() const noexcept {
 			return allocator_traits::max_size(_allocator);
 		}
 
@@ -667,7 +665,7 @@ namespace plg {
 			}
 		}
 
-		constexpr size_type capacity() const noexcept {
+		[[nodiscard]] constexpr size_type capacity() const noexcept {
 			return static_cast<size_type>(_capacity - _begin);
 		}
 
@@ -903,70 +901,70 @@ namespace plg {
 			swap(_capacity, other._capacity);
 		}
 
-		constexpr std::span<const T> span() const noexcept {
+		[[nodiscard]] constexpr std::span<const T> span() const noexcept {
 			return std::span<const T>(data(), size());
 		}
 
-		constexpr std::span<T> span() noexcept {
+		[[nodiscard]] constexpr std::span<T> span() noexcept {
 			return std::span<T>(data(), size());
 		}
 
-		constexpr std::span<const T> const_span() const noexcept {
+		[[nodiscard]] constexpr std::span<const T> const_span() const noexcept {
 			return std::span<const T>(data(), size());
 		}
 
 		template<size_type Size>
-		constexpr std::span<T, Size> span_size() noexcept {
+		[[nodiscard]] constexpr std::span<T, Size> span_size() noexcept {
 			PLUGIFY_ASSERT(size() == Size, "plg::vector::span_size(): const_span_size argument does not match size of vector", std::length_error);
 			return std::span<T, Size>(data(), size());
 		}
 
 		template<size_type Size>
-		constexpr std::span<const T, Size> const_span_size() const noexcept {
+		[[nodiscard]] constexpr std::span<const T, Size> const_span_size() const noexcept {
 			PLUGIFY_ASSERT(size() == Size, "plg::vector::const_span_size(): const_span_size argument does not match size of vector", std::length_error);
 			return std::span<const T, Size>(data(), size());
 		}
 
-		constexpr std::span<const std::byte> byte_span() const noexcept {
+		[[nodiscard]] constexpr std::span<const std::byte> byte_span() const noexcept {
 			return std::as_bytes(span());
 		}
 
-		constexpr std::span<std::byte> byte_span() noexcept {
+		[[nodiscard]] constexpr std::span<std::byte> byte_span() noexcept {
 			return std::as_writable_bytes(span());
 		}
 
-		constexpr std::span<const std::byte> const_byte_span() const noexcept {
+		[[nodiscard]] constexpr std::span<const std::byte> const_byte_span() const noexcept {
 			return std::as_bytes(span());
 		}
 
-		constexpr bool contains(const T& elem) const {
+		[[nodiscard]] constexpr bool contains(const T& elem) const {
 			return std::find(begin(), end(), elem) != end();
 		}
 
 		template<typename F>
-		constexpr bool contains_if(F predicate) {
+		[[nodiscard]] constexpr bool contains_if(F predicate) {
 			return std::find_if(begin(), end(), predicate) != end();
 		}
 
-		constexpr auto find(const T& value) const {
+		[[nodiscard]] constexpr auto find(const T& value) const {
 			return std::find(begin(), end(), value);
 		}
 
-		constexpr auto find(const T& value) {
+		[[nodiscard]] constexpr auto find(const T& value) {
 			return std::find(begin(), end(), value);
 		}
 
 		template<typename F>
-		constexpr auto find_if(F predicate) const {
+		[[nodiscard]] constexpr auto find_if(F predicate) const {
 			return std::find_if(begin(), end(), predicate);
 		}
 
 		template<typename F>
-		constexpr auto find_if(F predicate) {
+		[[nodiscard]] constexpr auto find_if(F predicate) {
 			return std::find_if(begin(), end(), predicate);
 		}
 
-		constexpr std::optional<size_type> find_index(const T& value) {
+		[[nodiscard]] constexpr std::optional<size_type> find_index(const T& value) {
 			const auto iter = std::find(begin(), end(), value);
 			if (iter == end()) {
 				return {};
@@ -975,7 +973,7 @@ namespace plg {
 			}
 		}
 
-		constexpr std::optional<size_type> find_index(const T& value) const {
+		[[nodiscard]] constexpr std::optional<size_type> find_index(const T& value) const {
 			const auto iter = std::find(begin(), end(), value);
 			if (iter == end()) {
 				return {};
@@ -985,7 +983,7 @@ namespace plg {
 		}
 
 		template<typename F>
-		constexpr std::optional<size_type> find_index_if(F predicate) {
+		[[nodiscard]] constexpr std::optional<size_type> find_index_if(F predicate) {
 			const auto iter = std::find_if(begin(), end(), predicate);
 			if (iter == end()) {
 				return {};
@@ -995,7 +993,7 @@ namespace plg {
 		}
 
 		template<typename F>
-		constexpr std::optional<size_type> find_index_if(F predicate) const {
+		[[nodiscard]] constexpr std::optional<size_type> find_index_if(F predicate) const {
 			const auto iter = std::find_if(begin(), end(), predicate);
 			if (iter == end()) {
 				return {};
@@ -1007,12 +1005,12 @@ namespace plg {
 
 	// comparisons
 	template<typename T, typename Allocator>
-	constexpr bool operator==(const vector<T, Allocator>& lhs, const vector<T, Allocator>& rhs) {
+	[[nodiscard]] constexpr bool operator==(const vector<T, Allocator>& lhs, const vector<T, Allocator>& rhs) {
 		return lhs.size() == rhs.size() && std::equal(lhs.begin(), lhs.end(), rhs.begin());
 	}
 
 	template<typename T, typename Allocator>
-	constexpr auto operator<=>(const vector<T, Allocator>& lhs, const vector<T, Allocator>& rhs) {
+	[[nodiscard]] constexpr auto operator<=>(const vector<T, Allocator>& lhs, const vector<T, Allocator>& rhs) {
 		return std::lexicographical_compare_three_way(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 	}
 
