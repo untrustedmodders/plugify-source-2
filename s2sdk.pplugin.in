@@ -1,7 +1,7 @@
 {
+  "$schema": "https://raw.githubusercontent.com/untrustedmodders/plugify/refs/heads/main/schemas/plugin.schema.json",
   "fileVersion": 1,
-  "version": ${S2SDK_VERSION},
-  "versionName": "v${S2SDK_VERSION}",
+  "version": "${S2SDK_VERSION}",
   "friendlyName": "CS2-SDK",
   "description": "Provides functionality for other plugins from Source 2 engine",
   "createdBy": "untrustedmodders",
