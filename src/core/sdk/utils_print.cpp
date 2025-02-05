@@ -184,10 +184,11 @@ bool utils::CFormat(char* buffer, uint64_t buffer_size, const char* text) {
 
 void utils::ClientPrintFilter(IRecipientFilter* filter, int msg_dest, const char* msg_name) {
 	INetworkMessageInternal* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("TextMsg");
-	auto pMessage = pNetMsg->AllocateMessage()->ToPB<CUserMessageTextMsg>();
+	auto* pMessage = pNetMsg->AllocateMessage();
+	auto* pMessagePB = pMessage->ToPB<CUserMessageTextMsg>();
 
-	pMessage->set_dest(msg_dest);
-	pMessage->add_param(msg_name);
+	pMessagePB->set_dest(msg_dest);
+	pMessagePB->add_param(msg_name);
 
 	g_pGameEventSystem->PostEventAbstract(-1, false, filter, pNetMsg, pMessage, 0);
 
