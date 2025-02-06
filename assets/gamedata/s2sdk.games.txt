@@ -26,7 +26,7 @@
 			"CBasePlayerController_SetPawn"
 			{
 				"library"	"server"
-				"windows"	"48 89 74 24 2A 55 41 54 41 55 41 56 41 57 48 8D 6C 24 2A 48 81 EC 2A 2A 2A 2A 4C 8B F9"
+				"windows"	"48 89 74 24 ? 55 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 4C 8B F9"
 				"linux"		"55 48 89 E5 41 57 41 56 41 55 49 89 FD 41 54 45 89 C4"
 			}
 			// Function with 5 arguments next to sv_walkable_normal references
@@ -198,7 +198,7 @@
 			"CBaseEntity_SetMoveType"
 			{
 				"library"	"server"
-				"windows"	"48 89 5C 24 2A 48 89 6C 24 2A 48 89 74 24 2A 57 48 83 EC 2A 41 0F B6 F0"
+				"windows"	"48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 20 41 0F B6 F0"
 				"linux"		"55 48 89 E5 41 57 41 56 41 55 41 89 D5 41 54 49 89 FC 53 48 83 EC"
 			}
 			"CTakeDamageInfo"
