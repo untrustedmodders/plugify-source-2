@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.4](https://github.com/untrustedmodders/plugify-source-2/compare/v1.0.3...v1.0.4) (2025-02-10)
+
+
+### Bug Fixes
+
+* change pb message dtor on linux ([4b1bd8c](https://github.com/untrustedmodders/plugify-source-2/commit/4b1bd8c14b259637c407b5168939e9b767763e82))
+* version ([6579b6f](https://github.com/untrustedmodders/plugify-source-2/commit/6579b6febfb5a77cb106e2095b7fb70863b9cbd1))
+
 ## [1.0.3](https://github.com/untrustedmodders/plugify-source-2/compare/v1.0.2...v1.0.3) (2025-02-05)
 
 
