@@ -135,7 +135,8 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDE_DIRS} ${DYNLIBUTILS
 
 target_link_libraries(${PROJECT_NAME} PRIVATE cpp-memory_utils ${PLUGIFY_LINK_LIBRARIES} ${SOURCESDK_BINARY_DIR})
 
-set(S2SDK_VERSION "v0.1.0" CACHE STRING "Set version name")
+file(READ "${CMAKE_SOURCE_DIR}/version.txt" VERSION_FILE_CONTENTS)
+set(S2SDK_VERSION "${VERSION_FILE_CONTENTS}" CACHE STRING "Set version name")
 set(S2SDK_PACKAGE "cs2sdk" CACHE STRING "Set package name")
 string(REPLACE "v" "" S2SDK_VERSION "${S2SDK_VERSION}")
 
