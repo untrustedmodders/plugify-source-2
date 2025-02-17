@@ -350,7 +350,7 @@ extern "C" PLUGIN_API void UnhookConVarChange(const plg::string& name, ConVarCha
 extern "C" PLUGIN_API bool IsConVarFlagSet(ConVarRef conVarHandle, ConVarFlag flag) {
 	if (!conVarHandle.IsValidRef()) {
 		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
-		return;
+		return false;
 	}
 
 	auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
@@ -489,7 +489,7 @@ extern "C" PLUGIN_API void SetConVarBounds(ConVarRef conVarHandle, bool max, con
 extern "C" PLUGIN_API plg::string GetConVarDefault(ConVarRef conVarHandle) {
 	if (!conVarHandle.IsValidRef()) {
 		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
-		return;
+		return {};
 	}
 
 	auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
@@ -514,7 +514,7 @@ extern "C" PLUGIN_API plg::string GetConVarDefault(ConVarRef conVarHandle) {
 extern "C" PLUGIN_API plg::string GetConVarValue(ConVarRef conVarHandle) {
 	if (!conVarHandle.IsValidRef()) {
 		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
-		return;
+		return {};
 	}
 
 	auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
@@ -539,7 +539,7 @@ extern "C" PLUGIN_API plg::string GetConVarValue(ConVarRef conVarHandle) {
 extern "C" PLUGIN_API plg::any GetConVar(ConVarRef conVarHandle) {
 	if (!conVarHandle.IsValidRef()) {
 		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
-		return;
+		return {};
 	}
 
 	auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
