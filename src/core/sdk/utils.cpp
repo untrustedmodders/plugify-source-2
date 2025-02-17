@@ -173,7 +173,7 @@ float utils::GetAngleDifference(float source, float target, float c, bool relati
 	return fmod(fabs(target - source) + c, 2 * c) - c;
 }
 
-void utils::NotifyConVar(const BaseConVar& conVar, const char* value) {
+void utils::NotifyConVar(const ConVarRefAbstract& conVar, const char* value) {
 	IGameEvent* pEvent = g_pGameEventManager->CreateEvent("server_cvar");
 	if (pEvent == nullptr) {
 		return;
@@ -189,7 +189,7 @@ void utils::NotifyConVar(const BaseConVar& conVar, const char* value) {
 	g_pGameEventManager->FireEvent(pEvent);
 }
 
-void utils::ReplicateConVar(const BaseConVar& conVar, const char* value) {
+void utils::ReplicateConVar(const ConVarRefAbstract& conVar, const char* value) {
 	if (!gpGlobals)
 		return;
 

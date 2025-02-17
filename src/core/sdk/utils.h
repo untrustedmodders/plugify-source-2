@@ -21,6 +21,9 @@ class CServerSideClientBase;
 
 #include <variant>
 
+#include <icvar.h>
+#include <tier1/convar.h>
+
 namespace utils {
 	// ConVars
 	void SendConVarValue(CPlayerSlot slot, const char* name, const char* value);
@@ -42,82 +45,58 @@ namespace utils {
 	// c can be PI (for radians) or 180.0 (for degrees);
 	float GetAngleDifference(float x, float y, float c, bool relative = false);
 
-	void NotifyConVar(const BaseConVar& conVar, const char* value);
-	void ReplicateConVar(const BaseConVar& conVar, const char* value);
+	void NotifyConVar(const ConVarRefAbstract& conVar, const char* value);
+	void ReplicateConVar(const ConVarRefAbstract& conVar, const char* value);
 
-	template<typename T>
-	void SetConVarString(ConVarHandle handle, CConVarBaseData* conVarData, const plg::string& value, bool replicate, bool notify) {
-		ConVarRef<T> conVar(handle, conVarData);
-		conVar.SetStringValue(value.c_str(), value.size());
+	inline void SetConVarString(ConVarRefAbstract conVar, const plg::string& value, bool replicate, bool notify) {
+		conVar.SetString(value.c_str(), -1);
 		if (replicate) ReplicateConVar(conVar, value.c_str());
 		if (notify) NotifyConVar(conVar, value.c_str());
 	}
 
 	template<typename T>
-	void SetConVar(ConVarHandle handle, CConVarBaseData* conVarData, const T& value, bool replicate, bool notify) {
-		ConVarRef<T> conVar(handle, conVarData);
-		conVar.SetValue(value);
+	void SetConVarInternal(ConVarRefAbstract conVar, T value, bool replicate, bool notify) {
+		conVar.SetAs<T>(value);
 		if constexpr (std::same_as<T, const char*>) {
 			if (replicate) ReplicateConVar(conVar, value);
 			if (notify) NotifyConVar(conVar, value);
 		} else {
 			if (replicate || notify) {
-				char val[512];
-				conVar.GetStringValue(val, sizeof(val));
-				if (replicate) ReplicateConVar(conVar, val);
-				if (notify) NotifyConVar(conVar, val);
+				CUtlString value = conVar.GetString();
+				if (replicate) ReplicateConVar(conVar, value.Get());
+				if (notify) NotifyConVar(conVar, value.Get());
 			}
 		}
 	}
 
 	template<typename T>
-	void SetConVar(ConVarHandle handle, const T& value, bool replicate, bool notify) {
-		auto* conVarData = g_pCVar->GetConVar(handle);
-		if (conVarData == nullptr) {
-			g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarHandle is correctly initialized and not null.\n");
+	void SetConVar(ConVarRefAbstract conVar, T value, bool replicate, bool notify) {
+		if (conVar.GetType() != TranslateConVarType<T>()) {
+			g_Logger.LogFormat(LS_WARNING, "Invalid cvar type for variable '%s'. Expected: '%s', but got: '%s'. Please ensure the type matches the expected type.\n", conVar.GetName(), conVar.TypeTraits()->m_TypeName, GetCvarTypeTraits(TranslateConVarType<T>())->m_TypeName);
 			return;
 		}
 
-		if (conVarData->GetType() != TranslateConVarType<T>()) {
-			g_Logger.LogFormat(LS_WARNING, "Invalid cvar type for variable '%s'. Expected: '%s', but got: '%s'. Please ensure the type matches the expected type.\n", conVarData->GetName(), GetConVarTypeName(conVarData->GetType()), GetConVarTypeName(TranslateConVarType<T>()));
-			return;
-		}
-
-		SetConVar<T>(handle, conVarData, value, replicate, notify);
+		SetConVarInternal<T>(conVar, value, replicate, notify);
 	}
 
 	template<typename T>
-	void SetConVarValue(ConVarHandle handle, const T& value) {
-		auto* conVarData = g_pCVar->GetConVar(handle);
-		if (conVarData == nullptr) {
-			g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarHandle is correctly initialized and not null.\n");
+	void SetConVarValue(ConVarRefAbstract conVar, const plg::string& value) {
+		if (conVar.GetType() != TranslateConVarType<T>()) {
+			g_Logger.LogFormat(LS_WARNING, "Invalid cvar type for variable '%s'. Expected: '%s', but got: '%s'. Please ensure the type matches the expected type.\n", conVar.GetName(), conVar.TypeTraits()->m_TypeName, GetCvarTypeTraits(TranslateConVarType<T>())->m_TypeName);
 			return;
 		}
 
-		if (conVarData->GetType() != TranslateConVarType<T>()) {
-			g_Logger.LogFormat(LS_WARNING, "Invalid cvar type for variable '%s'. Expected: '%s', but got: '%s'. Please ensure the type matches the expected type.\n", conVarData->GetName(), GetConVarTypeName(conVarData->GetType()), GetConVarTypeName(TranslateConVarType<T>()));
-			return;
-		}
-
-		ConVarRef<T> conVar(handle, conVarData);
-		conVar.SetValue(value);
+		conVar.SetString(value.c_str());
 	}
 
 	template<typename T>
-	T GetConVarValue(ConVarHandle handle) {
-		auto* conVarData = g_pCVar->GetConVar(handle);
-		if (conVarData == nullptr) {
-			g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarHandle is correctly initialized and not null.\n");
+	T GetConVarValue(ConVarRefAbstract conVar) {
+		if (conVar.GetType() != TranslateConVarType<T>()) {
+			g_Logger.LogFormat(LS_WARNING, "Invalid cvar type for variable '%s'. Expected: '%s', but got: '%s'. Please ensure the type matches the expected type.\n", conVar.GetName(), conVar.TypeTraits()->m_TypeName, GetCvarTypeTraits(TranslateConVarType<T>())->m_TypeName);
 			return {};
 		}
 
-		if (conVarData->GetType() != TranslateConVarType<T>()) {
-			g_Logger.LogFormat(LS_WARNING, "Invalid cvar type for variable '%s'. Expected: '%s', but got: '%s'. Please ensure the type matches the expected type.\n", conVarData->GetName(), GetConVarTypeName(conVarData->GetType()), GetConVarTypeName(TranslateConVarType<T>()));
-			return {};
-		}
-
-		ConVarRef<T> conVar(handle, conVarData);
-		return conVar.GetValue();
+		return conVar.GetAs<T>();
 	}
 
 	// Print functions

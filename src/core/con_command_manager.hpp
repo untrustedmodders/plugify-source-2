@@ -23,7 +23,7 @@ struct ConCommandInfo {
 	plg::string name;
 	plg::string description;
 	uint64 adminFlags{};
-	ConCommand* command{};
+	ConCommandData* command{};
 	std::unique_ptr<ConCommand> commandRef;
 	CListenerManager<CommandListenerCallback> callbackPre;
 	CListenerManager<CommandListenerCallback> callbackPost;

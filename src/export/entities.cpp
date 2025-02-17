@@ -323,7 +323,7 @@ extern "C" PLUGIN_API void DispatchSpawn2(int entityHandle, const plg::vector<pl
 	g_pGameEntitySystem->AddRefKeyValues(pESKeyValues);
 
 	for (size_t i = 0; i < values.size(); ++i) {
-		auto key = CKV3MemberName::Make(keys[i].c_str());
+		auto key = EntityKeyId_t::Make(keys[i].c_str());
 		plg::visit([&](const auto& v) {
 			using T = std::decay_t<decltype(v)>;
 			if constexpr (std::is_same_v<T, plg::string>) {

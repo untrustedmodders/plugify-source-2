@@ -5,7 +5,7 @@
 
 #include <convar.h>
 
-using ConVarChangeListenerCallback = void (*)(ConVarHandle conVar, const plg::string& newValue, const plg::string& oldValue);
+using ConVarChangeListenerCallback = void (*)(ConVarRef conVar, const plg::string& newValue, const plg::string& oldValue);
 
 enum ConVarFlag : int64_t {
 	None = 0, // The default, no flags at all
@@ -56,7 +56,7 @@ struct ConVarInfo {
 
 	plg::string name;
 	plg::string description;
-	std::unique_ptr<BaseConVar> conVar;
+	std::unique_ptr<ConVarRefAbstract> conVar;
 	CListenerManager<ConVarChangeListenerCallback> hook;
 };
 
@@ -71,36 +71,36 @@ public:
 	~CConVarManager();
 
 	template<typename T>
-	ConVarHandle CreateConVar(const plg::string& name, const plg::string& description, const T& defaultVal, ConVarFlag flags, bool hasMin = false, T min = {}, bool hasMax = {}, T max = {}) {
-		if (name.empty() || g_pCVar->FindCommand(name.c_str()).IsValid()) {
-			return INVALID_CONVAR_HANDLE;
+	ConVarRef CreateConVar(const plg::string& name, const plg::string& description, const T& defaultVal, ConVarFlag flags, bool hasMin = false, T min = {}, bool hasMax = {}, T max = {}) {
+		if (name.empty() || g_pCVar->FindConVar(name.c_str()).IsValidRef()) {
+			return ConVarRef();
 		}
 
 		auto it = m_cnvLookup.find(name);
 		if (it != m_cnvLookup.end()) {
-			return std::get<ConVarInfoPtr>(*it)->conVar->GetHandle();
+			return *std::get<ConVarInfoPtr>(*it)->conVar;
 		}
 
 		std::lock_guard<std::mutex> lock(m_registerCnvLock);
 
 		auto& conVarInfo = *m_cnvLookup.emplace(name, std::make_unique<ConVarInfo>(name, description)).first->second;
-		auto conVar = std::make_unique<ConVarRef<T>>(name.c_str());
-		if (conVar->GetHandle().IsValid()) {
+		auto conVar = std::make_unique<CConVarRef<T>>(name.c_str());
+		if (conVar->IsValidRef()) {
 			conVarInfo.conVar = std::move(conVar);
 		} else {
-			conVarInfo.conVar = std::unique_ptr<BaseConVar>(new ConVar<T>(conVarInfo.name.c_str(), flags, conVarInfo.description.c_str(), defaultVal, hasMin, min, hasMax, max, &ChangeCallback));
+			conVarInfo.conVar = std::unique_ptr<ConVarRefAbstract>(new CConVar<T>(conVarInfo.name.c_str(), flags, conVarInfo.description.c_str(), defaultVal, hasMin, min, hasMax, max, &ChangeCallback));
 		}
 		m_cnvCache.emplace(conVarInfo.conVar.get(), &conVarInfo);
-		return conVarInfo.conVar->GetHandle();
+		return *conVarInfo.conVar;
 	}
 
 	bool RemoveConVar(const plg::string& name);
-	ConVarHandle FindConVar(const plg::string& name);
+	ConVarRef FindConVar(const plg::string& name);
 	void HookConVarChange(const plg::string& name, ConVarChangeListenerCallback callback);
 	void UnhookConVarChange(const plg::string& name, ConVarChangeListenerCallback callback);
 
 	template<typename T>
-	static void ChangeCallback(ConVar<T>* ref, const CSplitScreenSlot nSlot, const T* pNewValue, const T* pOldValue) {
+	static void ChangeCallback(CConVar<T>* ref, const CSplitScreenSlot nSlot, const T* pNewValue, const T* pOldValue) {
 		auto it = g_ConVarManager.m_cnvCache.find(ref);
 		if (it == g_ConVarManager.m_cnvCache.end())
 			return;
@@ -108,35 +108,35 @@ public:
 		auto& conVarInfo = *std::get<const ConVarInfo*>(*it);
 
 		if constexpr (std::is_same_v<T, bool>) {
-			conVarInfo.hook.Notify(ref->GetHandle(), *pNewValue ? "1" : "0", *pOldValue ? "1" : "0");
-		} else if constexpr (std::is_same_v<T, const char*>) {
-			conVarInfo.hook.Notify(ref->GetHandle(), *pNewValue, *pOldValue);
+			conVarInfo.hook.Notify(*ref, *pNewValue ? "true" : "false", *pOldValue ? "true" : "false");
+		} else if constexpr (std::is_same_v<T, CUtlString>) {
+			conVarInfo.hook.Notify(*ref, pNewValue->Get(), pOldValue->Get());
 		} else if constexpr (std::is_same_v<T, Color>) {
 			plg::string newValue = std::format("{} {} {} {}", pNewValue->r(), pNewValue->g(), pNewValue->b(), pNewValue->a());
 			plg::string oldValue = std::format("{} {} {} {}", pOldValue->r(), pOldValue->g(), pOldValue->b(), pOldValue->a());
-			conVarInfo.hook.Notify(ref->GetHandle(), newValue, oldValue);
+			conVarInfo.hook.Notify(*ref, newValue, oldValue);
 		} else if constexpr (std::is_same_v<T, Vector2D>) {
 			plg::string newValue = std::format("{} {}", pNewValue->x, pNewValue->y);
 			plg::string oldValue = std::format("{} {}", pOldValue->x, pOldValue->y);
-			conVarInfo.hook.Notify(ref->GetHandle(), newValue, oldValue);
+			conVarInfo.hook.Notify(*ref, newValue, oldValue);
 		} else if constexpr (std::is_same_v<T, Vector> || std::is_same_v<T, QAngle>) {
 			plg::string newValue = std::format("{} {} {}", pNewValue->x, pNewValue->y, pNewValue->z);
 			plg::string oldValue = std::format("{} {} {}", pOldValue->x, pOldValue->y, pOldValue->z);
-			conVarInfo.hook.Notify(ref->GetHandle(), newValue, oldValue);
+			conVarInfo.hook.Notify(*ref, newValue, oldValue);
 		} else if constexpr (std::is_same_v<T, Vector4D>) {
 			plg::string newValue = std::format("{} {} {} {}", pNewValue->x, pNewValue->y, pNewValue->z, pNewValue->w);
 			plg::string oldValue = std::format("{} {} {} {}", pOldValue->x, pOldValue->y, pOldValue->z, pOldValue->w);
-			conVarInfo.hook.Notify(ref->GetHandle(), newValue, oldValue);
+			conVarInfo.hook.Notify(*ref, newValue, oldValue);
 		} else {
-			conVarInfo.hook.Notify(ref->GetHandle(), plg::to_string(*pNewValue), plg::to_string(*pOldValue));
+			conVarInfo.hook.Notify(*ref, plg::to_string(*pNewValue), plg::to_string(*pOldValue));
 		}
 	}
 
-	static void ChangeGlobal(BaseConVar* ref, CSplitScreenSlot nSlot, const char* pNewValue, const char* pOldValue);
+	static void ChangeGlobal(ConVarRefAbstract* ref, CSplitScreenSlot nSlot, const char* pNewValue, const char* pOldValue);
 
 private:
 	std::map<plg::string, ConVarInfoPtr, utils::CaseInsensitiveComparator> m_cnvLookup;
-	std::map<const BaseConVar*, const ConVarInfo*> m_cnvCache;
+	std::map<const ConVarRefAbstract*, const ConVarInfo*> m_cnvCache;
 	CListenerManager<ConVarChangeListenerCallback> m_global;
 	std::mutex m_registerCnvLock;
 };

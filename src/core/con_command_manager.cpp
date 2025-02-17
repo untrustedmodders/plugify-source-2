@@ -10,7 +10,7 @@ CConCommandManager::~CConCommandManager() {
 
 	for (const auto& [_, command] : m_cmdLookup) {
 		if (!command->defaultCommand) {
-			g_pCVar->UnregisterConCommand(command->commandRef->GetHandle());
+			g_pCVar->UnregisterConCommandCallbacks(*command->commandRef);
 		}
 	}
 }
@@ -35,13 +35,13 @@ void CConCommandManager::AddCommandListener(const plg::string& name, CommandList
 
 	auto it = m_cmdLookup.find(name);
 	if (it == m_cmdLookup.end()) {
-		ConCommandHandle hFoundCommand = g_pCVar->FindCommand(name.c_str());
-		if (!hFoundCommand.IsValid()) {
+		ConCommandRef hFoundCommand = g_pCVar->FindConCommand(name.c_str());
+		if (!hFoundCommand.IsValidRef()) {
 			return;
 		}
 
 		auto& commandInfo = *m_cmdLookup.emplace(name, std::make_unique<ConCommandInfo>(name)).first->second;
-		commandInfo.command = g_pCVar->GetCommand(hFoundCommand);
+		commandInfo.command = g_pCVar->GetConCommandData(hFoundCommand);
 		commandInfo.defaultCommand = true;
 
 		if (mode == HookMode::Pre) {
@@ -85,11 +85,11 @@ void CConCommandManager::RemoveCommandListener(const plg::string& name, CommandL
 }
 
 bool CConCommandManager::AddValveCommand(const plg::string& name, const plg::string& description, ConVarFlag flags, uint64 adminFlags) {
-	if (name.empty() || g_pCVar->FindConVar(name.c_str()).IsValid()) {
+	if (name.empty() || g_pCVar->FindConVar(name.c_str()).IsValidRef()) {
 		return false;
 	}
 
-	if (g_pCVar->FindCommand(name.c_str()).IsValid()) {
+	if (g_pCVar->FindConCommand(name.c_str()).IsValidRef()) {
 		return false;
 	}
 
@@ -102,15 +102,15 @@ bool CConCommandManager::AddValveCommand(const plg::string& name, const plg::str
 
 	auto& commandInfo = *m_cmdLookup.emplace(name, std::make_unique<ConCommandInfo>(name, description)).first->second;
 	commandInfo.commandRef = std::make_unique<ConCommand>(commandInfo.name.c_str(), CommandCallback, commandInfo.description.c_str(), flags);
-	commandInfo.command = commandInfo.commandRef.get();
+	commandInfo.command = commandInfo.commandRef->GetRawData();
 	commandInfo.adminFlags = adminFlags;
 
 	return true;
 }
 
 bool CConCommandManager::RemoveValveCommand(const plg::string& name) {
-	auto hFoundCommand = g_pCVar->FindCommand(name.c_str());
-	if (!hFoundCommand.IsValid()) {
+	auto hFoundCommand = g_pCVar->FindConCommand(name.c_str());
+	if (!hFoundCommand.IsValidRef()) {
 		return false;
 	}
 
@@ -121,15 +121,15 @@ bool CConCommandManager::RemoveValveCommand(const plg::string& name) {
 		m_cmdLookup.erase(it);
 		return true;
 	} else {
-		g_pCVar->UnregisterConCommand(hFoundCommand);
+		g_pCVar->UnregisterConCommandCallbacks(hFoundCommand);
 	}
 
 	return true;
 }
 
 bool CConCommandManager::IsValidValveCommand(const plg::string& name) const {
-	ConCommandHandle hFoundCommand = g_pCVar->FindCommand(name.c_str());
-	return hFoundCommand.IsValid();
+	ConCommandRef hFoundCommand = g_pCVar->FindConCommand(name.c_str());
+	return hFoundCommand.IsValidRef();
 }
 
 static bool CheckCommandAccess(CPlayerSlot slot, uint64 flags) {
@@ -209,7 +209,7 @@ ResultType CConCommandManager::ExecuteCommandCallbacks(const plg::string& name, 
 }
 
 poly::ReturnAction CConCommandManager::Hook_DispatchConCommand(poly::Params& params, int count, poly::Return& ret) {
-	// auto cmd = poly::GetArgument<ConCommandHandle* const>(params, 1);
+	// auto cmd = poly::GetArgument<ConCommandRef* const>(params, 1);
 	auto ctx = poly::GetArgument<const CCommandContext*>(params, 2);
 	auto args = poly::GetArgument<const CCommand*>(params, 3);
 	if (ctx == nullptr || args == nullptr) {
@@ -229,7 +229,7 @@ poly::ReturnAction CConCommandManager::Hook_DispatchConCommand(poly::Params& par
 }
 
 poly::ReturnAction CConCommandManager::Hook_DispatchConCommand_Post(poly::Params& params, int count, poly::Return& ret) {
-	// auto cmd = poly::GetArgument<ConCommandHandle* const>(params, 1);
+	// auto cmd = poly::GetArgument<ConCommandRef* const>(params, 1);
 	auto ctx = poly::GetArgument<const CCommandContext*>(params, 2);
 	auto args = poly::GetArgument<const CCommand*>(params, 3);
 	if (ctx == nullptr || args == nullptr) {

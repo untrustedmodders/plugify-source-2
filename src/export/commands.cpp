@@ -136,8 +136,8 @@ extern "C" PLUGIN_API void FakeClientCommand(int clientIndex, const plg::string&
 	}
 
 	CCommand args(static_cast<int>(a.size()), a.data());
-	auto handle = g_pCVar->FindCommand(args.Arg(0));
-	if (!handle.IsValid())
+	auto handle = g_pCVar->FindConCommand(args.Arg(0));
+	if (!handle.IsValidRef())
 		return;
 
 	CCommandContext context(CommandTarget_t::CT_NO_TARGET, clientIndex);
