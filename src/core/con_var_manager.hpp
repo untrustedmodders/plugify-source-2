@@ -56,7 +56,7 @@ struct ConVarInfo {
 
 	plg::string name;
 	plg::string description;
-	std::unique_ptr<ConVarRefAbstract> conVar;
+	std::unique_ptr<ConVarRef> conVar;
 	CListenerManager<ConVarChangeListenerCallback> hook;
 };
 
@@ -84,11 +84,11 @@ public:
 		std::lock_guard<std::mutex> lock(m_registerCnvLock);
 
 		auto& conVarInfo = *m_cnvLookup.emplace(name, std::make_unique<ConVarInfo>(name, description)).first->second;
-		auto conVar = std::make_unique<CConVarRef<T>>(name.c_str());
+		auto conVar = std::make_unique<ConVarRef>(name.c_str());
 		if (conVar->IsValidRef()) {
 			conVarInfo.conVar = std::move(conVar);
 		} else {
-			conVarInfo.conVar = std::unique_ptr<ConVarRefAbstract>(new CConVar<T>(conVarInfo.name.c_str(), flags, conVarInfo.description.c_str(), defaultVal, hasMin, min, hasMax, max, &ChangeCallback));
+			conVarInfo.conVar = std::unique_ptr<ConVarRef>(new CConVar<T>(conVarInfo.name.c_str(), flags, conVarInfo.description.c_str(), defaultVal, hasMin, min, hasMax, max, &ChangeCallback));
 		}
 		m_cnvCache.emplace(conVarInfo.conVar.get(), &conVarInfo);
 		return *conVarInfo.conVar;
@@ -136,7 +136,7 @@ public:
 
 private:
 	std::map<plg::string, ConVarInfoPtr, utils::CaseInsensitiveComparator> m_cnvLookup;
-	std::map<const ConVarRefAbstract*, const ConVarInfo*> m_cnvCache;
+	std::map<const ConVarRef*, const ConVarInfo*> m_cnvCache;
 	CListenerManager<ConVarChangeListenerCallback> m_global;
 	std::mutex m_registerCnvLock;
 };
