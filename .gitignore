@@ -11,6 +11,7 @@ CMakeUserPresets.json
 /build
 obj/
 bin/
+out/
 
 # Resource
 /res
