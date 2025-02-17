@@ -137,8 +137,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE cpp-memory_utils ${PLUGIFY_LINK_LI
 
 file(READ "${CMAKE_SOURCE_DIR}/version.txt" VERSION_FILE_CONTENTS)
 set(S2SDK_VERSION "${VERSION_FILE_CONTENTS}" CACHE STRING "Set version name")
+string(STRIP "${S2SDK_VERSION}" S2SDK_VERSION)
 set(S2SDK_PACKAGE "cs2sdk" CACHE STRING "Set package name")
-string(REPLACE "v" "" S2SDK_VERSION "${S2SDK_VERSION}")
 
 
 configure_file(
