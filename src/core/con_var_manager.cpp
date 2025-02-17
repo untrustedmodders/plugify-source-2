@@ -37,7 +37,7 @@ ConVarRef CConVarManager::FindConVar(const plg::string& name) {
 	std::lock_guard<std::mutex> lock(m_registerCnvLock);
 
 	auto& conVarInfo = *m_cnvLookup.emplace(name, std::make_unique<ConVarInfo>(name, "")).first->second;
-	conVarInfo.conVar = std::make_unique<CConVarRef<bool>>(name.c_str());
+	conVarInfo.conVar = std::make_unique<ConVarRefAbstract>(name.c_str());
 	m_cnvCache.emplace(conVarInfo.conVar.get(), &conVarInfo);
 
 	return *conVarInfo.conVar;
