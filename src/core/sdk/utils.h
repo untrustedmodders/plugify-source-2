@@ -56,6 +56,11 @@ namespace utils {
 
 
 	inline void SetConVarStringByHandle(ConVarRef conVarHandle, const plg::string& value, bool replicate, bool notify) {
+		if (conVarHandle.IsValidRef()) {
+			g_Logger.Log(LS_WARNING, "Invalid convar handle.\n");
+			return;
+		}
+
 		auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
 		if (conVarData == nullptr) {
 			g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
@@ -94,6 +99,11 @@ namespace utils {
 
 	template<typename T>
 	void SetConVarByHandle(ConVarRef conVarHandle, T value, bool replicate, bool notify) {
+		if (conVarHandle.IsValidRef()) {
+			g_Logger.Log(LS_WARNING, "Invalid convar handle.\n");
+			return;
+		}
+
 		auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
 		if (conVarData == nullptr) {
 			g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
@@ -127,6 +137,11 @@ namespace utils {
 
 	template<typename T>
 	T GetConVarValueByHandle(ConVarRef conVarHandle) {
+		if (conVarHandle.IsValidRef()) {
+			g_Logger.Log(LS_WARNING, "Invalid convar handle.\n");
+			return {};
+		}
+
 		auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
 		if (conVarData == nullptr) {
 			g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");

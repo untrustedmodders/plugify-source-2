@@ -40,6 +40,11 @@ ConVarRef CConVarManager::FindConVar(const plg::string& name) {
 	conVarInfo.conVar = std::make_unique<ConVarRef>(name.c_str());
 	m_cnvCache.emplace(conVarInfo.conVar.get(), &conVarInfo);
 
+	if (!conVarInfo.conVar->IsValidRef()) {
+		g_Logger.LogFormat(LS_WARNING, "Failed to find \"%s\" convar\n", name.c_str());
+		return {};
+	}
+
 	return *conVarInfo.conVar;
 }
 
