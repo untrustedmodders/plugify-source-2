@@ -1,5 +1,7 @@
 #pragma once
 
-using Handle = uint64_t;
+#include <basetypes.h>
+
+using Handle = uint64;
 
 Handle CreateHandle();

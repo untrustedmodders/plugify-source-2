@@ -55,19 +55,21 @@ namespace utils {
 	}
 
 
-	inline void SetConVarStringByHandle(ConVarRef conVarHandle, const plg::string& value, bool replicate, bool notify) {
-		if (conVarHandle.IsValidRef()) {
+	inline void SetConVarStringByHandle(Handle conVarHandle, const plg::string& value, bool replicate, bool notify) {
+		ConVarRef conVarRef(conVarHandle);
+	
+		if (!conVarRef.IsValidRef()) {
 			g_Logger.Log(LS_WARNING, "Invalid convar handle.\n");
 			return;
 		}
 
-		auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
+		auto* conVarData = g_pCVar->GetConVarData(conVarRef);
 		if (conVarData == nullptr) {
 			g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
 			return;
 		}
 
-		ConVarRefAbstract conVar(conVarHandle, conVarData);
+		ConVarRefAbstract conVar(conVarRef, conVarData);
 
 		SetConVarString(conVar, value, replicate, notify);
 	}
@@ -98,19 +100,21 @@ namespace utils {
 	}
 
 	template<typename T>
-	void SetConVarByHandle(ConVarRef conVarHandle, T value, bool replicate, bool notify) {
-		if (conVarHandle.IsValidRef()) {
+	void SetConVarByHandle(Handle conVarHandle, T value, bool replicate, bool notify) {
+		ConVarRef conVarRef(conVarHandle);
+
+		if (!conVarRef.IsValidRef()) {
 			g_Logger.Log(LS_WARNING, "Invalid convar handle.\n");
 			return;
 		}
 
-		auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
+		auto* conVarData = g_pCVar->GetConVarData(conVarRef);
 		if (conVarData == nullptr) {
 			g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
 			return;
 		}
 
-		ConVarRefAbstract conVar(conVarHandle, conVarData);
+		ConVarRefAbstract conVar(conVarRef, conVarData);
 
 		SetConVar<T>(conVar, value, replicate, notify);
 	}
@@ -136,19 +140,21 @@ namespace utils {
 	}
 
 	template<typename T>
-	T GetConVarValueByHandle(ConVarRef conVarHandle) {
-		if (conVarHandle.IsValidRef()) {
+	T GetConVarValueByHandle(Handle conVarHandle) {
+		ConVarRef conVarRef(conVarHandle);
+	
+		if (!conVarRef.IsValidRef()) {
 			g_Logger.Log(LS_WARNING, "Invalid convar handle.\n");
 			return {};
 		}
 
-		auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
+		auto* conVarData = g_pCVar->GetConVarData(conVarRef);
 		if (conVarData == nullptr) {
 			g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
 			return {};
 		}
 
-		ConVarRefAbstract conVar(conVarHandle, conVarData);
+		ConVarRefAbstract conVar(conVarRef, conVarData);
 
 		return GetConVarValue<T>(conVar);
 	}

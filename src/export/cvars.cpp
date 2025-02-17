@@ -347,13 +347,15 @@ extern "C" PLUGIN_API void UnhookConVarChange(const plg::string& name, ConVarCha
  * @param flag The flag to check against the console variable.
  * @return True if the flag is set; otherwise, false.
  */
-extern "C" PLUGIN_API bool IsConVarFlagSet(ConVarRef conVarHandle, ConVarFlag flag) {
-	if (!conVarHandle.IsValidRef()) {
+extern "C" PLUGIN_API bool IsConVarFlagSet(Handle conVarHandle, ConVarFlag flag) {
+	ConVarRef conVarRef(conVarHandle);
+
+	if (!conVarRef.IsValidRef()) {
 		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
 		return false;
 	}
 
-	auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
+	auto* conVarData = g_pCVar->GetConVarData(conVarRef);
 	if (conVarData == nullptr) {
 		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
 		return false;
@@ -368,13 +370,15 @@ extern "C" PLUGIN_API bool IsConVarFlagSet(ConVarRef conVarHandle, ConVarFlag fl
  * @param conVarHandle The handle to the console variable data.
  * @param flags The flags to be added.
  */
-extern "C" PLUGIN_API void AddConVarFlags(ConVarRef conVarHandle, ConVarFlag flags) {
-	if (!conVarHandle.IsValidRef()) {
+extern "C" PLUGIN_API void AddConVarFlags(Handle conVarHandle, ConVarFlag flags) {
+	ConVarRef conVarRef(conVarHandle);
+
+	if (!conVarRef.IsValidRef()) {
 		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
 		return;
 	}
 
-	auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
+	auto* conVarData = g_pCVar->GetConVarData(conVarRef);
 	if (conVarData == nullptr) {
 		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
 		return;
@@ -389,13 +393,15 @@ extern "C" PLUGIN_API void AddConVarFlags(ConVarRef conVarHandle, ConVarFlag fla
  * @param conVarHandle The handle to the console variable data.
  * @param flags The flags to be removed.
  */
-extern "C" PLUGIN_API void RemoveConVarFlags(ConVarRef conVarHandle, ConVarFlag flags) {
-	if (!conVarHandle.IsValidRef()) {
+extern "C" PLUGIN_API void RemoveConVarFlags(Handle conVarHandle, ConVarFlag flags) {
+	ConVarRef conVarRef(conVarHandle);
+
+	if (!conVarRef.IsValidRef()) {
 		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
 		return;
 	}
 
-	auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
+	auto* conVarData = g_pCVar->GetConVarData(conVarRef);
 	if (conVarData == nullptr) {
 		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
 		return;
@@ -410,13 +416,15 @@ extern "C" PLUGIN_API void RemoveConVarFlags(ConVarRef conVarHandle, ConVarFlag 
  * @param conVarHandle The handle to the console variable data.
  * @return The current flags set on the console variable.
  */
-extern "C" PLUGIN_API ConVarFlag GetConVarFlags(ConVarRef conVarHandle) {
-	if (!conVarHandle.IsValidRef()) {
+extern "C" PLUGIN_API ConVarFlag GetConVarFlags(Handle conVarHandle) {
+	ConVarRef conVarRef(conVarHandle);
+
+	if (!conVarRef.IsValidRef()) {
 		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
 		return ConVarFlag::None;
 	}
 
-	auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
+	auto* conVarData = g_pCVar->GetConVarData(conVarRef);
 	if (conVarData == nullptr) {
 		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
 		return ConVarFlag::None;
@@ -432,13 +440,15 @@ extern "C" PLUGIN_API ConVarFlag GetConVarFlags(ConVarRef conVarHandle) {
  * @param max Indicates whether to get the maximum (true) or minimum (false) bound.
  * @return The bound value.
  */
-extern "C" PLUGIN_API plg::string GetConVarBounds(ConVarRef conVarHandle, bool max) {
-	if (!conVarHandle.IsValidRef()) {
+extern "C" PLUGIN_API plg::string GetConVarBounds(Handle conVarHandle, bool max) {
+	ConVarRef conVarRef(conVarHandle);
+
+	if (!conVarRef.IsValidRef()) {
 		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
 		return {};
 	}
 
-	auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
+	auto* conVarData = g_pCVar->GetConVarData(conVarRef);
 	if (conVarData == nullptr) {
 		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
 		return {};
@@ -461,13 +471,15 @@ extern "C" PLUGIN_API plg::string GetConVarBounds(ConVarRef conVarHandle, bool m
  * @param max Indicates whether to set the maximum (true) or minimum (false) bound.
  * @param value The value to set as the bound.
  */
-extern "C" PLUGIN_API void SetConVarBounds(ConVarRef conVarHandle, bool max, const plg::string& value) {
-	if (!conVarHandle.IsValidRef()) {
+extern "C" PLUGIN_API void SetConVarBounds(Handle conVarHandle, bool max, const plg::string& value) {
+	ConVarRef conVarRef(conVarHandle);
+
+	if (!conVarRef.IsValidRef()) {
 		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
 		return;
 	}
 
-	auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
+	auto* conVarData = g_pCVar->GetConVarData(conVarRef);
 	if (conVarData == nullptr) {
 		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
 		return;
@@ -486,13 +498,15 @@ extern "C" PLUGIN_API void SetConVarBounds(ConVarRef conVarHandle, bool max, con
  * @param conVarHandle The handle to the console variable data.
  * @return The output value in string format.
  */
-extern "C" PLUGIN_API plg::string GetConVarDefault(ConVarRef conVarHandle) {
-	if (!conVarHandle.IsValidRef()) {
+extern "C" PLUGIN_API plg::string GetConVarDefault(Handle conVarHandle) {
+	ConVarRef conVarRef(conVarHandle);
+
+	if (!conVarRef.IsValidRef()) {
 		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
 		return {};
 	}
 
-	auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
+	auto* conVarData = g_pCVar->GetConVarData(conVarRef);
 	if (conVarData == nullptr) {
 		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
 		return {};
@@ -511,13 +525,15 @@ extern "C" PLUGIN_API plg::string GetConVarDefault(ConVarRef conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The output value in string format.
  */
-extern "C" PLUGIN_API plg::string GetConVarValue(ConVarRef conVarHandle) {
-	if (!conVarHandle.IsValidRef()) {
+extern "C" PLUGIN_API plg::string GetConVarValue(Handle conVarHandle) {
+	ConVarRef conVarRef(conVarHandle);
+
+	if (!conVarRef.IsValidRef()) {
 		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
 		return {};
 	}
 
-	auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
+	auto* conVarData = g_pCVar->GetConVarData(conVarRef);
 	if (conVarData == nullptr) {
 		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
 		return {};
@@ -536,13 +552,15 @@ extern "C" PLUGIN_API plg::string GetConVarValue(ConVarRef conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The output value.
  */
-extern "C" PLUGIN_API plg::any GetConVar(ConVarRef conVarHandle) {
-	if (!conVarHandle.IsValidRef()) {
+extern "C" PLUGIN_API plg::any GetConVar(Handle conVarHandle) {
+	ConVarRef conVarRef(conVarHandle);
+
+	if (!conVarRef.IsValidRef()) {
 		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
 		return {};
 	}
 
-	auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
+	auto* conVarData = g_pCVar->GetConVarData(conVarRef);
 	if (conVarData == nullptr) {
 		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
 		return {};
@@ -557,7 +575,7 @@ extern "C" PLUGIN_API plg::any GetConVar(ConVarRef conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The current boolean value of the console variable.
  */
-extern "C" PLUGIN_API bool GetConVarBool(ConVarRef conVarHandle) {
+extern "C" PLUGIN_API bool GetConVarBool(Handle conVarHandle) {
 	return utils::GetConVarValueByHandle<bool>(conVarHandle);
 }
 
@@ -567,7 +585,7 @@ extern "C" PLUGIN_API bool GetConVarBool(ConVarRef conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The current int16 value of the console variable.
  */
-extern "C" PLUGIN_API int16 GetConVarInt16(ConVarRef conVarHandle) {
+extern "C" PLUGIN_API int16 GetConVarInt16(Handle conVarHandle) {
 	return utils::GetConVarValueByHandle<int16>(conVarHandle);
 }
 
@@ -577,7 +595,7 @@ extern "C" PLUGIN_API int16 GetConVarInt16(ConVarRef conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The current uint16 value of the console variable.
  */
-extern "C" PLUGIN_API uint16 GetConVarUInt16(ConVarRef conVarHandle) {
+extern "C" PLUGIN_API uint16 GetConVarUInt16(Handle conVarHandle) {
 	return utils::GetConVarValueByHandle<uint16>(conVarHandle);
 }
 
@@ -587,7 +605,7 @@ extern "C" PLUGIN_API uint16 GetConVarUInt16(ConVarRef conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The current int32 value of the console variable.
  */
-extern "C" PLUGIN_API int32 GetConVarInt32(ConVarRef conVarHandle) {
+extern "C" PLUGIN_API int32 GetConVarInt32(Handle conVarHandle) {
 	return utils::GetConVarValueByHandle<int32>(conVarHandle);
 }
 
@@ -597,7 +615,7 @@ extern "C" PLUGIN_API int32 GetConVarInt32(ConVarRef conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The current uint32 value of the console variable.
  */
-extern "C" PLUGIN_API uint32 GetConVarUInt32(ConVarRef conVarHandle) {
+extern "C" PLUGIN_API uint32 GetConVarUInt32(Handle conVarHandle) {
 	return utils::GetConVarValueByHandle<uint32>(conVarHandle);
 }
 
@@ -607,7 +625,7 @@ extern "C" PLUGIN_API uint32 GetConVarUInt32(ConVarRef conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The current int64 value of the console variable.
  */
-extern "C" PLUGIN_API int64 GetConVarInt64(ConVarRef conVarHandle) {
+extern "C" PLUGIN_API int64 GetConVarInt64(Handle conVarHandle) {
 	return utils::GetConVarValueByHandle<int64>(conVarHandle);
 }
 
@@ -617,7 +635,7 @@ extern "C" PLUGIN_API int64 GetConVarInt64(ConVarRef conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The current uint64 value of the console variable.
  */
-extern "C" PLUGIN_API uint64 GetConVarUInt64(ConVarRef conVarHandle) {
+extern "C" PLUGIN_API uint64 GetConVarUInt64(Handle conVarHandle) {
 	return utils::GetConVarValueByHandle<uint64>(conVarHandle);
 }
 
@@ -627,7 +645,7 @@ extern "C" PLUGIN_API uint64 GetConVarUInt64(ConVarRef conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The current float value of the console variable.
  */
-extern "C" PLUGIN_API float GetConVarFloat(ConVarRef conVarHandle) {
+extern "C" PLUGIN_API float GetConVarFloat(Handle conVarHandle) {
 	return utils::GetConVarValueByHandle<float>(conVarHandle);
 }
 
@@ -637,7 +655,7 @@ extern "C" PLUGIN_API float GetConVarFloat(ConVarRef conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The current double value of the console variable.
  */
-extern "C" PLUGIN_API double GetConVarDouble(ConVarRef conVarHandle) {
+extern "C" PLUGIN_API double GetConVarDouble(Handle conVarHandle) {
 	return utils::GetConVarValueByHandle<double>(conVarHandle);
 }
 
@@ -647,7 +665,7 @@ extern "C" PLUGIN_API double GetConVarDouble(ConVarRef conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The current string value of the console variable.
  */
-extern "C" PLUGIN_API plg::string GetConVarString(ConVarRef conVarHandle) {
+extern "C" PLUGIN_API plg::string GetConVarString(Handle conVarHandle) {
 	return utils::GetConVarValueByHandle<CUtlString>(conVarHandle).Get();
 }
 
@@ -657,7 +675,7 @@ extern "C" PLUGIN_API plg::string GetConVarString(ConVarRef conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The current Color value of the console variable.
  */
-extern "C" PLUGIN_API int GetConVarColor(ConVarRef conVarHandle) {
+extern "C" PLUGIN_API int GetConVarColor(Handle conVarHandle) {
 	return utils::GetConVarValueByHandle<Color>(conVarHandle).GetRawColor();
 }
 
@@ -667,7 +685,7 @@ extern "C" PLUGIN_API int GetConVarColor(ConVarRef conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The current Vector2D value of the console variable.
  */
-extern "C" PLUGIN_API plg::vec2 GetConVarVector2(ConVarRef conVarHandle) {
+extern "C" PLUGIN_API plg::vec2 GetConVarVector2(Handle conVarHandle) {
 	const Vector2D& vec = utils::GetConVarValueByHandle<Vector2D>(conVarHandle);
 	return *reinterpret_cast<const plg::vec2*>(&vec);
 }
@@ -678,7 +696,7 @@ extern "C" PLUGIN_API plg::vec2 GetConVarVector2(ConVarRef conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The current Vector value of the console variable.
  */
-extern "C" PLUGIN_API plg::vec3 GetConVarVector(ConVarRef conVarHandle) {
+extern "C" PLUGIN_API plg::vec3 GetConVarVector(Handle conVarHandle) {
 	const Vector& vec = utils::GetConVarValueByHandle<Vector>(conVarHandle);
 	return *reinterpret_cast<const plg::vec3*>(&vec);
 }
@@ -689,7 +707,7 @@ extern "C" PLUGIN_API plg::vec3 GetConVarVector(ConVarRef conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The current Vector4D value of the console variable.
  */
-extern "C" PLUGIN_API plg::vec4 GetConVarVector4(ConVarRef conVarHandle) {
+extern "C" PLUGIN_API plg::vec4 GetConVarVector4(Handle conVarHandle) {
 	const Vector4D& vec = utils::GetConVarValueByHandle<Vector4D>(conVarHandle);
 	return *reinterpret_cast<const plg::vec4*>(&vec);
 }
@@ -700,7 +718,7 @@ extern "C" PLUGIN_API plg::vec4 GetConVarVector4(ConVarRef conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The current QAngle value of the console variable.
  */
-extern "C" PLUGIN_API plg::vec3 GetConVarQAngle(ConVarRef conVarHandle) {
+extern "C" PLUGIN_API plg::vec3 GetConVarQAngle(Handle conVarHandle) {
 	const QAngle& ang = utils::GetConVarValueByHandle<QAngle>(conVarHandle);
 	return *reinterpret_cast<const plg::vec3*>(&ang);
 }
@@ -713,7 +731,7 @@ extern "C" PLUGIN_API plg::vec3 GetConVarQAngle(ConVarRef conVarHandle) {
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarValue(ConVarRef conVarHandle, const plg::string& value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarValue(Handle conVarHandle, const plg::string& value, bool replicate, bool notify) {
 	utils::SetConVarStringByHandle(conVarHandle, value, replicate, notify);
 }
 
@@ -725,19 +743,21 @@ extern "C" PLUGIN_API void SetConVarValue(ConVarRef conVarHandle, const plg::str
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVar(ConVarRef conVarHandle, const plg::any& value, bool replicate, bool notify) {
-	if (!conVarHandle.IsValidRef()) {
-		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
+extern "C" PLUGIN_API void SetConVar(Handle conVarHandle, const plg::any& value, bool replicate, bool notify) {
+	ConVarRef conVarRef(conVarHandle);
+
+	if (!conVarRef.IsValidRef()) {
+		g_Logger.Log(LS_WARNING, "Invalid convar handle.\n");
 		return;
 	}
 
-	auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
+	auto* conVarData = g_pCVar->GetConVarData(conVarRef);
 	if (conVarData == nullptr) {
 		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
 		return;
 	}
 
-	ConVarRefAbstract conVar(conVarHandle, conVarData);
+	ConVarRefAbstract conVar(conVarRef, conVarData);
 
 	switch (conVarData->GetType()) {
 		case EConVarType_Bool:
@@ -861,7 +881,7 @@ extern "C" PLUGIN_API void SetConVar(ConVarRef conVarHandle, const plg::any& val
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarBool(ConVarRef conVarHandle, bool value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarBool(Handle conVarHandle, bool value, bool replicate, bool notify) {
 	utils::SetConVarByHandle(conVarHandle, value, replicate, notify);
 }
 
@@ -873,7 +893,7 @@ extern "C" PLUGIN_API void SetConVarBool(ConVarRef conVarHandle, bool value, boo
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarInt16(ConVarRef conVarHandle, int16 value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarInt16(Handle conVarHandle, int16 value, bool replicate, bool notify) {
 	utils::SetConVarByHandle(conVarHandle, value, replicate, notify);
 }
 
@@ -885,7 +905,7 @@ extern "C" PLUGIN_API void SetConVarInt16(ConVarRef conVarHandle, int16 value, b
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarUInt16(ConVarRef conVarHandle, uint16 value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarUInt16(Handle conVarHandle, uint16 value, bool replicate, bool notify) {
 	utils::SetConVarByHandle(conVarHandle, value, replicate, notify);
 }
 
@@ -897,7 +917,7 @@ extern "C" PLUGIN_API void SetConVarUInt16(ConVarRef conVarHandle, uint16 value,
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarInt32(ConVarRef conVarHandle, int32 value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarInt32(Handle conVarHandle, int32 value, bool replicate, bool notify) {
 	utils::SetConVarByHandle(conVarHandle, value, replicate, notify);
 }
 
@@ -909,7 +929,7 @@ extern "C" PLUGIN_API void SetConVarInt32(ConVarRef conVarHandle, int32 value, b
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarUInt32(ConVarRef conVarHandle, uint32 value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarUInt32(Handle conVarHandle, uint32 value, bool replicate, bool notify) {
 	utils::SetConVarByHandle(conVarHandle, value, replicate, notify);
 }
 
@@ -921,7 +941,7 @@ extern "C" PLUGIN_API void SetConVarUInt32(ConVarRef conVarHandle, uint32 value,
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarInt64(ConVarRef conVarHandle, int64 value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarInt64(Handle conVarHandle, int64 value, bool replicate, bool notify) {
 	utils::SetConVarByHandle(conVarHandle, value, replicate, notify);
 }
 
@@ -933,7 +953,7 @@ extern "C" PLUGIN_API void SetConVarInt64(ConVarRef conVarHandle, int64 value, b
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarUInt64(ConVarRef conVarHandle, uint64 value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarUInt64(Handle conVarHandle, uint64 value, bool replicate, bool notify) {
 	utils::SetConVarByHandle(conVarHandle, value, replicate, notify);
 }
 
@@ -945,7 +965,7 @@ extern "C" PLUGIN_API void SetConVarUInt64(ConVarRef conVarHandle, uint64 value,
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarFloat(ConVarRef conVarHandle, float value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarFloat(Handle conVarHandle, float value, bool replicate, bool notify) {
 	utils::SetConVarByHandle(conVarHandle, value, replicate, notify);
 }
 
@@ -957,7 +977,7 @@ extern "C" PLUGIN_API void SetConVarFloat(ConVarRef conVarHandle, float value, b
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarDouble(ConVarRef conVarHandle, double value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarDouble(Handle conVarHandle, double value, bool replicate, bool notify) {
 	utils::SetConVarByHandle(conVarHandle, value, replicate, notify);
 }
 
@@ -969,7 +989,7 @@ extern "C" PLUGIN_API void SetConVarDouble(ConVarRef conVarHandle, double value,
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarString(ConVarRef conVarHandle, const plg::string& value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarString(Handle conVarHandle, const plg::string& value, bool replicate, bool notify) {
 	utils::SetConVarByHandle(conVarHandle, CUtlString(value.c_str()), replicate, notify);
 }
 
@@ -981,7 +1001,7 @@ extern "C" PLUGIN_API void SetConVarString(ConVarRef conVarHandle, const plg::st
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarColor(ConVarRef conVarHandle, int value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarColor(Handle conVarHandle, int value, bool replicate, bool notify) {
 	utils::SetConVarByHandle(conVarHandle, *reinterpret_cast<Color*>(&value), replicate, notify);
 }
 
@@ -993,7 +1013,7 @@ extern "C" PLUGIN_API void SetConVarColor(ConVarRef conVarHandle, int value, boo
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarVector2(ConVarRef conVarHandle, const Vector2D& value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarVector2(Handle conVarHandle, const Vector2D& value, bool replicate, bool notify) {
 	utils::SetConVarByHandle(conVarHandle, value, replicate, notify);
 }
 
@@ -1005,7 +1025,7 @@ extern "C" PLUGIN_API void SetConVarVector2(ConVarRef conVarHandle, const Vector
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarVector3(ConVarRef conVarHandle, const Vector& value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarVector3(Handle conVarHandle, const Vector& value, bool replicate, bool notify) {
 	utils::SetConVarByHandle(conVarHandle, value, replicate, notify);
 }
 
@@ -1017,7 +1037,7 @@ extern "C" PLUGIN_API void SetConVarVector3(ConVarRef conVarHandle, const Vector
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarVector4(ConVarRef conVarHandle, const Vector4D& value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarVector4(Handle conVarHandle, const Vector4D& value, bool replicate, bool notify) {
 	utils::SetConVarByHandle(conVarHandle, value, replicate, notify);
 }
 
@@ -1029,7 +1049,7 @@ extern "C" PLUGIN_API void SetConVarVector4(ConVarRef conVarHandle, const Vector
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarQAngle(ConVarRef conVarHandle, const QAngle& value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarQAngle(Handle conVarHandle, const QAngle& value, bool replicate, bool notify) {
 	utils::SetConVarByHandle(conVarHandle, value, replicate, notify);
 }
 
@@ -1040,13 +1060,20 @@ extern "C" PLUGIN_API void SetConVarQAngle(ConVarRef conVarHandle, const QAngle&
  * @param conVarHandle The handle to the console variable data.
  * @param value The value to send to the client.
  */
-extern "C" PLUGIN_API void SendConVarValue(int clientIndex, ConVarRef conVarHandle, const plg::string& value) {
+extern "C" PLUGIN_API void SendConVarValue(int clientIndex, Handle conVarHandle, const plg::string& value) {
+	ConVarRef conVarRef(conVarHandle);
+
+	if (!conVarRef.IsValidRef()) {
+		g_Logger.Log(LS_WARNING, "Invalid convar handle.\n");
+		return;
+	}
+
 	if (!utils::IsPlayerSlot(clientIndex)) {
 		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SendConVarValue' on invalid client index: %d\n", clientIndex);
 		return;
 	}
 
-	auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
+	auto* conVarData = g_pCVar->GetConVarData(conVarRef);
 	if (conVarData == nullptr) {
 		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
 		return;
