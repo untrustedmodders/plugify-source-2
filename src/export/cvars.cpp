@@ -476,7 +476,7 @@ extern "C" PLUGIN_API plg::string GetConVarDefault(ConVarRef conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The output value in string format.
  */
-extern "C" PLUGIN_API plg::string GetConVarValueByHandle(ConVarRef conVarHandle) {
+extern "C" PLUGIN_API plg::string GetConVarValue(ConVarRef conVarHandle) {
 	auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
 	if (conVarData == nullptr) {
 		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
