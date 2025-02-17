@@ -54,6 +54,19 @@ namespace utils {
 		if (notify) NotifyConVar(conVar, value.c_str());
 	}
 
+
+	inline void SetConVarStringByHandle(ConVarRef conVarHandle, const plg::string& value, bool replicate, bool notify) {
+		auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
+		if (conVarData == nullptr) {
+			g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
+			return;
+		}
+
+		ConVarRefAbstract conVar(conVarHandle, conVarData);
+
+		SetConVarString(conVar, value, replicate, notify);
+	}
+
 	template<typename T>
 	void SetConVarInternal(ConVarRefAbstract conVar, T value, bool replicate, bool notify) {
 		conVar.SetAs<T>(value);
@@ -80,6 +93,19 @@ namespace utils {
 	}
 
 	template<typename T>
+	void SetConVarByHandle(ConVarRef conVarHandle, T value, bool replicate, bool notify) {
+		auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
+		if (conVarData == nullptr) {
+			g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
+			return;
+		}
+
+		ConVarRefAbstract conVar(conVarHandle, conVarData);
+
+		SetConVar<T>(conVar, value, replicate, notify);
+	}
+
+	template<typename T>
 	void SetConVarValue(ConVarRefAbstract conVar, const plg::string& value) {
 		if (conVar.GetType() != TranslateConVarType<T>()) {
 			g_Logger.LogFormat(LS_WARNING, "Invalid cvar type for variable '%s'. Expected: '%s', but got: '%s'. Please ensure the type matches the expected type.\n", conVar.GetName(), conVar.TypeTraits()->m_TypeName, GetCvarTypeTraits(TranslateConVarType<T>())->m_TypeName);
@@ -97,6 +123,19 @@ namespace utils {
 		}
 
 		return conVar.GetAs<T>();
+	}
+
+	template<typename T>
+	T GetConVarValueByHandle(ConVarRef conVarHandle) {
+		auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
+		if (conVarData == nullptr) {
+			g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
+			return {};
+		}
+
+		ConVarRefAbstract conVar(conVarHandle, conVarData);
+
+		return GetConVarValue<T>(conVar);
 	}
 
 	// Print functions
