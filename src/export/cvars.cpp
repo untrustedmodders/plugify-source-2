@@ -348,6 +348,11 @@ extern "C" PLUGIN_API void UnhookConVarChange(const plg::string& name, ConVarCha
  * @return True if the flag is set; otherwise, false.
  */
 extern "C" PLUGIN_API bool IsConVarFlagSet(ConVarRef conVarHandle, ConVarFlag flag) {
+	if (!conVarHandle.IsValidRef()) {
+		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
+		return;
+	}
+
 	auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
 	if (conVarData == nullptr) {
 		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
@@ -364,6 +369,11 @@ extern "C" PLUGIN_API bool IsConVarFlagSet(ConVarRef conVarHandle, ConVarFlag fl
  * @param flags The flags to be added.
  */
 extern "C" PLUGIN_API void AddConVarFlags(ConVarRef conVarHandle, ConVarFlag flags) {
+	if (!conVarHandle.IsValidRef()) {
+		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
+		return;
+	}
+
 	auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
 	if (conVarData == nullptr) {
 		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
@@ -380,6 +390,11 @@ extern "C" PLUGIN_API void AddConVarFlags(ConVarRef conVarHandle, ConVarFlag fla
  * @param flags The flags to be removed.
  */
 extern "C" PLUGIN_API void RemoveConVarFlags(ConVarRef conVarHandle, ConVarFlag flags) {
+	if (!conVarHandle.IsValidRef()) {
+		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
+		return;
+	}
+
 	auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
 	if (conVarData == nullptr) {
 		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
@@ -396,6 +411,11 @@ extern "C" PLUGIN_API void RemoveConVarFlags(ConVarRef conVarHandle, ConVarFlag 
  * @return The current flags set on the console variable.
  */
 extern "C" PLUGIN_API ConVarFlag GetConVarFlags(ConVarRef conVarHandle) {
+	if (!conVarHandle.IsValidRef()) {
+		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
+		return ConVarFlag::None;
+	}
+
 	auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
 	if (conVarData == nullptr) {
 		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
@@ -413,6 +433,11 @@ extern "C" PLUGIN_API ConVarFlag GetConVarFlags(ConVarRef conVarHandle) {
  * @return The bound value.
  */
 extern "C" PLUGIN_API plg::string GetConVarBounds(ConVarRef conVarHandle, bool max) {
+	if (!conVarHandle.IsValidRef()) {
+		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
+		return {};
+	}
+
 	auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
 	if (conVarData == nullptr) {
 		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
@@ -437,6 +462,11 @@ extern "C" PLUGIN_API plg::string GetConVarBounds(ConVarRef conVarHandle, bool m
  * @param value The value to set as the bound.
  */
 extern "C" PLUGIN_API void SetConVarBounds(ConVarRef conVarHandle, bool max, const plg::string& value) {
+	if (!conVarHandle.IsValidRef()) {
+		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
+		return;
+	}
+
 	auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
 	if (conVarData == nullptr) {
 		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
@@ -457,6 +487,11 @@ extern "C" PLUGIN_API void SetConVarBounds(ConVarRef conVarHandle, bool max, con
  * @return The output value in string format.
  */
 extern "C" PLUGIN_API plg::string GetConVarDefault(ConVarRef conVarHandle) {
+	if (!conVarHandle.IsValidRef()) {
+		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
+		return;
+	}
+
 	auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
 	if (conVarData == nullptr) {
 		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
@@ -477,6 +512,11 @@ extern "C" PLUGIN_API plg::string GetConVarDefault(ConVarRef conVarHandle) {
  * @return The output value in string format.
  */
 extern "C" PLUGIN_API plg::string GetConVarValue(ConVarRef conVarHandle) {
+	if (!conVarHandle.IsValidRef()) {
+		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
+		return;
+	}
+
 	auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
 	if (conVarData == nullptr) {
 		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
@@ -497,6 +537,11 @@ extern "C" PLUGIN_API plg::string GetConVarValue(ConVarRef conVarHandle) {
  * @return The output value.
  */
 extern "C" PLUGIN_API plg::any GetConVar(ConVarRef conVarHandle) {
+	if (!conVarHandle.IsValidRef()) {
+		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
+		return;
+	}
+
 	auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
 	if (conVarData == nullptr) {
 		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
@@ -681,6 +726,11 @@ extern "C" PLUGIN_API void SetConVarValue(ConVarRef conVarHandle, const plg::str
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
 extern "C" PLUGIN_API void SetConVar(ConVarRef conVarHandle, const plg::any& value, bool replicate, bool notify) {
+	if (!conVarHandle.IsValidRef()) {
+		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
+		return;
+	}
+
 	auto* conVarData = g_pCVar->GetConVarData(conVarHandle);
 	if (conVarData == nullptr) {
 		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
