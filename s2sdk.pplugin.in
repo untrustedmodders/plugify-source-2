@@ -15139,7 +15139,7 @@
     {
       "name": "GetWeaponDefIndex",
       "group": "Weapons",
-      "description": "etrieves the weapon definition index for a given entity handle.",
+      "description": "Retrieves the weapon definition index for a given entity handle.",
       "funcName": "GetWeaponDefIndex",
       "paramTypes": [
         {
