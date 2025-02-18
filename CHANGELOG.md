@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/untrustedmodders/plugify-source-2/compare/v1.1.0...v1.1.1) (2025-02-18)
+
+
+### Bug Fixes
+
+* **pplugin.in:** Fixed a typo in the description ([217f5bf](https://github.com/untrustedmodders/plugify-source-2/commit/217f5bff324e62b43530c018caa1b0336bb6da97))
+
 ## [1.1.0](https://github.com/untrustedmodders/plugify-source-2/compare/v1.0.3...v1.1.0) (2025-02-17)
 
 
