@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.2](https://github.com/untrustedmodders/plugify-source-2/compare/v1.1.1...v1.1.2) (2025-03-09)
+
+
+### Bug Fixes
+
+* add allow dev mode to convars ([a55156a](https://github.com/untrustedmodders/plugify-source-2/commit/a55156ae6bc5da3d3baf24078903172561bd0859))
+* add missing symbols ([028dbdb](https://github.com/untrustedmodders/plugify-source-2/commit/028dbdb39aa836761d72996e1bac3f6a71f9faa1))
+
 ## [1.1.1](https://github.com/untrustedmodders/plugify-source-2/compare/v1.1.0...v1.1.1) (2025-02-18)
 
 
