@@ -1,6 +1,7 @@
 {
     global:
         CreateInterface;
+        Plugify_*;
 
         GetClientIndexFromEntityPointer;
         GetClientAuthId;
