@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.6](https://github.com/untrustedmodders/plugify-source-2/compare/v1.1.5...v1.1.6) (2025-03-09)
+
+
+### Bug Fixes
+
+* use abstract ref for convar ([8bd072e](https://github.com/untrustedmodders/plugify-source-2/commit/8bd072e0d03c1903680b1c3eed289e0629da5dc3))
+
 ## [1.1.5](https://github.com/untrustedmodders/plugify-source-2/compare/v1.1.4...v1.1.5) (2025-03-09)
 
 
