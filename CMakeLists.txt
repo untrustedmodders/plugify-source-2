@@ -8,7 +8,7 @@ if(POLICY CMP0092)
     cmake_policy(SET CMP0092 NEW) # Don't add -W3 warning level by default.
 endif()
 
-project(plugify-source-2
+project(cs2sdk
 		VERSION 1.0.0.0
 		DESCRIPTION "Source2 SDK Plugin"
 		HOMEPAGE_URL "https://github.com/untrustedmodders/plugify-source-2"
@@ -136,9 +136,10 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDE_DIRS} ${DYNLIBUTILS
 target_link_libraries(${PROJECT_NAME} PRIVATE cpp-memory_utils ${PLUGIFY_LINK_LIBRARIES} ${SOURCESDK_BINARY_DIR})
 
 file(READ "${CMAKE_SOURCE_DIR}/version.txt" VERSION_FILE_CONTENTS)
+string(STRIP "${VERSION_FILE_CONTENTS}" VERSION_FILE_CONTENTS)
 set(S2SDK_VERSION "${VERSION_FILE_CONTENTS}" CACHE STRING "Set version name")
-string(STRIP "${S2SDK_VERSION}" S2SDK_VERSION)
 set(S2SDK_PACKAGE "cs2sdk" CACHE STRING "Set package name")
+string(REPLACE "v" "" S2SDK_VERSION "${S2SDK_VERSION}")
 
 
 configure_file(
