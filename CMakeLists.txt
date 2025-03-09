@@ -8,7 +8,7 @@ if(POLICY CMP0092)
     cmake_policy(SET CMP0092 NEW) # Don't add -W3 warning level by default.
 endif()
 
-project(cs2sdk
+project(plugify-source-2
 		VERSION 1.0.0.0
 		DESCRIPTION "Source2 SDK Plugin"
 		HOMEPAGE_URL "https://github.com/untrustedmodders/plugify-source-2"
