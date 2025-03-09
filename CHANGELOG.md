@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.7](https://github.com/untrustedmodders/plugify-source-2/compare/v1.1.6...v1.1.7) (2025-03-09)
+
+
+### Bug Fixes
+
+* add typed findconvar method ([df171fa](https://github.com/untrustedmodders/plugify-source-2/commit/df171fa1f0185138ec750208bc920723bcd7e005))
+
 ## [1.1.6](https://github.com/untrustedmodders/plugify-source-2/compare/v1.1.5...v1.1.6) (2025-03-09)
 
 
