@@ -307,6 +307,50 @@ extern "C" PLUGIN_API Handle FindConVar(const plg::string& name) {
 }
 
 /**
+ * @brief Searches for a console variable of a specific type.
+ * @param name The name of the console variable to search for.
+ * @param type The type of the console variable to search for.
+ * @return Pointer to the console variable data if found; otherwise, nullptr.
+ */
+extern "C" PLUGIN_API Handle FindConVar2(const plg::string& name, EConVarType type) {
+	switch (type) {
+		case EConVarType_Bool:
+			return g_ConVarManager.FindConVar<bool>(name);
+		case EConVarType_Int16:
+			return g_ConVarManager.FindConVar<int16>(name);
+		case EConVarType_UInt16:
+			return g_ConVarManager.FindConVar<uint16>(name);
+		case EConVarType_Int32:
+			return g_ConVarManager.FindConVar<int32>(name);
+		case EConVarType_UInt32:
+			return g_ConVarManager.FindConVar<uint32>(name);
+		case EConVarType_Int64:
+			return g_ConVarManager.FindConVar<int64>(name);
+		case EConVarType_UInt64:
+			return g_ConVarManager.FindConVar<uint64>(name);
+		case EConVarType_Float32:
+			return g_ConVarManager.FindConVar<float>(name);
+		case EConVarType_Float64:
+			return g_ConVarManager.FindConVar<double>(name);
+		case EConVarType_String:
+			return g_ConVarManager.FindConVar<CUtlString>(name);
+		case EConVarType_Color:
+			return g_ConVarManager.FindConVar<Color>(name);
+		case EConVarType_Vector2:
+			return g_ConVarManager.FindConVar<Vector2D>(name);
+		case EConVarType_Vector3:
+			return g_ConVarManager.FindConVar<Vector>(name);
+		case EConVarType_Vector4:
+			return g_ConVarManager.FindConVar<Vector4D>(name);
+		case EConVarType_Qangle:
+			return g_ConVarManager.FindConVar<QAngle>(name);
+		default:
+			g_Logger.Log(LS_WARNING, "Invalid convar type.\n");
+			return {};
+	}
+}
+
+/**
  * @brief Creates a hook for when a console variable's value is changed.
 *
  * This function allows a callback to be executed whenever the specified console variable is modified.

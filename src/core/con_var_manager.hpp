@@ -94,8 +94,30 @@ public:
 		return *conVarInfo.conVar;
 	}
 
-	bool RemoveConVar(const plg::string& name);
+	template<typename T>
+	ConVarRef FindConVar(const plg::string& name) {
+		auto it = m_cnvLookup.find(name);
+		if (it != m_cnvLookup.end()) {
+			return *std::get<ConVarInfoPtr>(*it)->conVar;
+		}
+
+		std::lock_guard<std::mutex> lock(m_registerCnvLock);
+
+		auto& conVarInfo = *m_cnvLookup.emplace(name, std::make_unique<ConVarInfo>(name, "")).first->second;
+		conVarInfo.conVar = std::make_unique<CConVarRef<T>>(name.c_str());
+		m_cnvCache.emplace(conVarInfo.conVar.get(), &conVarInfo);
+
+		if (!conVarInfo.conVar->IsValidRef()) {
+			g_Logger.LogFormat(LS_WARNING, "Failed to find \"%s\" convar\n", name.c_str());
+			return {};
+		}
+
+		return *conVarInfo.conVar;
+	}
+
 	ConVarRef FindConVar(const plg::string& name);
+	bool RemoveConVar(const plg::string& name);
+
 	void HookConVarChange(const plg::string& name, ConVarChangeListenerCallback callback);
 	void UnhookConVarChange(const plg::string& name, ConVarChangeListenerCallback callback);
 

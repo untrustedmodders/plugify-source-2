@@ -5530,6 +5530,120 @@
       }
     },
     {
+      "name": "FindConVar2",
+      "group": "Cvars",
+      "description": "Searches for a console variable of a specific type.",
+      "funcName": "FindConVar2",
+      "paramTypes": [
+        {
+          "name": "name",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the console variable to search for."
+        },
+        {
+          "name": "type",
+          "type": "int16",
+          "ref": false,
+          "description": "The type of the console variable to search for.",
+          "enum": {
+            "name": "ConVarType",
+            "values": [
+              {
+                "value": -1,
+                "name": "Invalid",
+                "description": "Invalid type"
+              },
+              {
+                "value": 0,
+                "name": "Bool",
+                "description": "Boolean type"
+              },
+              {
+                "value": 1,
+                "name": "Int16",
+                "description": "16-bit signed integer"
+              },
+              {
+                "value": 2,
+                "name": "UInt16",
+                "description": "16-bit unsigned integer"
+              },
+              {
+                "value": 3,
+                "name": "Int32",
+                "description": "32-bit signed integer"
+              },
+              {
+                "value": 4,
+                "name": "UInt32",
+                "description": "32-bit unsigned integer"
+              },
+              {
+                "value": 5,
+                "name": "Int64",
+                "description": "64-bit signed integer"
+              },
+              {
+                "value": 6,
+                "name": "UInt64",
+                "description": "64-bit unsigned integer"
+              },
+              {
+                "value": 7,
+                "name": "Float32",
+                "description": "32-bit floating point"
+              },
+              {
+                "value": 8,
+                "name": "Float64",
+                "description": "64-bit floating point (double)"
+              },
+              {
+                "value": 9,
+                "name": "String",
+                "description": "String type"
+              },
+              {
+                "value": 10,
+                "name": "Color",
+                "description": "Color type"
+              },
+              {
+                "value": 11,
+                "name": "Vector2",
+                "description": "2D vector"
+              },
+              {
+                "value": 12,
+                "name": "Vector3",
+                "description": "3D vector"
+              },
+              {
+                "value": 13,
+                "name": "Vector4",
+                "description": "4D vector"
+              },
+              {
+                "value": 14,
+                "name": "Qangle",
+                "description": "Quaternion angle"
+              },
+              {
+                "value": 15,
+                "name": "Max",
+                "description": "Maximum value (used for bounds checking)"
+              }
+            ]
+          }
+        }
+      ],
+      "retType": {
+        "type": "uint64",
+        "description": "A handle to the console variable data if found; otherwise, nullptr."
+      }
+    },
+    {
       "name": "HookConVarChange",
       "group": "Cvars",
       "description": "Creates a hook for when a console variable's value is changed.",
