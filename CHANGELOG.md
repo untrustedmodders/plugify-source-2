@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.5](https://github.com/untrustedmodders/plugify-source-2/compare/v1.1.4...v1.1.5) (2025-03-09)
+
+
+### Bug Fixes
+
+* add StripDevelopmentFlags by default ([662cdbb](https://github.com/untrustedmodders/plugify-source-2/commit/662cdbb9d1f5087b925c6566c698f7252217e84b))
+
 ## [1.1.4](https://github.com/untrustedmodders/plugify-source-2/compare/v1.1.3...v1.1.4) (2025-03-09)
 
 
