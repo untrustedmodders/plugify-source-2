@@ -140,6 +140,8 @@ namespace globals {
 		}
 		g_pGameEventManager = *p_ppGameEventManager;
 
+		g_pCVar->StripDevelopmentFlags();
+
 		// load more if needed
 		RESOLVE_SIG(g_pGameConfig, "LegacyGameEventListener", addresses::GetLegacyGameEventListener);
 		RESOLVE_SIG(g_pGameConfig, "CCSPlayer_WeaponServices_RemoveItem", addresses::CCSPlayer_WeaponServices_RemoveItem);
