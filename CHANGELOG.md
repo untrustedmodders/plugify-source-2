@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.4](https://github.com/untrustedmodders/plugify-source-2/compare/v1.1.3...v1.1.4) (2025-03-09)
+
+
+### Bug Fixes
+
+* revert project version ([e2b1672](https://github.com/untrustedmodders/plugify-source-2/commit/e2b16728e2daf3fce75e9539bdfabf7b5b2256a4))
+
 ## [1.1.3](https://github.com/untrustedmodders/plugify-source-2/compare/v1.1.2...v1.1.3) (2025-03-09)
 
 
