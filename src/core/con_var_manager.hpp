@@ -5,7 +5,7 @@
 
 #include <convar.h>
 
-using ConVarChangeListenerCallback = void (*)(ConVarRef conVar, const plg::string& newValue, const plg::string& oldValue);
+using ConVarChangeListenerCallback = void (*)(ConVarRefAbstract conVar, const plg::string& newValue, const plg::string& oldValue);
 
 enum ConVarFlag : int64_t {
 	None = 0, // The default, no flags at all
