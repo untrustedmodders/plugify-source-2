@@ -52,7 +52,7 @@ static T* FindInterface(const CModule* module, const char* name) {
 
 	void* pInterface = CreateInterface(name, nullptr);
 	if (!pInterface) {
-		g_Logger.LogFormat(LS_ERROR, "Could not find interface %s in %s at \"%s\"\n", name, module->GetModuleName().data(), module->GetModulePath().data());
+		g_Logger.LogFormat(LS_ERROR, "Could not find interface %s in %s at \"%s\"\n", name, module->GetName().data(), module->GetPath().data());
 		return nullptr;
 	}
 
@@ -87,7 +87,7 @@ constexpr auto ModulePath(const char (&str)[N]) {
 static CModule* CreateModule(const char* p) {
 	plg::string path = utils::GameDirectory() + p;
 	auto* module = new CModule(path);
-	if (!module->GetModuleHandle()) {
+	if (!module->GetHandle()) {
 		g_Logger.LogFormat(LS_ERROR, "Could not find module at \"%s\"\n", path.c_str());
 	}
 	return module;

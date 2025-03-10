@@ -9,7 +9,7 @@ message(STATUS "Pulling and configuring DynLibUtils")
 FetchContent_Declare(
 		dynlibutils
 		GIT_REPOSITORY https://github.com/Wend4r/cpp-memory_utils.git
-		GIT_TAG 59a55a447a5e6951a2b90d598b952d2fb381d295
+		GIT_TAG dfda1d93e12945f3373a6309629572a3b1a37156
 )
 
 FetchContent_MakeAvailable(dynlibutils)
