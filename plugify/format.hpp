@@ -1,7 +1,7 @@
 #pragma once
 
-#include <plugify/any.hpp>
-#include <plugify/compat_format.hpp>
+#include "any.hpp"
+#include "compat_format.hpp"
 
 // format support
 #ifdef FMT_HEADER_ONLY
@@ -55,7 +55,12 @@ namespace std {
         auto format(const plg::any& var, FormatContext& ctx) const {
             plg::string out;
             plg::visit([&out](auto& v) {
-                std::format_to(std::back_inserter(out), "{}", v);
+                using T = std::decay_t<decltype(v)>;
+                if constexpr (std::is_same_v<char16_t, T>) {
+                    std::format_to(std::back_inserter(out), "{}", static_cast<uint16_t>(v));
+                } else {
+                    std::format_to(std::back_inserter(out), "{}", v);
+                }
             }, var);
             return std::format_to(ctx.out(), "{}", std::move(out));
         }
@@ -118,10 +123,10 @@ namespace std {
         template<class FormatContext>
         auto format(const plg::mat4x4& t, FormatContext& ctx) const {
             return std::format_to(ctx.out(), "{{{{{}, {}, {}, {}}}, {{{}, {}, {}, {}}}, {{{}, {}, {}, {}}}, {{{}, {}, {}, {}}}}}",
-                                  t.data[0][0], t.data[0][1], t.data[0][2], t.data[0][3],
-                                  t.data[1][0], t.data[1][1], t.data[1][2], t.data[1][3],
-                                  t.data[2][0], t.data[2][1], t.data[2][2], t.data[2][3],
-                                  t.data[3][0], t.data[3][1], t.data[3][2], t.data[3][3]);
+                                  t.m[0][0], t.m[0][1], t.m[0][2], t.m[0][3],
+                                  t.m[1][0], t.m[1][1], t.m[1][2], t.m[1][3],
+                                  t.m[2][0], t.m[2][1], t.m[2][2], t.m[2][3],
+                                  t.m[3][0], t.m[3][1], t.m[3][2], t.m[3][3]);
         }
     };
 
@@ -150,6 +155,25 @@ namespace std {
                 std::format_to(ctx.out(), "{}", vec[0]);
                 for (auto it = std::next(vec.begin()); it != vec.end(); ++it) {
                     std::format_to(ctx.out(), ", {}", *it);
+                }
+            }
+            return std::format_to(ctx.out(), "{}", "}");
+        }
+    };
+
+    template<typename Allocator>
+    struct formatter<plg::vector<char16_t, Allocator>> {
+        constexpr auto parse(std::format_parse_context& ctx) {
+            return ctx.begin();
+        }
+
+        template<class FormatContext>
+        auto format(const plg::vector<char16_t, Allocator>& vec, FormatContext& ctx) const {
+            std::format_to(ctx.out(), "{}", "{");
+            if (!vec.empty()) {
+                std::format_to(ctx.out(), "{}", static_cast<uint16_t>(vec[0]));
+                for (auto it = std::next(vec.begin()); it != vec.end(); ++it) {
+                    std::format_to(ctx.out(), ", {}", static_cast<uint16_t>(*it));
                 }
             }
             return std::format_to(ctx.out(), "{}", "}");

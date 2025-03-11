@@ -6,9 +6,12 @@
 #include <filesystem>
 #include <utility>
 #include <vector>
+#include <type_traits>
 
-#include <plugify/any.hpp>
-#include <plugify/version.hpp>
+#include "any.hpp"
+#include "version.hpp"
+
+#include "api/plugify_api.hpp"
 
 namespace std::filesystem {
 #if _WIN32
@@ -19,13 +22,6 @@ namespace std::filesystem {
 } // namespace std::filesystem
 
 namespace plg {
-	constexpr int32_t kApiVersion = 1;
-
-	extern "C" struct PluginResult {
-		int32_t version;
-		bool debug;
-	};
-
 	using GetMethodPtrFn = void* (*)(std::string_view);
 	using GetMethodPtr2Fn = void (*)(std::string_view, void**);
 	using GetBaseDirFn = std::filesystem::path_view (*)();
@@ -87,65 +83,89 @@ namespace plg {
 	IPluginEntry* GetPluginEntry();
 } // namespace plg
 
-#define EXPOSE_PLUGIN(plugin_api, interface_addr) namespace plg { \
-	GetMethodPtrFn GetMethodPtr{ nullptr }; \
-	GetMethodPtr2Fn GetMethodPtr2{ nullptr }; \
-	GetBaseDirFn GetBaseDir{ nullptr }; \
-	IsModuleLoadedFn IsModuleLoaded{ nullptr }; \
-	IsPluginLoadedFn IsPluginLoaded{ nullptr }; \
-	namespace plugin { \
-		void* handle{ nullptr }; \
-		GetIdFn GetId{ nullptr }; \
-		GetNameFn GetName{ nullptr }; \
-		GetFullNameFn GetFullName{ nullptr }; \
-		GetDescriptionFn GetDescription{ nullptr }; \
-		GetVersionFn GetVersion{ nullptr }; \
-		GetAuthorFn GetAuthor{ nullptr }; \
-		GetWebsiteFn GetWebsite{ nullptr }; \
-		GetBaseDirFn GetBaseDir{ nullptr }; \
-		GetDependenciesFn GetDependencies{ nullptr }; \
-		FindResourceFn FindResource{ nullptr }; \
-	} \
-	extern "C" \
-	plugin_api PluginResult Plugify_Init(void** api, int32_t version, void* handle) { \
-		if (version < kApiVersion) { \
-			return { kApiVersion, PLUGIFY_IS_DEBUG }; \
-		} \
-		std::size_t i = 0; \
-		GetMethodPtr = reinterpret_cast<GetMethodPtrFn>(api[i++]); \
-		GetMethodPtr2 = reinterpret_cast<GetMethodPtr2Fn>(api[i++]); \
-		GetBaseDir = reinterpret_cast<GetBaseDirFn>(api[i++]); \
-		IsModuleLoaded = reinterpret_cast<IsModuleLoadedFn>(api[i++]); \
-		IsPluginLoaded = reinterpret_cast<IsPluginLoadedFn>(api[i++]); \
-		plugin::GetId = reinterpret_cast<plugin::GetIdFn>(api[i++]); \
-		plugin::GetName = reinterpret_cast<plugin::GetNameFn>(api[i++]); \
-		plugin::GetFullName = reinterpret_cast<plugin::GetFullNameFn>(api[i++]); \
-		plugin::GetDescription = reinterpret_cast<plugin::GetDescriptionFn>(api[i++]); \
-		plugin::GetVersion = reinterpret_cast<plugin::GetVersionFn>(api[i++]); \
-		plugin::GetAuthor = reinterpret_cast<plugin::GetAuthorFn>(api[i++]); \
-		plugin::GetWebsite = reinterpret_cast<plugin::GetWebsiteFn>(api[i++]); \
-		plugin::GetBaseDir = reinterpret_cast<plugin::GetBaseDirFn>(api[i++]); \
-		plugin::GetDependencies = reinterpret_cast<plugin::GetDependenciesFn>(api[i++]); \
-		plugin::FindResource = reinterpret_cast<plugin::FindResourceFn>(api[i++]); \
-		plugin::handle = handle; \
-		return { 0, PLUGIFY_IS_DEBUG }; \
-	} \
-	extern "C" \
-	plugin_api void Plugify_PluginStart() { \
-		GetPluginEntry()->OnPluginStart(); \
-	} \
-	extern "C" \
-	plugin_api void Plugify_PluginUpdate(float dt) { \
-		GetPluginEntry()->OnPluginUpdate(dt); \
-	} \
-	extern "C" \
-	plugin_api void Plugify_PluginEnd() { \
-		GetPluginEntry()->OnPluginEnd(); \
-	} \
-	plg::IPluginEntry* GetPluginEntry() { \
-		return interface_addr; \
-	} \
-}
+#define EXPOSE_PLUGIN(plugin_api, plugin_class, plugin_addr) \
+    namespace plg { \
+        GetMethodPtrFn GetMethodPtr{nullptr}; \
+        GetMethodPtr2Fn GetMethodPtr2{nullptr}; \
+        GetBaseDirFn GetBaseDir{nullptr}; \
+        IsModuleLoadedFn IsModuleLoaded{nullptr}; \
+        IsPluginLoadedFn IsPluginLoaded{nullptr}; \
+        namespace plugin { \
+            void* handle{nullptr}; \
+            GetIdFn GetId{nullptr}; \
+            GetNameFn GetName{nullptr}; \
+            GetFullNameFn GetFullName{nullptr}; \
+            GetDescriptionFn GetDescription{nullptr}; \
+            GetVersionFn GetVersion{nullptr}; \
+            GetAuthorFn GetAuthor{nullptr}; \
+            GetWebsiteFn GetWebsite{nullptr}; \
+            GetBaseDirFn GetBaseDir{nullptr}; \
+            GetDependenciesFn GetDependencies{nullptr}; \
+            FindResourceFn FindResource{nullptr}; \
+        } \
+        extern "C" plugin_api int Plugify_Init(void** api, int version, void* handle) { \
+            if (version < kApiVersion) { \
+                return kApiVersion; \
+            } \
+            size_t i = 0; \
+            GetMethodPtr = reinterpret_cast<GetMethodPtrFn>(api[i++]); \
+            GetMethodPtr2 = reinterpret_cast<GetMethodPtr2Fn>(api[i++]); \
+            GetBaseDir = reinterpret_cast<GetBaseDirFn>(api[i++]); \
+            IsModuleLoaded = reinterpret_cast<IsModuleLoadedFn>(api[i++]); \
+            IsPluginLoaded = reinterpret_cast<IsPluginLoadedFn>(api[i++]); \
+            plugin::GetId = reinterpret_cast<plugin::GetIdFn>(api[i++]); \
+            plugin::GetName = reinterpret_cast<plugin::GetNameFn>(api[i++]); \
+            plugin::GetFullName = reinterpret_cast<plugin::GetFullNameFn>(api[i++]); \
+            plugin::GetDescription = reinterpret_cast<plugin::GetDescriptionFn>(api[i++]); \
+            plugin::GetVersion = reinterpret_cast<plugin::GetVersionFn>(api[i++]); \
+            plugin::GetAuthor = reinterpret_cast<plugin::GetAuthorFn>(api[i++]); \
+            plugin::GetWebsite = reinterpret_cast<plugin::GetWebsiteFn>(api[i++]); \
+            plugin::GetBaseDir = reinterpret_cast<plugin::GetBaseDirFn>(api[i++]); \
+            plugin::GetDependencies = reinterpret_cast<plugin::GetDependenciesFn>(api[i++]); \
+            plugin::FindResource = reinterpret_cast<plugin::FindResourceFn>(api[i++]); \
+            plugin::handle = handle; \
+            return 0; \
+        } \
+        plg::IPluginEntry* GetPluginEntry() { \
+            return plugin_addr; \
+        } \
+        template<typename T, typename = void> \
+        struct has_overridden_OnPluginStart : std::false_type {}; \
+        template<typename T> \
+        struct has_overridden_OnPluginStart<T, std::void_t<decltype(std::declval<T>().OnPluginStart())>> \
+            : std::bool_constant<!std::is_same_v<decltype(&T::OnPluginStart), \
+                                                 decltype(&plugin_class::OnPluginStart)>> {}; \
+        template<typename T, typename = void> \
+        struct has_overridden_OnPluginUpdate : std::false_type {}; \
+        template<typename T> \
+        struct has_overridden_OnPluginUpdate<T, std::void_t<decltype(std::declval<T>().OnPluginUpdate(0.0f))>> \
+            : std::bool_constant<!std::is_same_v<decltype(&T::OnPluginUpdate), \
+                                                 decltype(&plugin_class::OnPluginUpdate)>> {}; \
+        template<typename T, typename = void> \
+        struct has_overridden_OnPluginEnd : std::false_type {}; \
+        template<typename T> \
+        struct has_overridden_OnPluginEnd<T, std::void_t<decltype(std::declval<T>().OnPluginEnd())>> \
+            : std::bool_constant<!std::is_same_v<decltype(&T::OnPluginEnd), \
+                                                 decltype(&plugin_class::OnPluginEnd)>> {}; \
+        extern "C" plugin_api void Plugify_PluginStart() { \
+            GetPluginEntry()->OnPluginStart(); \
+        } \
+        extern "C" plugin_api void Plugify_PluginUpdate(float dt) { \
+            GetPluginEntry()->OnPluginUpdate(dt); \
+        } \
+        extern "C" plugin_api void Plugify_PluginEnd() { \
+            GetPluginEntry()->OnPluginEnd(); \
+        } \
+        extern "C" plugin_api PluginContext* Plugify_PluginContext() { \
+            static PluginContext context = { \
+                .hasUpdate = has_overridden_OnPluginUpdate<plugin_class>::value, \
+                .hasStart = has_overridden_OnPluginStart<plugin_class>::value, \
+                .hasEnd = has_overridden_OnPluginEnd<plugin_class>::value, \
+                .hasDebug = PLUGIFY_IS_DEBUG \
+            }; \
+            return &context; \
+        } \
+    }
 
 namespace plg {
 	namespace raw {

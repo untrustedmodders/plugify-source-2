@@ -23,8 +23,8 @@
 
 #undef FindResource
 
-Source2SDK g_sdk;
-EXPOSE_PLUGIN(PLUGIN_API, &g_sdk)
+static Source2SDK g_sdk;
+EXPOSE_PLUGIN(PLUGIN_API, Source2SDK, &g_sdk)
 
 //ISteamHTTP* g_http = nullptr;
 CSteamGameServerAPIContext g_steamAPI;

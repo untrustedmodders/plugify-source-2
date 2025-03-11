@@ -8,10 +8,10 @@
 #include <igamesystemfactory.h>
 #include <networksystem/inetworkmessages.h>
 
-class Source2SDK : public plg::IPluginEntry, public CBaseGameSystem {
+class Source2SDK final : public plg::IPluginEntry, public CBaseGameSystem {
 public:
-	void OnPluginStart() override;
-	void OnPluginEnd() override;
+	void OnPluginStart() final;
+	void OnPluginEnd() final;
 	static void OnServerStartup();
 
 	static poly::ReturnAction Hook_RegisterLoopMode(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
@@ -40,5 +40,3 @@ public:
 	static poly::ReturnAction Hook_PreloadLibrary(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret);
 #endif
 };
-
-extern Source2SDK g_sdk;
