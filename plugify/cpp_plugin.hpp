@@ -134,19 +134,19 @@ namespace plg {
         template<typename T> \
         struct has_overridden_OnPluginStart<T, std::void_t<decltype(std::declval<T>().OnPluginStart())>> \
             : std::bool_constant<!std::is_same_v<decltype(&T::OnPluginStart), \
-                                                 decltype(&plugin_class::OnPluginStart)>> {}; \
+                                                 decltype(&IPluginEntry::OnPluginStart)>> {}; \
         template<typename T, typename = void> \
         struct has_overridden_OnPluginUpdate : std::false_type {}; \
         template<typename T> \
         struct has_overridden_OnPluginUpdate<T, std::void_t<decltype(std::declval<T>().OnPluginUpdate(0.0f))>> \
             : std::bool_constant<!std::is_same_v<decltype(&T::OnPluginUpdate), \
-                                                 decltype(&plugin_class::OnPluginUpdate)>> {}; \
+                                                 decltype(&IPluginEntry::OnPluginUpdate)>> {}; \
         template<typename T, typename = void> \
         struct has_overridden_OnPluginEnd : std::false_type {}; \
         template<typename T> \
         struct has_overridden_OnPluginEnd<T, std::void_t<decltype(std::declval<T>().OnPluginEnd())>> \
             : std::bool_constant<!std::is_same_v<decltype(&T::OnPluginEnd), \
-                                                 decltype(&plugin_class::OnPluginEnd)>> {}; \
+                                                 decltype(&IPluginEntry::OnPluginEnd)>> {}; \
         extern "C" plugin_api void Plugify_PluginStart() { \
             GetPluginEntry()->OnPluginStart(); \
         } \
