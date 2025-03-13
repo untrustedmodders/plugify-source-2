@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.10](https://github.com/untrustedmodders/plugify-source-2/compare/v1.1.9...v1.1.10) (2025-03-13)
+
+
+### Bug Fixes
+
+* typo in schema warnings ([1314806](https://github.com/untrustedmodders/plugify-source-2/commit/1314806200664d0ead2f24fc391040d8d73d2fdd))
+* update plugify and includes ([bb5abf4](https://github.com/untrustedmodders/plugify-source-2/commit/bb5abf4d92951b4959c30f3b6801b08605561308))
+
 ## [1.1.9](https://github.com/untrustedmodders/plugify-source-2/compare/v1.1.8...v1.1.9) (2025-03-13)
 
 
