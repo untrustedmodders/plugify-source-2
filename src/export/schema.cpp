@@ -120,12 +120,16 @@ extern "C" PLUGIN_API void SetEntData2(CEntityInstance* entity, int offset, int6
 	switch (size) {
 		case sizeof(int8_t):
 			*reinterpret_cast<int8_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int8_t>(value);
+			break;
 		case sizeof(int16_t):
 			*reinterpret_cast<int16_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int16_t>(value);
+			break;
 		case sizeof(int32_t):
 			*reinterpret_cast<int32_t*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<int32_t>(value);
+			break;
 		case sizeof(int64_t):
 			*reinterpret_cast<int64_t*>(reinterpret_cast<intptr_t>(entity) + offset) = value;
+			break;
 		default:
 			break;
 	}
@@ -174,8 +178,10 @@ extern "C" PLUGIN_API void SetEntDataFloat2(CEntityInstance* entity, int offset,
 	switch (size) {
 		case sizeof(int32_t):
 			*reinterpret_cast<float*>(reinterpret_cast<intptr_t>(entity) + offset) = static_cast<float>(value);
+			break;
 		case sizeof(int64_t):
 			*reinterpret_cast<double*>(reinterpret_cast<intptr_t>(entity) + offset) = value;
+			break;
 		default:
 			break;
 	}
@@ -579,6 +585,7 @@ extern "C" PLUGIN_API int64_t GetEntSchema2(CEntityInstance* entity, const plg::
 				default:
 					return 0;
 			}
+			break;
 		case schema::ElementType::Collection:
 			switch (elementSize) {
 				case sizeof(int8_t):
@@ -592,6 +599,7 @@ extern "C" PLUGIN_API int64_t GetEntSchema2(CEntityInstance* entity, const plg::
 				default:
 					return 0;
 			}
+			break;
 		case schema::ElementType::Single:
 			switch (size) {
 				case sizeof(int8_t):
@@ -605,6 +613,7 @@ extern "C" PLUGIN_API int64_t GetEntSchema2(CEntityInstance* entity, const plg::
 				default:
 					return 0;
 			}
+			break;
 		case schema::ElementType::Class:
 			return reinterpret_cast<intptr_t>(entity) + offset;
 		default:
@@ -666,6 +675,7 @@ extern "C" PLUGIN_API void SetEntSchema2(CEntityInstance* entity, const plg::str
 				default:
 					break;
 			}
+			break;
 		case schema::ElementType::Collection:
 			switch (elementSize) {
 				case sizeof(int8_t):
@@ -683,6 +693,7 @@ extern "C" PLUGIN_API void SetEntSchema2(CEntityInstance* entity, const plg::str
 				default:
 					break;
 			}
+			break;
 		case schema::ElementType::Single:
 			switch (size) {
 				case sizeof(int8_t):
@@ -700,6 +711,7 @@ extern "C" PLUGIN_API void SetEntSchema2(CEntityInstance* entity, const plg::str
 				default:
 					break;
 			}
+			break;
 		default:
 			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a integer, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
 			break;
@@ -737,6 +749,7 @@ extern "C" PLUGIN_API double GetEntSchemaFloat2(CEntityInstance* entity, const p
 				default:
 					return 0;
 			}
+			break;
 		case schema::ElementType::Collection:
 			switch (elementSize) {
 				case sizeof(float):
@@ -746,6 +759,7 @@ extern "C" PLUGIN_API double GetEntSchemaFloat2(CEntityInstance* entity, const p
 				default:
 					return 0;
 			}
+			break;
 		case schema::ElementType::Single:
 			switch (size) {
 				case sizeof(float):
@@ -755,6 +769,7 @@ extern "C" PLUGIN_API double GetEntSchemaFloat2(CEntityInstance* entity, const p
 				default:
 					return 0;
 			}
+			break;
 		default:
 			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a float, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
 			return 0;
@@ -808,6 +823,7 @@ extern "C" PLUGIN_API void SetEntSchemaFloat2(CEntityInstance* entity, const plg
 				default:
 					break;
 			}
+			break;
 		case schema::ElementType::Collection:
 			switch (elementSize) {
 				case sizeof(float):
@@ -819,6 +835,7 @@ extern "C" PLUGIN_API void SetEntSchemaFloat2(CEntityInstance* entity, const plg
 				default:
 					break;
 			}
+			break;
 		case schema::ElementType::Single:
 			switch (size) {
 				case sizeof(float):
@@ -830,6 +847,7 @@ extern "C" PLUGIN_API void SetEntSchemaFloat2(CEntityInstance* entity, const plg
 				default:
 					break;
 			}
+			break;
 		default:
 			g_Logger.LogFormat(LS_WARNING, "Schema field '%s::%s' is not a float, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
 			break;
