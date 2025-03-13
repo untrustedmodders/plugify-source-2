@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.1.9](https://github.com/untrustedmodders/plugify-source-2/compare/v1.1.8...v1.1.9) (2025-03-13)
+
+
+### Bug Fixes
+
+* add `CCSPlayer_WeaponServices::Weapon_Equip` signature ([dadf9f4](https://github.com/untrustedmodders/plugify-source-2/commit/dadf9f4616b651934a27d4ad05643da3e0d3408e))
+* entry macro ([87e1bbb](https://github.com/untrustedmodders/plugify-source-2/commit/87e1bbb1a7be8c2dac6bc55db9a8b25f9e1b8e9a))
+* update sdk ([5046ec7](https://github.com/untrustedmodders/plugify-source-2/commit/5046ec7208b23adbd4d2bfc9f7c033ca09402efc))
+* update to a newer polyhook ([a36995e](https://github.com/untrustedmodders/plugify-source-2/commit/a36995ee66216044182e29e72571f406c22668ee))
+
 ## [1.1.8](https://github.com/untrustedmodders/plugify-source-2/compare/v1.1.7...v1.1.8) (2025-03-10)
 
 
