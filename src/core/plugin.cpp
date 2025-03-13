@@ -144,7 +144,7 @@ void Source2SDK::OnServerStartup() {
 	}
 }
 
-poly::ReturnAction Source2SDK::Hook_StartupServer(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
+poly::ReturnAction Source2SDK::Hook_StartupServer(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	//auto config = poly::GetArgument<const GameSessionConfiguration_t *>(params, 1);
 	//auto pWorldSession = poly::GetArgument<ISource2WorldSession*>(params, 2);
 	auto pMapName = poly::GetArgument<const char*>(params, 3);
@@ -163,7 +163,7 @@ poly::ReturnAction Source2SDK::Hook_StartupServer(poly::CallbackType type, poly:
 	return poly::ReturnAction::Ignored;
 }
 
-poly::ReturnAction Source2SDK::Hook_ActivateServer(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
+poly::ReturnAction Source2SDK::Hook_ActivateServer(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	g_Logger.LogFormat(LS_DEBUG, "[ActivateServer]\n");
 
 	GetOnServerActivateListenerManager().Notify();
@@ -171,17 +171,17 @@ poly::ReturnAction Source2SDK::Hook_ActivateServer(poly::CallbackType type, poly
 	return poly::ReturnAction::Ignored;
 }
 
-poly::ReturnAction Source2SDK::Hook_FireEvent(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
+poly::ReturnAction Source2SDK::Hook_FireEvent(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	//g_Logger.LogFormat(LS_DEBUG, "FireEvent = %s\n", event->GetName() );
 	return type == poly::CallbackType::Post ? g_EventManager.Hook_OnFireEvent_Post(params, count, ret) : g_EventManager.Hook_OnFireEvent(params, count, ret);
 }
 
-/*poly::ReturnAction Source2SDK::Hook_PostEvent(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
+/*poly::ReturnAction Source2SDK::Hook_PostEvent(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	// g_Logger.LogFormat(LS_DEBUG, "[PostEvent] = %d, %d, %d, %lli\n", nSlot, bLocalOnly, nClientCount, clients );
 	return poly::ReturnAction::Ignored;
 }*/
 
-poly::ReturnAction Source2SDK::Hook_OnLevelInit(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
+poly::ReturnAction Source2SDK::Hook_OnLevelInit(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	auto pMapName = poly::GetArgument<const char*>(params, 1);
 	auto pMapEntities = poly::GetArgument<const char*>(params, 2);
 	g_Logger.LogFormat(LS_DEBUG, "[OnLevelInit] = %s\n", pMapName);
@@ -189,14 +189,14 @@ poly::ReturnAction Source2SDK::Hook_OnLevelInit(poly::CallbackType type, poly::P
 	return poly::ReturnAction::Ignored;
 };
 
-poly::ReturnAction Source2SDK::Hook_OnLevelShutdown(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
+poly::ReturnAction Source2SDK::Hook_OnLevelShutdown(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	g_Logger.Log(LS_DEBUG, "[OnLevelShutdown]\n");
 	g_TimerSystem.OnLevelShutdown();
 	GetOnLevelShutdownListenerManager().Notify();
 	return poly::ReturnAction::Ignored;
 };
 
-poly::ReturnAction Source2SDK::Hook_RegisterLoopMode(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
+poly::ReturnAction Source2SDK::Hook_RegisterLoopMode(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	auto pszLoopModeName = poly::GetArgument<const char*>(params, 1);
 	auto pLoopModeFactory = poly::GetArgument<ILoopModeFactory*>(params, 2);
 
@@ -210,7 +210,7 @@ poly::ReturnAction Source2SDK::Hook_RegisterLoopMode(poly::CallbackType type, po
 	return poly::ReturnAction::Ignored;
 }
 
-poly::ReturnAction Source2SDK::Hook_UnregisterLoopMode(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
+poly::ReturnAction Source2SDK::Hook_UnregisterLoopMode(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	auto pszLoopModeName = poly::GetArgument<const char*>(params, 1);
 	auto pLoopModeFactory = poly::GetArgument<ILoopModeFactory*>(params, 2);
 
@@ -224,7 +224,7 @@ poly::ReturnAction Source2SDK::Hook_UnregisterLoopMode(poly::CallbackType type, 
 	return poly::ReturnAction::Ignored;
 }
 
-poly::ReturnAction Source2SDK::Hook_GameFrame(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
+poly::ReturnAction Source2SDK::Hook_GameFrame(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	// bool simulating, bool bFirstTick, bool bLastTick
 	auto simulating = poly::GetArgument<bool>(params, 1);
 	auto bFirstTick = poly::GetArgument<bool>(params, 2);
@@ -237,7 +237,7 @@ poly::ReturnAction Source2SDK::Hook_GameFrame(poly::CallbackType type, poly::Par
 	return poly::ReturnAction::Ignored;
 }
 
-poly::ReturnAction Source2SDK::Hook_ClientActive(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
+poly::ReturnAction Source2SDK::Hook_ClientActive(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	// CPlayerSlot slot, bool bLoadGame, const char* pszName, uint64 xuid
 	auto slot = (CPlayerSlot) poly::GetArgument<int>(params, 1);
 	auto bLoadGame = poly::GetArgument<bool>(params, 2);
@@ -252,7 +252,7 @@ poly::ReturnAction Source2SDK::Hook_ClientActive(poly::CallbackType type, poly::
 	return poly::ReturnAction::Ignored;
 }
 
-poly::ReturnAction Source2SDK::Hook_ClientDisconnect(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
+poly::ReturnAction Source2SDK::Hook_ClientDisconnect(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	// CPlayerSlot slot, int reason, const char* pszName, uint64 xuid, const char* pszNetworkID
 	auto slot = (CPlayerSlot) poly::GetArgument<int>(params, 1);
 	auto reason = (ENetworkDisconnectionReason) poly::GetArgument<int>(params, 2);
@@ -271,7 +271,7 @@ poly::ReturnAction Source2SDK::Hook_ClientDisconnect(poly::CallbackType type, po
 	return poly::ReturnAction::Ignored;
 }
 
-poly::ReturnAction Source2SDK::Hook_ClientPutInServer(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
+poly::ReturnAction Source2SDK::Hook_ClientPutInServer(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	// CPlayerSlot slot, char const *pszName, int type, uint64 xuid
 	auto slot = (CPlayerSlot) poly::GetArgument<int>(params, 1);
 	auto pszName = poly::GetArgument<const char*>(params, 2);
@@ -284,7 +284,7 @@ poly::ReturnAction Source2SDK::Hook_ClientPutInServer(poly::CallbackType type, p
 	return poly::ReturnAction::Ignored;
 }
 
-poly::ReturnAction Source2SDK::Hook_ClientSettingsChanged(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
+poly::ReturnAction Source2SDK::Hook_ClientSettingsChanged(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	// CPlayerSlot slot
 	auto slot = (CPlayerSlot) poly::GetArgument<int>(params, 1);
 
@@ -294,7 +294,7 @@ poly::ReturnAction Source2SDK::Hook_ClientSettingsChanged(poly::CallbackType typ
 	return poly::ReturnAction::Ignored;
 }
 
-poly::ReturnAction Source2SDK::Hook_OnClientConnected(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
+poly::ReturnAction Source2SDK::Hook_OnClientConnected(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	// CPlayerSlot slot, const cha*r pszName, uint64 xuid, const char* pszNetworkID, const char* pszAddress, bool bFakePlayer
 	auto slot = (CPlayerSlot) poly::GetArgument<int>(params, 1);
 	auto pszName = poly::GetArgument<const char*>(params, 2);
@@ -309,7 +309,7 @@ poly::ReturnAction Source2SDK::Hook_OnClientConnected(poly::CallbackType type, p
 	return poly::ReturnAction::Ignored;
 }
 
-poly::ReturnAction Source2SDK::Hook_ClientFullyConnect(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
+poly::ReturnAction Source2SDK::Hook_ClientFullyConnect(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	// CPlayerSlot slot
 	auto slot = (CPlayerSlot) poly::GetArgument<int>(params, 1);
 
@@ -319,7 +319,7 @@ poly::ReturnAction Source2SDK::Hook_ClientFullyConnect(poly::CallbackType type, 
 	return poly::ReturnAction::Ignored;
 }
 
-poly::ReturnAction Source2SDK::Hook_ClientConnect(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
+poly::ReturnAction Source2SDK::Hook_ClientConnect(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	// CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, bool unk1, CBufferString *pRejectReason
 	auto slot = (CPlayerSlot) poly::GetArgument<int>(params, 1);
 	auto pszName = poly::GetArgument<const char*>(params, 2);
@@ -344,7 +344,7 @@ poly::ReturnAction Source2SDK::Hook_ClientConnect(poly::CallbackType type, poly:
 	return poly::ReturnAction::Ignored;
 }
 
-poly::ReturnAction Source2SDK::Hook_ClientCommand(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
+poly::ReturnAction Source2SDK::Hook_ClientCommand(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	// CPlayerSlot nSlot, const CCommand& _cmd
 	auto slot = (CPlayerSlot) poly::GetArgument<int>(params, 1);
 	auto args = poly::GetArgument<const CCommand*>(params, 2);
@@ -364,7 +364,7 @@ poly::ReturnAction Source2SDK::Hook_ClientCommand(poly::CallbackType type, poly:
 	return poly::ReturnAction::Ignored;
 }
 
-poly::ReturnAction Source2SDK::Hook_GameServerSteamAPIActivated(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
+poly::ReturnAction Source2SDK::Hook_GameServerSteamAPIActivated(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	g_Logger.Log(LS_DEBUG, "[GameServerSteamAPIActivated]\n");
 
 	g_steamAPI.Init();
@@ -376,7 +376,7 @@ poly::ReturnAction Source2SDK::Hook_GameServerSteamAPIActivated(poly::CallbackTy
 	return poly::ReturnAction::Ignored;
 }
 
-poly::ReturnAction Source2SDK::Hook_GameServerSteamAPIDeactivated(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
+poly::ReturnAction Source2SDK::Hook_GameServerSteamAPIDeactivated(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	g_Logger.Log(LS_DEBUG, "[GameServerSteamAPIDeactivated]\n");
 
 	//g_http = nullptr;
@@ -385,7 +385,7 @@ poly::ReturnAction Source2SDK::Hook_GameServerSteamAPIDeactivated(poly::Callback
 	return poly::ReturnAction::Ignored;
 }
 
-poly::ReturnAction Source2SDK::Hook_UpdateWhenNotInGame(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
+poly::ReturnAction Source2SDK::Hook_UpdateWhenNotInGame(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	// float flFrameTime
 	auto flFrameTime = poly::GetArgument<float>(params, 1);
 	// g_Logger.LogFormat(LS_DEBUG, "UpdateWhenNotInGame = %f\n", flFrameTime);
@@ -393,7 +393,7 @@ poly::ReturnAction Source2SDK::Hook_UpdateWhenNotInGame(poly::CallbackType type,
 	return poly::ReturnAction::Ignored;
 }
 
-poly::ReturnAction Source2SDK::Hook_PreWorldUpdate(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
+poly::ReturnAction Source2SDK::Hook_PreWorldUpdate(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	// bool simulating
 	auto simulating = poly::GetArgument<bool>(params, 1);
 	// g_Logger.LogFormat(LS_DEBUG, "PreWorldUpdate = %d\n", simulating);
@@ -404,11 +404,11 @@ poly::ReturnAction Source2SDK::Hook_PreWorldUpdate(poly::CallbackType type, poly
 	return poly::ReturnAction::Ignored;
 }
 
-poly::ReturnAction Source2SDK::Hook_FireOutputInternal(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
+poly::ReturnAction Source2SDK::Hook_FireOutputInternal(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	return type == poly::CallbackType::Post ? g_OutputManager.Hook_FireOutputInternal_Post(params, count, ret) : g_OutputManager.Hook_FireOutputInternal(params, count, ret);
 }
 
-poly::ReturnAction Source2SDK::Hook_DispatchConCommand(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
+poly::ReturnAction Source2SDK::Hook_DispatchConCommand(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	return type == poly::CallbackType::Post ? g_CommandManager.Hook_DispatchConCommand_Post(params, count, ret) : g_CommandManager.Hook_DispatchConCommand(params, count, ret);
 }
 
@@ -422,7 +422,7 @@ const WORD PE_FILE_MACHINE = IMAGE_FILE_MACHINE_I386;
 const WORD PE_NT_OPTIONAL_HDR_MAGIC = IMAGE_NT_OPTIONAL_HDR32_MAGIC;
 #endif // PLUGIFY_ARCH_BITS
 
-poly::ReturnAction Source2SDK::Hook_PreloadLibrary(poly::CallbackType type, poly::Params& params, int count, poly::Return& ret) {
+poly::ReturnAction Source2SDK::Hook_PreloadLibrary(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	HMODULE hModule = (HMODULE) poly::GetArgument<void*>(params, 0);
 
 	IMAGE_DOS_HEADER* pDOSHeader = reinterpret_cast<IMAGE_DOS_HEADER*>(hModule);

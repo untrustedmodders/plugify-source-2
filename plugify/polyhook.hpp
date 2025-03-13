@@ -44,7 +44,7 @@ namespace poly
 	class Params;
 	class Return;
 
-	using CallbackHandler = ReturnAction(CallbackType, Params&, int, Return&);
+	using CallbackHandler = ReturnAction(IHook&, Params&, int, Return&, CallbackType);
 
 	class CHook
 	{
@@ -320,20 +320,11 @@ namespace poly
 	}
 
 	template <>
-	inline const char* GetArgument(Params& params, size_t index)
+	inline plg::string GetArgument(Params& params, size_t index)
 	{
-		using GetArgumentFn = const char* (*)(Params*, size_t);
+		using GetArgumentFn = plg::string (*)(Params*, size_t);
 		static GetArgumentFn func = nullptr;
 		if (func == nullptr) plg::GetMethodPtr2("polyhook.GetArgumentString", reinterpret_cast<void**>(&func));
-		return func(&params, index);
-	}
-
-	template <>
-	inline const wchar_t* GetArgument(Params& params, size_t index)
-	{
-		using GetArgumentFn = const wchar_t* (*)(Params*, size_t);
-		static GetArgumentFn func = nullptr;
-		if (func == nullptr) plg::GetMethodPtr2("polyhook.GetArgumentWString", reinterpret_cast<void**>(&func));
 		return func(&params, index);
 	}
 
@@ -451,23 +442,14 @@ namespace poly
 		func(&params, index, value);
 	}
 
-	template <>
-	inline void SetArgument(Params& params, size_t index, const char* value)
+	/*template <>
+	inline void SetArgument(CHook& hook, Params& params, size_t index, const plg::string& value)
 	{
-		using SetArgumentFn = void (*)(Params*, size_t, const char*);
+		using SetArgumentFn = void (*)(CHook*, Params*, size_t, plg::string);
 		static SetArgumentFn func = nullptr;
 		if (func == nullptr) plg::GetMethodPtr2("polyhook.SetArgumentString", reinterpret_cast<void**>(&func));
-		func(&params, index, value);
-	}
-
-	template <>
-	inline void SetArgument(Params& params, size_t index, const wchar_t* value)
-	{
-		using SetArgumentFn = void (*)(Params*, size_t, const wchar_t*);
-		static SetArgumentFn func = nullptr;
-		if (func == nullptr) plg::GetMethodPtr2("polyhook.SetArgumentWString", reinterpret_cast<void**>(&func));
-		func(&params, index, value);
-	}
+		func(&hook, &params, index, value);
+	}*/
 
 	template <typename T> requires(std::is_pointer_v<T>)
 	inline T GetReturn(Return& ret)
@@ -584,20 +566,11 @@ namespace poly
 	}
 
 	template <>
-	inline const char* GetReturn(Return& ret)
+	inline plg::string GetReturn(Return& ret)
 	{
 		using GetReturnFn = const char* (*)(Return*);
 		static GetReturnFn func = nullptr;
 		if (func == nullptr) plg::GetMethodPtr2("polyhook.GetReturnString", reinterpret_cast<void**>(&func));
-		return func(&ret);
-	}
-
-	template <>
-	inline const wchar_t* GetReturn(Return& ret)
-	{
-		using GetReturnFn = const wchar_t* (*)(Return*);
-		static GetReturnFn func = nullptr;
-		if (func == nullptr) plg::GetMethodPtr2("polyhook.GetReturnWString", reinterpret_cast<void**>(&func));
 		return func(&ret);
 	}
 
@@ -715,23 +688,14 @@ namespace poly
 		func(&ret, value);
 	}
 
-	template <>
-	inline void SetReturn(Return& ret, const char* value)
+	/*template <>
+	inline void SetReturn(CHook& hook, Return& ret, const plg::string& value)
 	{
-		using SetReturnFn = void (*)(Return*, const char*);
+		using SetReturnFn = void (*)(CHook*, Return*, const plg::string&);
 		static SetReturnFn func = nullptr;
 		if (func == nullptr) plg::GetMethodPtr2("polyhook.SetReturnString", reinterpret_cast<void**>(&func));
-		func(&ret, value);
-	}
-
-	template <>
-	inline void SetReturn(Return& ret, const wchar_t* value)
-	{
-		using SetReturnFn = void (*)(Return*, const wchar_t*);
-		static SetReturnFn func = nullptr;
-		if (func == nullptr) plg::GetMethodPtr2("polyhook.SetReturnWString", reinterpret_cast<void**>(&func));
-		func(&ret, value);
-	}
+		func(&hook, &ret, value);
+	}*/
 
 	namespace details
 	{
