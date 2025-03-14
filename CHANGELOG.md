@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.1.12](https://github.com/untrustedmodders/plugify-source-2/compare/v1.1.11...v1.1.12) (2025-03-14)
+
+
+### Bug Fixes
+
+* add user messages ([e483dd6](https://github.com/untrustedmodders/plugify-source-2/commit/e483dd673d2e32bb63731b800c24b1db25f7c2c0))
+* update commands ([15092aa](https://github.com/untrustedmodders/plugify-source-2/commit/15092aac16df3b0640bcd3e3c378fd2af4f9ff1f))
+* update manifest ([160c661](https://github.com/untrustedmodders/plugify-source-2/commit/160c661255e655a29d7348234800dfa61f3348f7))
+* update sdk ([64d275c](https://github.com/untrustedmodders/plugify-source-2/commit/64d275c8c9d83a280fa472fc2f982fc718eae7c2))
+
 ## [1.1.11](https://github.com/untrustedmodders/plugify-source-2/compare/v1.1.10...v1.1.11) (2025-03-13)
 
 
