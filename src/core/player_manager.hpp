@@ -7,7 +7,7 @@
 #include <steam/steam_api_common.h>
 #include <steam/steamclientpublic.h>
 
-enum class TargetType {
+enum class TargetType : int {
 	NONE,
 	PLAYER,
 	SELF,

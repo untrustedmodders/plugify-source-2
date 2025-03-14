@@ -1,7 +1,14 @@
 #include "con_command_manager.hpp"
 #include "player_manager.hpp"
+#include "core_config.hpp"
+
+#include <core/sdk/entity/cbaseplayercontroller.h>
+#include <core/sdk/entity/ccsplayercontroller.h>
+#include <core/sdk/utils.h>
 
 #include <icvar.h>
+#include <igameevents.h>
+#undef CreateEvent
 
 CConCommandManager::~CConCommandManager() {
 	if (!g_pCVar) {
@@ -21,67 +28,48 @@ void CommandCallback(const CCommandContext&, const CCommand&) {
 ConCommandInfo::ConCommandInfo(plg::string name, plg::string description) : name(std::move(name)), description(std::move(description)) {
 }
 
-void CConCommandManager::AddCommandListener(const plg::string& name, CommandListenerCallback callback, HookMode mode) {
+bool CConCommandManager::AddCommandListener(const plg::string& name, CommandListenerCallback callback, HookMode mode) {
 	std::lock_guard<std::mutex> lock(m_registerCmdLock);
 
 	if (name.empty()) {
-		if (mode == HookMode::Pre) {
-			m_globalPre.Register(callback);
-		} else {
-			m_globalPost.Register(callback);
-		}
-		return;
+		m_globalCallbacks[static_cast<size_t>(mode)].Register(callback);
+		return true;
 	}
 
 	auto it = m_cmdLookup.find(name);
 	if (it == m_cmdLookup.end()) {
 		ConCommandRef hFoundCommand = g_pCVar->FindConCommand(name.c_str());
 		if (!hFoundCommand.IsValidRef()) {
-			return;
+			return false;
 		}
 
 		auto& commandInfo = *m_cmdLookup.emplace(name, std::make_unique<ConCommandInfo>(name)).first->second;
 		commandInfo.command = g_pCVar->GetConCommandData(hFoundCommand);
 		commandInfo.defaultCommand = true;
-
-		if (mode == HookMode::Pre) {
-			commandInfo.callbackPre.Register(callback);
-		} else {
-			commandInfo.callbackPost.Register(callback);
-		}
+		commandInfo.callbacks[static_cast<size_t>(mode)].Register(callback);
 	} else {
 		auto& commandInfo = *std::get<CommandInfoPtr>(*it);
-		if (mode == HookMode::Pre) {
-			commandInfo.callbackPre.Register(callback);
-		} else {
-			commandInfo.callbackPost.Register(callback);
-		}
+		commandInfo.callbacks[static_cast<size_t>(mode)].Register(callback);
 	}
+	return true;
 }
 
-void CConCommandManager::RemoveCommandListener(const plg::string& name, CommandListenerCallback callback, HookMode mode) {
+bool CConCommandManager::RemoveCommandListener(const plg::string& name, CommandListenerCallback callback, HookMode mode) {
 	std::lock_guard<std::mutex> lock(m_registerCmdLock);
 
 	if (name.empty()) {
-		if (mode == HookMode::Pre) {
-			m_globalPre.Unregister(callback);
-		} else {
-			m_globalPost.Unregister(callback);
-		}
-		return;
+		m_globalCallbacks[static_cast<size_t>(mode)].Unregister(callback);
+		return false;
 	}
 
 	auto it = m_cmdLookup.find(name);
 	if (it == m_cmdLookup.end()) {
-		return;
+		return false;
 	}
 
 	auto& commandInfo = *std::get<CommandInfoPtr>(*it);
-	if (mode == HookMode::Pre) {
-		commandInfo.callbackPre.Unregister(callback);
-	} else {
-		commandInfo.callbackPost.Unregister(callback);
-	}
+	commandInfo.callbacks[static_cast<size_t>(mode)].Unregister(callback);
+	return true;
 }
 
 bool CConCommandManager::AddValveCommand(const plg::string& name, const plg::string& description, ConVarFlag flags, uint64 adminFlags) {
@@ -153,10 +141,6 @@ static bool CheckCommandAccess(CPlayerSlot slot, uint64 flags) {
 ResultType CConCommandManager::ExecuteCommandCallbacks(const plg::string& name, const CCommandContext& ctx, const CCommand& args, HookMode mode, CommandCallingContext callingContext) {
 	g_Logger.LogFormat(LS_DEBUG, "[ConCommandManager::ExecuteCommandCallbacks][%s]: %s\n", mode == HookMode::Pre ? "Pre" : "Post", name.c_str());
 
-	ResultType result = ResultType::Continue;
-
-	const auto& globalCallback = mode == HookMode::Pre ? m_globalPre : m_globalPost;
-
 	int size = args.ArgC();
 
 	plg::vector<plg::string> arguments;
@@ -166,6 +150,10 @@ ResultType CConCommandManager::ExecuteCommandCallbacks(const plg::string& name, 
 	}
 
 	CPlayerSlot caller = ctx.GetPlayerSlot();
+
+	ResultType result = ResultType::Continue;
+
+	const auto& globalCallback = m_globalCallbacks[static_cast<size_t>(mode)];
 
 	for (size_t i = 0; i < globalCallback.GetCount(); ++i) {
 		auto thisResult = globalCallback.Notify(i, caller, callingContext, arguments);
@@ -188,13 +176,13 @@ ResultType CConCommandManager::ExecuteCommandCallbacks(const plg::string& name, 
 		return result;
 	}
 
-	auto& commandInfo = *std::get<CommandInfoPtr>(*it);
+	const auto& commandInfo = *std::get<CommandInfoPtr>(*it);
 
 	if (!CheckCommandAccess(caller, commandInfo.adminFlags)) {
 		return result;
 	}
 
-	const auto& callback = mode == HookMode::Pre ? commandInfo.callbackPre : commandInfo.callbackPost;
+	const auto& callback = commandInfo.callbacks[static_cast<size_t>(mode)];
 
 	for (size_t i = 0; i < callback.GetCount(); ++i) {
 		auto thisResult = callback.Notify(i, caller, callingContext, arguments);
@@ -208,7 +196,7 @@ ResultType CConCommandManager::ExecuteCommandCallbacks(const plg::string& name, 
 	return result;
 }
 
-poly::ReturnAction CConCommandManager::Hook_DispatchConCommand(poly::Params& params, int count, poly::Return& ret) {
+poly::ReturnAction CConCommandManager::Hook_DispatchConCommand(poly::Params& params, int count, poly::Return& ret, HookMode mode) {
 	// auto cmd = poly::GetArgument<ConCommandRef* const>(params, 1);
 	auto ctx = poly::GetArgument<const CCommandContext*>(params, 2);
 	auto args = poly::GetArgument<const CCommand*>(params, 3);
@@ -216,29 +204,34 @@ poly::ReturnAction CConCommandManager::Hook_DispatchConCommand(poly::Params& par
 		return poly::ReturnAction::Ignored;
 	}
 
-	const char* name = args->Arg(0);
+	std::string_view name = args->Arg(0);
 
 	g_Logger.LogFormat(LS_DEBUG, "[ConCommandManager::Hook_DispatchConCommand]: %s\n", name);
 
-	auto result = ExecuteCommandCallbacks(name, *ctx, *args, HookMode::Pre, CommandCallingContext::Console);
-	if (result >= ResultType::Handled) {
-		return poly::ReturnAction::Supercede;
+	CCommand nargs;
+	CommandCallingContext callingContext = CommandCallingContext::Console;
+	if (name == "say" || name == "say_team") {
+		std::string_view command = args->Arg(1);
+		bool bSilent = g_pCoreConfig->IsSilentChatTrigger(command);
+		bool bCommand = g_pCoreConfig->IsPublicChatTrigger(command) || bSilent;
+		if (bCommand) {
+			char* pszMessage = (char*)(args->ArgS() + 1);
+
+			if (pszMessage[0] == '"' || pszMessage[0] == '!' || pszMessage[0] == '/')
+				pszMessage += 1;
+
+			size_t last = std::strlen(pszMessage);
+			if (last && pszMessage[last - 1] == '"')
+				pszMessage[last - 1] = '\0';
+
+			nargs.Tokenize(pszMessage);
+			name = nargs[0];
+			args = &nargs;
+			callingContext = CommandCallingContext::Chat;
+		}
 	}
 
-	return poly::ReturnAction::Ignored;
-}
-
-poly::ReturnAction CConCommandManager::Hook_DispatchConCommand_Post(poly::Params& params, int count, poly::Return& ret) {
-	// auto cmd = poly::GetArgument<ConCommandRef* const>(params, 1);
-	auto ctx = poly::GetArgument<const CCommandContext*>(params, 2);
-	auto args = poly::GetArgument<const CCommand*>(params, 3);
-	if (ctx == nullptr || args == nullptr) {
-		return poly::ReturnAction::Ignored;
-	}
-
-	const char* name = args->Arg(0);
-
-	auto result = ExecuteCommandCallbacks(name, *ctx, *args, HookMode::Post, CommandCallingContext::Console);
+	auto result = ExecuteCommandCallbacks(name, *ctx, *args, mode, callingContext);
 	if (result >= ResultType::Handled) {
 		return poly::ReturnAction::Supercede;
 	}

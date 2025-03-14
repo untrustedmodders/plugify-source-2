@@ -38,22 +38,18 @@ const plg::string& CCoreConfig::GetPath() const {
 	return m_szPath;
 }
 
-bool CCoreConfig::IsTriggerInternal(const plg::vector<plg::string>& triggers, const plg::string& message, plg::string& prefix) const {
-	for (const plg::string& trigger: triggers) {
-		if (message.rfind(trigger, 0) == 0) {
-			prefix = trigger;
-			g_Logger.LogFormat(LS_DEBUG, "Trigger found, prefix is %s\n", prefix.c_str());
-			return true;
-		}
+bool CCoreConfig::IsTriggerInternal(const std::vector<std::string>& triggers, std::string_view message) {
+	for (const std::string& trigger: triggers) {
+		return message.rfind(trigger, 0) == 0;
 	}
 
 	return false;
 }
 
-bool CCoreConfig::IsSilentChatTrigger(const plg::string& message, plg::string& prefix) const {
-	return IsTriggerInternal(SilentChatTrigger, message, prefix);
+bool CCoreConfig::IsSilentChatTrigger(std::string_view message) const {
+	return IsTriggerInternal(SilentChatTrigger, message);
 }
 
-bool CCoreConfig::IsPublicChatTrigger(const plg::string& message, plg::string& prefix) const {
-	return IsTriggerInternal(PublicChatTrigger, message, prefix);
+bool CCoreConfig::IsPublicChatTrigger(std::string_view message) const {
+	return IsTriggerInternal(PublicChatTrigger, message);
 }

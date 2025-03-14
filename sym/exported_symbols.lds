@@ -91,6 +91,7 @@ CreateConVarVector3
 CreateConVarVector4
 CreateConVarQAngle
 FindConVar
+FindConVar2
 HookConVarChange
 UnhookConVarChange
 IsConVarFlagSet
@@ -345,6 +346,8 @@ SetClientListening
 GetClientListening
 SetClientVoiceFlags
 GetClientVoiceFlags
+
+
 
 GetWeaponVData
 GetWeaponDefIndex

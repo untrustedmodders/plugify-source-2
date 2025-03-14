@@ -18,6 +18,7 @@
 #include "player_manager.hpp"
 #include "server_manager.hpp"
 #include "timer_system.hpp"
+#include "user_message_manager.hpp"
 
 #include "sdk/entity/cgamerules.h"
 
@@ -77,9 +78,9 @@ void Source2SDK::OnPluginStart() {
 
 	using enum poly::CallbackType;
 
-	if (g_pGameEventManager != nullptr) {
-		g_PH.AddHookMemFunc(&IGameEventManager2::FireEvent, g_pGameEventManager, Hook_FireEvent, Pre, Post);
-	}
+	g_PH.AddHookMemFunc(&IGameEventManager2::FireEvent, g_pGameEventManager, Hook_FireEvent, Pre, Post);
+	using PostEventAbstract = void(IGameEventSystem::*)(CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64 *clients, INetworkMessageInternal *pEvent, const CNetMessage *pData, unsigned long nSize, NetChannelBufType_t bufType);
+	g_PH.AddHookMemFunc<PostEventAbstract>(&IGameEventSystem::PostEventAbstract, g_pGameEventSystem, Hook_PostEvent, Pre, Post);
 
 	if (g_pMetamodListener != nullptr) {
 		g_PH.AddHookMemFunc(&IMetamodListener::OnLevelInit, g_pMetamodListener, Hook_OnLevelInit, Post);
@@ -105,11 +106,14 @@ void Source2SDK::OnPluginStart() {
 	g_PH.AddHookMemFunc(&IServerGameDLL::GameFrame, g_pSource2Server, Hook_GameFrame, Post);
 	g_PH.AddHookMemFunc(&ICvar::DispatchConCommand, g_pCVar, Hook_DispatchConCommand, Pre, Post);
 
-	using FireOutputInternal = void (*)(CEntityIOOutput* const, CEntityInstance*, CEntityInstance*, const CVariant* const, float);
-	g_PH.AddHookDetourFunc<FireOutputInternal>("CEntityIOOutput_FireOutputInternal", Hook_FireOutputInternal, Pre);
+	//using SayHost = void(*)(CEntityInstance*, CCommand&, bool, int, const char*);
+	//g_PH.AddHookDetourFunc<SayHost>("CEntityInstance_SayHost", Hook_SayHost, Pre);
+
+	using FireOutputInternal = void(*)(CEntityIOOutput* const, CEntityInstance*, CEntityInstance*, const CVariant* const, float);
+	g_PH.AddHookDetourFunc<FireOutputInternal>("CEntityIOOutput_FireOutputInternal", Hook_FireOutputInternal, Pre, Post);
 
 #if S2SDK_PLATFORM_WINDOWS
-	using PreloadLibrary = void (*)(void* const);
+	using PreloadLibrary = void(*)(void* const);
 	g_PH.AddHookDetourFunc<PreloadLibrary>("PreloadLibrary", Hook_PreloadLibrary, Pre);
 #endif
 
@@ -176,10 +180,10 @@ poly::ReturnAction Source2SDK::Hook_FireEvent(poly::IHook& hook, poly::Params& p
 	return type == poly::CallbackType::Post ? g_EventManager.Hook_OnFireEvent_Post(params, count, ret) : g_EventManager.Hook_OnFireEvent(params, count, ret);
 }
 
-/*poly::ReturnAction Source2SDK::Hook_PostEvent(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
+poly::ReturnAction Source2SDK::Hook_PostEvent(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	// g_Logger.LogFormat(LS_DEBUG, "[PostEvent] = %d, %d, %d, %lli\n", nSlot, bLocalOnly, nClientCount, clients );
-	return poly::ReturnAction::Ignored;
-}*/
+	return g_UserMessageManager.Hook_PostEvent(params, count, ret, static_cast<HookMode>(type));
+}
 
 poly::ReturnAction Source2SDK::Hook_OnLevelInit(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	auto pMapName = poly::GetArgument<const char*>(params, 1);
@@ -409,7 +413,7 @@ poly::ReturnAction Source2SDK::Hook_FireOutputInternal(poly::IHook& hook, poly::
 }
 
 poly::ReturnAction Source2SDK::Hook_DispatchConCommand(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
-	return type == poly::CallbackType::Post ? g_CommandManager.Hook_DispatchConCommand_Post(params, count, ret) : g_CommandManager.Hook_DispatchConCommand(params, count, ret);
+	return  g_CommandManager.Hook_DispatchConCommand(params, count, ret, static_cast<HookMode>(type));
 }
 
 #if S2SDK_PLATFORM_WINDOWS

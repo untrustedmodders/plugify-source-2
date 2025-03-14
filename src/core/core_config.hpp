@@ -11,17 +11,17 @@ public:
 
 	const plg::string& GetPath() const;
 
-	bool IsSilentChatTrigger(const plg::string& message, plg::string& prefix) const;
-	bool IsPublicChatTrigger(const plg::string& message, plg::string& prefix) const;
+	bool IsSilentChatTrigger(std::string_view message) const;
+	bool IsPublicChatTrigger(std::string_view message) const;
 
 private:
-	bool IsTriggerInternal(const plg::vector<plg::string>& triggers, const plg::string& message, plg::string& prefix) const;
+	static bool IsTriggerInternal(const std::vector<std::string>& triggers, std::string_view message);
 
 public:
-	plg::vector<plg::string> PublicChatTrigger{"!"};
-	plg::vector<plg::string> SilentChatTrigger{"/"};
+	std::vector<std::string> PublicChatTrigger{"!"};
+	std::vector<std::string> SilentChatTrigger{"/"};
 	bool FollowCS2ServerGuidelines{true};
-	plg::string ServerLanguage{"en"};
+	std::string ServerLanguage{"en"};
 
 private:
 	plg::string m_szPath;
