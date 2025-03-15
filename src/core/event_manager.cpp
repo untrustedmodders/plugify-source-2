@@ -150,7 +150,7 @@ poly::ReturnAction CEventManager::Hook_OnFireEvent(poly::Params& params, int cou
 		m_eventStack.push(&eventHook);
 
 		if (eventHook.preHook != nullptr) {
-			g_Logger.LogFormat(LS_DEBUG, "Pushing event `%s` pointer: %p, dont broadcast: %d, post: %d\n", pEvent->GetName(), pEvent, bDontBroadcast, false);
+			//S2_LOGF(LS_DEBUG, "Pushing event `%s` pointer: %p, dont broadcast: %d, post: %d\n", pEvent->GetName(), pEvent, bDontBroadcast, false);
 
 			EventInfo eventInfo{pEvent, bDontBroadcast};
 
@@ -194,7 +194,7 @@ poly::ReturnAction CEventManager::Hook_OnFireEvent_Post(poly::Params& params, in
 		if (pHook->postHook != nullptr) {
 			if (pHook->postCopy) {
 				auto pEventCopy = m_eventCopies.top();
-				g_Logger.LogFormat(LS_DEBUG, "Pushing event `%s` pointer: %p, dont broadcast: %d, post: %d\n", pEventCopy->GetName(), pEventCopy, bDontBroadcast, true);
+				//S2_LOGF(LS_DEBUG, "Pushing event `%s` pointer: %p, dont broadcast: %d, post: %d\n", pEventCopy->GetName(), pEventCopy, bDontBroadcast, true);
 				EventInfo eventInfo{pEventCopy, bDontBroadcast};
 
 				pHook->postHook->Notify(pHook->name, &eventInfo, bDontBroadcast);

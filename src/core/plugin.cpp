@@ -9,6 +9,7 @@
 
 #include <ISmmPlugin.h>
 
+#include "chat_manager.hpp"
 #include "con_command_manager.hpp"
 #include "con_var_manager.hpp"
 #include "event_manager.hpp"
@@ -61,16 +62,16 @@ class CEntityListener : public IEntityListener {
 } g_pEntityListener;
 
 void Source2SDK::OnPluginStart() {
-	g_Logger.Log(LS_DEBUG, "[OnPluginStart] - Source2SDK!\n");
+	S2_LOG(LS_DEBUG, "[OnPluginStart] - Source2SDK!\n");
 
 	auto coreConfig = FindResource(S2SDK_NSTR("configs/core.txt"));
 	if (!coreConfig.has_value()) {
-		g_Logger.Log(LS_ERROR, "configs/core.txt not found!");
+		S2_LOG(LS_ERROR, "configs/core.txt not found!");
 		return;
 	}
 	auto gameData = FindResource(S2SDK_NSTR("gamedata/s2sdk.games.txt"));
 	if (!gameData.has_value()) {
-		g_Logger.Log(LS_ERROR, "gamedata/s2sdk.games.txt not found!");
+		S2_LOG(LS_ERROR, "gamedata/s2sdk.games.txt not found!");
 		return;
 	}
 
@@ -106,8 +107,8 @@ void Source2SDK::OnPluginStart() {
 	g_PH.AddHookMemFunc(&IServerGameDLL::GameFrame, g_pSource2Server, Hook_GameFrame, Post);
 	g_PH.AddHookMemFunc(&ICvar::DispatchConCommand, g_pCVar, Hook_DispatchConCommand, Pre, Post);
 
-	//using SayHost = void(*)(CEntityInstance*, CCommand&, bool, int, const char*);
-	//g_PH.AddHookDetourFunc<SayHost>("CEntityInstance_SayHost", Hook_SayHost, Pre);
+	using SayHost = void(*)(CEntityInstance*, CCommand&, bool, int, const char*);
+	g_PH.AddHookDetourFunc<SayHost>("CEntityInstance_SayHost", Hook_SayHost, Pre, Post);
 
 	using FireOutputInternal = void(*)(CEntityIOOutput* const, CEntityInstance*, CEntityInstance*, const CVariant* const, float);
 	g_PH.AddHookDetourFunc<FireOutputInternal>("CEntityIOOutput_FireOutputInternal", Hook_FireOutputInternal, Pre, Post);
@@ -128,7 +129,7 @@ void Source2SDK::OnPluginEnd() {
 		g_pGameEntitySystem->RemoveListenerEntity(&g_pEntityListener);
 	}
 
-	g_Logger.Log(LS_DEBUG, "[OnPluginEnd] = Source2SDK!\n");
+	S2_LOG(LS_DEBUG, "[OnPluginEnd] = Source2SDK!\n");
 }
 
 void Source2SDK::OnServerStartup() {
@@ -153,12 +154,12 @@ poly::ReturnAction Source2SDK::Hook_StartupServer(poly::IHook& hook, poly::Param
 	//auto pWorldSession = poly::GetArgument<ISource2WorldSession*>(params, 2);
 	auto pMapName = poly::GetArgument<const char*>(params, 3);
 
-	g_Logger.LogFormat(LS_DEBUG, "[StartupServer] = %s\n", pMapName);
+	//S2_LOGF(LS_DEBUG, "[StartupServer] = %s\n", pMapName);
 
 	OnServerStartup();
 
 	if (gpGlobals == nullptr) {
-		g_Logger.Log(LS_ERROR, "Failed to lookup gpGlobals\n");
+		S2_LOG(LS_ERROR, "Failed to lookup gpGlobals\n");
 		return poly::ReturnAction::Ignored;
 	}
 
@@ -168,7 +169,7 @@ poly::ReturnAction Source2SDK::Hook_StartupServer(poly::IHook& hook, poly::Param
 }
 
 poly::ReturnAction Source2SDK::Hook_ActivateServer(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
-	g_Logger.LogFormat(LS_DEBUG, "[ActivateServer]\n");
+	//S2_LOGF(LS_DEBUG, "[ActivateServer]\n");
 
 	GetOnServerActivateListenerManager().Notify();
 
@@ -176,25 +177,25 @@ poly::ReturnAction Source2SDK::Hook_ActivateServer(poly::IHook& hook, poly::Para
 }
 
 poly::ReturnAction Source2SDK::Hook_FireEvent(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
-	//g_Logger.LogFormat(LS_DEBUG, "FireEvent = %s\n", event->GetName() );
+	//S2_LOGF(LS_DEBUG, "FireEvent = %s\n", event->GetName() );
 	return type == poly::CallbackType::Post ? g_EventManager.Hook_OnFireEvent_Post(params, count, ret) : g_EventManager.Hook_OnFireEvent(params, count, ret);
 }
 
 poly::ReturnAction Source2SDK::Hook_PostEvent(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
-	// g_Logger.LogFormat(LS_DEBUG, "[PostEvent] = %d, %d, %d, %lli\n", nSlot, bLocalOnly, nClientCount, clients );
+	//S2_LOGF(LS_DEBUG, "[PostEvent] = %d, %d, %d, %lli\n", nSlot, bLocalOnly, nClientCount, clients );
 	return g_UserMessageManager.Hook_PostEvent(params, count, ret, static_cast<HookMode>(type));
 }
 
 poly::ReturnAction Source2SDK::Hook_OnLevelInit(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	auto pMapName = poly::GetArgument<const char*>(params, 1);
 	auto pMapEntities = poly::GetArgument<const char*>(params, 2);
-	g_Logger.LogFormat(LS_DEBUG, "[OnLevelInit] = %s\n", pMapName);
+	//S2_LOGF(LS_DEBUG, "[OnLevelInit] = %s\n", pMapName);
 	GetOnLevelInitListenerManager().Notify(pMapName, pMapEntities);
 	return poly::ReturnAction::Ignored;
 };
 
 poly::ReturnAction Source2SDK::Hook_OnLevelShutdown(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
-	g_Logger.Log(LS_DEBUG, "[OnLevelShutdown]\n");
+	S2_LOG(LS_DEBUG, "[OnLevelShutdown]\n");
 	g_TimerSystem.OnLevelShutdown();
 	GetOnLevelShutdownListenerManager().Notify();
 	return poly::ReturnAction::Ignored;
@@ -204,7 +205,7 @@ poly::ReturnAction Source2SDK::Hook_RegisterLoopMode(poly::IHook& hook, poly::Pa
 	auto pszLoopModeName = poly::GetArgument<const char*>(params, 1);
 	auto pLoopModeFactory = poly::GetArgument<ILoopModeFactory*>(params, 2);
 
-	g_Logger.Log(LS_DEBUG, "[RegisterLoopMode]\n");
+	S2_LOG(LS_DEBUG, "[RegisterLoopMode]\n");
 
 	if (!strcmp(pszLoopModeName, "game")) {
 		g_PH.AddHookMemFunc(&ILoopMode::LoopInit, pLoopModeFactory, Hook_OnLevelInit, poly::CallbackType::Post);
@@ -218,7 +219,7 @@ poly::ReturnAction Source2SDK::Hook_UnregisterLoopMode(poly::IHook& hook, poly::
 	auto pszLoopModeName = poly::GetArgument<const char*>(params, 1);
 	auto pLoopModeFactory = poly::GetArgument<ILoopModeFactory*>(params, 2);
 
-	g_Logger.Log(LS_DEBUG, "[UnregisterLoopMode]\n");
+	S2_LOG(LS_DEBUG, "[UnregisterLoopMode]\n");
 
 	if (!strcmp(pszLoopModeName, "game")) {
 		g_PH.RemoveHookMemFunc(&ILoopMode::LoopShutdown, pLoopModeFactory);
@@ -248,7 +249,7 @@ poly::ReturnAction Source2SDK::Hook_ClientActive(poly::IHook& hook, poly::Params
 	auto pszName = poly::GetArgument<const char*>(params, 3);
 	auto xuid = (uint64) poly::GetArgument<uint64_t>(params, 4);
 
-	g_Logger.LogFormat(LS_DEBUG, "[OnClientActive] = %d, \"%s\", %lli\n", slot, pszName, xuid);
+	//S2_LOGF(LS_DEBUG, "[OnClientActive] = %d, \"%s\", %lli\n", slot, pszName, xuid);
 
 	g_PlayerManager.OnClientActive(slot, bLoadGame);
 
@@ -264,7 +265,7 @@ poly::ReturnAction Source2SDK::Hook_ClientDisconnect(poly::IHook& hook, poly::Pa
 	auto xuid = poly::GetArgument<uint64_t>(params, 4);
 	auto pszNetworkID = poly::GetArgument<const char*>(params, 5);
 
-	g_Logger.LogFormat(LS_DEBUG, "[ClientDisconnect] = %d, %d, \"%s\", %lli, \"%s\"\n", slot, reason, pszName, xuid, pszNetworkID);
+	//S2_LOGF(LS_DEBUG, "[ClientDisconnect] = %d, %d, \"%s\", %lli, \"%s\"\n", slot, reason, pszName, xuid, pszNetworkID);
 
 	if (type == poly::CallbackType::Pre) {
 		g_PlayerManager.OnClientDisconnect(slot, reason);
@@ -282,7 +283,7 @@ poly::ReturnAction Source2SDK::Hook_ClientPutInServer(poly::IHook& hook, poly::P
 	auto conType = poly::GetArgument<int>(params, 3);
 	auto xuid = poly::GetArgument<uint64_t>(params, 4);
 
-	g_Logger.LogFormat(LS_DEBUG, "[ClientPutInServer] = %d, \"%s\", %d, %d, %lli\n", slot, pszName, conType, xuid);
+	//S2_LOGF(LS_DEBUG, "[ClientPutInServer] = %d, \"%s\", %d, %d, %lli\n", slot, pszName, conType, xuid);
 
 	g_PlayerManager.OnClientPutInServer(slot, pszName);
 	return poly::ReturnAction::Ignored;
@@ -292,7 +293,7 @@ poly::ReturnAction Source2SDK::Hook_ClientSettingsChanged(poly::IHook& hook, pol
 	// CPlayerSlot slot
 	auto slot = (CPlayerSlot) poly::GetArgument<int>(params, 1);
 
-	g_Logger.LogFormat(LS_DEBUG, "[ClientSettingsChanged] = %d\n", slot);
+	//S2_LOGF(LS_DEBUG, "[ClientSettingsChanged] = %d\n", slot);
 
 	GetOnClientSettingsChangedListenerManager().Notify(slot);
 	return poly::ReturnAction::Ignored;
@@ -307,7 +308,7 @@ poly::ReturnAction Source2SDK::Hook_OnClientConnected(poly::IHook& hook, poly::P
 	auto pszAddress = poly::GetArgument<const char*>(params, 5);
 	auto bFakePlayer = poly::GetArgument<bool>(params, 6);
 
-	g_Logger.LogFormat(LS_DEBUG, "[OnClientConnected] = %d, \"%s\", %lli, \"%s\", \"%s\", %d\n", slot, pszName, xuid, pszNetworkID, pszAddress, bFakePlayer);
+	//S2_LOGF(LS_DEBUG, "[OnClientConnected] = %d, \"%s\", %lli, \"%s\", \"%s\", %d\n", slot, pszName, xuid, pszNetworkID, pszAddress, bFakePlayer);
 
 	g_PlayerManager.OnClientConnected(slot);
 	return poly::ReturnAction::Ignored;
@@ -317,7 +318,7 @@ poly::ReturnAction Source2SDK::Hook_ClientFullyConnect(poly::IHook& hook, poly::
 	// CPlayerSlot slot
 	auto slot = (CPlayerSlot) poly::GetArgument<int>(params, 1);
 
-	g_Logger.LogFormat(LS_DEBUG, "[ClientFullyConnect] = %d\n", slot);
+	//S2_LOGF(LS_DEBUG, "[ClientFullyConnect] = %d\n", slot);
 
 	GetOnClientFullyConnectListenerManager().Notify(slot);
 	return poly::ReturnAction::Ignored;
@@ -332,7 +333,7 @@ poly::ReturnAction Source2SDK::Hook_ClientConnect(poly::IHook& hook, poly::Param
 	bool unk1 = poly::GetArgument<bool>(params, 5);
 	auto pRejectReason = poly::GetArgument<CBufferString*>(params, 6);
 
-	g_Logger.LogFormat(LS_DEBUG, "[ClientConnect] = %d, \"%s\", %lli, \"%s\", %d, \"%s\" \n", slot, pszName, xuid, pszNetworkID, unk1, pRejectReason->Get());
+	//S2_LOGF(LS_DEBUG, "[ClientConnect] = %d, \"%s\", %lli, \"%s\", %d, \"%s\" \n", slot, pszName, xuid, pszNetworkID, unk1, pRejectReason->Get());
 
 	if (type == poly::CallbackType::Pre) {
 		g_PlayerManager.OnClientConnect(slot, pszName, xuid, pszNetworkID);
@@ -356,7 +357,7 @@ poly::ReturnAction Source2SDK::Hook_ClientCommand(poly::IHook& hook, poly::Param
 		return poly::ReturnAction::Ignored;
 	}
 
-	g_Logger.LogFormat(LS_DEBUG, "[ClientCommand] = %d, \"%s\"\n", slot, args->GetCommandString());
+	//S2_LOGF(LS_DEBUG, "[ClientCommand] = %d, \"%s\"\n", slot, args->GetCommandString());
 
 	const char* cmd = args->Arg(0);
 
@@ -369,7 +370,7 @@ poly::ReturnAction Source2SDK::Hook_ClientCommand(poly::IHook& hook, poly::Param
 }
 
 poly::ReturnAction Source2SDK::Hook_GameServerSteamAPIActivated(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
-	g_Logger.Log(LS_DEBUG, "[GameServerSteamAPIActivated]\n");
+	S2_LOG(LS_DEBUG, "[GameServerSteamAPIActivated]\n");
 
 	g_steamAPI.Init();
 	//g_http = g_steamAPI.SteamHTTP();
@@ -381,7 +382,7 @@ poly::ReturnAction Source2SDK::Hook_GameServerSteamAPIActivated(poly::IHook& hoo
 }
 
 poly::ReturnAction Source2SDK::Hook_GameServerSteamAPIDeactivated(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
-	g_Logger.Log(LS_DEBUG, "[GameServerSteamAPIDeactivated]\n");
+	S2_LOG(LS_DEBUG, "[GameServerSteamAPIDeactivated]\n");
 
 	//g_http = nullptr;
 
@@ -392,7 +393,7 @@ poly::ReturnAction Source2SDK::Hook_GameServerSteamAPIDeactivated(poly::IHook& h
 poly::ReturnAction Source2SDK::Hook_UpdateWhenNotInGame(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	// float flFrameTime
 	auto flFrameTime = poly::GetArgument<float>(params, 1);
-	// g_Logger.LogFormat(LS_DEBUG, "UpdateWhenNotInGame = %f\n", flFrameTime);
+	//S2_LOGF(LS_DEBUG, "UpdateWhenNotInGame = %f\n", flFrameTime);
 	GetOnUpdateWhenNotInGameListenerManager().Notify(flFrameTime);
 	return poly::ReturnAction::Ignored;
 }
@@ -400,7 +401,7 @@ poly::ReturnAction Source2SDK::Hook_UpdateWhenNotInGame(poly::IHook& hook, poly:
 poly::ReturnAction Source2SDK::Hook_PreWorldUpdate(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	// bool simulating
 	auto simulating = poly::GetArgument<bool>(params, 1);
-	// g_Logger.LogFormat(LS_DEBUG, "PreWorldUpdate = %d\n", simulating);
+	//S2_LOGF(LS_DEBUG, "PreWorldUpdate = %d\n", simulating);
 
 	g_ServerManager.OnPreWorldUpdate();
 

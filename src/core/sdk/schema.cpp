@@ -51,7 +51,7 @@ namespace {
 		if (!pClassInfo) {
 			tableMap.emplace(className, SchemaKeyValueMap());
 
-			g_Logger.LogFormat(LS_ERROR, "InitSchemaFieldsForClass(): '%s' was not found!\n", className.c_str());
+			S2_LOGF(LS_ERROR, "InitSchemaFieldsForClass(): '%s' was not found!\n", className.c_str());
 			return false;
 		}
 
@@ -69,7 +69,7 @@ namespace {
 			field.m_pType->GetSizeAndAlignment(nSize, nAlignment);
 			keyValueMap.emplace(field.m_pszName, SchemaKey{field.m_nSingleInheritanceOffset, IsFieldNetworked(field), nSize, field.m_pType});
 
-			g_Logger.LogFormat(LS_DEBUG, "%s::%s found at -> 0x%X - %llx\n", className.c_str(), field.m_pszName, field.m_nSingleInheritanceOffset, &field);
+			//S2_LOGF(LS_DEBUG, "%s::%s found at -> 0x%X - %llx\n", className.c_str(), field.m_pszName, field.m_nSingleInheritanceOffset, &field);
 		}
 
 		tableMap.emplace(className, std::move(keyValueMap));

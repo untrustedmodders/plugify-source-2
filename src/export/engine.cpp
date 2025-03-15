@@ -52,7 +52,7 @@ extern "C" PLUGIN_API bool IsMapValid(const plg::string& mapname) {
  */
 extern "C" PLUGIN_API float GetGameTime() {
 	if (gpGlobals == nullptr) {
-		g_Logger.Log(LS_WARNING, "Global Variables not initialized yet.\n");
+		S2_LOG(LS_WARNING, "Global Variables not initialized yet.\n");
 		return 0.0f;
 	}
 
@@ -66,7 +66,7 @@ extern "C" PLUGIN_API float GetGameTime() {
  */
 extern "C" PLUGIN_API int GetGameTickCount() {
 	if (gpGlobals == nullptr) {
-		g_Logger.Log(LS_WARNING, "Global Variables not initialized yet.\n");
+		S2_LOG(LS_WARNING, "Global Variables not initialized yet.\n");
 		return 0;
 	}
 
@@ -80,7 +80,7 @@ extern "C" PLUGIN_API int GetGameTickCount() {
  */
 extern "C" PLUGIN_API float GetGameFrameTime() {
 	if (gpGlobals == nullptr) {
-		g_Logger.Log(LS_WARNING, "Global Variables not initialized yet.\n");
+		S2_LOG(LS_WARNING, "Global Variables not initialized yet.\n");
 		return 0.0f;
 	}
 
@@ -103,7 +103,7 @@ extern "C" PLUGIN_API double GetEngineTime() {
  */
 extern "C" PLUGIN_API int GetMaxClients() {
 	if (gpGlobals == nullptr) {
-		g_Logger.Log(LS_WARNING, "Global Variables not initialized yet.\n");
+		S2_LOG(LS_WARNING, "Global Variables not initialized yet.\n");
 		return -1;
 	}
 
@@ -259,7 +259,7 @@ extern "C" PLUGIN_API void EmitSound(int entityHandle, const plg::string& sound,
 /**
  * @brief Emits a sound to a specific client.
  *
- * @param clientIndex The index of the client to whom the sound will be emitted.
+ * @param playerSlot The index of the player's slot to whom the sound will be emitted.
  * @param channel The channel through which the sound will be played.
  * @param sound The name of the sound to emit.
  * @param volume The volume of the sound.
@@ -269,8 +269,8 @@ extern "C" PLUGIN_API void EmitSound(int entityHandle, const plg::string& sound,
  * @param origin The origin of the sound in 3D space.
  * @param soundTime The time at which the sound should be played.
  */
-extern "C" PLUGIN_API void EmitSoundToClient(int clientIndex, int channel, const plg::string& sound, float volume, int soundLevel, int flags, int pitch, const Vector& origin, float soundTime) {
-	utils::PlaySoundToClient(clientIndex, channel, sound.c_str(), volume, static_cast<soundlevel_t>(soundLevel), flags, pitch, origin, soundTime);
+extern "C" PLUGIN_API void EmitSoundToClient(int playerSlot, int channel, const plg::string& sound, float volume, int soundLevel, int flags, int pitch, const Vector& origin, float soundTime) {
+	utils::PlaySoundToClient(playerSlot, channel, sound.c_str(), volume, static_cast<soundlevel_t>(soundLevel), flags, pitch, origin, soundTime);
 }
 
 PLUGIFY_WARN_POP()

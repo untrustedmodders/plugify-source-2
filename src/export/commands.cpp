@@ -23,7 +23,7 @@ PLUGIFY_WARN_IGNORE(4190)
  * @return A boolean indicating whether the command was successfully added.
  */
 extern "C" PLUGIN_API bool AddAdminCommand(const plg::string& name, int64_t adminFlags, const plg::string& description, ConVarFlag flags, CommandListenerCallback callback) {
-	g_Logger.LogFormat(LS_DEBUG, "Adding admin command %s, %d, %s, %d, %p\n", name.c_str(), (int) adminFlags, description.c_str(), flags, (void*) callback);
+	//S2_LOGF(LS_DEBUG, "Adding admin command %s, %d, %s, %d, %p\n", name.c_str(), (int) adminFlags, description.c_str(), flags, (void*) callback);
 
 	auto result = g_CommandManager.AddValveCommand(name, description, flags, adminFlags);
 	g_CommandManager.AddCommandListener(name, callback, HookMode::Pre);
@@ -40,7 +40,7 @@ extern "C" PLUGIN_API bool AddAdminCommand(const plg::string& name, int64_t admi
  * @return A boolean indicating whether the command was successfully added.
  */
 extern "C" PLUGIN_API bool AddConsoleCommand(const plg::string& name, const plg::string& description, ConVarFlag flags, CommandListenerCallback callback) {
-	g_Logger.LogFormat(LS_DEBUG, "Adding command %s, %s, %d, %p\n", name.c_str(), description.c_str(), flags, (void*) callback);
+	//S2_LOGF(LS_DEBUG, "Adding command %s, %s, %d, %p\n", name.c_str(), description.c_str(), flags, (void*) callback);
 
 	auto result = g_CommandManager.AddValveCommand(name, description, flags);
 	g_CommandManager.AddCommandListener(name, callback, HookMode::Pre);
@@ -118,29 +118,29 @@ extern "C" PLUGIN_API plg::string ServerCommandEx(const plg::string& command) {
  * @brief Executes a client command.
  * This will only work if clients have `cl_restrict_server_commands` set to 0.
  *
- * @param clientIndex The index of the client executing the command.
+ * @param playerSlot The index of the player's slot executing the command.
  * @param command The command to execute on the client.
  */
-extern "C" PLUGIN_API void ClientCommand(int clientIndex, const plg::string& command) {
+extern "C" PLUGIN_API void ClientCommand(int playerSlot, const plg::string& command) {
 	auto cleanCommand = command;
 	cleanCommand.append("\n\0");
-	g_pEngineServer2->ClientCommand(clientIndex, "%s", cleanCommand.c_str());
+	g_pEngineServer2->ClientCommand(playerSlot, "%s", cleanCommand.c_str());
 }
 
 /**
  * @brief Executes a client command on the server without network communication.
  *
- * @param clientIndex The index of the client.
+ * @param playerSlot The index of the player's slot.
  * @param command The command to be executed by the client.
  */
-extern "C" PLUGIN_API void FakeClientCommand(int clientIndex, const plg::string& command) {
+extern "C" PLUGIN_API void FakeClientCommand(int playerSlot, const plg::string& command) {
 	CCommand args;
 	args.Tokenize(command.c_str(), CCommand::DefaultBreakSet());
 	auto handle = g_pCVar->FindConCommand(args.Arg(0));
 	if (!handle.IsValidRef())
 		return;
 
-	CCommandContext context(CommandTarget_t::CT_NO_TARGET, clientIndex);
+	CCommandContext context(CommandTarget_t::CT_NO_TARGET, playerSlot);
 
 	g_pCVar->DispatchConCommand(handle, context, args);
 }

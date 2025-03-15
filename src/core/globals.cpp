@@ -46,13 +46,13 @@ template<class T>
 static T* FindInterface(const CModule* module, const char* name) {
 	auto CreateInterface = module->GetFunctionByName("CreateInterface").CCast<CreateInterfaceFn>();
 	if (!CreateInterface) {
-		g_Logger.LogFormat(LS_ERROR, "Could not find \"%s\"\n", name);
+		S2_LOGF(LS_ERROR, "Could not find \"%s\"\n", name);
 		return nullptr;
 	}
 
 	void* pInterface = CreateInterface(name, nullptr);
 	if (!pInterface) {
-		g_Logger.LogFormat(LS_ERROR, "Could not find interface %s in %s at \"%s\"\n", name, module->GetName().data(), module->GetPath().data());
+		S2_LOGF(LS_ERROR, "Could not find interface %s in %s at \"%s\"\n", name, module->GetName().data(), module->GetPath().data());
 		return nullptr;
 	}
 
@@ -88,7 +88,7 @@ static CModule* CreateModule(const char* p) {
 	plg::string path = utils::GameDirectory() + p;
 	auto* module = new CModule(path);
 	if (!module->GetHandle()) {
-		g_Logger.LogFormat(LS_ERROR, "Could not find module at \"%s\"\n", path.c_str());
+		S2_LOGF(LS_ERROR, "Could not find module at \"%s\"\n", path.c_str());
 	}
 	return module;
 }
@@ -135,7 +135,7 @@ namespace globals {
 
 		p_ppGameEventManager = g_pGameConfig->GetAddress("&s_GameEventManager").RCast<IGameEventManager2**>();
 		if (!p_ppGameEventManager) {
-			g_Logger.Log(LS_ERROR, "s_GameEventManager not found!");
+			S2_LOG(LS_ERROR, "s_GameEventManager not found!");
 			return;
 		}
 		g_pGameEventManager = *p_ppGameEventManager;

@@ -1,7 +1,12 @@
 CreateInterface
 Plugify_*
 
-GetClientIndexFromEntityPointer
+GetPlayerSlotFromEntityPointer
+GetEntityPointerFromPlayerSlot
+GetClientBaseFromPlayerSlot
+GetPlayerSlotFromClientBase
+GetClientIndexFromPlayerSlot
+GetPlayerSlotFromClientIndex
 GetClientAuthId
 GetClientAccountId
 GetClientIp

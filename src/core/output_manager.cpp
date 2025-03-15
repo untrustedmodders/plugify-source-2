@@ -42,7 +42,7 @@ poly::ReturnAction CEntityOutputManager::Hook_FireOutputInternal(poly::Params& p
 	auto flDelay = poly::GetArgument<float>(params, 4);
 
 	if (pCaller) {
-		g_Logger.LogFormat(LS_DEBUG, "[EntityOutputManager][FireOutputHook] - %s, %s\n", pThis->m_pDesc->m_pName, pCaller->GetClassname());
+		//S2_LOGF(LS_DEBUG, "[EntityOutputManager][FireOutputHook] - %s, %s\n", pThis->m_pDesc->m_pName, pCaller->GetClassname());
 
 		std::array<OutputKey, 4> vecSearchKeys{
 				OutputKey{"*", pThis->m_pDesc->m_pName},
@@ -59,7 +59,7 @@ poly::ReturnAction CEntityOutputManager::Hook_FireOutputInternal(poly::Params& p
 			}
 		}
 	} else {
-		g_Logger.LogFormat(LS_DEBUG, "[EntityOutputManager][FireOutputHook] - %s, unknown caller\n", pThis->m_pDesc->m_pName);
+		//S2_LOGF(LS_DEBUG, "[EntityOutputManager][FireOutputHook] - %s, unknown caller\n", pThis->m_pDesc->m_pName);
 	}
 
 	ResultType result = ResultType::Continue;

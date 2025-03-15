@@ -19,47 +19,47 @@ extern "C" PLUGIN_API void PrintToServer(const plg::string& msg) {
 
 /**
  * @brief Sends a message to a client's console.
- * @param clientIndex Index of the client to whom the message will be sent.
+ * @param playerSlot The index of the player's slot to whom the message will be sent.
  * @param message The message to be sent to the client's console.
  */
-extern "C" PLUGIN_API void PrintToConsole(int clientIndex, const plg::string& message) {
-	utils::PrintConsole(clientIndex, message.c_str());
+extern "C" PLUGIN_API void PrintToConsole(int playerSlot, const plg::string& message) {
+	utils::PrintConsole(playerSlot, message.c_str());
 }
 
 /**
  * @brief Prints a message to a specific client in the chat area.
- * @param clientIndex Index of the client to whom the message will be sent.
+ * @param playerSlot The index of the player's slot to whom the message will be sent.
  * @param message The message to be printed in the chat area.
  */
-extern "C" PLUGIN_API void PrintToChat(int clientIndex, const plg::string& message) {
-	utils::PrintChat(clientIndex, message.c_str());
+extern "C" PLUGIN_API void PrintToChat(int playerSlot, const plg::string& message) {
+	utils::PrintChat(playerSlot, message.c_str());
 }
 
 /**
  * @brief Prints a message to a specific client in the center of the screen.
- * @param clientIndex Index of the client to whom the message will be sent.
+ * @param playerSlot The index of the player's slot to whom the message will be sent.
  * @param message The message to be printed in the center of the screen.
  */
-extern "C" PLUGIN_API void PrintCenterText(int clientIndex, const plg::string& message) {
-	utils::PrintCentre(clientIndex, message.c_str());
+extern "C" PLUGIN_API void PrintCenterText(int playerSlot, const plg::string& message) {
+	utils::PrintCentre(playerSlot, message.c_str());
 }
 
 /**
  * @brief Prints a message to a specific client with an alert box.
- * @param clientIndex Index of the client to whom the message will be sent.
+ * @param playerSlot The index of the player's slot to whom the message will be sent.
  * @param message The message to be printed in the alert box.
  */
-extern "C" PLUGIN_API void PrintAlertText(int clientIndex, const plg::string& message) {
-	utils::PrintAlert(clientIndex, message.c_str());
+extern "C" PLUGIN_API void PrintAlertText(int playerSlot, const plg::string& message) {
+	utils::PrintAlert(playerSlot, message.c_str());
 }
 
 /**
  * @brief Prints a html message to a specific client in the center of the screen.
- * @param clientIndex Index of the client to whom the message will be sent.
+ * @param playerSlot The index of the player's slot to whom the message will be sent.
  * @param message The HTML-formatted message to be printed.
  */
-extern "C" PLUGIN_API void PrintCentreHtml(int clientIndex, const plg::string& message) {
-	utils::PrintHtmlCentre(clientIndex, message.c_str());
+extern "C" PLUGIN_API void PrintCentreHtml(int playerSlot, const plg::string& message) {
+	utils::PrintHtmlCentre(playerSlot, message.c_str());
 }
 
 /**
@@ -104,11 +104,11 @@ extern "C" PLUGIN_API void PrintCentreHtmlAll(const plg::string& message) {
 
 /**
  * @brief Prints a colored message to a specific client in the chat area.
- * @param clientIndex Index of the client to whom the message will be sent.
+ * @param playerSlot The index of the player's slot to whom the message will be sent.
  * @param message The message to be printed in the chat area with color.
  */
-extern "C" PLUGIN_API void PrintToChatColored(int clientIndex, const plg::string& message) {
-	utils::CPrintChat(clientIndex, message.c_str());
+extern "C" PLUGIN_API void PrintToChatColored(int playerSlot, const plg::string& message) {
+	utils::CPrintChat(playerSlot, message.c_str());
 }
 
 /**

@@ -207,10 +207,6 @@ void utils::SendConVarValue(CPlayerSlot slot, const char* name, const char* valu
 
 	CSingleRecipientFilter filter(slot);
 	g_pGameEventSystem->PostEventAbstract(-1, false, &filter, pNetMsg, msg, 0);
-
-#ifndef _WIN32
-	delete msg;
-#endif
 }
 
 void utils::SendMultipleConVarValues(CPlayerSlot slot, const char** names, const char** value, uint32_t size) {
@@ -223,10 +219,6 @@ void utils::SendMultipleConVarValues(CPlayerSlot slot, const char** names, const
 	}
 	CSingleRecipientFilter filter(slot);
 	g_pGameEventSystem->PostEventAbstract(-1, false, &filter, pNetMsg, reinterpret_cast<const CNetMessage*>(&msg), 0);
-
-#ifndef _WIN32
-	delete msg;
-#endif
 }
 
 bool utils::IsSpawnValid(const Vector& origin) {

@@ -43,7 +43,7 @@ extern "C" PLUGIN_API bool UnhookUserMessage(int messageId, UserMessageCallback 
  * @param recipientMask The recipient mask.
  * @return A pointer to the newly created UserMessage.
  */
-extern "C" PLUGIN_API UserMessage* UserMessage_CreateFromSerializable(INetworkMessageInternal* msgSerializable, const CNetMessage* message, int nRecipientCount, uint64_t* recipientMask) {
+extern "C" PLUGIN_API UserMessage* UserMessage_CreateFromSerializable(INetworkMessageInternal* msgSerializable, const CNetMessage* message, int nRecipientCount, uint64* recipientMask) {
 	return new UserMessage(msgSerializable, message, nRecipientCount, recipientMask);
 }
 
@@ -133,7 +133,7 @@ extern "C" PLUGIN_API void* UserMessage_GetSerializableMessage(UserMessage* user
  * @param userMessage The UserMessage instance.
  * @return A pointer to the recipient mask.
  */
-extern "C" PLUGIN_API uint64_t* UserMessage_GetRecipientMask(UserMessage* userMessage) {
+extern "C" PLUGIN_API uint64* UserMessage_GetRecipientMask(UserMessage* userMessage) {
 	return userMessage->GetRecipientMask();
 }
 
@@ -179,7 +179,7 @@ extern "C" PLUGIN_API bool UserMessage_SetInt32(UserMessage* userMessage, const 
  * @param out The output value.
  * @return True if the field was successfully retrieved, false otherwise.
  */
-extern "C" PLUGIN_API bool UserMessage_GetInt64(UserMessage* userMessage, const plg::string& fieldName, int64_t* out) {
+extern "C" PLUGIN_API bool UserMessage_GetInt64(UserMessage* userMessage, const plg::string& fieldName, int64* out) {
 	return userMessage->GetInt64(fieldName.c_str(), out);
 }
 
@@ -191,7 +191,7 @@ extern "C" PLUGIN_API bool UserMessage_GetInt64(UserMessage* userMessage, const 
  * @param value The value to set.
  * @return True if the field was successfully set, false otherwise.
  */
-extern "C" PLUGIN_API bool UserMessage_SetInt64(UserMessage* userMessage, const plg::string& fieldName, int64_t value) {
+extern "C" PLUGIN_API bool UserMessage_SetInt64(UserMessage* userMessage, const plg::string& fieldName, int64 value) {
 	return userMessage->SetInt64(fieldName.c_str(), value);
 }
 
@@ -227,7 +227,7 @@ extern "C" PLUGIN_API bool UserMessage_SetUInt32(UserMessage* userMessage, const
  * @param out The output value.
  * @return True if the field was successfully retrieved, false otherwise.
  */
-extern "C" PLUGIN_API bool UserMessage_GetUInt64(UserMessage* userMessage, const plg::string& fieldName, uint64_t* out) {
+extern "C" PLUGIN_API bool UserMessage_GetUInt64(UserMessage* userMessage, const plg::string& fieldName, uint64* out) {
 	return userMessage->GetUInt64(fieldName.c_str(), out);
 }
 
@@ -239,7 +239,7 @@ extern "C" PLUGIN_API bool UserMessage_GetUInt64(UserMessage* userMessage, const
  * @param value The value to set.
  * @return True if the field was successfully set, false otherwise.
  */
-extern "C" PLUGIN_API bool UserMessage_SetUInt64(UserMessage* userMessage, const plg::string& fieldName, uint64_t value) {
+extern "C" PLUGIN_API bool UserMessage_SetUInt64(UserMessage* userMessage, const plg::string& fieldName, uint64 value) {
 	return userMessage->SetUInt64(fieldName.c_str(), value);
 }
 
@@ -391,7 +391,7 @@ extern "C" PLUGIN_API bool UserMessage_AddInt32(UserMessage* userMessage, const 
  * @param out The output value.
  * @return True if the field was successfully retrieved, false otherwise.
  */
-extern "C" PLUGIN_API bool UserMessage_GetRepeatedInt64(UserMessage* userMessage, const plg::string& fieldName, int index, int64_t* out) {
+extern "C" PLUGIN_API bool UserMessage_GetRepeatedInt64(UserMessage* userMessage, const plg::string& fieldName, int index, int64* out) {
 	return userMessage->GetRepeatedInt64(fieldName.c_str(), index, out);
 }
 
@@ -404,7 +404,7 @@ extern "C" PLUGIN_API bool UserMessage_GetRepeatedInt64(UserMessage* userMessage
  * @param value The value to set.
  * @return True if the field was successfully set, false otherwise.
  */
-extern "C" PLUGIN_API bool UserMessage_SetRepeatedInt64(UserMessage* userMessage, const plg::string& fieldName, int index, int64_t value) {
+extern "C" PLUGIN_API bool UserMessage_SetRepeatedInt64(UserMessage* userMessage, const plg::string& fieldName, int index, int64 value) {
 	return userMessage->SetRepeatedInt64(fieldName.c_str(), index, value);
 }
 
@@ -416,7 +416,7 @@ extern "C" PLUGIN_API bool UserMessage_SetRepeatedInt64(UserMessage* userMessage
  * @param value The value to add.
  * @return True if the value was successfully added, false otherwise.
  */
-extern "C" PLUGIN_API bool UserMessage_AddInt64(UserMessage* userMessage, const plg::string& fieldName, int64_t value) {
+extern "C" PLUGIN_API bool UserMessage_AddInt64(UserMessage* userMessage, const plg::string& fieldName, int64 value) {
 	return userMessage->AddInt64(fieldName.c_str(), value);
 }
 
@@ -467,7 +467,7 @@ extern "C" PLUGIN_API bool UserMessage_AddUInt32(UserMessage* userMessage, const
  * @param out The output value.
  * @return True if the field was successfully retrieved, false otherwise.
  */
-extern "C" PLUGIN_API bool UserMessage_GetRepeatedUInt64(UserMessage* userMessage, const plg::string& fieldName, int index, uint64_t* out) {
+extern "C" PLUGIN_API bool UserMessage_GetRepeatedUInt64(UserMessage* userMessage, const plg::string& fieldName, int index, uint64* out) {
 	return userMessage->GetRepeatedUInt64(fieldName.c_str(), index, out);
 }
 
@@ -480,7 +480,7 @@ extern "C" PLUGIN_API bool UserMessage_GetRepeatedUInt64(UserMessage* userMessag
  * @param value The value to set.
  * @return True if the field was successfully set, false otherwise.
  */
-extern "C" PLUGIN_API bool UserMessage_SetRepeatedUInt64(UserMessage* userMessage, const plg::string& fieldName, int index, uint64_t value) {
+extern "C" PLUGIN_API bool UserMessage_SetRepeatedUInt64(UserMessage* userMessage, const plg::string& fieldName, int index, uint64 value) {
 	return userMessage->SetRepeatedUInt64(fieldName.c_str(), index, value);
 }
 
@@ -492,7 +492,7 @@ extern "C" PLUGIN_API bool UserMessage_SetRepeatedUInt64(UserMessage* userMessag
  * @param value The value to add.
  * @return True if the value was successfully added, false otherwise.
  */
-extern "C" PLUGIN_API bool UserMessage_AddUInt64(UserMessage* userMessage, const plg::string& fieldName, uint64_t value) {
+extern "C" PLUGIN_API bool UserMessage_AddUInt64(UserMessage* userMessage, const plg::string& fieldName, uint64 value) {
 	return userMessage->AddUInt64(fieldName.c_str(), value);
 }
 

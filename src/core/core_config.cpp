@@ -6,7 +6,7 @@ CCoreConfig::CCoreConfig(plg::string path) : m_szPath(std::move(path)), m_pKeyVa
 
 bool CCoreConfig::Initialize() {
 	if (!m_pKeyValues->LoadFromFile(g_pFullFileSystem, m_szPath.c_str(), nullptr)) {
-		g_Logger.LogFormat(LS_ERROR, "Could not read \"%s\": Failed to load gamedata file\n", m_szPath.c_str());
+		S2_LOGF(LS_ERROR, "Could not read \"%s\": Failed to load gamedata file\n", m_szPath.c_str());
 		return false;
 	}
 

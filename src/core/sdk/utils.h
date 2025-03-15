@@ -59,13 +59,13 @@ namespace utils {
 		ConVarRef conVarRef(conVarHandle);
 	
 		if (!conVarRef.IsValidRef()) {
-			g_Logger.Log(LS_WARNING, "Invalid convar handle.\n");
+			S2_LOG(LS_WARNING, "Invalid convar handle.\n");
 			return;
 		}
 
 		auto* conVarData = g_pCVar->GetConVarData(conVarRef);
 		if (conVarData == nullptr) {
-			g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
+			S2_LOG(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
 			return;
 		}
 
@@ -75,24 +75,36 @@ namespace utils {
 	}
 
 	template<typename T>
-	void SetConVarInternal(ConVarRefAbstract conVar, T value, bool replicate, bool notify) {
+	void SetConVarInternal(ConVarRefAbstract conVar, const T& value, bool replicate, bool notify) {
 		conVar.SetAs<T>(value);
-		if constexpr (std::same_as<T, const char*>) {
-			if (replicate) ReplicateConVar(conVar, value);
-			if (notify) NotifyConVar(conVar, value);
-		} else {
-			if (replicate || notify) {
-				CUtlString value = conVar.GetString();
+
+		if (notify || replicate) {
+			if constexpr (std::same_as<T, CUtlString>) {
 				if (replicate) ReplicateConVar(conVar, value.Get());
 				if (notify) NotifyConVar(conVar, value.Get());
+			} else {
+				std::string val;
+				if constexpr (std::is_same_v<T, Color>) {
+					val = std::format("{} {} {} {}", value.r(), value.g(), value.b(), value.a());
+				} else if constexpr (std::is_same_v<T, Vector2D>) {
+					val = std::format("{} {}", value.x, value.y);
+				} else if constexpr (std::is_same_v<T, Vector> || std::is_same_v<T, QAngle>) {
+					val = std::format("{} {} {}", value.x, value.y, value.z);
+				} else if constexpr (std::is_same_v<T, Vector4D>) {
+					val = std::format("{} {} {} {}", value.x, value.y, value.z, value.w);
+				} else {
+					val = std::to_string(value);
+				}
+				if (replicate) ReplicateConVar(conVar, val.c_str());
+				if (notify) NotifyConVar(conVar, val.c_str());
 			}
 		}
 	}
 
 	template<typename T>
-	void SetConVar(ConVarRefAbstract conVar, T value, bool replicate, bool notify) {
+	void SetConVar(ConVarRefAbstract conVar, const T& value, bool replicate, bool notify) {
 		if (conVar.GetType() != TranslateConVarType<T>()) {
-			g_Logger.LogFormat(LS_WARNING, "Invalid cvar type for variable '%s'. Expected: '%s', but got: '%s'. Please ensure the type matches the expected type.\n", conVar.GetName(), conVar.TypeTraits()->m_TypeName, GetCvarTypeTraits(TranslateConVarType<T>())->m_TypeName);
+			S2_LOGF(LS_WARNING, "Invalid cvar type for variable '%s'. Expected: '%s', but got: '%s'. Please ensure the type matches the expected type.\n", conVar.GetName(), conVar.TypeTraits()->m_TypeName, GetCvarTypeTraits(TranslateConVarType<T>())->m_TypeName);
 			return;
 		}
 
@@ -100,17 +112,17 @@ namespace utils {
 	}
 
 	template<typename T>
-	void SetConVarByHandle(Handle conVarHandle, T value, bool replicate, bool notify) {
+	void SetConVarByHandle(Handle conVarHandle, const T& value, bool replicate, bool notify) {
 		ConVarRef conVarRef(conVarHandle);
 
 		if (!conVarRef.IsValidRef()) {
-			g_Logger.Log(LS_WARNING, "Invalid convar handle.\n");
+			S2_LOG(LS_WARNING, "Invalid convar handle.\n");
 			return;
 		}
 
 		auto* conVarData = g_pCVar->GetConVarData(conVarRef);
 		if (conVarData == nullptr) {
-			g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
+			S2_LOG(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
 			return;
 		}
 
@@ -122,7 +134,7 @@ namespace utils {
 	template<typename T>
 	void SetConVarValue(ConVarRefAbstract conVar, const plg::string& value) {
 		if (conVar.GetType() != TranslateConVarType<T>()) {
-			g_Logger.LogFormat(LS_WARNING, "Invalid cvar type for variable '%s'. Expected: '%s', but got: '%s'. Please ensure the type matches the expected type.\n", conVar.GetName(), conVar.TypeTraits()->m_TypeName, GetCvarTypeTraits(TranslateConVarType<T>())->m_TypeName);
+			S2_LOGF(LS_WARNING, "Invalid cvar type for variable '%s'. Expected: '%s', but got: '%s'. Please ensure the type matches the expected type.\n", conVar.GetName(), conVar.TypeTraits()->m_TypeName, GetCvarTypeTraits(TranslateConVarType<T>())->m_TypeName);
 			return;
 		}
 
@@ -132,7 +144,7 @@ namespace utils {
 	template<typename T>
 	T GetConVarValue(ConVarRefAbstract conVar) {
 		if (conVar.GetType() != TranslateConVarType<T>()) {
-			g_Logger.LogFormat(LS_WARNING, "Invalid cvar type for variable '%s'. Expected: '%s', but got: '%s'. Please ensure the type matches the expected type.\n", conVar.GetName(), conVar.TypeTraits()->m_TypeName, GetCvarTypeTraits(TranslateConVarType<T>())->m_TypeName);
+			S2_LOGF(LS_WARNING, "Invalid cvar type for variable '%s'. Expected: '%s', but got: '%s'. Please ensure the type matches the expected type.\n", conVar.GetName(), conVar.TypeTraits()->m_TypeName, GetCvarTypeTraits(TranslateConVarType<T>())->m_TypeName);
 			return {};
 		}
 
@@ -144,13 +156,13 @@ namespace utils {
 		ConVarRef conVarRef(conVarHandle);
 	
 		if (!conVarRef.IsValidRef()) {
-			g_Logger.Log(LS_WARNING, "Invalid convar handle.\n");
+			S2_LOG(LS_WARNING, "Invalid convar handle.\n");
 			return {};
 		}
 
 		auto* conVarData = g_pCVar->GetConVarData(conVarRef);
 		if (conVarData == nullptr) {
-			g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
+			S2_LOG(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
 			return {};
 		}
 

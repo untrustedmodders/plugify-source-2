@@ -53,8 +53,8 @@ namespace google::protobuf {
 class UserMessage {
 public:
 	UserMessage(INetworkMessageInternal* msgSerializable, const CNetMessage* message, int nRecipientCount, uint64* recipientMask)
-		: msgSerializable(msgSerializable), nRecipientCount(nRecipientCount), recipientMask(recipientMask),
-		  msg(const_cast<CNetMessage*>(message)->ToPB<pb::Message>()) {
+		: msgSerializable(msgSerializable), msg(const_cast<CNetMessage*>(message)->ToPB<pb::Message>()), nRecipientCount(nRecipientCount),
+		  recipientMask(recipientMask) {
 	}
 
 	explicit UserMessage(const char* messageName) {
@@ -88,11 +88,11 @@ public:
 	bool IsManuallyAllocated() const { return manuallyAllocated; }
 
 private:
-	CNetMessagePB<pb::Message>* msg{};
 	INetworkMessageInternal* msgSerializable{};
-	uint64* recipientMask{};
-	bool manuallyAllocated{};
+	CNetMessagePB<pb::Message>* msg{};
 	int nRecipientCount{};
+	bool manuallyAllocated{};
+	uint64* recipientMask{};
 
 public:
 	bool HasField(const char* pszFieldName) {

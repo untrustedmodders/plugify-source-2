@@ -8,7 +8,7 @@ CGameConfig::~CGameConfig() = default;
 
 bool CGameConfig::Initialize() {
 	if (!m_pKeyValues->LoadFromFile(g_pFullFileSystem, m_szPath.c_str(), nullptr)) {
-		g_Logger.LogFormat(LS_ERROR, "Could not read \"%s\": Failed to load gamedata file\n", m_szPath.c_str());
+		S2_LOGF(LS_ERROR, "Could not read \"%s\": Failed to load gamedata file\n", m_szPath.c_str());
 		return false;
 	}
 
@@ -48,7 +48,7 @@ bool CGameConfig::Initialize() {
 					std::string_view key = it2->GetName();
 					if (key == "read" || key == "offset" || key == "read_offs32") {
 						if (lastIsOffset) {
-							g_Logger.LogFormat(LS_WARNING, "Could not read \"%s\": Error parsing Address \"%s\", 'offset' entry must be the last entry\n", m_szPath.c_str(), it->GetName());
+							S2_LOGF(LS_WARNING, "Could not read \"%s\": Error parsing Address \"%s\", 'offset' entry must be the last entry\n", m_szPath.c_str(), it->GetName());
 							continue;
 						}
 						read.emplace_back(it2->GetInt(), key.ends_with("_offs32"));
@@ -62,7 +62,7 @@ bool CGameConfig::Initialize() {
 			}
 		}
 	} else {
-		g_Logger.LogFormat(LS_ERROR, "Could not read \"%s\": Failed to find game: %s\n", m_szPath.c_str(), m_szGameDir.c_str());
+		S2_LOGF(LS_ERROR, "Could not read \"%s\": Failed to find game: %s\n", m_szPath.c_str(), m_szGameDir.c_str());
 		return false;
 	}
 
@@ -166,7 +166,7 @@ CModule* CGameConfig::GetModule(const plg::string& name) const {
 bool CGameConfig::IsSymbol(const plg::string& name) const {
 	const std::string_view sigOrSymbol = GetSignature(name);
 	if (sigOrSymbol.empty()) {
-		g_Logger.LogFormat(LS_WARNING, "Missing signature or symbol: %s\n", name.c_str());
+		S2_LOGF(LS_WARNING, "Missing signature or symbol: %s\n", name.c_str());
 		return false;
 	}
 	return sigOrSymbol[0] == '@';
@@ -176,7 +176,7 @@ std::string_view CGameConfig::GetSymbol(const plg::string& name) const {
 	const std::string_view symbol = GetSignature(name);
 
 	if (symbol.size() <= 1) {
-		g_Logger.LogFormat(LS_WARNING, "Missing symbol: %s\n", name.c_str());
+		S2_LOGF(LS_WARNING, "Missing symbol: %s\n", name.c_str());
 		return {};
 	}
 
@@ -186,7 +186,7 @@ std::string_view CGameConfig::GetSymbol(const plg::string& name) const {
 CMemory CGameConfig::ResolveSignature(const plg::string& name) const {
 	auto module = GetModule(name);
 	if (!module) {
-		g_Logger.LogFormat(LS_WARNING, "Invalid module: %s\n", name.c_str());
+		S2_LOGF(LS_WARNING, "Invalid module: %s\n", name.c_str());
 		return {};
 	}
 
@@ -195,7 +195,7 @@ CMemory CGameConfig::ResolveSignature(const plg::string& name) const {
 	if (IsSymbol(name)) {
 		const std::string_view symbol = GetSymbol(name);
 		if (symbol.empty()) {
-			g_Logger.LogFormat(LS_WARNING, "Invalid symbol for %s\n", name.c_str());
+			S2_LOGF(LS_WARNING, "Invalid symbol for %s\n", name.c_str());
 			return {};
 		}
 
@@ -203,7 +203,7 @@ CMemory CGameConfig::ResolveSignature(const plg::string& name) const {
 	} else {
 		const std::string_view signature = GetSignature(name);
 		if (signature.empty()) {
-			g_Logger.LogFormat(LS_WARNING, "Failed to find signature for %s\n", name.c_str());
+			S2_LOGF(LS_WARNING, "Failed to find signature for %s\n", name.c_str());
 			return {};
 		}
 
@@ -211,7 +211,7 @@ CMemory CGameConfig::ResolveSignature(const plg::string& name) const {
 	}
 
 	if (!address) {
-		g_Logger.LogFormat(LS_WARNING, "Failed to find address for %s\n", name.c_str());
+		S2_LOGF(LS_WARNING, "Failed to find address for %s\n", name.c_str());
 		return {};
 	}
 

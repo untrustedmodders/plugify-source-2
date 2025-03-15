@@ -48,4 +48,10 @@ private:
 #define LS_DEBUG LS_MESSAGE
 #endif
 
+#define S2_CONCAT(a, b) S2_CONCAT_INNER(a, b)
+#define S2_CONCAT_INNER(a, b) a ## b
+#define S2_UNIQUE_NAME(base) S2_CONCAT(base, __COUNTER__)
+#define S2_LOG(...) [[maybe_unused]] auto S2_UNIQUE_NAME(_) = g_Logger.Log(__VA_ARGS__)
+#define S2_LOGF(...) [[maybe_unused]] auto S2_UNIQUE_NAME(_) = g_Logger.LogFormat(__VA_ARGS__)
+
 extern CLogger g_Logger;

@@ -43,7 +43,7 @@ ResultType CUserMessageManager::ExecuteMessageCallbacks(INetworkMessageInternal*
 
 	int messageID = message.GetMessageID();
 	
-	g_Logger.LogFormat(LS_DEBUG, "[CUserMessageManager::ExecuteMessageCallbacks][%s] Pushing user message `%d` pointer: %p\n", mode == HookMode::Pre ? "Pre" : "Post",  messageID, pEvent);
+	//S2_LOGF(LS_DEBUG, "[CUserMessageManager::ExecuteMessageCallbacks][%s] Pushing user message `%d` pointer: %p\n", mode == HookMode::Pre ? "Pre" : "Post",  messageID, pEvent);
 
 	ResultType result = ResultType::Continue;
 	
@@ -91,7 +91,7 @@ poly::ReturnAction CUserMessageManager::Hook_PostEvent(poly::Params& params, int
 	auto pEvent = poly::GetArgument<INetworkMessageInternal*>(params, 5);
 	auto pData = poly::GetArgument<CNetMessage*>(params, 6);
 
-	g_Logger.LogFormat(LS_DEBUG, "[CUserMessageManager::Hook_PostEvent]\n");
+	//S2_LOGF(LS_DEBUG, "[CUserMessageManager::Hook_PostEvent]\n");
 
 	auto result = ExecuteMessageCallbacks(pEvent, pData, nClientCount, clients, mode);
 	if (result >= ResultType::Handled) {

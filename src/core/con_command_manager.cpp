@@ -139,7 +139,7 @@ static bool CheckCommandAccess(CPlayerSlot slot, uint64 flags) {
 }
 
 ResultType CConCommandManager::ExecuteCommandCallbacks(const plg::string& name, const CCommandContext& ctx, const CCommand& args, HookMode mode, CommandCallingContext callingContext) {
-	g_Logger.LogFormat(LS_DEBUG, "[ConCommandManager::ExecuteCommandCallbacks][%s]: %s\n", mode == HookMode::Pre ? "Pre" : "Post", name.c_str());
+	//S2_LOGF(LS_DEBUG, "[ConCommandManager::ExecuteCommandCallbacks][%s]: %s\n", mode == HookMode::Pre ? "Pre" : "Post", name.c_str());
 
 	int size = args.ArgC();
 
@@ -204,11 +204,11 @@ poly::ReturnAction CConCommandManager::Hook_DispatchConCommand(poly::Params& par
 		return poly::ReturnAction::Ignored;
 	}
 
-	std::string_view name = args->Arg(0);
+	const char* name = args->Arg(0);
 
-	g_Logger.LogFormat(LS_DEBUG, "[ConCommandManager::Hook_DispatchConCommand]: %s\n", name);
+	//S2_LOGF(LS_DEBUG, "[ConCommandManager::Hook_DispatchConCommand]: %s\n", name.data());
 
-	CCommand nargs;
+	/*CCommand nargs;
 	CommandCallingContext callingContext = CommandCallingContext::Console;
 	if (name == "say" || name == "say_team") {
 		std::string_view command = args->Arg(1);
@@ -229,9 +229,9 @@ poly::ReturnAction CConCommandManager::Hook_DispatchConCommand(poly::Params& par
 			args = &nargs;
 			callingContext = CommandCallingContext::Chat;
 		}
-	}
+	}*/
 
-	auto result = ExecuteCommandCallbacks(name, *ctx, *args, mode, callingContext);
+	auto result = ExecuteCommandCallbacks(name, *ctx, *args, mode, CommandCallingContext::Console);
 	if (result >= ResultType::Handled) {
 		return poly::ReturnAction::Supercede;
 	}

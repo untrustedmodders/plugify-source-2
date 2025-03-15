@@ -145,7 +145,7 @@ void CTimerSystem::KillTimer(Handle handle) {
 		return;
 	}
 
-	g_Logger.LogFormat(LS_WARNING, "KillTimer: Timer with handle %u was not found.", handle);
+	S2_LOGF(LS_WARNING, "KillTimer: Timer with handle %u was not found.", handle);
 }
 
 double CTimerSystem::GetTickedTime() {

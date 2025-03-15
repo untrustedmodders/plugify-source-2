@@ -345,7 +345,7 @@ extern "C" PLUGIN_API Handle FindConVar2(const plg::string& name, EConVarType ty
 		case EConVarType_Qangle:
 			return g_ConVarManager.FindConVar<QAngle>(name);
 		default:
-			g_Logger.Log(LS_WARNING, "Invalid convar type.\n");
+			S2_LOG(LS_WARNING, "Invalid convar type.\n");
 			return {};
 	}
 }
@@ -360,7 +360,7 @@ extern "C" PLUGIN_API Handle FindConVar2(const plg::string& name, EConVarType ty
  */
 extern "C" PLUGIN_API void HookConVarChange(const plg::string& name, ConVarChangeListenerCallback callback) {
 	if (callback == nullptr) {
-		g_Logger.Log(LS_WARNING, "Invalid callback pointer\n");
+		S2_LOG(LS_WARNING, "Invalid callback pointer\n");
 		return;
 	}
 
@@ -377,7 +377,7 @@ extern "C" PLUGIN_API void HookConVarChange(const plg::string& name, ConVarChang
  */
 extern "C" PLUGIN_API void UnhookConVarChange(const plg::string& name, ConVarChangeListenerCallback callback) {
 	if (callback == nullptr) {
-		g_Logger.Log(LS_WARNING, "Invalid callback pointer\n");
+		S2_LOG(LS_WARNING, "Invalid callback pointer\n");
 		return;
 	}
 
@@ -395,13 +395,13 @@ extern "C" PLUGIN_API bool IsConVarFlagSet(Handle conVarHandle, ConVarFlag flag)
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {
-		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
+		S2_LOGF(LS_WARNING, "Invalid convar handle\n");
 		return false;
 	}
 
 	auto* conVarData = g_pCVar->GetConVarData(conVarRef);
 	if (conVarData == nullptr) {
-		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
+		S2_LOG(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
 		return false;
 	}
 
@@ -418,13 +418,13 @@ extern "C" PLUGIN_API void AddConVarFlags(Handle conVarHandle, ConVarFlag flags)
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {
-		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
+		S2_LOGF(LS_WARNING, "Invalid convar handle\n");
 		return;
 	}
 
 	auto* conVarData = g_pCVar->GetConVarData(conVarRef);
 	if (conVarData == nullptr) {
-		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
+		S2_LOG(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
 		return;
 	}
 
@@ -441,13 +441,13 @@ extern "C" PLUGIN_API void RemoveConVarFlags(Handle conVarHandle, ConVarFlag fla
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {
-		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
+		S2_LOGF(LS_WARNING, "Invalid convar handle\n");
 		return;
 	}
 
 	auto* conVarData = g_pCVar->GetConVarData(conVarRef);
 	if (conVarData == nullptr) {
-		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
+		S2_LOG(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
 		return;
 	}
 
@@ -464,13 +464,13 @@ extern "C" PLUGIN_API ConVarFlag GetConVarFlags(Handle conVarHandle) {
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {
-		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
+		S2_LOGF(LS_WARNING, "Invalid convar handle\n");
 		return ConVarFlag::None;
 	}
 
 	auto* conVarData = g_pCVar->GetConVarData(conVarRef);
 	if (conVarData == nullptr) {
-		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
+		S2_LOG(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
 		return ConVarFlag::None;
 	}
 
@@ -488,13 +488,13 @@ extern "C" PLUGIN_API plg::string GetConVarBounds(Handle conVarHandle, bool max)
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {
-		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
+		S2_LOGF(LS_WARNING, "Invalid convar handle\n");
 		return {};
 	}
 
 	auto* conVarData = g_pCVar->GetConVarData(conVarRef);
 	if (conVarData == nullptr) {
-		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
+		S2_LOG(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
 		return {};
 	}
 
@@ -519,13 +519,13 @@ extern "C" PLUGIN_API void SetConVarBounds(Handle conVarHandle, bool max, const 
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {
-		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
+		S2_LOGF(LS_WARNING, "Invalid convar handle\n");
 		return;
 	}
 
 	auto* conVarData = g_pCVar->GetConVarData(conVarRef);
 	if (conVarData == nullptr) {
-		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
+		S2_LOG(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
 		return;
 	}
 
@@ -546,13 +546,13 @@ extern "C" PLUGIN_API plg::string GetConVarDefault(Handle conVarHandle) {
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {
-		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
+		S2_LOGF(LS_WARNING, "Invalid convar handle\n");
 		return {};
 	}
 
 	auto* conVarData = g_pCVar->GetConVarData(conVarRef);
 	if (conVarData == nullptr) {
-		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
+		S2_LOG(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
 		return {};
 	}
 
@@ -573,13 +573,13 @@ extern "C" PLUGIN_API plg::string GetConVarValue(Handle conVarHandle) {
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {
-		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
+		S2_LOGF(LS_WARNING, "Invalid convar handle\n");
 		return {};
 	}
 
 	auto* conVarData = g_pCVar->GetConVarData(conVarRef);
 	if (conVarData == nullptr) {
-		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
+		S2_LOG(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
 		return {};
 	}
 
@@ -600,13 +600,13 @@ extern "C" PLUGIN_API plg::any GetConVar(Handle conVarHandle) {
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {
-		g_Logger.LogFormat(LS_WARNING, "Invalid convar handle\n");
+		S2_LOGF(LS_WARNING, "Invalid convar handle\n");
 		return {};
 	}
 
 	auto* conVarData = g_pCVar->GetConVarData(conVarRef);
 	if (conVarData == nullptr) {
-		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
+		S2_LOG(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
 		return {};
 	}
 
@@ -791,13 +791,13 @@ extern "C" PLUGIN_API void SetConVar(Handle conVarHandle, const plg::any& value,
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {
-		g_Logger.Log(LS_WARNING, "Invalid convar handle.\n");
+		S2_LOG(LS_WARNING, "Invalid convar handle.\n");
 		return;
 	}
 
 	auto* conVarData = g_pCVar->GetConVarData(conVarRef);
 	if (conVarData == nullptr) {
-		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
+		S2_LOG(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
 		return;
 	}
 
@@ -912,7 +912,7 @@ extern "C" PLUGIN_API void SetConVar(Handle conVarHandle, const plg::any& value,
 			}, value);
 			break;
 		default:
-			g_Logger.Log(LS_WARNING, "Invalid convar type.\n");
+			S2_LOG(LS_WARNING, "Invalid convar type.\n");
 			return;
 	}
 }
@@ -1100,62 +1100,62 @@ extern "C" PLUGIN_API void SetConVarQAngle(Handle conVarHandle, const QAngle& va
 /**
  * @brief Replicates a console variable value to a specific client. This does not change the actual console variable value.
  *
- * @param clientIndex The index of the client to replicate the value to.
+ * @param playerSlot The index of the player's slot to replicate the value to.
  * @param conVarHandle The handle to the console variable data.
  * @param value The value to send to the client.
  */
-extern "C" PLUGIN_API void SendConVarValue(int clientIndex, Handle conVarHandle, const plg::string& value) {
+extern "C" PLUGIN_API void SendConVarValue(int playerSlot, Handle conVarHandle, const plg::string& value) {
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {
-		g_Logger.Log(LS_WARNING, "Invalid convar handle.\n");
+		S2_LOG(LS_WARNING, "Invalid convar handle.\n");
 		return;
 	}
 
-	if (!utils::IsPlayerSlot(clientIndex)) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SendConVarValue' on invalid client index: %d\n", clientIndex);
+	if (!utils::IsPlayerSlot(playerSlot)) {
+		S2_LOGF(LS_WARNING, "Cannot execute 'SendConVarValue' on invalid player slot: %d\n", playerSlot);
 		return;
 	}
 
 	auto* conVarData = g_pCVar->GetConVarData(conVarRef);
 	if (conVarData == nullptr) {
-		g_Logger.Log(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
+		S2_LOG(LS_WARNING, "Invalid convar handle. Ensure the ConVarRef is correctly initialized and not null.\n");
 		return;
 	}
 
-	utils::SendConVarValue(clientIndex, conVarData->GetName(), value.c_str());
+	utils::SendConVarValue(playerSlot, conVarData->GetName(), value.c_str());
 }
 
 /**
  * @brief Retrieves the value of a client's console variable and stores it in the output string.
  *
- * @param clientIndex The index of the client whose console variable value is being retrieved.
+ * @param playerSlot The index of the player's slot whose console variable value is being retrieved.
  * @param convarName The name of the console variable to retrieve.
  * @return The output string to store the client's console variable value.
  */
-extern "C" PLUGIN_API plg::string GetClientConVarValue(int clientIndex, const plg::string& convarName) {
-	if (!utils::IsPlayerSlot(clientIndex)) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetClientConVarValue' on invalid client index: %d\n", clientIndex);
+extern "C" PLUGIN_API plg::string GetClientConVarValue(int playerSlot, const plg::string& convarName) {
+	if (!utils::IsPlayerSlot(playerSlot)) {
+		S2_LOGF(LS_WARNING, "Cannot execute 'GetClientConVarValue' on invalid player slot: %d\n", playerSlot);
 		return {};
 	}
 
-	return g_pEngineServer2->GetClientConVarValue(clientIndex, convarName.c_str());
+	return g_pEngineServer2->GetClientConVarValue(playerSlot, convarName.c_str());
 }
 
 /**
  * @brief Replicates a console variable value to a specific fake client. This does not change the actual console variable value.
  *
- * @param clientIndex The index of the fake client to replicate the value to.
+ * @param playerSlot The index of the fake client to replicate the value to.
  * @param convarName The name of the console variable.
  * @param convarValue The value to set for the console variable.
  */
-extern "C" PLUGIN_API void SetFakeClientConVarValue(int clientIndex, const plg::string& convarName, const plg::string& convarValue) {
-	if (!utils::IsPlayerSlot(clientIndex)) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetFakeClientConVarValue' on invalid client index: %d\n", clientIndex);
+extern "C" PLUGIN_API void SetFakeClientConVarValue(int playerSlot, const plg::string& convarName, const plg::string& convarValue) {
+	if (!utils::IsPlayerSlot(playerSlot)) {
+		S2_LOGF(LS_WARNING, "Cannot execute 'SetFakeClientConVarValue' on invalid player slot: %d\n", playerSlot);
 		return;
 	}
 
-	g_pEngineServer2->SetFakeClientConVarValue(clientIndex, convarName.c_str(), convarValue.c_str());
+	g_pEngineServer2->SetFakeClientConVarValue(playerSlot, convarName.c_str(), convarValue.c_str());
 }
 
 PLUGIFY_WARN_POP()

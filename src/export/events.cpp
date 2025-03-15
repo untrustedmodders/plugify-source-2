@@ -54,10 +54,10 @@ extern "C" PLUGIN_API void FireEvent(EventInfo* pInfo, bool bDontBroadcast) {
 /**
  * @brief Fires a game event to a specific client.
  * @param pInfo A pointer to the EventInfo structure containing event data.
- * @param clientIndex The index of the client to fire the event to.
+ * @param playerSlot The index of the player's slot to fire the event to.
  */
-extern "C" PLUGIN_API void FireEventToClient(EventInfo* pInfo, int clientIndex) {
-	g_EventManager.FireEventToClient(pInfo, clientIndex);
+extern "C" PLUGIN_API void FireEventToClient(EventInfo* pInfo, int playerSlot) {
+	g_EventManager.FireEventToClient(pInfo, playerSlot);
 }
 
 /**

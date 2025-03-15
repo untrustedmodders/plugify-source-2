@@ -8,7 +8,7 @@ void CServerManager::OnGameFrame() {
 
 	std::lock_guard<std::mutex> lock(m_nextTasksLock);
 
-	g_Logger.LogFormat(LS_DEBUG, "Executing queued tasks of size: %zu on tick number %f\n", m_nextTasks.size(), gpGlobals->tickcount);
+	//S2_LOGF(LS_DEBUG, "Executing queued tasks of size: %zu on tick number %f\n", m_nextTasks.size(), gpGlobals->tickcount);
 
 	for (const auto& [nextTask, userData]: m_nextTasks) {
 		nextTask(userData);
@@ -23,7 +23,7 @@ void CServerManager::OnPreWorldUpdate() {
 
 	std::lock_guard<std::mutex> lock(m_nextWorldUpdateTasksLock);
 
-	g_Logger.LogFormat(LS_DEBUG, "Executing queued tasks of size: %zu at time %f\n", m_nextWorldUpdateTasks.size(), gpGlobals->curtime);
+	//S2_LOGF(LS_DEBUG, "Executing queued tasks of size: %zu at time %f\n", m_nextWorldUpdateTasks.size(), gpGlobals->curtime);
 
 	for (const auto& [nextTask, userData]: m_nextWorldUpdateTasks) {
 		nextTask(userData);

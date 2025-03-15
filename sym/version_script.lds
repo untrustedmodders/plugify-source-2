@@ -4,6 +4,11 @@
         Plugify_*;
 
         GetClientIndexFromEntityPointer;
+        GetEntityPointerFromPlayerSlot;
+        GetClientBaseFromPlayerSlot;
+        GetPlayerSlotFromClientBase;
+        GetClientIndexFromPlayerSlot;
+        GetPlayerSlotFromClientIndex;
         GetClientAuthId;
         GetClientAccountId;
         GetClientIp;

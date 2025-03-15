@@ -15,38 +15,47 @@ PLUGIFY_WARN_IGNORE(4190)
 #endif
 
 /**
- * @brief Retrieves the client index from a given entity pointer.
+ * @brief Retrieves the player slot from a given entity pointer.
  *
  * This function checks if the provided entity pointer is valid and returns
- * the corresponding client index. If the entity pointer is invalid, it returns -1.
+ * the corresponding player slot. If the entity pointer is invalid, it returns -1.
  *
  * @param entity A pointer to the entity (CBaseEntity*).
- * @return The client index if valid, otherwise -1.
+ * @return The player slot if valid, otherwise -1.
  */
-extern "C" PLUGIN_API int GetClientIndexFromEntityPointer(CBaseEntity* entity) {
+extern "C" PLUGIN_API int GetPlayerSlotFromEntityPointer(CBaseEntity* entity) {
 	if (!g_pGameEntitySystem->IsEntityPtr(entity)) {
 		return -1;
 	}
 
-	return utils::GetEntityPlayerSlot(entity).Get();
+	return utils::GetEntityPlayerSlot(entity);
+}
+
+extern "C" PLUGIN_API CEntityInstance* GetEntityPointerFromPlayerSlot(int playerSlot) {
+	CUtlVector<CServerSideClientBase *>* pClients = utils::GetClientList();
+	if (!pClients || !(0 <= playerSlot && playerSlot < pClients->Count())) {
+		return nullptr;
+	}
+
+	return g_pGameEntitySystem->GetEntityInstance(pClients->Element(playerSlot)->GetEntityIndex());
 }
 
 /**
- * @brief Retrieves the client object from a given client index.
+ * @brief Retrieves the client object from a given player slot.
  *
  * This function fetches the client object associated with the specified index.
  * If the client list is unavailable, or the index is invalid, it returns nullptr.
  *
- * @param clientIndex The index of the client (0-based).
+ * @param playerSlot The index of the player's slot (0-based).
  * @return A pointer to the client object if found, otherwise nullptr.
  */
-extern "C" PLUGIN_API void* GetClientFromIndex(int clientIndex) {
+extern "C" PLUGIN_API void* GetClientBaseFromPlayerSlot(int playerSlot) {
 	CUtlVector<CServerSideClientBase *>* pClients = utils::GetClientList();
-	if (!pClients) {
+	if (!pClients || !(0 <= playerSlot && playerSlot < pClients->Count())) {
 		return nullptr;
 	}
 	
-	return pClients->Element(clientIndex);
+	return pClients->Element(playerSlot);
 }
 
 /**
@@ -56,29 +65,47 @@ extern "C" PLUGIN_API void* GetClientFromIndex(int clientIndex) {
  * If the client is not found or the list is unavailable, it returns -1.
  *
  * @param client A pointer to the client object (CServerSideClient*).
- * @return The client index if found, otherwise -1.
+ * @return The player slot if found, otherwise -1.
  */
-extern "C" PLUGIN_API int GetIndexFromClient(CServerSideClient* client) {
+extern "C" PLUGIN_API int GetPlayerSlotFromClientBase(CServerSideClient* client) {
 	CUtlVector<CServerSideClientBase *>* pClients = utils::GetClientList();
 	if (!pClients) {
 		return -1;
 	}
 	
 	if (pClients->Find(client) != -1) {
-		return client->GetPlayerSlot().Get();
+		return client->GetPlayerSlot();
 	}
 
 	return -1;
 }
 
+extern "C" PLUGIN_API int GetClientIndexFromPlayerSlot(int playerSlot) {
+	CUtlVector<CServerSideClientBase *>* pClients = utils::GetClientList();
+	if (!pClients || !(0 <= playerSlot && playerSlot < pClients->Count())) {
+		return 0;
+	}
+
+	return pClients->Element(playerSlot)->GetEntityIndex();
+}
+
+extern "C" PLUGIN_API int GetPlayerSlotFromClientIndex(int clientIndex) {
+	auto pController = g_PlayerManager.ToPlayer(CEntityIndex(clientIndex));
+	if (!pController) {
+		return -1;
+	}
+
+	return pController->GetPlayerSlot();
+}
+
 /**
  * @brief Retrieves a client's authentication string (SteamID).
  *
- * @param clientIndex Index of the client whose authentication string is being retrieved.
+ * @param playerSlot The index of the player's slot whose authentication string is being retrieved.
  * @return The authentication string.
  */
-extern "C" PLUGIN_API plg::string GetClientAuthId(int clientIndex) {
-	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(clientIndex));
+extern "C" PLUGIN_API plg::string GetClientAuthId(int playerSlot) {
+	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(playerSlot));
 	if (pPlayer == nullptr) {
 		return {};
 	}
@@ -89,11 +116,11 @@ extern "C" PLUGIN_API plg::string GetClientAuthId(int clientIndex) {
 /**
  * @brief Returns the client's Steam account ID, a unique number identifying a given Steam account.
  *
- * @param clientIndex Index of the client.
+ * @param playerSlot The index of the player's slot.
  * @return uint64_t Steam account ID.
  */
-extern "C" PLUGIN_API uint64_t GetClientAccountId(int clientIndex) {
-	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(clientIndex));
+extern "C" PLUGIN_API uint64_t GetClientAccountId(int playerSlot) {
+	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(playerSlot));
 	if (pPlayer == nullptr) {
 		return 0;
 	}
@@ -104,11 +131,11 @@ extern "C" PLUGIN_API uint64_t GetClientAccountId(int clientIndex) {
 /**
  * @brief Retrieves a client's IP address.
  *
- * @param clientIndex Index of the client.
+ * @param playerSlot The index of the player's slot.
  * @return The IP address.
  */
-extern "C" PLUGIN_API plg::string GetClientIp(int clientIndex) {
-	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(clientIndex));
+extern "C" PLUGIN_API plg::string GetClientIp(int playerSlot) {
+	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(playerSlot));
 	if (pPlayer == nullptr) {
 		return {};
 	}
@@ -119,11 +146,11 @@ extern "C" PLUGIN_API plg::string GetClientIp(int clientIndex) {
 /**
  * @brief Returns the client's name.
  *
- * @param clientIndex Index of the client.
+ * @param playerSlot The index of the player's slot.
  * @return The client's name.
  */
-extern "C" PLUGIN_API plg::string GetClientName(int clientIndex) {
-	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(clientIndex));
+extern "C" PLUGIN_API plg::string GetClientName(int playerSlot) {
+	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(playerSlot));
 	if (pPlayer == nullptr) {
 		return {};
 	}
@@ -134,11 +161,11 @@ extern "C" PLUGIN_API plg::string GetClientName(int clientIndex) {
 /**
  * @brief Returns the client's connection time in seconds.
  *
- * @param clientIndex Index of the client.
+ * @param playerSlot The index of the player's slot.
  * @return float Connection time in seconds.
  */
-extern "C" PLUGIN_API float GetClientTime(int clientIndex) {
-	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(clientIndex));
+extern "C" PLUGIN_API float GetClientTime(int playerSlot) {
+	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(playerSlot));
 	if (pPlayer == nullptr) {
 		return -1.0f;
 	}
@@ -149,11 +176,11 @@ extern "C" PLUGIN_API float GetClientTime(int clientIndex) {
 /**
  * @brief Returns the client's current latency (RTT).
  *
- * @param clientIndex Index of the client.
+ * @param playerSlot The index of the player's slot.
  * @return float Latency value.
  */
-extern "C" PLUGIN_API float GetClientLatency(int clientIndex) {
-	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(clientIndex));
+extern "C" PLUGIN_API float GetClientLatency(int playerSlot) {
+	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(playerSlot));
 	if (pPlayer == nullptr) {
 		return 0.0f;
 	}
@@ -164,11 +191,11 @@ extern "C" PLUGIN_API float GetClientLatency(int clientIndex) {
 /**
  * @brief Returns the client's access flags.
  *
- * @param clientIndex Index of the client.
+ * @param playerSlot The index of the player's slot.
  * @return uint64 Access flags as a bitmask.
  */
-extern "C" PLUGIN_API uint64 GetUserFlagBits(int clientIndex) {
-	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(clientIndex));
+extern "C" PLUGIN_API uint64 GetUserFlagBits(int playerSlot) {
+	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(playerSlot));
 	if (pPlayer == nullptr) {
 		return false;
 	}
@@ -179,11 +206,11 @@ extern "C" PLUGIN_API uint64 GetUserFlagBits(int clientIndex) {
 /**
  * @brief Sets the access flags on a client using a bitmask.
  *
- * @param clientIndex Index of the client.
+ * @param playerSlot The index of the player's slot.
  * @param flags Bitmask representing the flags to be set.
  */
-extern "C" PLUGIN_API void SetUserFlagBits(int clientIndex, uint64 flags) {
-	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(clientIndex));
+extern "C" PLUGIN_API void SetUserFlagBits(int playerSlot, uint64 flags) {
+	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(playerSlot));
 	if (pPlayer == nullptr) {
 		return;
 	}
@@ -196,11 +223,11 @@ extern "C" PLUGIN_API void SetUserFlagBits(int clientIndex, uint64 flags) {
  *
  * If the client is not an admin, they will be given a temporary AdminId.
  *
- * @param clientIndex Index of the client.
+ * @param playerSlot The index of the player's slot.
  * @param flags Bitmask representing the flags to be added.
  */
-extern "C" PLUGIN_API void AddUserFlags(int clientIndex, uint64 flags) {
-	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(clientIndex));
+extern "C" PLUGIN_API void AddUserFlags(int playerSlot, uint64 flags) {
+	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(playerSlot));
 	if (pPlayer == nullptr) {
 		return;
 	}
@@ -213,11 +240,11 @@ extern "C" PLUGIN_API void AddUserFlags(int clientIndex, uint64 flags) {
  *
  * If the client is not an admin, this has no effect.
  *
- * @param clientIndex Index of the client.
+ * @param playerSlot The index of the player's slot.
  * @param flags Bitmask representing the flags to be removed.
  */
-extern "C" PLUGIN_API void RemoveUserFlags(int clientIndex, uint64 flags) {
-	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(clientIndex));
+extern "C" PLUGIN_API void RemoveUserFlags(int playerSlot, uint64 flags) {
+	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(playerSlot));
 	if (pPlayer == nullptr) {
 		return;
 	}
@@ -228,11 +255,11 @@ extern "C" PLUGIN_API void RemoveUserFlags(int clientIndex, uint64 flags) {
 /**
  * @brief Checks if a certain player has been authenticated.
  *
- * @param clientIndex Index of the client.
+ * @param playerSlot The index of the player's slot.
  * @return true if the player is authenticated, false otherwise.
  */
-extern "C" PLUGIN_API bool IsClientAuthorized(int clientIndex) {
-	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(clientIndex));
+extern "C" PLUGIN_API bool IsClientAuthorized(int playerSlot) {
+	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(playerSlot));
 	if (pPlayer == nullptr) {
 		return false;
 	}
@@ -243,11 +270,11 @@ extern "C" PLUGIN_API bool IsClientAuthorized(int clientIndex) {
 /**
  * @brief Checks if a certain player is connected.
  *
- * @param clientIndex Index of the client.
+ * @param playerSlot The index of the player's slot.
  * @return true if the player is connected, false otherwise.
  */
-extern "C" PLUGIN_API bool IsClientConnected(int clientIndex) {
-	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(clientIndex));
+extern "C" PLUGIN_API bool IsClientConnected(int playerSlot) {
+	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(playerSlot));
 	if (pPlayer == nullptr) {
 		return false;
 	}
@@ -258,11 +285,11 @@ extern "C" PLUGIN_API bool IsClientConnected(int clientIndex) {
 /**
  * @brief Checks if a certain player has entered the game.
  *
- * @param clientIndex Index of the client.
+ * @param playerSlot The index of the player's slot.
  * @return true if the player is in the game, false otherwise.
  */
-extern "C" PLUGIN_API bool IsClientInGame(int clientIndex) {
-	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(clientIndex));
+extern "C" PLUGIN_API bool IsClientInGame(int playerSlot) {
+	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(playerSlot));
 	if (pPlayer == nullptr) {
 		return false;
 	}
@@ -273,11 +300,11 @@ extern "C" PLUGIN_API bool IsClientInGame(int clientIndex) {
 /**
  * @brief Checks if a certain player is the SourceTV bot.
  *
- * @param clientIndex Index of the client.
+ * @param playerSlot The index of the player's slot.
  * @return true if the client is the SourceTV bot, false otherwise.
  */
-extern "C" PLUGIN_API bool IsClientSourceTV(int clientIndex) {
-	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(clientIndex));
+extern "C" PLUGIN_API bool IsClientSourceTV(int playerSlot) {
+	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(playerSlot));
 	if (pPlayer == nullptr) {
 		return false;
 	}
@@ -288,11 +315,11 @@ extern "C" PLUGIN_API bool IsClientSourceTV(int clientIndex) {
 /**
  * @brief Checks if the client is alive or dead.
  *
- * @param clientIndex Index of the client.
+ * @param playerSlot The index of the player's slot.
  * @return true if the client is alive, false if dead.
  */
-extern "C" PLUGIN_API bool IsClientAlive(int clientIndex) {
-	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(clientIndex));
+extern "C" PLUGIN_API bool IsClientAlive(int playerSlot) {
+	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(playerSlot));
 	if (pPlayer == nullptr) {
 		return false;
 	}
@@ -303,11 +330,11 @@ extern "C" PLUGIN_API bool IsClientAlive(int clientIndex) {
 /**
  * @brief Checks if a certain player is a fake client.
  *
- * @param clientIndex Index of the client.
+ * @param playerSlot The index of the player's slot.
  * @return true if the client is a fake client, false otherwise.
  */
-extern "C" PLUGIN_API bool IsFakeClient(int clientIndex) {
-	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(clientIndex));
+extern "C" PLUGIN_API bool IsFakeClient(int playerSlot) {
+	auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(playerSlot));
 	if (pPlayer == nullptr) {
 		return false;
 	}
@@ -320,11 +347,11 @@ extern "C" PLUGIN_API bool IsFakeClient(int clientIndex) {
 /**
  * @brief Retrieves a client's team index.
  *
- * @param clientIndex Index of the client.
+ * @param playerSlot The index of the player's slot.
  * @return The team index of the client.
  */
-extern "C" PLUGIN_API int GetClientTeam(int clientIndex) {
-	auto pController = utils::GetController(clientIndex);
+extern "C" PLUGIN_API int GetClientTeam(int playerSlot) {
+	auto pController = utils::GetController(playerSlot);
 	if (!pController) {
 		return 0;
 	}
@@ -335,11 +362,11 @@ extern "C" PLUGIN_API int GetClientTeam(int clientIndex) {
 /**
  * @brief Returns the client's health.
  *
- * @param clientIndex Index of the client.
+ * @param playerSlot The index of the player's slot.
  * @return The health value of the client.
  */
-extern "C" PLUGIN_API int GetClientHealth(int clientIndex) {
-	auto pController = utils::GetController(clientIndex);
+extern "C" PLUGIN_API int GetClientHealth(int playerSlot) {
+	auto pController = utils::GetController(playerSlot);
 	if (!pController) {
 		return 0;
 	}
@@ -350,11 +377,11 @@ extern "C" PLUGIN_API int GetClientHealth(int clientIndex) {
 /**
  * @brief Returns the client's armor value.
  *
- * @param clientIndex Index of the client.
+ * @param playerSlot The index of the player's slot.
  * @return The armor value of the client.
  */
-extern "C" PLUGIN_API int GetClientArmor(int clientIndex) {
-	auto pController = utils::GetController(clientIndex);
+extern "C" PLUGIN_API int GetClientArmor(int playerSlot) {
+	auto pController = utils::GetController(playerSlot);
 	if (!pController) {
 		return 0;
 	}
@@ -365,11 +392,11 @@ extern "C" PLUGIN_API int GetClientArmor(int clientIndex) {
 /**
  * @brief Retrieves the client's origin vector.
  *
- * @param clientIndex Index of the client.
+ * @param playerSlot The index of the player's slot.
  * @return A Vector where the client's origin will be stored.
  */
-extern "C" PLUGIN_API plg::vec3 GetClientAbsOrigin(int clientIndex) {
-	auto pController = utils::GetController(clientIndex);
+extern "C" PLUGIN_API plg::vec3 GetClientAbsOrigin(int playerSlot) {
+	auto pController = utils::GetController(playerSlot);
 	if (!pController) {
 		return {};
 	}
@@ -381,11 +408,11 @@ extern "C" PLUGIN_API plg::vec3 GetClientAbsOrigin(int clientIndex) {
 /**
  * @brief Retrieves the client's position angle.
  *
- * @param clientIndex Index of the client.
+ * @param playerSlot The index of the player's slot.
  * @return A QAngle where the client's position angle will be stored.
  */
-extern "C" PLUGIN_API plg::vec3 GetClientAbsAngles(int clientIndex) {
-	auto pController = utils::GetController(clientIndex);
+extern "C" PLUGIN_API plg::vec3 GetClientAbsAngles(int playerSlot) {
+	auto pController = utils::GetController(playerSlot);
 	if (!pController) {
 		return {};
 	}
@@ -397,11 +424,11 @@ extern "C" PLUGIN_API plg::vec3 GetClientAbsAngles(int clientIndex) {
 /**
  * @brief Retrieves the client's eye angle.
  *
- * @param clientIndex Index of the client.
+ * @param playerSlot The index of the player's slot.
  * @return A QAngle where the client's eye angle will be stored.
  */
-extern "C" PLUGIN_API plg::vec3 GetClientEyeAngles(int clientIndex) {
-	auto pController = utils::GetController(clientIndex);
+extern "C" PLUGIN_API plg::vec3 GetClientEyeAngles(int playerSlot) {
+	auto pController = utils::GetController(playerSlot);
 	if (!pController) {
 		return {};
 	}
@@ -413,7 +440,7 @@ extern "C" PLUGIN_API plg::vec3 GetClientEyeAngles(int clientIndex) {
 /**
  * @brief Processes the target string to determine if one user can target another.
  *
- * @param caller Index of the client making the target request.
+ * @param caller The index of the player's slot making the target request.
  * @param target The target string specifying the player or players to be targeted.
  * @return A vector where the result of the targeting operation will be stored.
  */
@@ -426,13 +453,13 @@ extern "C" PLUGIN_API plg::vector<int> ProcessTargetString(int caller, const plg
 /**
  * @brief Changes a client's team.
  *
- * @param clientIndex Index of the client.
+ * @param playerSlot The index of the player's slot.
  * @param team The team index to assign the client to.
  */
-extern "C" PLUGIN_API void ChangeClientTeam(int clientIndex, int team) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(clientIndex));
+extern "C" PLUGIN_API void ChangeClientTeam(int playerSlot, int team) {
+	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'ChangeClientTeam' on invalid client index: %d\n", clientIndex);
+		S2_LOGF(LS_WARNING, "Cannot execute 'ChangeClientTeam' on invalid player slot: %d\n", playerSlot);
 		return;
 	}
 
@@ -442,13 +469,13 @@ extern "C" PLUGIN_API void ChangeClientTeam(int clientIndex, int team) {
 /**
  * @brief Switches the player's team.
  *
- * @param clientIndex Index of the client.
+ * @param playerSlot The index of the player's slot.
  * @param team The team index to switch the client to.
  */
-extern "C" PLUGIN_API void SwitchClientTeam(int clientIndex, int team) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(clientIndex));
+extern "C" PLUGIN_API void SwitchClientTeam(int playerSlot, int team) {
+	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SwitchClientTeam' on invalid client index: %d\n", clientIndex);
+		S2_LOGF(LS_WARNING, "Cannot execute 'SwitchClientTeam' on invalid player slot: %d\n", playerSlot);
 		return;
 	}
 
@@ -458,12 +485,12 @@ extern "C" PLUGIN_API void SwitchClientTeam(int clientIndex, int team) {
 /**
  * @brief Respawns a player.
  *
- * @param clientIndex Index of the client to respawn.
+ * @param playerSlot The index of the player's slot to respawn.
  */
-extern "C" PLUGIN_API void RespawnClient(int clientIndex) {
-	auto pController = utils::GetController(clientIndex);
+extern "C" PLUGIN_API void RespawnClient(int playerSlot) {
+	auto pController = utils::GetController(playerSlot);
 	if (!pController) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'RespawnClient' on invalid client index: %d\n", clientIndex);
+		S2_LOGF(LS_WARNING, "Cannot execute 'RespawnClient' on invalid player slot: %d\n", playerSlot);
 		return;
 	}
 
@@ -478,14 +505,14 @@ extern "C" PLUGIN_API void RespawnClient(int clientIndex) {
 /**
  * @brief Forces a player to commit suicide.
  *
- * @param clientIndex Index of the client.
+ * @param playerSlot The index of the player's slot.
  * @param explode If true, the client will explode upon death.
  * @param force If true, the suicide will be forced.
  */
-extern "C" PLUGIN_API void ForcePlayerSuicide(int clientIndex, bool explode, bool force) {
-	auto pController = utils::GetController(clientIndex);
+extern "C" PLUGIN_API void ForcePlayerSuicide(int playerSlot, bool explode, bool force) {
+	auto pController = utils::GetController(playerSlot);
 	if (!pController) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'ForcePlayerSuicide' on invalid client index: %d\n", clientIndex);
+		S2_LOGF(LS_WARNING, "Cannot execute 'ForcePlayerSuicide' on invalid player slot: %d\n", playerSlot);
 		return;
 	}
 
@@ -495,21 +522,21 @@ extern "C" PLUGIN_API void ForcePlayerSuicide(int clientIndex, bool explode, boo
 /**
  * @brief Disconnects a client from the server as soon as the next frame starts.
  *
- * @param clientIndex Index of the client to be kicked.
+ * @param playerSlot The index of the player's slot to be kicked.
  */
-extern "C" PLUGIN_API void KickClient(int clientIndex) {
-	g_pEngineServer2->DisconnectClient(clientIndex, NETWORK_DISCONNECT_KICKED);
+extern "C" PLUGIN_API void KickClient(int playerSlot) {
+	g_pEngineServer2->DisconnectClient(playerSlot, NETWORK_DISCONNECT_KICKED);
 }
 
 /**
  * @brief Bans a client for a specified duration.
  *
- * @param clientIndex Index of the client to be banned.
+ * @param playerSlot The index of the player's slot to be banned.
  * @param duration Duration of the ban in seconds.
  * @param kick If true, the client will be kicked immediately after being banned.
  */
-extern "C" PLUGIN_API void BanClient(int clientIndex, float duration, bool kick) {
-	g_pEngineServer2->BanClient(CPlayerSlot(clientIndex), duration, kick);
+extern "C" PLUGIN_API void BanClient(int playerSlot, float duration, bool kick) {
+	g_pEngineServer2->BanClient(CPlayerSlot(playerSlot), duration, kick);
 }
 
 /**
@@ -526,13 +553,13 @@ extern "C" PLUGIN_API void BanIdentity(uint64_t steamId, float duration, bool ki
 /**
  * @brief Retrieves the handle of the client's currently active weapon.
  *
- * @param clientIndex The index of the client.
+ * @param playerSlot The index of the player's slot.
  * @return The entity handle of the active weapon, or INVALID_EHANDLE_INDEX if the client is invalid or has no active weapon.
  */
-extern "C" PLUGIN_API int GetClientActiveWeapon(int clientIndex) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(clientIndex));
+extern "C" PLUGIN_API int GetClientActiveWeapon(int playerSlot) {
+	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetClientActiveWeapon' on invalid client index: %d\n", clientIndex);
+		S2_LOGF(LS_WARNING, "Cannot execute 'GetClientActiveWeapon' on invalid player slot: %d\n", playerSlot);
 		return INVALID_EHANDLE_INDEX;
 	}
 
@@ -547,13 +574,13 @@ extern "C" PLUGIN_API int GetClientActiveWeapon(int clientIndex) {
 /**
  * @brief Retrieves a list of weapon handles owned by the client.
  *
- * @param clientIndex The index of the client.
+ * @param playerSlot The index of the player's slot.
  * @return A vector of entity handles for the client's weapons, or an empty vector if the client is invalid or has no weapons.
  */
-extern "C" PLUGIN_API plg::vector<int> GetClientWeapons(int clientIndex) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(clientIndex));
+extern "C" PLUGIN_API plg::vector<int> GetClientWeapons(int playerSlot) {
+	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetClientWeapons' on invalid client index: %d\n", clientIndex);
+		S2_LOGF(LS_WARNING, "Cannot execute 'GetClientWeapons' on invalid player slot: %d\n", playerSlot);
 		return {};
 	}
 
@@ -577,13 +604,13 @@ extern "C" PLUGIN_API plg::vector<int> GetClientWeapons(int clientIndex) {
 /**
  * @brief Removes all weapons from a client, with an option to remove the suit as well.
  *
- * @param clientIndex The index of the client.
+ * @param playerSlot The index of the player's slot.
  * @param removeSuit A boolean indicating whether to also remove the client's suit.
  */
-extern "C" PLUGIN_API void StripWeapons(int clientIndex, bool removeSuit) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(clientIndex));
+extern "C" PLUGIN_API void StripWeapons(int playerSlot, bool removeSuit) {
+	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'StripWeapons' on invalid client index: %d\n", clientIndex);
+		S2_LOGF(LS_WARNING, "Cannot execute 'StripWeapons' on invalid player slot: %d\n", playerSlot);
 		return;
 	}
 
@@ -598,21 +625,21 @@ extern "C" PLUGIN_API void StripWeapons(int clientIndex, bool removeSuit) {
 /**
  * @brief Forces a player to drop their weapon.
  *
- * @param clientIndex The index of the client.
+ * @param playerSlot The index of the player's slot.
  * @param weaponHandle The handle of weapon to drop.
  * @param target Target direction.
  * @param velocity Velocity to toss weapon or zero to just drop weapon.
  */
-extern "C" PLUGIN_API void DropWeapon(int clientIndex, int weaponHandle, const plg::vec3& target, const plg::vec3& velocity) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(clientIndex));
+extern "C" PLUGIN_API void DropWeapon(int playerSlot, int weaponHandle, const plg::vec3& target, const plg::vec3& velocity) {
+	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'DropWeapon' on invalid client index: %d\n", clientIndex);
+		S2_LOGF(LS_WARNING, "Cannot execute 'DropWeapon' on invalid player slot: %d\n", playerSlot);
 		return;
 	}
 
 	CBasePlayerWeapon* pWeapon = static_cast<CBasePlayerWeapon*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) weaponHandle)));
 	if (!pWeapon) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'DropWeapon' on invalid weapon handle: %d\n", weaponHandle);
+		S2_LOGF(LS_WARNING, "Cannot execute 'DropWeapon' on invalid weapon handle: %d\n", weaponHandle);
 		return;
 	}
 
@@ -627,19 +654,19 @@ extern "C" PLUGIN_API void DropWeapon(int clientIndex, int weaponHandle, const p
 /**
  * @brief Bumps a player's weapon.
  *
- * @param clientIndex The index of the client.
+ * @param playerSlot The index of the player's slot.
  * @param weaponHandle The handle of weapon to bump.
  */
-extern "C" PLUGIN_API void BumpWeapon(int clientIndex, int weaponHandle) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(clientIndex));
+extern "C" PLUGIN_API void BumpWeapon(int playerSlot, int weaponHandle) {
+	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SwitchWeapon' on invalid client index: %d\n", clientIndex);
+		S2_LOGF(LS_WARNING, "Cannot execute 'SwitchWeapon' on invalid player slot: %d\n", playerSlot);
 		return;
 	}
 
 	CBasePlayerWeapon* pWeapon = static_cast<CBasePlayerWeapon*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) weaponHandle)));
 	if (!pWeapon) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SwitchWeapon' on invalid weapon handle: %d\n", weaponHandle);
+		S2_LOGF(LS_WARNING, "Cannot execute 'SwitchWeapon' on invalid weapon handle: %d\n", weaponHandle);
 		return;
 	}
 
@@ -654,19 +681,19 @@ extern "C" PLUGIN_API void BumpWeapon(int clientIndex, int weaponHandle) {
 /**
  * @brief Switches a player's weapon.
  *
- * @param clientIndex The index of the client.
+ * @param playerSlot The index of the player's slot.
  * @param weaponHandle The handle of weapon to switch.
  */
-extern "C" PLUGIN_API void SwitchWeapon(int clientIndex, int weaponHandle) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(clientIndex));
+extern "C" PLUGIN_API void SwitchWeapon(int playerSlot, int weaponHandle) {
+	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SwitchWeapon' on invalid client index: %d\n", clientIndex);
+		S2_LOGF(LS_WARNING, "Cannot execute 'SwitchWeapon' on invalid player slot: %d\n", playerSlot);
 		return;
 	}
 
 	CBasePlayerWeapon* pWeapon = static_cast<CBasePlayerWeapon*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) weaponHandle)));
 	if (!pWeapon) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SwitchWeapon' on invalid weapon handle: %d\n", weaponHandle);
+		S2_LOGF(LS_WARNING, "Cannot execute 'SwitchWeapon' on invalid weapon handle: %d\n", weaponHandle);
 		return;
 	}
 
@@ -681,19 +708,19 @@ extern "C" PLUGIN_API void SwitchWeapon(int clientIndex, int weaponHandle) {
 /**
  * @brief Removes a player's weapon.
  *
- * @param clientIndex The index of the client.
+ * @param playerSlot The index of the player's slot.
  * @param weaponHandle The handle of weapon to remove.
  */
-extern "C" PLUGIN_API void RemoveWeapon(int clientIndex, int weaponHandle) {
-	auto pController = utils::GetController(clientIndex);
+extern "C" PLUGIN_API void RemoveWeapon(int playerSlot, int weaponHandle) {
+	auto pController = utils::GetController(playerSlot);
 	if (!pController) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'RemovePlayerItem' on invalid client index: %d\n", clientIndex);
+		S2_LOGF(LS_WARNING, "Cannot execute 'RemovePlayerItem' on invalid player slot: %d\n", playerSlot);
 		return;
 	}
 
 	CBasePlayerWeapon* pWeapon = static_cast<CBasePlayerWeapon*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) weaponHandle)));
 	if (!pWeapon) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'RemovePlayerItem' on invalid weapon handle: %d\n", weaponHandle);
+		S2_LOGF(LS_WARNING, "Cannot execute 'RemovePlayerItem' on invalid weapon handle: %d\n", weaponHandle);
 		return;
 	}
 
@@ -708,14 +735,14 @@ extern "C" PLUGIN_API void RemoveWeapon(int clientIndex, int weaponHandle) {
 /**
  * @brief Gives a named item (e.g., weapon) to a client.
  *
- * @param clientIndex The index of the client.
+ * @param playerSlot The index of the player's slot.
  * @param itemName The name of the item to give.
  * @return The entity handle of the created item, or INVALID_EHANDLE_INDEX if the client or item is invalid.
  */
-extern "C" PLUGIN_API int GiveNamedItem(int clientIndex, const plg::string& itemName) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(clientIndex));
+extern "C" PLUGIN_API int GiveNamedItem(int playerSlot, const plg::string& itemName) {
+	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GiveNamedItem' on invalid client index: %d\n", clientIndex);
+		S2_LOGF(LS_WARNING, "Cannot execute 'GiveNamedItem' on invalid player slot: %d\n", playerSlot);
 		return INVALID_EHANDLE_INDEX;
 	}
 
@@ -726,7 +753,7 @@ extern "C" PLUGIN_API int GiveNamedItem(int clientIndex, const plg::string& item
 
 	CBaseEntity* pWeapon = pItemServices->GiveNamedItem(itemName.c_str());
 	if (!pWeapon) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GiveNamedItem' with invalid item: %s\n", itemName.c_str());
+		S2_LOGF(LS_WARNING, "Cannot execute 'GiveNamedItem' with invalid item: %s\n", itemName.c_str());
 		return INVALID_EHANDLE_INDEX;
 	}
 
@@ -736,19 +763,19 @@ extern "C" PLUGIN_API int GiveNamedItem(int clientIndex, const plg::string& item
 /**
  * @brief Retrieves the state of a specific button for a client.
  *
- * @param clientIndex The index of the client.
+ * @param playerSlot The index of the player's slot.
  * @param buttonIndex The index of the button (0-2).
  * @return uint64_t The state of the specified button, or 0 if the client or button index is invalid.
  */
-extern "C" PLUGIN_API uint64_t GetClientButtons(int clientIndex, int buttonIndex) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(clientIndex));
+extern "C" PLUGIN_API uint64_t GetClientButtons(int playerSlot, int buttonIndex) {
+	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetClientButtons' on invalid client index: %d\n", clientIndex);
+		S2_LOGF(LS_WARNING, "Cannot execute 'GetClientButtons' on invalid player slot: %d\n", playerSlot);
 		return 0;
 	}
 
 	if (buttonIndex > 2 || buttonIndex < 0) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetClientButtons' on invalid button index: %d\n", buttonIndex);
+		S2_LOGF(LS_WARNING, "Cannot execute 'GetClientButtons' on invalid button index: %d\n", buttonIndex);
 		return 0;
 	}
 
@@ -763,13 +790,13 @@ extern "C" PLUGIN_API uint64_t GetClientButtons(int clientIndex, int buttonIndex
 /**
  * @brief Retrieves the amount of money a client has.
  *
- * @param clientIndex The index of the client.
- * @return The amount of money the client has, or 0 if the client index is invalid.
+ * @param playerSlot The index of the player's slot.
+ * @return The amount of money the client has, or 0 if the player slot is invalid.
  */
-extern "C" PLUGIN_API int GetClientMoney(int clientIndex) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(clientIndex));
+extern "C" PLUGIN_API int GetClientMoney(int playerSlot) {
+	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetClientMoney' on invalid client index: %d\n", clientIndex);
+		S2_LOGF(LS_WARNING, "Cannot execute 'GetClientMoney' on invalid player slot: %d\n", playerSlot);
 		return 0;
 	}
 
@@ -784,13 +811,13 @@ extern "C" PLUGIN_API int GetClientMoney(int clientIndex) {
 /**
  * @brief Sets the amount of money for a client.
  *
- * @param clientIndex The index of the client.
+ * @param playerSlot The index of the player's slot.
  * @param money The amount of money to set.
  */
-extern "C" PLUGIN_API void SetClientMoney(int clientIndex, int money) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(clientIndex));
+extern "C" PLUGIN_API void SetClientMoney(int playerSlot, int money) {
+	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetClientMoney' on invalid client index: %d\n", clientIndex);
+		S2_LOGF(LS_WARNING, "Cannot execute 'SetClientMoney' on invalid player slot: %d\n", playerSlot);
 		return;
 	}
 
@@ -805,13 +832,13 @@ extern "C" PLUGIN_API void SetClientMoney(int clientIndex, int money) {
 /**
  * @brief Retrieves the number of kills for a client.
  *
- * @param clientIndex The index of the client.
- * @return The number of kills the client has, or 0 if the client index is invalid.
+ * @param playerSlot The index of the player's slot.
+ * @return The number of kills the client has, or 0 if the player slot is invalid.
  */
-extern "C" PLUGIN_API int GetClientKills(int clientIndex) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(clientIndex));
+extern "C" PLUGIN_API int GetClientKills(int playerSlot) {
+	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetClientKills' on invalid client index: %d\n", clientIndex);
+		S2_LOGF(LS_WARNING, "Cannot execute 'GetClientKills' on invalid player slot: %d\n", playerSlot);
 		return 0;
 	}
 
@@ -826,13 +853,13 @@ extern "C" PLUGIN_API int GetClientKills(int clientIndex) {
 /**
  * @brief Sets the number of kills for a client.
  *
- * @param clientIndex The index of the client.
+ * @param playerSlot The index of the player's slot.
  * @param kills The number of kills to set.
  */
-extern "C" PLUGIN_API void SetClientKills(int clientIndex, int kills) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(clientIndex));
+extern "C" PLUGIN_API void SetClientKills(int playerSlot, int kills) {
+	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetClientKills' on invalid client index: %d\n", clientIndex);
+		S2_LOGF(LS_WARNING, "Cannot execute 'SetClientKills' on invalid player slot: %d\n", playerSlot);
 		return;
 	}
 
@@ -847,13 +874,13 @@ extern "C" PLUGIN_API void SetClientKills(int clientIndex, int kills) {
 /**
  * @brief Retrieves the number of deaths for a client.
  *
- * @param clientIndex The index of the client.
- * @return The number of deaths the client has, or 0 if the client index is invalid.
+ * @param playerSlot The index of the player's slot.
+ * @return The number of deaths the client has, or 0 if the player slot is invalid.
  */
-extern "C" PLUGIN_API int GetClientDeaths(int clientIndex) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(clientIndex));
+extern "C" PLUGIN_API int GetClientDeaths(int playerSlot) {
+	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetClientDeaths' on invalid client index: %d\n", clientIndex);
+		S2_LOGF(LS_WARNING, "Cannot execute 'GetClientDeaths' on invalid player slot: %d\n", playerSlot);
 		return 0;
 	}
 
@@ -868,13 +895,13 @@ extern "C" PLUGIN_API int GetClientDeaths(int clientIndex) {
 /**
  * @brief Sets the number of deaths for a client.
  *
- * @param clientIndex The index of the client.
+ * @param playerSlot The index of the player's slot.
  * @param deaths The number of deaths to set.
  */
-extern "C" PLUGIN_API void SetClientDeaths(int clientIndex, int deaths) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(clientIndex));
+extern "C" PLUGIN_API void SetClientDeaths(int playerSlot, int deaths) {
+	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetClientDeaths' on invalid client index: %d\n", clientIndex);
+		S2_LOGF(LS_WARNING, "Cannot execute 'SetClientDeaths' on invalid player slot: %d\n", playerSlot);
 		return;
 	}
 
@@ -889,13 +916,13 @@ extern "C" PLUGIN_API void SetClientDeaths(int clientIndex, int deaths) {
 /**
  * @brief Retrieves the number of assists for a client.
  *
- * @param clientIndex The index of the client.
- * @return The number of assists the client has, or 0 if the client index is invalid.
+ * @param playerSlot The index of the player's slot.
+ * @return The number of assists the client has, or 0 if the player slot is invalid.
  */
-extern "C" PLUGIN_API int GetClientAssists(int clientIndex) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(clientIndex));
+extern "C" PLUGIN_API int GetClientAssists(int playerSlot) {
+	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetClientAssists' on invalid client index: %d\n", clientIndex);
+		S2_LOGF(LS_WARNING, "Cannot execute 'GetClientAssists' on invalid player slot: %d\n", playerSlot);
 		return 0;
 	}
 
@@ -910,13 +937,13 @@ extern "C" PLUGIN_API int GetClientAssists(int clientIndex) {
 /**
  * @brief Sets the number of assists for a client.
  *
- * @param clientIndex The index of the client.
+ * @param playerSlot The index of the player's slot.
  * @param assists The number of assists to set.
  */
-extern "C" PLUGIN_API void SetClientAssists(int clientIndex, int assists) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(clientIndex));
+extern "C" PLUGIN_API void SetClientAssists(int playerSlot, int assists) {
+	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetClientAssists' on invalid client index: %d\n", clientIndex);
+		S2_LOGF(LS_WARNING, "Cannot execute 'SetClientAssists' on invalid player slot: %d\n", playerSlot);
 		return;
 	}
 
@@ -931,13 +958,13 @@ extern "C" PLUGIN_API void SetClientAssists(int clientIndex, int assists) {
 /**
  * @brief Retrieves the total damage dealt by a client.
  *
- * @param clientIndex The index of the client.
- * @return The total damage dealt by the client, or 0 if the client index is invalid.
+ * @param playerSlot The index of the player's slot.
+ * @return The total damage dealt by the client, or 0 if the player slot is invalid.
  */
-extern "C" PLUGIN_API int GetClientDamage(int clientIndex) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(clientIndex));
+extern "C" PLUGIN_API int GetClientDamage(int playerSlot) {
+	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'GetClientDamage' on invalid client index: %d\n", clientIndex);
+		S2_LOGF(LS_WARNING, "Cannot execute 'GetClientDamage' on invalid player slot: %d\n", playerSlot);
 		return 0;
 	}
 
@@ -952,13 +979,13 @@ extern "C" PLUGIN_API int GetClientDamage(int clientIndex) {
 /**
  * @brief Sets the total damage dealt by a client.
  *
- * @param clientIndex The index of the client.
+ * @param playerSlot The index of the player's slot.
  * @param damage The amount of damage to set.
  */
-extern "C" PLUGIN_API void SetClientDamage(int clientIndex, int damage) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(clientIndex));
+extern "C" PLUGIN_API void SetClientDamage(int playerSlot, int damage) {
+	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
-		g_Logger.LogFormat(LS_WARNING, "Cannot execute 'SetClientDamage' on invalid client index: %d\n", clientIndex);
+		S2_LOGF(LS_WARNING, "Cannot execute 'SetClientDamage' on invalid player slot: %d\n", playerSlot);
 		return;
 	}
 
