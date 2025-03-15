@@ -90,7 +90,7 @@ elseif(LINUX)
             S2SDK_PLATFORM="linux"
             S2SDK_BINARY="linuxsteamrt64"
             S2SDK_ROOT_BINARY="/bin/linuxsteamrt64/"
-            S2SDK_GAME_BINARY="/bin/linuxsteamrt64/../../csgo/bin/linuxsteamrt64/" # Metamod hack
+            S2SDK_GAME_BINARY="/bin/linuxsteamrt64/../../csgo/bin/linuxsteamrt64//" # Metamod hack
     )
 endif()
 
