@@ -25,10 +25,10 @@
   ],
   "exportedMethods": [
     {
-      "name": "GetClientIndexFromEntityPointer",
+      "name": "GetPlayerSlotFromEntityPointer",
       "group": "Clients",
-      "description": "Retrieves the client index from a given entity pointer.",
-      "funcName": "GetClientIndexFromEntityPointer",
+      "description": "Retrieves The player slot from a given entity pointer.",
+      "funcName": "GetPlayerSlotFromEntityPointer",
       "paramTypes": [
         {
           "name": "entity",
@@ -39,17 +39,17 @@
       ],
       "retType": {
         "type": "int32",
-        "description": "The client index if valid, otherwise -1."
+        "description": "The player slot if valid, otherwise -1."
       }
     },
     {
-      "name": "GetClientFromIndex",
+      "name": "GetClientBaseFromPlayerSlot",
       "group": "Clients",
-      "description": "Retrieves the client object from a given client index.",
-      "funcName": "GetClientFromIndex",
+      "description": "Retrieves the client object from a given player slot.",
+      "funcName": "GetClientBaseFromPlayerSlot",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
           "description": "The index of the client."
@@ -61,10 +61,10 @@
       }
     },
     {
-      "name": "GetIndexFromClient",
+      "name": "GetPlayerSlotFromClientBase",
       "group": "Clients",
       "description": "Retrieves the index of a given client object.",
-      "funcName": "GetIndexFromClient",
+      "funcName": "GetPlayerSlotFromClientBase",
       "paramTypes": [
         {
           "name": "client",
@@ -75,7 +75,7 @@
       ],
       "retType": {
         "type": "int32",
-        "description": "The client index if found, otherwise -1."
+        "description": "The player slot if found, otherwise -1."
       }
     },
     {
@@ -85,10 +85,10 @@
       "funcName": "GetClientAuthId",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client whose authentication string is being retrieved."
+          "description": "The index of the player's slot whose authentication string is being retrieved."
         }
       ],
       "retType": {
@@ -103,10 +103,10 @@
       "funcName": "GetClientAccountId",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client."
+          "description": "The index of the player's slot."
         }
       ],
       "retType": {
@@ -121,10 +121,10 @@
       "funcName": "GetClientIp",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client."
+          "description": "The index of the player's slot."
         }
       ],
       "retType": {
@@ -139,10 +139,10 @@
       "funcName": "GetClientName",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client."
+          "description": "The index of the player's slot."
         }
       ],
       "retType": {
@@ -157,10 +157,10 @@
       "funcName": "GetClientTime",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client."
+          "description": "The index of the player's slot."
         }
       ],
       "retType": {
@@ -175,10 +175,10 @@
       "funcName": "GetClientLatency",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client."
+          "description": "The index of the player's slot."
         }
       ],
       "retType": {
@@ -193,10 +193,10 @@
       "funcName": "GetUserFlagBits",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client."
+          "description": "The index of the player's slot."
         }
       ],
       "retType": {
@@ -211,10 +211,10 @@
       "funcName": "SetUserFlagBits",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client."
+          "description": "The index of the player's slot."
         },
         {
           "name": "flags",
@@ -234,10 +234,10 @@
       "funcName": "AddUserFlags",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client."
+          "description": "The index of the player's slot."
         },
         {
           "name": "flags",
@@ -257,10 +257,10 @@
       "funcName": "RemoveUserFlags",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client."
+          "description": "The index of the player's slot."
         },
         {
           "name": "flags",
@@ -280,10 +280,10 @@
       "funcName": "IsClientAuthorized",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client."
+          "description": "The index of the player's slot."
         }
       ],
       "retType": {
@@ -298,10 +298,10 @@
       "funcName": "IsClientConnected",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client."
+          "description": "The index of the player's slot."
         }
       ],
       "retType": {
@@ -316,10 +316,10 @@
       "funcName": "IsClientInGame",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client."
+          "description": "The index of the player's slot."
         }
       ],
       "retType": {
@@ -334,10 +334,10 @@
       "funcName": "IsClientSourceTV",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client."
+          "description": "The index of the player's slot."
         }
       ],
       "retType": {
@@ -352,10 +352,10 @@
       "funcName": "IsClientAlive",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client."
+          "description": "The index of the player's slot."
         }
       ],
       "retType": {
@@ -370,10 +370,10 @@
       "funcName": "IsFakeClient",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client."
+          "description": "The index of the player's slot."
         }
       ],
       "retType": {
@@ -388,10 +388,10 @@
       "funcName": "GetClientTeam",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client."
+          "description": "The index of the player's slot."
         }
       ],
       "retType": {
@@ -406,10 +406,10 @@
       "funcName": "GetClientHealth",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client."
+          "description": "The index of the player's slot."
         }
       ],
       "retType": {
@@ -424,10 +424,10 @@
       "funcName": "GetClientArmor",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client."
+          "description": "The index of the player's slot."
         }
       ],
       "retType": {
@@ -442,10 +442,10 @@
       "funcName": "GetClientAbsOrigin",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client."
+          "description": "The index of the player's slot."
         }
       ],
       "retType": {
@@ -460,10 +460,10 @@
       "funcName": "GetClientAbsAngles",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client."
+          "description": "The index of the player's slot."
         }
       ],
       "retType": {
@@ -478,10 +478,10 @@
         "funcName": "GetClientEyeAngles",
         "paramTypes": [
             {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
                 "ref": false,
-                "description": "Index of the client."
+                "description": "The index of the player's slot."
             }
         ],
         "retType": {
@@ -499,7 +499,7 @@
           "name": "caller",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client making the target request."
+          "description": "The index of the player's slot making the target request."
         },
         {
           "name": "target",
@@ -520,10 +520,10 @@
       "funcName": "ChangeClientTeam",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client."
+          "description": "The index of the player's slot."
         },
         {
           "name": "team",
@@ -569,10 +569,10 @@
       "funcName": "SwitchClientTeam",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client."
+          "description": "The index of the player's slot."
         },
         {
           "name": "team",
@@ -618,10 +618,10 @@
       "funcName": "RespawnClient",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client to respawn."
+          "description": "The index of the player's slot to respawn."
         }
       ],
       "retType": {
@@ -635,10 +635,10 @@
       "funcName": "ForcePlayerSuicide",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client."
+          "description": "The index of the player's slot."
         },
         {
           "name": "explode",
@@ -664,10 +664,10 @@
       "funcName": "KickClient",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client to be kicked."
+          "description": "The index of the player's slot to be kicked."
         }
       ],
       "retType": {
@@ -681,10 +681,10 @@
       "funcName": "BanClient",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client to be banned."
+          "description": "The index of the player's slot to be banned."
         },
         {
           "name": "duration",
@@ -739,7 +739,7 @@
         "funcName": "GetClientActiveWeapon",
         "paramTypes": [
             {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
                 "ref": false,
                 "description": "The index of the client."
@@ -757,7 +757,7 @@
         "funcName": "GetClientWeapons",
         "paramTypes": [
             {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
                 "ref": false,
                 "description": "The index of the client."
@@ -775,10 +775,10 @@
         "funcName": "DropWeapon",
         "paramTypes": [
             {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
                 "ref": false,
-                "description": "Index of the client."
+                "description": "The index of the player's slot."
             },
             {
                 "name": "weaponHandle",
@@ -810,7 +810,7 @@
         "funcName": "StripWeapons",
         "paramTypes": [
             {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
                 "ref": false,
                 "description": "The index of the client."
@@ -833,7 +833,7 @@
         "funcName": "BumpWeapon",
         "paramTypes": [
             {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
                 "ref": false,
                 "description": "The index of the client."
@@ -856,7 +856,7 @@
         "funcName": "SwitchWeapon",
         "paramTypes": [
             {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
                 "ref": false,
                 "description": "The index of the client."
@@ -879,7 +879,7 @@
         "funcName": "RemoveWeapon",
         "paramTypes": [
             {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
                 "ref": false,
                 "description": "The index of the client."
@@ -902,7 +902,7 @@
         "funcName": "GiveNamedItem",
         "paramTypes": [
             {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
                 "ref": false,
                 "description": "The index of the client."
@@ -926,7 +926,7 @@
         "funcName": "GetClientButtons",
         "paramTypes": [
             {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
                 "ref": false,
                 "description": "The index of the client."
@@ -950,7 +950,7 @@
         "funcName": "GetClientMoney",
         "paramTypes": [
             {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
                 "ref": false,
                 "description": "The index of the client."
@@ -958,7 +958,7 @@
         ],
         "retType": {
             "type": "int32",
-            "description": "The amount of money the client has, or 0 if the client index is invalid."
+            "description": "The amount of money the client has, or 0 if The player slot is invalid."
         }
     },
     {
@@ -968,7 +968,7 @@
         "funcName": "SetClientMoney",
         "paramTypes": [
             {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
                 "ref": false,
                 "description": "The index of the client."
@@ -991,7 +991,7 @@
         "funcName": "GetClientKills",
         "paramTypes": [
             {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
                 "ref": false,
                 "description": "The index of the client."
@@ -999,7 +999,7 @@
         ],
         "retType": {
             "type": "int32",
-            "description": "The number of kills the client has, or 0 if the client index is invalid."
+            "description": "The number of kills the client has, or 0 if The player slot is invalid."
         }
     },
     {
@@ -1009,7 +1009,7 @@
         "funcName": "SetClientKills",
         "paramTypes": [
             {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
                 "ref": false,
                 "description": "The index of the client."
@@ -1032,7 +1032,7 @@
         "funcName": "GetClientDeaths",
         "paramTypes": [
             {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
                 "ref": false,
                 "description": "The index of the client."
@@ -1040,7 +1040,7 @@
         ],
         "retType": {
             "type": "int32",
-            "description": "The number of deaths the client has, or 0 if the client index is invalid."
+            "description": "The number of deaths the client has, or 0 if The player slot is invalid."
         }
     },
     {
@@ -1050,7 +1050,7 @@
         "funcName": "SetClientDeaths",
         "paramTypes": [
             {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
                 "ref": false,
                 "description": "The index of the client."
@@ -1073,7 +1073,7 @@
         "funcName": "GetClientAssists",
         "paramTypes": [
             {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
                 "ref": false,
                 "description": "The index of the client."
@@ -1081,7 +1081,7 @@
         ],
         "retType": {
             "type": "int32",
-            "description": "The number of assists the client has, or 0 if the client index is invalid."
+            "description": "The number of assists the client has, or 0 if The player slot is invalid."
         }
     },
     {
@@ -1091,7 +1091,7 @@
         "funcName": "SetClientAssists",
         "paramTypes": [
             {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
                 "ref": false,
                 "description": "The index of the client."
@@ -1114,7 +1114,7 @@
         "funcName": "GetClientDamage",
         "paramTypes": [
             {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
                 "ref": false,
                 "description": "The index of the client."
@@ -1122,7 +1122,7 @@
         ],
         "retType": {
             "type": "int32",
-            "description": "The total damage dealt by the client, or 0 if the client index is invalid."
+            "description": "The total damage dealt by the client, or 0 if The player slot is invalid."
         }
     },
     {
@@ -1132,7 +1132,7 @@
         "funcName": "SetClientDamage",
         "paramTypes": [
             {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
                 "ref": false,
                 "description": "The index of the client."
@@ -1929,7 +1929,7 @@
       "funcName": "ClientCommand",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
           "description": "The index of the client executing the command."
@@ -1952,7 +1952,7 @@
       "funcName": "FakeClientCommand",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
           "description": "The index of the client."
@@ -1992,10 +1992,10 @@
       "funcName": "PrintToConsole",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client to whom the message will be sent."
+          "description": "The index of the player's slot to whom the message will be sent."
         },
         {
           "name": "message",
@@ -2015,10 +2015,10 @@
       "funcName": "PrintToChat",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client to whom the message will be sent."
+          "description": "The index of the player's slot to whom the message will be sent."
         },
         {
           "name": "message",
@@ -2038,10 +2038,10 @@
       "funcName": "PrintCenterText",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client to whom the message will be sent."
+          "description": "The index of the player's slot to whom the message will be sent."
         },
         {
           "name": "message",
@@ -2061,10 +2061,10 @@
       "funcName": "PrintAlertText",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client to whom the message will be sent."
+          "description": "The index of the player's slot to whom the message will be sent."
         },
         {
           "name": "message",
@@ -2084,10 +2084,10 @@
       "funcName": "PrintCentreHtml",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client to whom the message will be sent."
+          "description": "The index of the player's slot to whom the message will be sent."
         },
         {
           "name": "message",
@@ -2192,10 +2192,10 @@
       "funcName": "PrintToChatColored",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
-          "description": "Index of the client to whom the message will be sent."
+          "description": "The index of the player's slot to whom the message will be sent."
         },
         {
           "name": "message",
@@ -7294,7 +7294,7 @@
       "funcName": "SendConVarValue",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
           "description": "The index of the client to replicate the value to."
@@ -7323,7 +7323,7 @@
       "funcName": "GetClientConVarValue",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
           "description": "The index of the client whose console variable value is being retrieved."
@@ -7347,7 +7347,7 @@
       "funcName": "SetFakeClientConVarValue",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
           "description": "The index of the fake client to replicate the value to."
@@ -7374,16 +7374,10 @@
       "group": "Engine",
       "description": "Returns the path of the game's directory.",
       "funcName": "GetGameDirectory",
-      "paramTypes": [
-        {
-          "name": "result",
-          "type": "string",
-          "ref": true,
-          "description": "A reference to a string where the game directory path will be stored."
-        }
-      ],
+      "paramTypes": [],
       "retType": {
-        "type": "void"
+        "type": "string",
+        "description": "A reference to a string where the game directory path will be stored."
       }
     },
     {
@@ -7391,16 +7385,10 @@
       "group": "Engine",
       "description": "Returns the current map name.",
       "funcName": "GetCurrentMap",
-      "paramTypes": [
-        {
-          "name": "result",
-          "type": "string",
-          "ref": true,
-          "description": "A reference to a string where the current map name will be stored."
-        }
-      ],
+      "paramTypes": [],
       "retType": {
-        "type": "void"
+        "type": "string",
+        "description": "A reference to a string where the current map name will be stored."
       }
     },
     {
@@ -7794,7 +7782,7 @@
       "funcName": "EmitSoundToClient",
       "paramTypes": [
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
           "description": "The index of the client to whom the sound will be emitted."
@@ -9686,7 +9674,7 @@
           "description": "A pointer to the EventInfo structure containing event data."
         },
         {
-          "name": "clientIndex",
+          "name": "playerSlot",
           "type": "int32",
           "ref": false,
           "description": "The index of the client to fire the event to."
@@ -13705,9 +13693,9 @@
             "description": "Called on client connection. If you return true, the client will be allowed in the server. If you return false (or return nothing), the client will be rejected. If the client is rejected by this forward or any other, OnClientDisconnect will not be called.<br>Note: Do not write to rejectmsg if you plan on returning true. If multiple plugins write to the string buffer, it is not defined which plugin's string will be shown to the client, but it is guaranteed one of them will.",
             "paramTypes": [
               {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
-                "description": "The client index"
+                "description": "The player slot"
               },
               {
                 "name": "name",
@@ -13747,9 +13735,9 @@
             "description": "Called on client connection. If you return true, the client will be allowed in the server. If you return false (or return nothing), the client will be rejected. If the client is rejected by this forward or any other, OnClientDisconnect will not be called.<br>Note: Do not write to rejectmsg if you plan on returning true. If multiple plugins write to the string buffer, it is not defined which plugin's string will be shown to the client, but it is guaranteed one of them will.",
             "paramTypes": [
               {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
-                "description": "The client index"
+                "description": "The player slot"
               },
               {
                 "name": "name",
@@ -13789,9 +13777,9 @@
             "description": "Called on client connection.",
             "paramTypes": [
               {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
-                "description": "The client index"
+                "description": "The player slot"
               }
             ],
             "retType": {
@@ -13821,9 +13809,9 @@
             "description": "Called on client connection.",
             "paramTypes": [
               {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
-                "description": "The client index"
+                "description": "The player slot"
               }
             ],
             "retType": {
@@ -13853,9 +13841,9 @@
             "description": "Called once a client successfully connects. This callback is paired with OnClientDisconnect.",
             "paramTypes": [
               {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
-                "description": "The client index"
+                "description": "The player slot"
               }
             ],
             "retType": {
@@ -13885,9 +13873,9 @@
             "description": "Called once a client successfully connects. This callback is paired with OnClientDisconnect.",
             "paramTypes": [
               {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
-                "description": "The client index"
+                "description": "The player slot"
               }
             ],
             "retType": {
@@ -13917,9 +13905,9 @@
             "description": "Called when a client is entering the game.",
             "paramTypes": [
               {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
-                "description": "The client index"
+                "description": "The player slot"
               }
             ],
             "retType": {
@@ -13949,9 +13937,9 @@
             "description": "Called when a client is entering the game.",
             "paramTypes": [
               {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
-                "description": "The client index"
+                "description": "The player slot"
               }
             ],
             "retType": {
@@ -13981,9 +13969,9 @@
             "description": "Called when a client is disconnecting from the server.",
             "paramTypes": [
               {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
-                "description": "The client index"
+                "description": "The player slot"
               }
             ],
             "retType": {
@@ -14013,9 +14001,9 @@
             "description": "Called when a client is disconnecting from the server.",
             "paramTypes": [
               {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
-                "description": "The client index"
+                "description": "The player slot"
               }
             ],
             "retType": {
@@ -14045,9 +14033,9 @@
             "description": "Called when a client is disconnected from the server.",
             "paramTypes": [
               {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
-                "description": "The client index"
+                "description": "The player slot"
               },
               {
                 "name": "reason",
@@ -14082,9 +14070,9 @@
             "description": "Called when a client is disconnected from the server.",
             "paramTypes": [
               {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
-                "description": "The client index"
+                "description": "The player slot"
               },
               {
                 "name": "reason",
@@ -14119,9 +14107,9 @@
             "description": "Called when a client is activated by the game.",
             "paramTypes": [
               {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
-                "description": "The client index"
+                "description": "The player slot"
               },
               {
                 "name": "isActive",
@@ -14156,9 +14144,9 @@
             "description": "Called when a client is activated by the game.",
             "paramTypes": [
               {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
-                "description": "The client index"
+                "description": "The player slot"
               },
               {
                 "name": "isActive",
@@ -14193,9 +14181,9 @@
             "description": "Called when a client is fully connected to the game.",
             "paramTypes": [
               {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
-                "description": "The client index"
+                "description": "The player slot"
               }
             ],
             "retType": {
@@ -14225,9 +14213,9 @@
             "description": "Called when a client is fully connected to the game.",
             "paramTypes": [
               {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
-                "description": "The client index"
+                "description": "The player slot"
               }
             ],
             "retType": {
@@ -14257,9 +14245,9 @@
             "description": "Called whenever the client's settings are changed.",
             "paramTypes": [
               {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
-                "description": "The client index"
+                "description": "The player slot"
               }
             ],
             "retType": {
@@ -14289,9 +14277,9 @@
             "description": "Called whenever the client's settings are changed.",
             "paramTypes": [
               {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
-                "description": "The client index"
+                "description": "The player slot"
               }
             ],
             "retType": {
@@ -14321,9 +14309,9 @@
             "description": "Called when a client is fully connected to the game.",
             "paramTypes": [
               {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
-                "description": "The client index"
+                "description": "The player slot"
               },
               {
                 "name": "steam",
@@ -14358,9 +14346,9 @@
             "description": "Called when a client receives an auth ID.",
             "paramTypes": [
               {
-                "name": "clientIndex",
+                "name": "playerSlot",
                 "type": "int32",
-                "description": "The client index"
+                "description": "The player slot"
               },
               {
                 "name": "steam",
