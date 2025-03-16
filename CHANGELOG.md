@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.1.13](https://github.com/untrustedmodders/plugify-source-2/compare/v1.1.12...v1.1.13) (2025-03-16)
+
+
+### Bug Fixes
+
+* metamod issue ([0f7a699](https://github.com/untrustedmodders/plugify-source-2/commit/0f7a6997c194acceae5752b8bb6be2fafc9ab377))
+* rename clientIndex to playerSlot and refactor logs ([c7a2514](https://github.com/untrustedmodders/plugify-source-2/commit/c7a25146c25f8f51f384d5ef9c3e858310528ef1))
+* rework chat commands ([a160d3d](https://github.com/untrustedmodders/plugify-source-2/commit/a160d3d1dda757a806248b19fd6967f000314049))
+* some refactor ([7637104](https://github.com/untrustedmodders/plugify-source-2/commit/76371045b05ebce3265e985c5584a6037a5cbc4b))
+* update manifest ([37de938](https://github.com/untrustedmodders/plugify-source-2/commit/37de9383e1b2a9a0eccc121ff241903ebc03b9c3))
+
 ## [1.1.12](https://github.com/untrustedmodders/plugify-source-2/compare/v1.1.11...v1.1.12) (2025-03-14)
 
 
