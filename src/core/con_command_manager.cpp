@@ -204,34 +204,39 @@ poly::ReturnAction CConCommandManager::Hook_DispatchConCommand(poly::Params& par
 		return poly::ReturnAction::Ignored;
 	}
 
-	const char* name = args->Arg(0);
+	const char* arg0 = args->Arg(0);
 
 	//S2_LOGF(LS_DEBUG, "[ConCommandManager::Hook_DispatchConCommand]: %s\n", name.data());
 
-	/*CCommand nargs;
-	CommandCallingContext callingContext = CommandCallingContext::Console;
-	if (name == "say" || name == "say_team") {
-		std::string_view command = args->Arg(1);
-		bool bSilent = g_pCoreConfig->IsSilentChatTrigger(command);
-		bool bCommand = g_pCoreConfig->IsPublicChatTrigger(command) || bSilent;
-		if (bCommand) {
-			char* pszMessage = (char*)(args->ArgS() + 1);
+	static const char sayCommand[] = "say";
+	constexpr size_t sayNullTerminated = sizeof(sayCommand) - 1;
+	if (!V_strncmp(arg0, sayCommand, sayNullTerminated)) {
+		if (!arg0[sayNullTerminated] || !V_strcmp(&arg0[sayNullTerminated], "_team")) {
+			const char* arg1 = args->Arg(1);
+			while (*arg1 == ' ') {
+				arg1++;
+			}
 
-			if (pszMessage[0] == '"' || pszMessage[0] == '!' || pszMessage[0] == '/')
-				pszMessage += 1;
+			bool bSilent = g_pCoreConfig->IsSilentChatTrigger(arg1);
+			if (bSilent || g_pCoreConfig->IsPublicChatTrigger(arg1)) {
+				char* pszMessage = (char*) (args->ArgS() + 1);
 
-			size_t last = std::strlen(pszMessage);
-			if (last && pszMessage[last - 1] == '"')
-				pszMessage[last - 1] = '\0';
+				// Trailing slashes are only removed if Host_Say has been called.
+				bool bHostSay = bSilent && mode == HookMode::Post;
+				if (bHostSay) pszMessage[V_strlen(pszMessage) - 1] = 0;
 
-			nargs.Tokenize(pszMessage);
-			name = nargs[0];
-			args = &nargs;
-			callingContext = CommandCallingContext::Chat;
+				CCommand nargs;
+				nargs.Tokenize(pszMessage);
+
+				auto result = ExecuteCommandCallbacks(nargs[0], *ctx, nargs, mode, CommandCallingContext::Chat);
+				if (result >= ResultType::Handled || bHostSay) {
+					return poly::ReturnAction::Supercede;
+				}
+			}
 		}
-	}*/
+	}
 
-	auto result = ExecuteCommandCallbacks(name, *ctx, *args, mode, CommandCallingContext::Console);
+	auto result = ExecuteCommandCallbacks(arg0, *ctx, *args, mode, CommandCallingContext::Console);
 	if (result >= ResultType::Handled) {
 		return poly::ReturnAction::Supercede;
 	}

@@ -9,7 +9,6 @@
 
 #include <ISmmPlugin.h>
 
-#include "chat_manager.hpp"
 #include "con_command_manager.hpp"
 #include "con_var_manager.hpp"
 #include "event_manager.hpp"
@@ -107,8 +106,8 @@ void Source2SDK::OnPluginStart() {
 	g_PH.AddHookMemFunc(&IServerGameDLL::GameFrame, g_pSource2Server, Hook_GameFrame, Post);
 	g_PH.AddHookMemFunc(&ICvar::DispatchConCommand, g_pCVar, Hook_DispatchConCommand, Pre, Post);
 
-	using SayHost = void(*)(CEntityInstance*, CCommand&, bool, int, const char*);
-	g_PH.AddHookDetourFunc<SayHost>("CEntityInstance_SayHost", Hook_SayHost, Pre, Post);
+	//using Host_Say = void(*)(CEntityInstance*, CCommand&, bool, int, const char*);
+	//g_PH.AddHookDetourFunc<Host_Say>("Host_Say", Hook_HostSay, Pre, Post);
 
 	using FireOutputInternal = void(*)(CEntityIOOutput* const, CEntityInstance*, CEntityInstance*, const CVariant* const, float);
 	g_PH.AddHookDetourFunc<FireOutputInternal>("CEntityIOOutput_FireOutputInternal", Hook_FireOutputInternal, Pre, Post);
@@ -414,8 +413,12 @@ poly::ReturnAction Source2SDK::Hook_FireOutputInternal(poly::IHook& hook, poly::
 }
 
 poly::ReturnAction Source2SDK::Hook_DispatchConCommand(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
-	return  g_CommandManager.Hook_DispatchConCommand(params, count, ret, static_cast<HookMode>(type));
+	return g_CommandManager.Hook_DispatchConCommand(params, count, ret, static_cast<HookMode>(type));
 }
+
+/*poly::ReturnAction Source2SDK::Hook_HostSay(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
+	return g_ChatManager.Hook_HostSay(hook, params, count, ret, static_cast<HookMode>(type));
+}*/
 
 #if S2SDK_PLATFORM_WINDOWS
 

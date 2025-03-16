@@ -81,7 +81,7 @@ public:
 
 	std::string GetMessageName();
 	int GetMessageID();
-	bool HasField(std::string fieldName);
+	bool HasField(const std::string& fieldName);
 	const CNetMessagePB<pb::Message>* GetProtobufMessage();
 	INetworkMessageInternal* GetSerializableMessage() { return msgSerializable; }
 	uint64* GetRecipientMask() { return recipientMask; }
