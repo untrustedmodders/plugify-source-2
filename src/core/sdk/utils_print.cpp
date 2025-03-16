@@ -180,8 +180,6 @@ bool utils::CFormat(char* buffer, uint64_t buffer_size, const char* text) {
 	return true;
 }
 
-#include <tier0/memdbgon.h>
-
 void utils::ClientPrintFilter(IRecipientFilter* filter, int msg_dest, const char* msg_name) {
 	INetworkMessageInternal* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("TextMsg");
 	auto* pMessage = pNetMsg->AllocateMessage();
@@ -193,12 +191,9 @@ void utils::ClientPrintFilter(IRecipientFilter* filter, int msg_dest, const char
 	g_pGameEventSystem->PostEventAbstract(-1, false, filter, pNetMsg, pMessage, 0);
 
 #ifndef _WIN32
-	Destruct(pMessage);
-	free((void *)pMessage);
+	delete pMessage;
 #endif
 }
-
-#include <tier0/memdbgoff.h>
 
 void utils::PrintConsole(CPlayerSlot slot, const char* message) {
 	CSingleRecipientFilter filter(slot);
