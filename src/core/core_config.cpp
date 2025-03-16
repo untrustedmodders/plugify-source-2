@@ -1,6 +1,8 @@
 #include "core_config.hpp"
 #include <core/sdk/utils.h>
 
+using namespace std::string_view_literals;
+
 CCoreConfig::CCoreConfig(plg::string path) : m_szPath(std::move(path)), m_pKeyValues(std::make_unique<KeyValues>("Core")) {
 }
 
@@ -15,7 +17,10 @@ bool CCoreConfig::Initialize() {
 		PublicChatTrigger.clear();
 
 		FOR_EACH_SUBKEY(publicChatTriggers, it) {
-			PublicChatTrigger.emplace_back(it->GetString("trigger"));
+			std::string_view trigger = it->GetString();
+			if (!trigger.empty() && it->GetName() == "trigger"sv) {
+				PublicChatTrigger.emplace_back(trigger);
+			}
 		}
 	}
 
@@ -24,7 +29,10 @@ bool CCoreConfig::Initialize() {
 		SilentChatTrigger.clear();
 
 		FOR_EACH_SUBKEY(silentChatTriggers, it) {
-			SilentChatTrigger.emplace_back(it->GetString("trigger"));
+			std::string_view trigger = it->GetString();
+			if (!trigger.empty() && it->GetName() == "trigger"sv) {
+				SilentChatTrigger.emplace_back(trigger);
+			}
 		}
 	}
 
@@ -39,8 +47,10 @@ const plg::string& CCoreConfig::GetPath() const {
 }
 
 bool CCoreConfig::IsTriggerInternal(const std::vector<std::string>& triggers, std::string_view message) {
-	for (const std::string& trigger: triggers) {
-		return message.rfind(trigger, 0) == 0;
+	for (const std::string& trigger : triggers) {
+		if (message.starts_with(trigger)) {
+			return true;
+		}
 	}
 
 	return false;
