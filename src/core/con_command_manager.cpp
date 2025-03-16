@@ -220,9 +220,10 @@ poly::ReturnAction CConCommandManager::Hook_DispatchConCommand(poly::Params& par
 			bool bSilent = g_pCoreConfig->IsSilentChatTrigger(arg1);
 			if (bSilent || g_pCoreConfig->IsPublicChatTrigger(arg1)) {
 				char* pszMessage = (char*) (args->ArgS() + 1);
+				++pszMessage;
 
 				// Trailing slashes are only removed if Host_Say has been called.
-				bool bHostSay = bSilent && mode == HookMode::Post;
+				bool bHostSay = bSilent && mode == HookMode::Pre;
 				if (bHostSay) pszMessage[V_strlen(pszMessage) - 1] = 0;
 
 				CCommand nargs;
