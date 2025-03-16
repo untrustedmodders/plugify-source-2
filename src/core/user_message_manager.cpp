@@ -5,27 +5,24 @@ bool CUserMessageManager::HookUserMessage(int messageId, UserMessageCallback cal
 	std::lock_guard<std::mutex> lock(m_registerCmdLock);
 	
 	if (messageId == 0) {
-		m_globalCallbacks[static_cast<size_t>(mode)].Register(callback);
-		return true;
+		return m_globalCallbacks[static_cast<size_t>(mode)].Register(callback);
 	}
 
 	auto it = m_hooksMap.find(messageId);
 	if (it == m_hooksMap.end()) {
 		auto& commandInfo = m_hooksMap.emplace(messageId, UserMessageHook{}).first->second;
-		commandInfo.callbacks[static_cast<size_t>(mode)].Register(callback);
+		return commandInfo.callbacks[static_cast<size_t>(mode)].Register(callback);
 	} else {
 		auto& commandInfo = std::get<UserMessageHook>(*it);
-		commandInfo.callbacks[static_cast<size_t>(mode)].Register(callback);
+		return commandInfo.callbacks[static_cast<size_t>(mode)].Register(callback);
 	}
-	return true;
 }
 
 bool CUserMessageManager::UnhookUserMessage(int messageId, UserMessageCallback callback, HookMode mode) {
 	std::lock_guard<std::mutex> lock(m_registerCmdLock);
 	
 	if (messageId == 0) {
-		m_globalCallbacks[static_cast<size_t>(mode)].Unregister(callback);
-		return true;
+		return m_globalCallbacks[static_cast<size_t>(mode)].Unregister(callback);
 	}
 
 	auto it = m_hooksMap.find(messageId);
@@ -34,8 +31,7 @@ bool CUserMessageManager::UnhookUserMessage(int messageId, UserMessageCallback c
 	}
 
 	auto& commandInfo = std::get<UserMessageHook>(*it);
-	commandInfo.callbacks[static_cast<size_t>(mode)].Unregister(callback);
-	return true;
+	return commandInfo.callbacks[static_cast<size_t>(mode)].Unregister(callback);
 }
 
 ResultType CUserMessageManager::ExecuteMessageCallbacks(INetworkMessageInternal* pEvent, CNetMessage* pData, int nClientCount, uint64* clients, HookMode mode) {

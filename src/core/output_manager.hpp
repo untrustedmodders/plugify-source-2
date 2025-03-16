@@ -12,8 +12,7 @@ using OutputKey = std::pair<plg::string, plg::string>;
 using EntityListenerCallback = ResultType (*)(int activatorHandle, int callerHandle, float delay);
 
 struct CallbackPair {
-	CListenerManager<EntityListenerCallback> pre;
-	CListenerManager<EntityListenerCallback> post;
+	std::array<CListenerManager<EntityListenerCallback>, 2> callbacks;
 };
 
 class CEntityOutputManager {
@@ -21,8 +20,8 @@ public:
 	CEntityOutputManager() = default;
 	~CEntityOutputManager() = default;
 
-	void HookEntityOutput(plg::string szClassname, plg::string szOutput, EntityListenerCallback callback, HookMode mode);
-	void UnhookEntityOutput(plg::string szClassname, plg::string szOutput, EntityListenerCallback callback, HookMode mode);
+	bool HookEntityOutput(plg::string szClassname, plg::string szOutput, EntityListenerCallback callback, HookMode mode);
+	bool UnhookEntityOutput(plg::string szClassname, plg::string szOutput, EntityListenerCallback callback, HookMode mode);
 
 	poly::ReturnAction Hook_FireOutputInternal(poly::Params& params, int count, poly::Return& ret);
 	poly::ReturnAction Hook_FireOutputInternal_Post(poly::Params& params, int count, poly::Return& ret);

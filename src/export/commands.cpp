@@ -20,13 +20,14 @@ PLUGIFY_WARN_IGNORE(4190)
  * @param description A brief description of what the command does.
  * @param flags Command flags that define the behavior of the command.
  * @param callback A callback function that is invoked when the command is executed.
+ * @param mode Whether the hook was in post mode (after processing) or pre mode (before processing).
  * @return A boolean indicating whether the command was successfully added.
  */
-extern "C" PLUGIN_API bool AddAdminCommand(const plg::string& name, int64_t adminFlags, const plg::string& description, ConVarFlag flags, CommandListenerCallback callback) {
+extern "C" PLUGIN_API bool AddAdminCommand(const plg::string& name, int64_t adminFlags, const plg::string& description, ConVarFlag flags, CommandListenerCallback callback, HookMode mode) {
 	//S2_LOGF(LS_DEBUG, "Adding admin command %s, %d, %s, %d, %p\n", name.c_str(), (int) adminFlags, description.c_str(), flags, (void*) callback);
 
 	auto result = g_CommandManager.AddValveCommand(name, description, flags, adminFlags);
-	g_CommandManager.AddCommandListener(name, callback, HookMode::Pre);
+	g_CommandManager.AddCommandListener(name, callback, mode);
 	return result;
 }
 
@@ -37,13 +38,14 @@ extern "C" PLUGIN_API bool AddAdminCommand(const plg::string& name, int64_t admi
  * @param description A brief description of what the command does.
  * @param flags Command flags that define the behavior of the command.
  * @param callback A callback function that is invoked when the command is executed.
+ * @param mode Whether the hook was in post mode (after processing) or pre mode (before processing).
  * @return A boolean indicating whether the command was successfully added.
  */
-extern "C" PLUGIN_API bool AddConsoleCommand(const plg::string& name, const plg::string& description, ConVarFlag flags, CommandListenerCallback callback) {
+extern "C" PLUGIN_API bool AddConsoleCommand(const plg::string& name, const plg::string& description, ConVarFlag flags, CommandListenerCallback callback, HookMode mode) {
 	//S2_LOGF(LS_DEBUG, "Adding command %s, %s, %d, %p\n", name.c_str(), description.c_str(), flags, (void*) callback);
 
 	auto result = g_CommandManager.AddValveCommand(name, description, flags);
-	g_CommandManager.AddCommandListener(name, callback, HookMode::Pre);
+	g_CommandManager.AddCommandListener(name, callback, mode);
 	return result;
 }
 
@@ -55,6 +57,7 @@ extern "C" PLUGIN_API bool AddConsoleCommand(const plg::string& name, const plg:
  */
 extern "C" PLUGIN_API bool RemoveCommand(const plg::string& name, CommandListenerCallback callback) {
 	g_CommandManager.RemoveCommandListener(name, callback, HookMode::Pre);
+	g_CommandManager.RemoveCommandListener(name, callback, HookMode::Post);
 	return g_CommandManager.RemoveValveCommand(name);
 }
 
@@ -63,11 +66,11 @@ extern "C" PLUGIN_API bool RemoveCommand(const plg::string& name, CommandListene
  *
  * @param name The name of the command.
  * @param callback The callback function that will be invoked when the command is executed.
- * @param post A boolean indicating whether the callback should fire after the command is executed.
+ * @param mode Whether the hook was in post mode (after processing) or pre mode (before processing).
  * @return A boolean indicating whether the callback was successfully added.
  */
-extern "C" PLUGIN_API bool AddCommandListener(const plg::string& name, CommandListenerCallback callback, bool post) {
-	return g_CommandManager.AddCommandListener(name, callback, static_cast<HookMode>(post));
+extern "C" PLUGIN_API bool AddCommandListener(const plg::string& name, CommandListenerCallback callback, HookMode mode) {
+	return g_CommandManager.AddCommandListener(name, callback, mode);
 }
 
 /**
@@ -75,11 +78,11 @@ extern "C" PLUGIN_API bool AddCommandListener(const plg::string& name, CommandLi
  *
  * @param name The name of the command.
  * @param callback The callback function to be removed.
- * @param post A boolean indicating whether the callback should be removed for post-execution.
+ * @param mode Whether the hook was in post mode (after processing) or pre mode (before processing).
  * @return A boolean indicating whether the callback was successfully removed.
  */
-extern "C" PLUGIN_API bool RemoveCommandListener(const plg::string& name, CommandListenerCallback callback, bool post) {
-	return g_CommandManager.RemoveCommandListener(name, callback, static_cast<HookMode>(post));
+extern "C" PLUGIN_API bool RemoveCommandListener(const plg::string& name, CommandListenerCallback callback, HookMode mode) {
+	return g_CommandManager.RemoveCommandListener(name, callback, mode);
 }
 
 /**

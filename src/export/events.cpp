@@ -14,22 +14,22 @@ PLUGIFY_WARN_IGNORE(4190)
  * @brief Creates a hook for when a game event is fired.
  * @param name The name of the event to hook.
  * @param pCallback The callback function to call when the event is fired.
- * @param post A boolean indicating whether the hook should be for a post event.
+ * @param mode Whether the hook was in post mode (after processing) or pre mode (before processing).
  * @return An integer indicating the result of the hook operation.
  */
-extern "C" PLUGIN_API int HookEvent(const plg::string& name, EventListenerCallback pCallback, bool post) {
-	return static_cast<int>(g_EventManager.HookEvent(name, pCallback, static_cast<HookMode>(post)));
+extern "C" PLUGIN_API int HookEvent(const plg::string& name, EventListenerCallback pCallback, HookMode mode) {
+	return static_cast<int>(g_EventManager.HookEvent(name, pCallback, mode));
 }
 
 /**
  * @brief Removes a hook for when a game event is fired.
  * @param name The name of the event to unhook.
  * @param pCallback The callback function to remove.
- * @param post A boolean indicating whether the hook is for a post event.
+ * @param mode Whether the hook was in post mode (after processing) or pre mode (before processing).
  * @return An integer indicating the result of the unhook operation.
  */
-extern "C" PLUGIN_API int UnhookEvent(const plg::string& name, EventListenerCallback pCallback, bool post) {
-	return static_cast<int>(g_EventManager.UnhookEvent(name, pCallback, static_cast<HookMode>(post)));
+extern "C" PLUGIN_API int UnhookEvent(const plg::string& name, EventListenerCallback pCallback, HookMode mode) {
+	return static_cast<int>(g_EventManager.UnhookEvent(name, pCallback, mode));
 }
 
 /**

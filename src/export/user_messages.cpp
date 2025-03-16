@@ -15,11 +15,11 @@ PLUGIFY_WARN_IGNORE(4190)
  *
  * @param messageId The ID of the message to hook.
  * @param callback The callback function to invoke when the message is received.
- * @param post Whether to hook the message in the post mode (after processing) or pre mode (before processing).
+ * @param mode Whether to hook the message in the post mode (after processing) or pre mode (before processing).
  * @return True if the hook was successfully added, false otherwise.
  */
-extern "C" PLUGIN_API bool HookUserMessage(int messageId, UserMessageCallback callback, bool post) {
-	return g_UserMessageManager.HookUserMessage(messageId, callback, static_cast<HookMode>(post));
+extern "C" PLUGIN_API bool HookUserMessage(int messageId, UserMessageCallback callback, HookMode mode) {
+	return g_UserMessageManager.HookUserMessage(messageId, callback, mode);
 }
 
 /**
@@ -27,11 +27,11 @@ extern "C" PLUGIN_API bool HookUserMessage(int messageId, UserMessageCallback ca
  *
  * @param messageId The ID of the message to unhook.
  * @param callback The callback function to remove.
- * @param post Whether the hook was in post mode (after processing) or pre mode (before processing).
+ * @param mode Whether the hook was in post mode (after processing) or pre mode (before processing).
  * @return True if the hook was successfully removed, false otherwise.
  */
-extern "C" PLUGIN_API bool UnhookUserMessage(int messageId, UserMessageCallback callback, bool post) {
-	return g_UserMessageManager.UnhookUserMessage(messageId, callback, static_cast<HookMode>(post));
+extern "C" PLUGIN_API bool UnhookUserMessage(int messageId, UserMessageCallback callback, HookMode mode) {
+	return g_UserMessageManager.UnhookUserMessage(messageId, callback, mode);
 }
 
 /**

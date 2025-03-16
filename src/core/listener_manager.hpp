@@ -28,7 +28,7 @@ public:
 	{
 		// Is the callable already in the vector?
 		if (IsRegistered(callable)) {
-			S2_LOG(LS_WARNING, "Callback already registered.\n");
+			//S2_LOG(LS_WARNING, "Callback already registered.\n");
 			return false;
 		} else {
 			m_callables.emplace_back(callable);
@@ -42,7 +42,7 @@ public:
 	{
 		auto index = Find(callable);
 		if (index == -1) {
-			S2_LOG(LS_WARNING, "Callback not registered.\n");
+			//S2_LOG(LS_WARNING, "Callback not registered.\n");
 			return false;
 		} else {
 			m_callables.erase(m_callables.begin() + index);

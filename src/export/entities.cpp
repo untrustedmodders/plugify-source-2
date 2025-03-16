@@ -184,10 +184,11 @@ extern "C" PLUGIN_API void* GetConcreteEntityListPointer() {
  * @param szClassname The class name of the entity to hook the output for.
  * @param szOutput The output event name to hook.
  * @param callback The callback function to invoke when the output is fired.
- * @param post Indicates whether the hook should be a post-hook (true) or pre-hook (false).
+ * @param mode Whether the hook was in post mode (after processing) or pre mode (before processing).
+ * @return True if the hook was successfully added, false otherwise.
  */
-extern "C" PLUGIN_API void HookEntityOutput(const plg::string& szClassname, const plg::string& szOutput, EntityListenerCallback callback, bool post) {
-	g_OutputManager.HookEntityOutput(szClassname, szOutput, callback, static_cast<HookMode>(post));
+extern "C" PLUGIN_API bool HookEntityOutput(const plg::string& szClassname, const plg::string& szOutput, EntityListenerCallback callback, HookMode mode) {
+	return g_OutputManager.HookEntityOutput(szClassname, szOutput, callback, mode);
 }
 
 /**
@@ -198,10 +199,11 @@ extern "C" PLUGIN_API void HookEntityOutput(const plg::string& szClassname, cons
  * @param szClassname The class name of the entity from which to unhook the output.
  * @param szOutput The output event name to unhook.
  * @param callback The callback function that was previously hooked.
- * @param post Indicates whether the hook was a post-hook (true) or pre-hook (false).
+ * @param mode Whether the hook was in post mode (after processing) or pre mode (before processing).
+* @return True if the hook was successfully removed, false otherwise.
  */
-extern "C" PLUGIN_API void UnhookEntityOutput(const plg::string& szClassname, const plg::string& szOutput, EntityListenerCallback callback, bool post) {
-	g_OutputManager.UnhookEntityOutput(szClassname, szOutput, callback, static_cast<HookMode>(post));
+extern "C" PLUGIN_API bool UnhookEntityOutput(const plg::string& szClassname, const plg::string& szOutput, EntityListenerCallback callback, HookMode mode) {
+	return g_OutputManager.UnhookEntityOutput(szClassname, szOutput, callback, mode);
 }
 
 ////////////////////////

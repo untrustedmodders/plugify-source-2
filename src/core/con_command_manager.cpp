@@ -32,8 +32,7 @@ bool CConCommandManager::AddCommandListener(const plg::string& name, CommandList
 	std::lock_guard<std::mutex> lock(m_registerCmdLock);
 
 	if (name.empty()) {
-		m_globalCallbacks[static_cast<size_t>(mode)].Register(callback);
-		return true;
+		return m_globalCallbacks[static_cast<size_t>(mode)].Register(callback);
 	}
 
 	auto it = m_cmdLookup.find(name);
@@ -46,20 +45,18 @@ bool CConCommandManager::AddCommandListener(const plg::string& name, CommandList
 		auto& commandInfo = *m_cmdLookup.emplace(name, std::make_unique<ConCommandInfo>(name)).first->second;
 		commandInfo.command = g_pCVar->GetConCommandData(hFoundCommand);
 		commandInfo.defaultCommand = true;
-		commandInfo.callbacks[static_cast<size_t>(mode)].Register(callback);
+		return commandInfo.callbacks[static_cast<size_t>(mode)].Register(callback);
 	} else {
 		auto& commandInfo = *std::get<CommandInfoPtr>(*it);
-		commandInfo.callbacks[static_cast<size_t>(mode)].Register(callback);
+		return commandInfo.callbacks[static_cast<size_t>(mode)].Register(callback);
 	}
-	return true;
 }
 
 bool CConCommandManager::RemoveCommandListener(const plg::string& name, CommandListenerCallback callback, HookMode mode) {
 	std::lock_guard<std::mutex> lock(m_registerCmdLock);
 
 	if (name.empty()) {
-		m_globalCallbacks[static_cast<size_t>(mode)].Unregister(callback);
-		return false;
+		return m_globalCallbacks[static_cast<size_t>(mode)].Unregister(callback);
 	}
 
 	auto it = m_cmdLookup.find(name);
@@ -68,8 +65,7 @@ bool CConCommandManager::RemoveCommandListener(const plg::string& name, CommandL
 	}
 
 	auto& commandInfo = *std::get<CommandInfoPtr>(*it);
-	commandInfo.callbacks[static_cast<size_t>(mode)].Unregister(callback);
-	return true;
+	return commandInfo.callbacks[static_cast<size_t>(mode)].Unregister(callback);
 }
 
 bool CConCommandManager::AddValveCommand(const plg::string& name, const plg::string& description, ConVarFlag flags, uint64 adminFlags) {

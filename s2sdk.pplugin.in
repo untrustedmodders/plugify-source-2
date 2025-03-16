@@ -1395,6 +1395,27 @@
               }
             }
           }
+        },
+        {
+          "type": "uint8",
+          "name": "type",
+          "description": "Whether the hook was in post mode (after processing) or pre mode (before processing).",
+          "enum": {
+            "name": "HookMode",
+            "description": "Enum representing the type of callback.",
+            "values": [
+              {
+                "name": "Pre",
+                "description": "Callback will be executed before the original function",
+                "value": 0
+              },
+              {
+                "name": "Post",
+                "description": "Callback will be executed after the original function",
+                "value": 1
+              }
+            ]
+          }
         }
       ],
       "retType": {
@@ -1643,6 +1664,27 @@
               }
             }
           }
+        },
+        {
+          "type": "uint8",
+          "name": "type",
+          "description": "Whether the hook was in post mode (after processing) or pre mode (before processing).",
+          "enum": {
+            "name": "HookMode",
+            "description": "Enum representing the type of callback.",
+            "values": [
+              {
+                "name": "Pre",
+                "description": "Callback will be executed before the original function",
+                "value": 0
+              },
+              {
+                "name": "Post",
+                "description": "Callback will be executed after the original function",
+                "value": 1
+              }
+            ]
+          }
         }
       ],
       "retType": {
@@ -1795,10 +1837,25 @@
           }
         },
         {
-          "name": "post",
-          "type": "bool",
-          "ref": false,
-          "description": "A boolean indicating whether the callback should fire after the command is executed."
+          "type": "uint8",
+          "name": "type",
+          "description": "Whether the hook was in post mode (after processing) or pre mode (before processing).",
+          "enum": {
+            "name": "HookMode",
+            "description": "Enum representing the type of callback.",
+            "values": [
+              {
+                "name": "Pre",
+                "description": "Callback will be executed before the original function",
+                "value": 0
+              },
+              {
+                "name": "Post",
+                "description": "Callback will be executed after the original function",
+                "value": 1
+              }
+            ]
+          }
         }
       ],
       "retType": {
@@ -1876,10 +1933,25 @@
           }
         },
         {
-          "name": "post",
-          "type": "bool",
-          "ref": false,
-          "description": "A boolean indicating whether the callback should be removed for post-execution."
+          "type": "uint8",
+          "name": "type",
+          "description": "Whether the hook was in post mode (after processing) or pre mode (before processing).",
+          "enum": {
+            "name": "HookMode",
+            "description": "Enum representing the type of callback.",
+            "values": [
+              {
+                "name": "Pre",
+                "description": "Callback will be executed before the original function",
+                "value": 0
+              },
+              {
+                "name": "Post",
+                "description": "Callback will be executed after the original function",
+                "value": 1
+              }
+            ]
+          }
         }
       ],
       "retType": {
@@ -8082,14 +8154,30 @@
           }
         },
         {
-          "name": "post",
-          "type": "bool",
-          "ref": false,
-          "description": "Indicates whether the hook should be a post-hook (true) or pre-hook (false)."
+          "type": "uint8",
+          "name": "type",
+          "description": "Whether the hook was in post mode (after processing) or pre mode (before processing).",
+          "enum": {
+            "name": "HookMode",
+            "description": "Enum representing the type of callback.",
+            "values": [
+              {
+                "name": "Pre",
+                "description": "Callback will be executed before the original function",
+                "value": 0
+              },
+              {
+                "name": "Post",
+                "description": "Callback will be executed after the original function",
+                "value": 1
+              }
+            ]
+          }
         }
       ],
       "retType": {
-        "type": "void"
+        "type": "bool",
+        "description": "True if the hook was successfully added, false otherwise."
       }
     },
     {
@@ -8168,14 +8256,30 @@
           }
         },
         {
-          "name": "post",
-          "type": "bool",
-          "ref": false,
-          "description": "Indicates whether the hook was a post-hook (true) or pre-hook (false)."
+          "type": "uint8",
+          "name": "type",
+          "description": "Whether the hook was in post mode (after processing) or pre mode (before processing).",
+          "enum": {
+            "name": "HookMode",
+            "description": "Enum representing the type of callback.",
+            "values": [
+              {
+                "name": "Pre",
+                "description": "Callback will be executed before the original function",
+                "value": 0
+              },
+              {
+                "name": "Post",
+                "description": "Callback will be executed after the original function",
+                "value": 1
+              }
+            ]
+          }
         }
       ],
       "retType": {
-        "type": "void"
+        "type": "bool",
+        "description": "True if the hook was successfully removed, false otherwise."
       }
     },
     {
@@ -9522,10 +9626,25 @@
           }
         },
         {
-          "name": "post",
-          "type": "bool",
-          "ref": false,
-          "description": "A boolean indicating whether the hook should be for a post event."
+          "type": "uint8",
+          "name": "type",
+          "description": "Whether the hook was in post mode (after processing) or pre mode (before processing).",
+          "enum": {
+            "name": "HookMode",
+            "description": "Enum representing the type of callback.",
+            "values": [
+              {
+                "name": "Pre",
+                "description": "Callback will be executed before the original function",
+                "value": 0
+              },
+              {
+                "name": "Post",
+                "description": "Callback will be executed after the original function",
+                "value": 1
+              }
+            ]
+          }
         }
       ],
       "retType": {
@@ -9603,10 +9722,25 @@
           }
         },
         {
-          "name": "post",
-          "type": "bool",
-          "ref": false,
-          "description": "A boolean indicating whether the hook is for a post event."
+          "type": "uint8",
+          "name": "type",
+          "description": "Whether the hook was in post mode (after processing) or pre mode (before processing).",
+          "enum": {
+            "name": "HookMode",
+            "description": "Enum representing the type of callback.",
+            "values": [
+              {
+                "name": "Pre",
+                "description": "Callback will be executed before the original function",
+                "value": 0
+              },
+              {
+                "name": "Post",
+                "description": "Callback will be executed after the original function",
+                "value": 1
+              }
+            ]
+          }
         }
       ],
       "retType": {

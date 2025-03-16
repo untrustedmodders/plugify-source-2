@@ -1,36 +1,34 @@
 #include "output_manager.hpp"
 
-void CEntityOutputManager::HookEntityOutput(plg::string szClassname, plg::string szOutput, EntityListenerCallback callback, HookMode mode) {
+bool CEntityOutputManager::HookEntityOutput(plg::string szClassname, plg::string szOutput, EntityListenerCallback callback, HookMode mode) {
 	std::lock_guard<std::mutex> lock(m_registerHookLock);
 	OutputKey outputKey{std::move(szClassname), std::move(szOutput)};
-	CallbackPair* pCallbackPair;
 
 	auto it = m_hookMap.find(outputKey);
 	if (it == m_hookMap.end()) {
-		pCallbackPair = &m_hookMap.emplace(std::move(outputKey), CallbackPair{}).first->second;
+		auto& callbackPair = m_hookMap.emplace(std::move(outputKey), CallbackPair{}).first->second;
+		return callbackPair.callbacks[static_cast<size_t>(mode)].Register(callback);
 	} else {
-		pCallbackPair = &std::get<CallbackPair>(*it);
+		auto& callbackPair = std::get<CallbackPair>(*it);
+		return callbackPair.callbacks[static_cast<size_t>(mode)].Register(callback);
 	}
-
-	auto& listener = mode == HookMode::Pre ? pCallbackPair->pre : pCallbackPair->post;
-	listener.Register(callback);
 }
 
-void CEntityOutputManager::UnhookEntityOutput(plg::string szClassname, plg::string szOutput, EntityListenerCallback callback, HookMode mode) {
+bool CEntityOutputManager::UnhookEntityOutput(plg::string szClassname, plg::string szOutput, EntityListenerCallback callback, HookMode mode) {
 	std::lock_guard<std::mutex> lock(m_registerHookLock);
 	OutputKey outputKey{std::move(szClassname), std::move(szOutput)};
 
 	auto it = m_hookMap.find(outputKey);
 	if (it != m_hookMap.end()) {
 		auto& callbackPair = std::get<CallbackPair>(*it);
-
-		auto& listener = mode == HookMode::Pre ? callbackPair.pre : callbackPair.post;
-		listener.Unregister(callback);
-
-		if (callbackPair.pre.Empty() && callbackPair.post.Empty()) {
+		auto status = callbackPair.callbacks[static_cast<size_t>(mode)].Unregister(callback);
+		if (callbackPair.callbacks[0].Empty() && callbackPair.callbacks[1].Empty()) {
 			m_hookMap.erase(it);
 		}
+		return status;
 	}
+
+	return false;
 }
 
 poly::ReturnAction CEntityOutputManager::Hook_FireOutputInternal(poly::Params& params, int count, poly::Return& ret) {
@@ -68,8 +66,9 @@ poly::ReturnAction CEntityOutputManager::Hook_FireOutputInternal(poly::Params& p
 	int caller = pCaller != nullptr ? pCaller->GetEntityIndex().Get() : -1;
 
 	for (const auto& pCallbackPair: m_vecCallbackPairs) {
-		for (size_t i = 0; i < pCallbackPair->pre.GetCount(); ++i) {
-			auto thisResult = pCallbackPair->pre.Notify(i, activator, caller, flDelay);
+		auto& cb = pCallbackPair->callbacks[0];
+		for (size_t i = 0; i < cb.GetCount(); ++i) {
+			auto thisResult = cb.Notify(i, activator, caller, flDelay);
 			if (thisResult >= ResultType::Stop) {
 				break;
 			}
@@ -98,7 +97,8 @@ poly::ReturnAction CEntityOutputManager::Hook_FireOutputInternal_Post(poly::Para
 	int caller = pCaller != nullptr ? pCaller->GetRefEHandle().ToInt() : INVALID_EHANDLE_INDEX;
 
 	for (const auto& pCallbackPair: m_vecCallbackPairs) {
-		pCallbackPair->post.Notify(activator, caller, flDelay);
+		auto& cb = pCallbackPair->callbacks[1];
+		cb.Notify(activator, caller, flDelay);
 	}
 
 	return poly::ReturnAction::Ignored;
