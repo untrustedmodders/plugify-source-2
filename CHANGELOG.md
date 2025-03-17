@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.15](https://github.com/untrustedmodders/plugify-source-2/compare/v1.1.14...v1.1.15) (2025-03-17)
+
+
+### Bug Fixes
+
+* update build action ([706e620](https://github.com/untrustedmodders/plugify-source-2/commit/706e620e65abc68e6b69a9860352b4209ae911a4))
+
 ## [1.1.14](https://github.com/untrustedmodders/plugify-source-2/compare/v1.1.13...v1.1.14) (2025-03-17)
 
 
