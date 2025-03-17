@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.1.14](https://github.com/untrustedmodders/plugify-source-2/compare/v1.1.13...v1.1.14) (2025-03-17)
+
+
+### Bug Fixes
+
+* bug with chat command ([2807ebf](https://github.com/untrustedmodders/plugify-source-2/commit/2807ebfc1ed4f31ea55665bfa51586ddaa0f9c1b))
+* bug with triggers ([879cd85](https://github.com/untrustedmodders/plugify-source-2/commit/879cd85b22619436d365e3aedc38c57ad612d5a0))
+* linux crash ([d1e2134](https://github.com/untrustedmodders/plugify-source-2/commit/d1e2134b002d186c7cd0deeb502b6ab916d5f5a9))
+* update callbacks with new enum instead of bool ([69f5b4c](https://github.com/untrustedmodders/plugify-source-2/commit/69f5b4c8297df5fb55a14c1dc00c47b8beed1687))
+* update plugify ([1418be3](https://github.com/untrustedmodders/plugify-source-2/commit/1418be3b0cdcebb54e1094b452747b226e03ae07))
+
 ## [1.1.13](https://github.com/untrustedmodders/plugify-source-2/compare/v1.1.12...v1.1.13) (2025-03-16)
 
 
