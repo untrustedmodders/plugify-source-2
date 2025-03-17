@@ -68,14 +68,15 @@ jobs:
           cmake --build . --target plugify-source-2 --config ${{ env.BUILD_TYPE }} -- /m
 
       - name: Clean build directory
+        shell: pwsh
         run: |
-          mkdir -p build/output/configs
-          mkdir -p build/output/gamedata
-          mkdir -p build/output/bin
-          cp build/core.txt build/output/configs
-          cp build/s2sdk.games.txt build/output/gamedata
-          cp build/${{ env.BUILD_TYPE }}/s2sdk.dll build/output/bin
-          cp build/s2sdk.pplugin build/output
+          New-Item -ItemType Directory -Force -Path build/output/configs
+          New-Item -ItemType Directory -Force -Path build/output/gamedata
+          New-Item -ItemType Directory -Force -Path build/output/bin
+          Move-Item -Force -Path build/core.txt -Destination build/output/configs
+          Move-Item -Force -Path build/s2sdk.games.txt -Destination build/output/gamedata
+          Move-Item -Force -Path build/${{ env.BUILD_TYPE }}/s2sdk.dll -Destination build/output/bin
+          Move-Item -Force -Path build/s2sdk.pplugin -Destination build/output
 
       - uses: actions/upload-artifact@v4
         with:
