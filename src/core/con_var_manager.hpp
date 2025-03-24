@@ -72,6 +72,8 @@ public:
 
 	template<typename T>
 	ConVarRef CreateConVar(const plg::string& name, const plg::string& description, const T& defaultVal, ConVarFlag flags, bool hasMin = false, T min = {}, bool hasMax = {}, T max = {}) {
+		std::lock_guard<std::mutex> lock(m_registerCnvLock);
+
 		if (name.empty() || g_pCVar->FindConVar(name.c_str()).IsValidRef()) {
 			return ConVarRef();
 		}
@@ -80,8 +82,6 @@ public:
 		if (it != m_cnvLookup.end()) {
 			return *std::get<ConVarInfoPtr>(*it)->conVar;
 		}
-
-		std::lock_guard<std::mutex> lock(m_registerCnvLock);
 
 		auto& conVarInfo = *m_cnvLookup.emplace(name, std::make_unique<ConVarInfo>(name, description)).first->second;
 		auto conVar = std::make_unique<ConVarRef>(name.c_str());
@@ -96,12 +96,12 @@ public:
 
 	template<typename T>
 	ConVarRef FindConVar(const plg::string& name) {
+		std::lock_guard<std::mutex> lock(m_registerCnvLock);
+
 		auto it = m_cnvLookup.find(name);
 		if (it != m_cnvLookup.end()) {
 			return *std::get<ConVarInfoPtr>(*it)->conVar;
 		}
-
-		std::lock_guard<std::mutex> lock(m_registerCnvLock);
 
 		auto& conVarInfo = *m_cnvLookup.emplace(name, std::make_unique<ConVarInfo>(name, "")).first->second;
 		conVarInfo.conVar = std::make_unique<CConVarRef<T>>(name.c_str());

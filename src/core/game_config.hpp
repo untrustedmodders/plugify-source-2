@@ -1,7 +1,5 @@
 #pragma once
 
-#include <tier0/keyvalues.h>
-
 #include <dynlibutils/memaddr.hpp>
 #include <dynlibutils/module.hpp>
 
@@ -10,13 +8,13 @@ using CModule = DynLibUtils::CModule;
 
 class CGameConfig {
 public:
-	CGameConfig(plg::string game, plg::string path);
+	CGameConfig(plg::string game, plg::vector<plg::string> path);
 	CGameConfig(CGameConfig&& other) = default;
 	~CGameConfig();
 
 	bool Initialize();
 
-	const plg::string& GetPath() const;
+	const plg::vector<plg::string>& GetPaths() const;
 	std::string_view GetLibrary(const plg::string& name) const;
 	std::string_view GetSignature(const plg::string& name) const;
 	std::string_view GetSymbol(const plg::string& name) const;
@@ -36,8 +34,7 @@ private:
 
 private:
 	plg::string m_szGameDir;
-	plg::string m_szPath;
-	std::unique_ptr<KeyValues> m_pKeyValues;
+	plg::vector<plg::string> m_szPaths;
 	std::unordered_map<plg::string, int> m_umOffsets;
 	std::unordered_map<plg::string, plg::string> m_umSignatures;
 	std::unordered_map<plg::string, AddressConf> m_umAddresses;
@@ -50,11 +47,12 @@ public:
 	CGameConfigManager() = default;
 	~CGameConfigManager() = default;
 
-	CGameConfig* LoadGameConfigFile(plg::string file);
-	void CloseGameConfigFile(CGameConfig* pGameConfig);
+	Handle LoadGameConfigFile(plg::vector<plg::string> paths);
+	void CloseGameConfigFile(Handle handle);
+	CGameConfig* GetGameConfig(Handle handle);
 
 private:
-	std::unordered_map<plg::string, CGameConfig> m_configs;
+	std::unordered_map<Handle, CGameConfig> m_configs;
 };
 
 extern CGameConfigManager g_pGameConfigManager;

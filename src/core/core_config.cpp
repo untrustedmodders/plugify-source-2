@@ -1,49 +1,54 @@
 #include "core_config.hpp"
 #include <core/sdk/utils.h>
+#include <plugify-configs/plugify-configs.hpp>
 
 using namespace std::string_view_literals;
 
-CCoreConfig::CCoreConfig(plg::string path) : m_szPath(std::move(path)), m_pKeyValues(std::make_unique<KeyValues>("Core")) {
+CCoreConfig::CCoreConfig(plg::vector<plg::string> paths) : m_szPaths(std::move(paths)) {
 }
 
 bool CCoreConfig::Initialize() {
-	if (!m_pKeyValues->LoadFromFile(g_pFullFileSystem, m_szPath.c_str(), nullptr)) {
-		S2_LOGF(LS_ERROR, "Could not read \"%s\": Failed to load gamedata file\n", m_szPath.c_str());
+	std::vector<std::string_view> paths;
+	paths.reserve(m_szPaths.size());
+	for (const auto& path : m_szPaths) {
+		paths.emplace_back(path);
+	}
+	auto config = ReadConfigs(paths);
+	if (!config) {
+		S2_LOGF(LS_ERROR, "Failed to load configuration file: \"%s\"\n", GetError().data());
 		return false;
 	}
 
-	KeyValues* publicChatTriggers = m_pKeyValues->FindKey("PublicChatTrigger");
-	if (publicChatTriggers) {
-		PublicChatTrigger.clear();
-
-		FOR_EACH_SUBKEY(publicChatTriggers, it) {
-			std::string_view trigger = it->GetString();
-			if (!trigger.empty() && it->GetName() == "trigger"sv) {
-				PublicChatTrigger.emplace_back(trigger);
-			}
+	PublicChatTrigger.clear();
+	if (config->JumpKey("PublicChatTrigger")) {
+		if (config->IsArray() && config->JumpFirst()) {
+			do {
+				PublicChatTrigger.emplace_back(config->GetString());
+			} while (config->JumpNext());
+			config->JumpBack();
 		}
+		config->JumpBack();
 	}
 
-	KeyValues* silentChatTriggers = m_pKeyValues->FindKey("SilentChatTrigger");
-	if (silentChatTriggers) {
-		SilentChatTrigger.clear();
-
-		FOR_EACH_SUBKEY(silentChatTriggers, it) {
-			std::string_view trigger = it->GetString();
-			if (!trigger.empty() && it->GetName() == "trigger"sv) {
-				SilentChatTrigger.emplace_back(trigger);
-			}
+	SilentChatTrigger.clear();
+	if (config->JumpKey("SilentChatTrigger")) {
+		if (config->IsArray() && config->JumpFirst()) {
+			do {
+				SilentChatTrigger.emplace_back(config->GetString());
+			} while (config->JumpNext());
+			config->JumpBack();
 		}
+		config->JumpBack();
 	}
 
-	FollowCS2ServerGuidelines = m_pKeyValues->GetBool("FollowCS2ServerGuidelines");
-	ServerLanguage = m_pKeyValues->GetString("ServerLanguage", "en");
+	FollowCS2ServerGuidelines = config->GetBool("FollowCS2ServerGuidelines");
+	ServerLanguage = config->GetString("ServerLanguage", "en");
 
 	return true;
 }
 
-const plg::string& CCoreConfig::GetPath() const {
-	return m_szPath;
+const plg::vector<plg::string>& CCoreConfig::GetPaths() const {
+	return m_szPaths;
 }
 
 bool CCoreConfig::IsTriggerInternal(const std::vector<std::string>& triggers, std::string_view message) {

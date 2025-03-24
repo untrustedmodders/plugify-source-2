@@ -5,3 +5,4 @@
 using Handle = uint64;
 
 Handle CreateHandle();
+Handle InvalidHandle();

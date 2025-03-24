@@ -15,12 +15,12 @@ ConVarInfo::ConVarInfo(plg::string name, plg::string description) : name(std::mo
 }
 
 bool CConVarManager::RemoveConVar(const plg::string& name) {
+	std::lock_guard<std::mutex> lock(m_registerCnvLock);
+
 	auto it = m_cnvLookup.find(name);
 	if (it == m_cnvLookup.end()) {
 		return false;
 	}
-
-	std::lock_guard<std::mutex> lock(m_registerCnvLock);
 
 	m_cnvCache.erase(std::get<ConVarInfoPtr>(*it)->conVar.get());
 	m_cnvLookup.erase(it);
@@ -29,12 +29,12 @@ bool CConVarManager::RemoveConVar(const plg::string& name) {
 }
 
 ConVarRef CConVarManager::FindConVar(const plg::string& name) {
+	std::lock_guard<std::mutex> lock(m_registerCnvLock);
+
 	auto it = m_cnvLookup.find(name);
 	if (it != m_cnvLookup.end()) {
 		return *std::get<ConVarInfoPtr>(*it)->conVar;
 	}
-
-	std::lock_guard<std::mutex> lock(m_registerCnvLock);
 
 	auto& conVarInfo = *m_cnvLookup.emplace(name, std::make_unique<ConVarInfo>(name, "")).first->second;
 	conVarInfo.conVar = std::make_unique<ConVarRefAbstract>(name.c_str(), true);

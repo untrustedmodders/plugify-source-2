@@ -17,3 +17,9 @@ set(PLUGIFY_LINK_LIBRARIES
 if(NOT COMPILER_SUPPORTS_FORMAT)
 	list(APPEND PLUGIFY_LINK_LIBRARIES fmt::fmt-header-only)
 endif()
+
+#
+# plugify-configs
+#
+include(cmake/plugify-configs.cmake)
+list(APPEND PLUGIFY_LINK_LIBRARIES plugify-configs)

@@ -19,7 +19,10 @@
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
+#include <filesystem>
 #include <utility>
+
+namespace fs = std::filesystem;
 
 #include "core/globals.hpp"
 #include "core/logger.hpp"

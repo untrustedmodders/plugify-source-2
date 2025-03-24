@@ -20,6 +20,9 @@
   },
   "dependencies": [
     {
+      "name": "plugify-configs"
+    },
+    {
       "name": "polyhook"
     }
   ],
@@ -10514,10 +10517,10 @@
       "funcName": "CloseGameConfigFile",
       "paramTypes": [
         {
-          "name": "pGameConfig",
-          "type": "ptr64",
+          "name": "config",
+          "type": "uint64",
           "ref": false,
-          "description": "A pointer to the game configuration to be closed."
+          "description": "A handle to the game configuration to be closed."
         }
       ],
       "retType": {
@@ -10531,33 +10534,33 @@
       "funcName": "LoadGameConfigFile",
       "paramTypes": [
         {
-          "name": "file",
-          "type": "string",
+          "name": "paths",
+          "type": "string[]",
           "ref": false,
-          "description": "The path to the game configuration file to be loaded."
+          "description": "The paths to the game configuration file to be loaded."
         }
       ],
       "retType": {
-        "type": "ptr64",
-        "description": "A pointer to the loaded CGameConfig object, or nullptr if loading fails."
+        "type": "uint64",
+        "description": "A handle to the loaded CGameConfig object, or -1 if loading fails."
       }
     },
     {
-      "name": "GetGameConfigPath",
+      "name": "GetGameConfigPaths",
       "group": "Gameconfig",
-      "description": "Retrieves the path of a game configuration.",
-      "funcName": "GetGameConfigPath",
+      "description": "Retrieves the paths of a game configuration.",
+      "funcName": "GetGameConfigPaths",
       "paramTypes": [
         {
-          "name": "pGameConfig",
-          "type": "ptr64",
+          "name": "handle",
+          "type": "uint64",
           "ref": false,
-          "description": "A pointer to the game configuration whose path is to be retrieved."
+          "description": "A handle to the game configuration whose path is to be retrieved."
         }
       ],
       "retType": {
-        "type": "string",
-        "description": "A string where the path will be stored."
+        "type": "string[]",
+        "description": "An array of paths where the configuration is stored."
       }
     },
     {
@@ -10567,10 +10570,10 @@
       "funcName": "GetGameConfigLibrary",
       "paramTypes": [
         {
-          "name": "pGameConfig",
-          "type": "ptr64",
+          "name": "handle",
+          "type": "uint64",
           "ref": false,
-          "description": "A pointer to the game configuration from which to retrieve the library."
+          "description": "A handle to the game configuration from which to retrieve the library."
         },
         {
           "name": "name",
@@ -10591,10 +10594,10 @@
       "funcName": "GetGameConfigSignature",
       "paramTypes": [
         {
-          "name": "pGameConfig",
-          "type": "ptr64",
+          "name": "handle",
+          "type": "uint64",
           "ref": false,
-          "description": "A pointer to the game configuration from which to retrieve the signature."
+          "description": "A handle to the game configuration from which to retrieve the signature."
         },
         {
           "name": "name",
@@ -10615,10 +10618,10 @@
       "funcName": "GetGameConfigSymbol",
       "paramTypes": [
         {
-          "name": "pGameConfig",
-          "type": "ptr64",
+          "name": "handle",
+          "type": "uint64",
           "ref": false,
-          "description": "A pointer to the game configuration from which to retrieve the symbol."
+          "description": "A handle to the game configuration from which to retrieve the symbol."
         },
         {
           "name": "name",
@@ -10639,10 +10642,10 @@
       "funcName": "GetGameConfigPatch",
       "paramTypes": [
         {
-          "name": "pGameConfig",
-          "type": "ptr64",
+          "name": "handle",
+          "type": "uint64",
           "ref": false,
-          "description": "A pointer to the game configuration from which to retrieve the patch."
+          "description": "A handle to the game configuration from which to retrieve the patch."
         },
         {
           "name": "name",
@@ -10663,10 +10666,10 @@
       "funcName": "GetGameConfigOffset",
       "paramTypes": [
         {
-          "name": "pGameConfig",
-          "type": "ptr64",
+          "name": "handle",
+          "type": "uint64",
           "ref": false,
-          "description": "A pointer to the game configuration from which to retrieve the offset."
+          "description": "A handle to the game configuration from which to retrieve the offset."
         },
         {
           "name": "name",
@@ -10687,10 +10690,10 @@
       "funcName": "GetGameConfigAddress",
       "paramTypes": [
         {
-          "name": "pGameConfig",
-          "type": "ptr64",
+          "name": "handle",
+          "type": "uint64",
           "ref": false,
-          "description": "A pointer to the game configuration from which to retrieve the address."
+          "description": "A handle to the game configuration from which to retrieve the address."
         },
         {
           "name": "name",
@@ -10711,10 +10714,10 @@
       "funcName": "GetGameConfigMemSig",
       "paramTypes": [
         {
-          "name": "pGameConfig",
-          "type": "ptr64",
+          "name": "handle",
+          "type": "uint64",
           "ref": false,
-          "description": "A pointer to the game configuration from which to retrieve the memory signature."
+          "description": "A handle to the game configuration from which to retrieve the memory signature."
         },
         {
           "name": "name",

@@ -1,15 +1,13 @@
 #pragma once
 
-#include <tier0/keyvalues.h>
-
 class CCoreConfig {
 public:
-	explicit CCoreConfig(plg::string path);
+	explicit CCoreConfig(plg::vector<plg::string> paths);
 	~CCoreConfig() = default;
 
 	bool Initialize();
 
-	const plg::string& GetPath() const;
+	const plg::vector<plg::string>& GetPaths() const;
 
 	bool IsSilentChatTrigger(std::string_view message) const;
 	bool IsPublicChatTrigger(std::string_view message) const;
@@ -24,6 +22,5 @@ public:
 	std::string ServerLanguage{"en"};
 
 private:
-	plg::string m_szPath;
-	std::unique_ptr<KeyValues> m_pKeyValues;
+	plg::vector<plg::string> m_szPaths;
 };

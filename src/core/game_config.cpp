@@ -1,76 +1,106 @@
 #include "game_config.hpp"
 #include <core/sdk/utils.h>
+#include <corecrt_io.h>
+#include <plugify-configs/plugify-configs.hpp>
 
-CGameConfig::CGameConfig(plg::string game, plg::string path) : m_szGameDir(std::move(game)), m_szPath(std::move(path)), m_pKeyValues(std::make_unique<KeyValues>("Games")) {
+CGameConfig::CGameConfig(plg::string game, plg::vector<plg::string> paths) : m_szGameDir(std::move(game)), m_szPaths(std::move(paths)) {
 }
 
 CGameConfig::~CGameConfig() = default;
 
 bool CGameConfig::Initialize() {
-	if (!m_pKeyValues->LoadFromFile(g_pFullFileSystem, m_szPath.c_str(), nullptr)) {
-		S2_LOGF(LS_ERROR, "Could not read \"%s\": Failed to load gamedata file\n", m_szPath.c_str());
+	std::vector<std::string_view> paths;
+	paths.reserve(m_szPaths.size());
+	for (const auto& path : m_szPaths) {
+		paths.emplace_back(path);
+	}
+	auto config = ReadConfigs(paths);
+	if (!config) {
+		S2_LOGF(LS_ERROR, "Failed to load configuration file: \"%s\"\n", GetError().data());
 		return false;
 	}
 
-	KeyValues* game = m_pKeyValues->FindKey(m_szGameDir.c_str());
-	if (game) {
-		const char* platform = S2SDK_PLATFORM;
+	config->JumpKey(m_szGameDir);
 
-		KeyValues* offsets = game->FindKey("Offsets");
-		if (offsets) {
-			FOR_EACH_SUBKEY(offsets, it) {
-				m_umOffsets[it->GetName()] = it->GetInt(platform, -1);
-			}
+	if (config->JumpKey("Signatures")) {
+		if (config->IsObject() && config->JumpFirst()) {
+			do {
+				if (config->IsObject()) {
+					m_umLibraries[config->GetName()] = config->GetString("library");
+					m_umSignatures[config->GetName()] = config->GetString(S2SDK_PLATFORM);
+				}
+			} while (config->JumpNext());
+			config->JumpBack();
 		}
+		config->JumpBack();
+	}
 
-		KeyValues* signatures = game->FindKey("Signatures");
-		if (signatures) {
-			FOR_EACH_SUBKEY(signatures, it) {
-				m_umLibraries[it->GetName()] = plg::string(it->GetString("library"));
-				m_umSignatures[it->GetName()] = plg::string(it->GetString(platform));
-			}
+	if (config->JumpKey("Offsets")) {
+		if (config->IsObject() && config->JumpFirst()) {
+			do {
+				if (config->IsObject()) {
+					m_umOffsets[config->GetName()] = config->GetAsInt32(S2SDK_PLATFORM, -1);
+				}
+			} while (config->JumpNext());
+			config->JumpBack();
 		}
+		config->JumpBack();
+	}
 
-		KeyValues* patches = game->FindKey("Patches");
-		if (patches) {
-			FOR_EACH_SUBKEY(patches, it) {
-				m_umPatches[it->GetName()] = plg::string(it->GetString(platform));
-			}
+	if (config->JumpKey("Patches")) {
+		if (config->IsObject() && config->JumpFirst()) {
+			do {
+				if (config->IsObject()) {
+					m_umPatches[config->GetName()] = config->GetString(S2SDK_PLATFORM);
+				}
+			} while (config->JumpNext());
+			config->JumpBack();
 		}
+		config->JumpBack();
+	}
 
-		KeyValues* addresses = game->FindKey("Addresses");
-		if (addresses) {
-			FOR_EACH_SUBKEY(addresses, it) {
-				KeyValues* reads = it->FindKey(platform);
-				plg::vector<std::pair<int, bool>> read;
-				bool lastIsOffset = false;
-				FOR_EACH_SUBKEY(reads, it2) {
-					std::string_view key = it2->GetName();
-					if (key == "read" || key == "offset" || key == "read_offs32") {
-						if (lastIsOffset) {
-							S2_LOGF(LS_WARNING, "Could not read \"%s\": Error parsing Address \"%s\", 'offset' entry must be the last entry\n", m_szPath.c_str(), it->GetName());
+	auto getAddressConf = [](std::unique_ptr<pcf::Config>& config) -> AddressConf {
+		AddressConf conf{config->GetString("signature"), {}, false};
+		if (config->JumpKey(S2SDK_PLATFORM)) {
+			if (config->IsArray() && config->JumpFirst()) {
+				do {
+					if (config->IsObject() && config->JumpFirst()) {
+						auto name = config->GetName();
+						if (conf.lastIsOffset) {
+							S2_LOGF(LS_WARNING, "Error parsing Address \"%s\", 'offset' entry must be the last entry\n", name.c_str());
 							continue;
 						}
-						read.emplace_back(it2->GetInt(), key.ends_with("_offs32"));
-						if (key[0] == 'o')// offset
-						{
-							lastIsOffset = true;
+						conf.read.emplace_back(config->GetAsInt32(), name == "read_offs32");
+						if (name == "offset") {
+							conf.lastIsOffset = true;
 						}
+						config->JumpBack();
 					}
-				}
-				m_umAddresses[it->GetName()] = AddressConf{it->GetString("signature"), std::move(read), lastIsOffset};
+				} while (config->JumpNext());
+				config->JumpBack();
 			}
+			config->JumpBack();
 		}
-	} else {
-		S2_LOGF(LS_ERROR, "Could not read \"%s\": Failed to find game: %s\n", m_szPath.c_str(), m_szGameDir.c_str());
-		return false;
+		return conf;
+	};
+
+	if (config->JumpKey("Addresses")) {
+		if (config->IsObject() && config->JumpFirst()) {
+			do {
+				if (config->IsObject()) {
+					m_umAddresses[config->GetName()] = getAddressConf(config);
+				}
+			} while (config->JumpNext());
+			config->JumpBack();
+		}
+		config->JumpBack();
 	}
 
 	return true;
 }
 
-const plg::string& CGameConfig::GetPath() const {
-	return m_szPath;
+const plg::vector<plg::string>& CGameConfig::GetPaths() const {
+	return m_szPaths;
 }
 
 std::string_view CGameConfig::GetSignature(const plg::string& name) const {
@@ -218,28 +248,36 @@ CMemory CGameConfig::ResolveSignature(const plg::string& name) const {
 	return address;
 }
 
-CGameConfig* CGameConfigManager::LoadGameConfigFile(plg::string path) {
-	auto it = m_configs.find(path);
+Handle CGameConfigManager::LoadGameConfigFile(plg::vector<plg::string> paths) {
+	for (const auto& [handle, config] : m_configs) {
+		if (config.GetPaths() == paths) {
+			return handle;
+		}
+	}
+
+	CGameConfig gameConfig("csgo", std::move(paths));
+	if (!gameConfig.Initialize()) {
+		return InvalidHandle();
+	}
+
+	Handle handle = CreateHandle();
+	m_configs.emplace(handle, std::move(gameConfig));
+	return handle;
+}
+
+void CGameConfigManager::CloseGameConfigFile(Handle handle) {
+	auto it = m_configs.find(handle);
+	if (it != m_configs.end()) {
+		m_configs.erase(it);
+	}
+}
+
+CGameConfig* CGameConfigManager::GetGameConfig(Handle handle) {
+	auto it = m_configs.find(handle);
 	if (it != m_configs.end()) {
 		return &std::get<CGameConfig>(*it);
 	}
-
-	CGameConfig gameConfig("cs2", path);
-	if (!gameConfig.Initialize()) {
-		return nullptr;
-	}
-
-	auto [_, result] = m_configs.emplace(std::move(path), std::move(gameConfig));
-	return &std::get<CGameConfig>(*_);
-}
-
-void CGameConfigManager::CloseGameConfigFile(CGameConfig* pGameConfig) {
-	if (pGameConfig) {
-		auto it = m_configs.find(pGameConfig->GetPath());
-		if (it != m_configs.end()) {
-			m_configs.erase(it);
-		}
-	}
+	return nullptr;
 }
 
 CGameConfigManager g_pGameConfigManager;

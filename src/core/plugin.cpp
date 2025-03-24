@@ -24,7 +24,7 @@
 
 #undef FindResource
 
-static Source2SDK g_sdk;
+Source2SDK g_sdk;
 EXPOSE_PLUGIN(PLUGIN_API, Source2SDK, &g_sdk)
 
 //ISteamHTTP* g_http = nullptr;
@@ -63,18 +63,11 @@ class CEntityListener : public IEntityListener {
 void Source2SDK::OnPluginStart() {
 	S2_LOG(LS_DEBUG, "[OnPluginStart] - Source2SDK!\n");
 
-	auto coreConfig = FindResource(S2SDK_NSTR("configs/core.txt"));
-	if (!coreConfig.has_value()) {
-		S2_LOG(LS_ERROR, "configs/core.txt not found!");
-		return;
-	}
-	auto gameData = FindResource(S2SDK_NSTR("gamedata/s2sdk.games.txt"));
-	if (!gameData.has_value()) {
-		S2_LOG(LS_ERROR, "gamedata/s2sdk.games.txt not found!");
-		return;
-	}
-
-	globals::Initialize(S2SDK_UTF8(*coreConfig), S2SDK_UTF8(*gameData));
+	globals::Initialize({
+		{ "base", GetBaseDir() },
+		{ "configs", GetConfigsDir() },
+		{ "data", GetDataDir() },
+	});
 
 	using enum poly::CallbackType;
 

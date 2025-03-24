@@ -39,8 +39,8 @@ namespace modules {
 }// namespace modules
 
 IMetamodListener* g_pMetamodListener = nullptr;
-CCoreConfig* g_pCoreConfig = nullptr;
-CGameConfig* g_pGameConfig = nullptr;
+std::unique_ptr<CCoreConfig> g_pCoreConfig = nullptr;
+std::unique_ptr<CGameConfig> g_pGameConfig = nullptr;
 
 template<class T>
 static T* FindInterface(const CModule* module, const char* name) {
@@ -94,7 +94,7 @@ static CModule* CreateModule(const char* p) {
 }
 
 namespace globals {
-	void Initialize(plg::string coreConfig, plg::string gameConfig) {
+	void Initialize(std::unordered_map<std::string, fs::path> paths) {
 		modules::engine = CreateModule(ModulePath(S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "engine2").c);
 		modules::tier0 = CreateModule(ModulePath(S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "tier0").c);
 		modules::server = CreateModule(ModulePath(S2SDK_GAME_BINARY S2SDK_LIBRARY_PREFIX "server").c);
@@ -128,10 +128,24 @@ namespace globals {
 			g_pMetamodListener = Plugify_ImmListener.CCast<IMetamodListenerFn>()();
 		}
 
-		g_pCoreConfig = new CCoreConfig(std::move(coreConfig));
-		g_pCoreConfig->Initialize();
-		g_pGameConfig = new CGameConfig("cs2", std::move(gameConfig));
-		g_pGameConfig->Initialize();
+		g_pCoreConfig = std::make_unique<CCoreConfig>(plg::vector<plg::string>{
+			(paths["base"] / "settings.json").generic_string(),
+			(paths["configs"] / "settings.json").generic_string(),
+			(paths["data"] / "settings.json").generic_string()
+		});
+		if (!g_pCoreConfig->Initialize()) {
+			S2_LOG(LS_ERROR, "Failed to load settings configuration!");
+			return;
+		}
+		g_pGameConfig = std::make_unique<CGameConfig>("csgo", plg::vector<plg::string>{
+			(paths["base"] / "gamedata.jsonc").generic_string(),
+			(paths["configs"] / "gamedata.jsonc").generic_string(),
+			(paths["data"] / "gamedata.jsonc").generic_string()
+		});
+		if (!g_pGameConfig->Initialize()) {
+			S2_LOG(LS_ERROR, "Failed to load gamedata configuration!");
+			return;
+		}
 
 		p_ppGameEventManager = g_pGameConfig->GetAddress("&s_GameEventManager").RCast<IGameEventManager2**>();
 		if (!p_ppGameEventManager) {
@@ -163,8 +177,8 @@ namespace globals {
 	}
 
 	void Terminate() {
-		delete g_pGameConfig;
-		delete g_pCoreConfig;
+		g_pGameConfig.reset();
+		g_pCoreConfig.reset();
 		delete modules::engine;
 		delete modules::tier0;
 		delete modules::server;

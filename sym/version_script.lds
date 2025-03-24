@@ -254,7 +254,7 @@
 
         CloseGameConfigFile;
         LoadGameConfigFile;
-        GetGameConfigPath;
+        GetGameConfigPaths;
         GetGameConfigLibrary;
         GetGameConfigSignature;
         GetGameConfigSymbol;

@@ -55,11 +55,11 @@ namespace SourceMM {
 }
 
 extern SourceMM::IMetamodListener* g_pMetamodListener;
-extern CCoreConfig* g_pCoreConfig;
-extern CGameConfig* g_pGameConfig;
+extern std::unique_ptr<CCoreConfig> g_pCoreConfig;
+extern std::unique_ptr<CGameConfig> g_pGameConfig;
 
 namespace globals {
-	void Initialize(plg::string coreConfig, plg::string gameConfig);
+	void Initialize(std::unordered_map<std::string, fs::path> paths);
 	void Terminate();
 }// namespace globals
 

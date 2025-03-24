@@ -79,16 +79,14 @@ set(COMPILE_DEFINITIONS
 if(WINDOWS)
     set(COMPILE_DEFINITIONS
 			${COMPILE_DEFINITIONS}
-            S2SDK_PLATFORM="windows"
-            S2SDK_BINARY="win64"
+            S2SDK_PLATFORM="win64"
             S2SDK_ROOT_BINARY="/bin/win64/"
             S2SDK_GAME_BINARY="/csgo/bin/win64/"
     )
 elseif(LINUX)
     set(COMPILE_DEFINITIONS
             ${COMPILE_DEFINITIONS}
-            S2SDK_PLATFORM="linux"
-            S2SDK_BINARY="linuxsteamrt64"
+            S2SDK_PLATFORM="linuxsteamrt64"
             S2SDK_ROOT_BINARY="/bin/linuxsteamrt64/"
             S2SDK_GAME_BINARY="/bin/linuxsteamrt64/../../csgo/bin/linuxsteamrt64//" # Metamod hack
     )
@@ -135,7 +133,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDE_DIRS} ${DYNLIBUTILS
 
 target_link_libraries(${PROJECT_NAME} PRIVATE cpp-memory_utils ${PLUGIFY_LINK_LIBRARIES} ${SOURCESDK_BINARY_DIR})
 
-file(READ "${CMAKE_SOURCE_DIR}/version.txt" VERSION_FILE_CONTENTS)
+file(READ "${CMAKE_CURRENT_SOURCE_DIR}/version.txt" VERSION_FILE_CONTENTS)
 string(STRIP "${VERSION_FILE_CONTENTS}" VERSION_FILE_CONTENTS)
 set(S2SDK_VERSION "${VERSION_FILE_CONTENTS}" CACHE STRING "Set version name")
 set(S2SDK_PACKAGE "cs2sdk" CACHE STRING "Set package name")
@@ -143,9 +141,9 @@ string(REPLACE "v" "" S2SDK_VERSION "${S2SDK_VERSION}")
 
 
 configure_file(
-    ${CMAKE_SOURCE_DIR}/s2sdk.pplugin.in
-    ${CMAKE_BINARY_DIR}/s2sdk.pplugin
+    ${CMAKE_CURRENT_SOURCE_DIR}/s2sdk.pplugin.in
+    ${CMAKE_CURRENT_BINARY_DIR}/s2sdk.pplugin
 )
 
-configure_file(${CMAKE_SOURCE_DIR}/assets/configs/core.txt ${CMAKE_BINARY_DIR}/core.txt COPYONLY)
-configure_file(${CMAKE_SOURCE_DIR}/assets/gamedata/s2sdk.games.txt ${CMAKE_BINARY_DIR}/s2sdk.games.txt COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/assets/gamedata.jsonc ${CMAKE_CURRENT_BINARY_DIR}/gamedata.jsonc COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/assets/settings.json ${CMAKE_CURRENT_BINARY_DIR}/settings.json COPYONLY)

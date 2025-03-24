@@ -7,15 +7,6 @@
 #include <cxxabi.h>
 #endif
 
-#if S2SDK_PLATFORM_WINDOWS
-#define S2SDK_NSTR(str) L##str
-#define S2SDK_UTF8(str) utils::ConvertWideToUtf8(str)
-#else
-#define S2SDK_NSTR(str) str
-#define S2SDK_UTF8(str) str
-#endif
-
-
 class CBaseEntity;
 class CServerSideClientBase;
 
@@ -201,16 +192,6 @@ namespace utils {
 	std::vector<plg::string> Split(std::string_view strv, std::string_view delims);
 
 	bool ParseInt(std::string_view str, int& out, int base = 10);
-
-#if S2SDK_PLATFORM_WINDOWS
-	/// Converts the specified UTF-8 string to a wide string.
-	plg::wstring ConvertUtf8ToWide(std::string_view str);
-	bool ConvertUtf8ToWide(plg::wstring& dest, std::string_view str);
-
-	/// Converts the specified wide string to a UTF-8 string.
-	plg::string ConvertWideToUtf8(std::wstring_view str);
-	bool ConvertWideToUtf8(plg::string& dest, std::wstring_view str);
-#endif
 
 	namespace {
 		template<typename T, typename... Rest>
