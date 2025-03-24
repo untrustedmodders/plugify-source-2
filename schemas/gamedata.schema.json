@@ -1,5 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/untrustedmodders/plugify-source-2/refs/heads/main/schemas/gamedata.schema.json",
   "description": "GameData contains information that allows you to target client/server memory directly. This can be useful for exposing functionality",
   "title": "GameConfig",
   "type": "object",
@@ -41,15 +42,24 @@
                 },
                 "win64": {
                   "description": "Address actions on Windows side",
-                  "$ref": "#/$defs/addressActionsSection"
+                  "type": "array",
+                  "items": {
+                      "$ref": "#/$defs/addressActionsSection"
+                  }
                 },
                 "linuxsteamrt64": {
                   "description": "Address actions on Linux side",
-                  "$ref": "#/$defs/addressActionsSection"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/addressActionsSection"
+                  }
                 },
                 "osx64": {
                   "description": "Address actions on macOS side",
-                  "$ref": "#/$defs/addressActionsSection"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/addressActionsSection"
+                  }
                 }
               },
               "required": [
