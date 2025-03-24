@@ -1,229 +1,140 @@
 {
-	"$schema": "http://json-schema.org/draft-07/schema#",
-
-	"description": "GameData contains information that allows you to target client/server memory directly. This can be useful for exposing functionality",
-
-	"title": "GameConfig",
-	"type": "object",
-
-	"$defs":
-	{
-		"addressActionsSection":
-		{
-			"type": "object",
-
-			"properties":
-			{
-				"offset":
-				{
-					"description": "A offset number in bytes",
-
-					"type": "number"
-				},
-
-				"read":
-				{
-					"description": "A offset number to read a cell from",
-
-					"type": "number"
-				},
-
-				"read_offs32":
-				{
-					"description": "A offset number to 32-bit relative cell to read",
-
-					"type": "number"
-				}
-			}
-		}
-	},
-
-	"patternProperties":
-	{
-		"^(?:(?!\\$).*)$":
-		{
-			"description": "Game folder name",
-
-			"type": "object",
-
-			"properties":
-			{
-				"Addresses":
-				{
-					"description": "Addresses section",
-
-					"type": "object",
-
-					"patternProperties":
-					{
-						"^.*$":
-						{
-							"description": "A address name",
-
-							"type": "object",
-
-							"properties":
-							{
-								"signature":
-								{
-									"description": "A signarute name from \"Signatures\" section",
-
-									"type": "string"
-								},
-
-								"win64":
-								{
-									"description": "Address actions on Windows side",
-
-									"$ref": "#/$defs/addressActionsSection"
-								},
-
-								"linuxsteamrt64":
-								{
-									"description": "Address actions on Linux side",
-
-									"$ref": "#/$defs/addressActionsSection"
-								},
-
-								"osx64":
-								{
-									"description": "Address actions on macOS side",
-
-									"$ref": "#/$defs/addressActionsSection"
-								}
-							},
-
-							"required": ["signature"]
-						}
-					}
-				},
-
-				"Keys":
-				{
-					"description": "Keys section",
-
-					"type": "object",
-
-					"patternProperties":
-					{
-						"^.*$":
-						{
-							"description": "A key name",
-
-							"type": "object",
-
-							"properties":
-							{
-								"win64":
-								{
-									"type": "string"
-								},
-
-								"linuxsteamrt64":
-								{
-									"type": "string"
-								},
-
-								"osx64":
-								{
-									"type": "string"
-								}
-							}
-						}
-					}
-				},
-
-				"Offsets":
-				{
-					"description": "Offsets section",
-
-					"type": "object",
-
-					"patternProperties":
-					{
-						"^.*$":
-						{
-							"description": "A offset name",
-
-							"type": "object",
-
-							"properties":
-							{
-								"win64":
-								{
-									"description": "A offset number on Windows side",
-
-									"type": "number"
-								},
-
-								"linuxsteamrt64":
-								{
-									"description": "A offset number on Linux side",
-
-									"type": "number"
-								},
-
-								"osx64":
-								{
-									"description": "A offset number on macOS side",
-
-									"type": "number"
-								}
-							}
-						}
-					}
-				},
-
-				"Signatures":
-				{
-					"description": "Signatures section",
-
-					"type": "object",
-
-					"patternProperties":
-					{
-						"^.*$":
-						{
-							"description": "A signature name",
-
-							"type": "object",
-
-							"properties":
-							{
-								"library":
-								{
-									"description": "Library shared name",
-
-									"type": "string"
-								},
-
-								"win64":
-								{
-									"description": "A signature bytes string on Windows side. Passes ? to skip a byte",
-
-									"type": "string"
-								},
-
-								"linuxsteamrt64":
-								{
-									"description": "A signature bytes string on Linux side. Passes ? to skip a byte",
-
-									"type": "string"
-								},
-
-								"osx64":
-								{
-									"description": "A signature bytes string on macOS side. Passes ? to skip a byte",
-
-									"type": "string"
-								}
-							},
-
-							"required": ["library"]
-						}
-					}
-				}
-			}
-		}
-	}
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "GameData contains information that allows you to target client/server memory directly. This can be useful for exposing functionality",
+  "title": "GameConfig",
+  "type": "object",
+  "$defs": {
+    "addressActionsSection": {
+      "type": "object",
+      "properties": {
+        "offset": {
+          "description": "A offset number in bytes",
+          "type": "number"
+        },
+        "read": {
+          "description": "A offset number to read a cell from",
+          "type": "number"
+        },
+        "read_offs32": {
+          "description": "A offset number to 32-bit relative cell to read",
+          "type": "number"
+        }
+      }
+    }
+  },
+  "patternProperties": {
+    "^(?:(?!\\$).*)$": {
+      "description": "Game folder name",
+      "type": "object",
+      "properties": {
+        "Addresses": {
+          "description": "Addresses section",
+          "type": "object",
+          "patternProperties": {
+            "^.+$": {
+              "description": "A address name",
+              "type": "object",
+              "properties": {
+                "signature": {
+                  "description": "A signarute name from \"Signatures\" section",
+                  "type": "string"
+                },
+                "win64": {
+                  "description": "Address actions on Windows side",
+                  "$ref": "#/$defs/addressActionsSection"
+                },
+                "linuxsteamrt64": {
+                  "description": "Address actions on Linux side",
+                  "$ref": "#/$defs/addressActionsSection"
+                },
+                "osx64": {
+                  "description": "Address actions on macOS side",
+                  "$ref": "#/$defs/addressActionsSection"
+                }
+              },
+              "required": [
+                "signature"
+              ]
+            }
+          }
+        },
+        "Keys": {
+          "description": "Keys section",
+          "type": "object",
+          "patternProperties": {
+            "^.+$": {
+              "description": "A key name",
+              "type": "object",
+              "properties": {
+                "win64": {
+                  "type": "string"
+                },
+                "linuxsteamrt64": {
+                  "type": "string"
+                },
+                "osx64": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "Offsets": {
+          "description": "Offsets section",
+          "type": "object",
+          "patternProperties": {
+            "^.+$": {
+              "description": "A offset name",
+              "type": "object",
+              "properties": {
+                "win64": {
+                  "description": "A offset number on Windows side",
+                  "type": "number"
+                },
+                "linuxsteamrt64": {
+                  "description": "A offset number on Linux side",
+                  "type": "number"
+                },
+                "osx64": {
+                  "description": "A offset number on macOS side",
+                  "type": "number"
+                }
+              }
+            }
+          }
+        },
+        "Signatures": {
+          "description": "Signatures section",
+          "type": "object",
+          "patternProperties": {
+            "^.+$": {
+              "description": "A signature name",
+              "type": "object",
+              "properties": {
+                "library": {
+                  "description": "Library shared name",
+                  "type": "string"
+                },
+                "win64": {
+                  "description": "A signature bytes string on Windows side. Passes ? to skip a byte",
+                  "type": "string"
+                },
+                "linuxsteamrt64": {
+                  "description": "A signature bytes string on Linux side. Passes ? to skip a byte",
+                  "type": "string"
+                },
+                "osx64": {
+                  "description": "A signature bytes string on macOS side. Passes ? to skip a byte",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "library"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
 }
