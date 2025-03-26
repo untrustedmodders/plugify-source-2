@@ -1,6 +1,6 @@
 #include "con_var_manager.hpp"
 
-CConVarManager::~CConVarManager() {
+ConVarManager::~ConVarManager() {
 	if (!g_pCVar) {
 		return;
 	}
@@ -14,7 +14,7 @@ CConVarManager::~CConVarManager() {
 ConVarInfo::ConVarInfo(plg::string name, plg::string description) : name(std::move(name)), description(std::move(description)) {
 }
 
-bool CConVarManager::RemoveConVar(const plg::string& name) {
+bool ConVarManager::RemoveConVar(const plg::string& name) {
 	std::lock_guard<std::mutex> lock(m_registerCnvLock);
 
 	auto it = m_cnvLookup.find(name);
@@ -28,7 +28,7 @@ bool CConVarManager::RemoveConVar(const plg::string& name) {
 	return true;
 }
 
-ConVarRef CConVarManager::FindConVar(const plg::string& name) {
+ConVarRef ConVarManager::FindConVar(const plg::string& name) {
 	std::lock_guard<std::mutex> lock(m_registerCnvLock);
 
 	auto it = m_cnvLookup.find(name);
@@ -48,7 +48,7 @@ ConVarRef CConVarManager::FindConVar(const plg::string& name) {
 	return *conVarInfo.conVar;
 }
 
-void CConVarManager::HookConVarChange(const plg::string& name, ConVarChangeListenerCallback callback) {
+void ConVarManager::HookConVarChange(const plg::string& name, ConVarChangeListenerCallback callback) {
 	std::lock_guard<std::mutex> lock(m_registerCnvLock);
 
 	if (name.empty()) {
@@ -66,7 +66,7 @@ void CConVarManager::HookConVarChange(const plg::string& name, ConVarChangeListe
 	}
 }
 
-void CConVarManager::UnhookConVarChange(const plg::string& name, ConVarChangeListenerCallback callback) {
+void ConVarManager::UnhookConVarChange(const plg::string& name, ConVarChangeListenerCallback callback) {
 	std::lock_guard<std::mutex> lock(m_registerCnvLock);
 
 	if (name.empty()) {
@@ -84,8 +84,8 @@ void CConVarManager::UnhookConVarChange(const plg::string& name, ConVarChangeLis
 	}
 }
 
-void CConVarManager::ChangeGlobal(ConVarRefAbstract* ref, CSplitScreenSlot nSlot, const char* pNewValue, const char* pOldValue) {
+void ConVarManager::ChangeGlobal(ConVarRefAbstract* ref, CSplitScreenSlot nSlot, const char* pNewValue, const char* pOldValue) {
 	g_ConVarManager.m_global.Notify(*ref, pNewValue, pOldValue);
 }
 
-CConVarManager g_ConVarManager;
+ConVarManager g_ConVarManager;

@@ -12,16 +12,16 @@ using OutputKey = std::pair<plg::string, plg::string>;
 using EntityListenerCallback = ResultType (*)(int activatorHandle, int callerHandle, float delay);
 
 struct CallbackPair {
-	std::array<CListenerManager<EntityListenerCallback>, 2> callbacks;
+	std::array<ListenerManager<EntityListenerCallback>, 2> callbacks;
 };
 
-class CEntityOutputManager {
+class EntityOutputManager {
 public:
-	CEntityOutputManager() = default;
-	~CEntityOutputManager() = default;
+	EntityOutputManager() = default;
+	~EntityOutputManager() = default;
 
-	bool HookEntityOutput(plg::string szClassname, plg::string szOutput, EntityListenerCallback callback, HookMode mode);
-	bool UnhookEntityOutput(plg::string szClassname, plg::string szOutput, EntityListenerCallback callback, HookMode mode);
+	bool HookEntityOutput(plg::string classname, plg::string output, EntityListenerCallback callback, HookMode mode);
+	bool UnhookEntityOutput(plg::string classname, plg::string output, EntityListenerCallback callback, HookMode mode);
 
 	poly::ReturnAction Hook_FireOutputInternal(poly::Params& params, int count, poly::Return& ret);
 	poly::ReturnAction Hook_FireOutputInternal_Post(poly::Params& params, int count, poly::Return& ret);
@@ -32,4 +32,4 @@ private:
 	std::mutex m_registerHookLock;
 };
 
-extern CEntityOutputManager g_OutputManager;
+extern EntityOutputManager g_OutputManager;

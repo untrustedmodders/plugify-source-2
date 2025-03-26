@@ -15,10 +15,10 @@ enum class ResultType : int {
 };
 
 template<class = void>
-class CListenerManager;
+class ListenerManager;
 
 template<class Ret, class... Args>
-class CListenerManager<Ret (*)(Args...)> {
+class ListenerManager<Ret (*)(Args...)> {
 public:
 	using Func = Ret (*)(Args...);
 

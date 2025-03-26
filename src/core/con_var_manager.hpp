@@ -57,18 +57,18 @@ struct ConVarInfo {
 	plg::string name;
 	plg::string description;
 	std::unique_ptr<ConVarRef> conVar;
-	CListenerManager<ConVarChangeListenerCallback> hook;
+	ListenerManager<ConVarChangeListenerCallback> hook;
 };
 
-class CConVarManager;
-extern CConVarManager g_ConVarManager;
+class ConVarManager;
+extern ConVarManager g_ConVarManager;
 
 using ConVarInfoPtr = std::unique_ptr<ConVarInfo>;
 
-class CConVarManager {
+class ConVarManager {
 public:
-	CConVarManager() = default;
-	~CConVarManager();
+	ConVarManager() = default;
+	~ConVarManager();
 
 	template<typename T>
 	ConVarRef CreateConVar(const plg::string& name, const plg::string& description, const T& defaultVal, ConVarFlag flags, bool hasMin = false, T min = {}, bool hasMax = {}, T max = {}) {
@@ -159,6 +159,6 @@ public:
 private:
 	std::map<plg::string, ConVarInfoPtr, utils::case_ins_comparator> m_cnvLookup;
 	std::map<const ConVarRef*, const ConVarInfo*> m_cnvCache;
-	CListenerManager<ConVarChangeListenerCallback> m_global;
+	ListenerManager<ConVarChangeListenerCallback> m_global;
 	std::mutex m_registerCnvLock;
 };

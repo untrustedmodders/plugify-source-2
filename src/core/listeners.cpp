@@ -2,8 +2,8 @@
 
 #define DEFINE_MANAGER_ACCESSOR(name, ret, ...)                   \
 	using Fn##name = ret (*)(__VA_ARGS__);                        \
-	CListenerManager<Fn##name>& Get##name##ListenerManager() {    \
-		static CListenerManager<Fn##name> s_##name;               \
+	ListenerManager<Fn##name>& Get##name##ListenerManager() {    \
+		static ListenerManager<Fn##name> s_##name;               \
 		return s_##name;                                          \
 	}                                                             \
 	extern "C" PLUGIN_API void name##_Register(Fn##name func) {   \

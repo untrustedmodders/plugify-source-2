@@ -74,7 +74,7 @@ public:
 	void AddAllPlayers() {
 		m_Recipients.RemoveAll();
 
-		for (int i = 0; i < CPlayerManager::MaxClients(); i++) {
+		for (int i = 0; i < PlayerManager::MaxClients(); i++) {
 			auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(i));
 			if (!pPlayer)
 				continue;

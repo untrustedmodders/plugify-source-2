@@ -29,12 +29,12 @@ CCSGameRules* g_pGameRules = nullptr;
 	variable = (decltype(variable)) (void*) (gameConfig)->ResolveSignature(name)
 
 IMetamodListener* g_pMetamodListener = nullptr;
-std::unique_ptr<CCoreConfig> g_pCoreConfig = nullptr;
-std::unique_ptr<CGameConfig> g_pGameConfig = nullptr;
+std::unique_ptr<CoreConfig> g_pCoreConfig = nullptr;
+std::unique_ptr<GameConfig> g_pGameConfig = nullptr;
 
 namespace globals {
 	void Initialize(std::unordered_map<std::string, fs::path> paths) {
-		g_pCoreConfig = std::make_unique<CCoreConfig>(plg::vector<plg::string>{
+		g_pCoreConfig = std::make_unique<CoreConfig>(plg::vector<plg::string>{
 				(paths["base"] / "settings.json").generic_string(),
 				(paths["configs"] / "settings.json").generic_string(),
 				(paths["data"] / "settings.json").generic_string()
@@ -43,7 +43,7 @@ namespace globals {
 			S2_LOG(LS_ERROR, "Failed to load settings configuration!");
 			return;
 		}
-		g_pGameConfig = std::make_unique<CGameConfig>("csgo", plg::vector<plg::string>{
+		g_pGameConfig = std::make_unique<GameConfig>("csgo", plg::vector<plg::string>{
 				(paths["base"] / "gamedata.jsonc").generic_string(),
 				(paths["configs"] / "gamedata.jsonc").generic_string(),
 				(paths["data"] / "gamedata.jsonc").generic_string()
@@ -83,7 +83,7 @@ namespace globals {
 
 		ConVar_Register(FCVAR_RELEASE | FCVAR_SERVER_CAN_EXECUTE | FCVAR_GAMEDLL);
 
-		CModule plugify("plugify");
+		Module plugify("plugify");
 
 		using IMetamodListenerFn = IMetamodListener* (*) ();
 		auto Plugify_ImmListener = plugify.GetFunctionByName("Plugify_ImmListener");

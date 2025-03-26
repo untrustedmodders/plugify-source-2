@@ -1,3 +1,3 @@
 #include "hook_holder.hpp"
 
-CHookHolder g_PH;
+HookHolder g_PH;

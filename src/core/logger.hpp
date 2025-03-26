@@ -6,10 +6,10 @@
 #include <tier0/dbg.h>
 #include <tier0/logging.h>
 
-class CLogger final {
+class Logger final {
 public:
-	CLogger(const char* name, RegisterTagsFunc registerTagsFunc, int flags = 0, LoggingVerbosity_t verbosity = LV_DEFAULT, const Color& defaultColor = UNSPECIFIED_LOGGING_COLOR);
-	~CLogger() = default;
+	Logger(const char* name, RegisterTagsFunc registerTagsFunc, int flags = 0, LoggingVerbosity_t verbosity = LV_DEFAULT, const Color& defaultColor = UNSPECIFIED_LOGGING_COLOR);
+	~Logger() = default;
 
 	void AddTagToChannel(const char* tagName) const;
 	bool HasTag(const char* tag) const;
@@ -54,4 +54,4 @@ private:
 #define S2_LOG(...) [[maybe_unused]] auto S2_UNIQUE_NAME(_) = g_Logger.Log(__VA_ARGS__)
 #define S2_LOGF(...) [[maybe_unused]] auto S2_UNIQUE_NAME(_) = g_Logger.LogFormat(__VA_ARGS__)
 
-extern CLogger g_Logger;
+extern Logger g_Logger;

@@ -48,16 +48,16 @@ extern CSchemaSystem* g_pSchemaSystem2;
 extern CGameEntitySystem* g_pGameEntitySystem;
 extern CCSGameRules* g_pGameRules;
 
-class CCoreConfig;
-class CGameConfig;
+class CoreConfig;
+class GameConfig;
 
 namespace SourceMM {
 	class IMetamodListener;
 }
 
 extern SourceMM::IMetamodListener* g_pMetamodListener;
-extern std::unique_ptr<CCoreConfig> g_pCoreConfig;
-extern std::unique_ptr<CGameConfig> g_pGameConfig;
+extern std::unique_ptr<CoreConfig> g_pCoreConfig;
+extern std::unique_ptr<GameConfig> g_pGameConfig;
 
 namespace globals {
 	void Initialize(std::unordered_map<std::string, fs::path> paths);
@@ -73,8 +73,8 @@ namespace DynLibUtils {
 	class CModule;
 }// namespace DynLibUtils
 
-using CMemory = DynLibUtils::CMemory;
-using CModule = DynLibUtils::CModule;
+using Memory = DynLibUtils::CMemory;
+using Module = DynLibUtils::CModule;
 
 class CPlayer_WeaponServices;
 class IEntityFindFilter;

@@ -15,43 +15,43 @@ extern "C" PLUGIN_API void* GetModule(const plg::string& name) {
 	return g_GameConfigManager.GetModule(name);
 }
 
-extern "C" PLUGIN_API void* GetModuleVirtualTableByName(CModule* module, const plg::string& tableName, bool decorated) {
+extern "C" PLUGIN_API void* GetModuleVirtualTableByName(Module* module, const plg::string& tableName, bool decorated) {
 	return module->GetVirtualTableByName(tableName, decorated);
 }
 
-extern "C" PLUGIN_API void* GetModuleFunctionByName(CModule* module, const plg::string& functionName) {
+extern "C" PLUGIN_API void* GetModuleFunctionByName(Module* module, const plg::string& functionName) {
 	return module->GetFunctionByName(functionName);
 }
 
-extern "C" PLUGIN_API plg::string GetModuleSectionNameByName(CModule* module, const plg::string& sectionName) {
+extern "C" PLUGIN_API plg::string GetModuleSectionNameByName(Module* module, const plg::string& sectionName) {
 	return module->GetSectionByName(sectionName).m_svSectionName;
 }
 
-extern "C" PLUGIN_API void* GetModuleSectionBaseByName(CModule* module, const plg::string& sectionName) {
+extern "C" PLUGIN_API void* GetModuleSectionBaseByName(Module* module, const plg::string& sectionName) {
 	return module->GetSectionByName(sectionName).m_pSectionBase;
 }
 
-extern "C" PLUGIN_API uint64_t GetModuleSectionSizeByName(CModule* module, const plg::string& sectionName) {
+extern "C" PLUGIN_API uint64_t GetModuleSectionSizeByName(Module* module, const plg::string& sectionName) {
 	return static_cast<uint64_t>(module->GetSectionByName(sectionName).m_nSectionSize);
 }
 
-extern "C" PLUGIN_API void* GetModuleHandle(CModule* module) {
+extern "C" PLUGIN_API void* GetModuleHandle(Module* module) {
 	return module->GetHandle();
 }
 
-extern "C" PLUGIN_API void* GetModuleBase(CModule* module) {
+extern "C" PLUGIN_API void* GetModuleBase(Module* module) {
 	return module->GetBase();
 }
 
-extern "C" PLUGIN_API plg::string GetModulePath(CModule* module) {
+extern "C" PLUGIN_API plg::string GetModulePath(Module* module) {
 	return module->GetPath();
 }
 
-extern "C" PLUGIN_API plg::string GetModuleName(CModule* module) {
+extern "C" PLUGIN_API plg::string GetModuleName(Module* module) {
 	return module->GetName();
 }
 
-extern "C" PLUGIN_API plg::string ModuleGetLastError(CModule* module) {
+extern "C" PLUGIN_API plg::string ModuleGetLastError(Module* module) {
 	return module->GetLastError();
 }
 

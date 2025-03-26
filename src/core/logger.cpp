@@ -1,58 +1,58 @@
 #include "logger.hpp"
 
-CLogger::CLogger(const char* name, RegisterTagsFunc registerTagsFunc, int flags, LoggingVerbosity_t verbosity, const Color& defaultColor) {
+Logger::Logger(const char* name, RegisterTagsFunc registerTagsFunc, int flags, LoggingVerbosity_t verbosity, const Color& defaultColor) {
 	m_channelID = LoggingSystem_RegisterLoggingChannel(name, registerTagsFunc, flags, verbosity, defaultColor);
 }
 
-void CLogger::AddTagToChannel(const char* tagName) const {
+void Logger::AddTagToChannel(const char* tagName) const {
 	LoggingSystem_AddTagToChannel(m_channelID, tagName);
 }
 
-bool CLogger::HasTag(const char* tag) const {
+bool Logger::HasTag(const char* tag) const {
 	return LoggingSystem_HasTag(m_channelID, tag);
 }
 
-bool CLogger::IsChannelEnabled(LoggingSeverity_t severity) const {
+bool Logger::IsChannelEnabled(LoggingSeverity_t severity) const {
 	return LoggingSystem_IsChannelEnabled(m_channelID, severity);
 }
 
-bool CLogger::IsChannelEnabled(LoggingVerbosity_t verbosity) const {
+bool Logger::IsChannelEnabled(LoggingVerbosity_t verbosity) const {
 	return LoggingSystem_IsChannelEnabled(m_channelID, verbosity);
 }
 
-LoggingVerbosity_t CLogger::GetChannelVerbosity() const {
+LoggingVerbosity_t Logger::GetChannelVerbosity() const {
 	return LoggingSystem_GetChannelVerbosity(m_channelID);
 }
 
-void CLogger::SetChannelVerbosity(LoggingVerbosity_t verbosity) const {
+void Logger::SetChannelVerbosity(LoggingVerbosity_t verbosity) const {
 	return LoggingSystem_SetChannelVerbosity(m_channelID, verbosity);
 }
 
-void CLogger::SetChannelVerbosityByName(const char* pName, LoggingVerbosity_t verbosity) {
+void Logger::SetChannelVerbosityByName(const char* pName, LoggingVerbosity_t verbosity) {
 	return LoggingSystem_SetChannelVerbosityByName(pName, verbosity);
 }
 
-void CLogger::SetChannelVerbosityByTag(const char* pTag, LoggingVerbosity_t verbosity) {
+void Logger::SetChannelVerbosityByTag(const char* pTag, LoggingVerbosity_t verbosity) {
 	LoggingSystem_SetChannelVerbosityByTag(pTag, verbosity);
 }
 
-int CLogger::GetChannelColor() const {
+int Logger::GetChannelColor() const {
 	return LoggingSystem_GetChannelColor(m_channelID);
 }
 
-void CLogger::SetChannelColor(int color) const {
+void Logger::SetChannelColor(int color) const {
 	LoggingSystem_SetChannelColor(m_channelID, color);
 }
 
-LoggingChannelFlags_t CLogger::GetChannelFlags() const {
+LoggingChannelFlags_t Logger::GetChannelFlags() const {
 	return LoggingSystem_GetChannelFlags(m_channelID);
 }
 
-void CLogger::SetChannelFlags(LoggingChannelFlags_t flags) const {
+void Logger::SetChannelFlags(LoggingChannelFlags_t flags) const {
 	LoggingSystem_SetChannelFlags(m_channelID, flags);
 }
 
-LoggingResponse_t CLogger::Log(LoggingSeverity_t severity, const char* message) const {
+LoggingResponse_t Logger::Log(LoggingSeverity_t severity, const char* message) const {
 	LoggingResponse_t response = LR_ABORT;
 
 	if (IsChannelEnabled(severity)) {
@@ -62,7 +62,7 @@ LoggingResponse_t CLogger::Log(LoggingSeverity_t severity, const char* message) 
 	return response;
 }
 
-LoggingResponse_t CLogger::Log(LoggingSeverity_t severity, const Color& color, const char* message) const {
+LoggingResponse_t Logger::Log(LoggingSeverity_t severity, const Color& color, const char* message) const {
 	LoggingResponse_t response = LR_ABORT;
 
 	if (IsChannelEnabled(severity)) {
@@ -72,7 +72,7 @@ LoggingResponse_t CLogger::Log(LoggingSeverity_t severity, const Color& color, c
 	return response;
 }
 
-LoggingResponse_t CLogger::Log(LoggingSeverity_t severity, const LeafCodeInfo_t& code, const char* message) const {
+LoggingResponse_t Logger::Log(LoggingSeverity_t severity, const LeafCodeInfo_t& code, const char* message) const {
 	LoggingResponse_t response = LR_ABORT;
 
 	if (IsChannelEnabled(severity)) {
@@ -82,7 +82,7 @@ LoggingResponse_t CLogger::Log(LoggingSeverity_t severity, const LeafCodeInfo_t&
 	return response;
 }
 
-LoggingResponse_t CLogger::Log(LoggingSeverity_t severity, const LeafCodeInfo_t& code, const Color& color, const char* message) const {
+LoggingResponse_t Logger::Log(LoggingSeverity_t severity, const LeafCodeInfo_t& code, const Color& color, const char* message) const {
 	LoggingResponse_t response = LR_ABORT;
 
 	if (IsChannelEnabled(severity)) {
@@ -92,7 +92,7 @@ LoggingResponse_t CLogger::Log(LoggingSeverity_t severity, const LeafCodeInfo_t&
 	return response;
 }
 
-LoggingResponse_t CLogger::LogFormat(LoggingSeverity_t severity, const char* format, ...) const {
+LoggingResponse_t Logger::LogFormat(LoggingSeverity_t severity, const char* format, ...) const {
 	LoggingResponse_t response = LR_ABORT;
 
 	if (IsChannelEnabled(severity)) {
@@ -110,7 +110,7 @@ LoggingResponse_t CLogger::LogFormat(LoggingSeverity_t severity, const char* for
 	return response;
 }
 
-LoggingResponse_t CLogger::LogFormat(LoggingSeverity_t severity, const Color& color, const char* format, ...) const {
+LoggingResponse_t Logger::LogFormat(LoggingSeverity_t severity, const Color& color, const char* format, ...) const {
 	LoggingResponse_t response = LR_ABORT;
 
 	if (IsChannelEnabled(severity)) {
@@ -128,7 +128,7 @@ LoggingResponse_t CLogger::LogFormat(LoggingSeverity_t severity, const Color& co
 	return response;
 }
 
-LoggingResponse_t CLogger::LogFormat(LoggingSeverity_t severity, const LeafCodeInfo_t& code, const char* format, ...) const {
+LoggingResponse_t Logger::LogFormat(LoggingSeverity_t severity, const LeafCodeInfo_t& code, const char* format, ...) const {
 	LoggingResponse_t response = LR_ABORT;
 
 	if (IsChannelEnabled(severity)) {
@@ -146,7 +146,7 @@ LoggingResponse_t CLogger::LogFormat(LoggingSeverity_t severity, const LeafCodeI
 	return response;
 }
 
-LoggingResponse_t CLogger::LogFormat(LoggingSeverity_t severity, const LeafCodeInfo_t& code, const Color& color, const char* format, ...) const {
+LoggingResponse_t Logger::LogFormat(LoggingSeverity_t severity, const LeafCodeInfo_t& code, const Color& color, const char* format, ...) const {
 	LoggingResponse_t response = LR_ABORT;
 
 	if (IsChannelEnabled(severity)) {
@@ -164,4 +164,4 @@ LoggingResponse_t CLogger::LogFormat(LoggingSeverity_t severity, const LeafCodeI
 	return response;
 }
 
-CLogger g_Logger(S2SDK_LOGGING_PREFIX, &CLogger::RegisterTags);
+Logger g_Logger(S2SDK_LOGGING_PREFIX, &Logger::RegisterTags);

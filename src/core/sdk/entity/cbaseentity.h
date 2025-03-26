@@ -28,7 +28,7 @@
 #include "globaltypes.h"
 #include "services.h"
 
-extern std::unique_ptr<CGameConfig> g_pGameConfig;
+extern std::unique_ptr<GameConfig> g_pGameConfig;
 
 class CGameSceneNode {
 public:

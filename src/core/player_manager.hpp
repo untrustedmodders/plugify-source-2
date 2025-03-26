@@ -23,10 +23,10 @@ enum class TargetType : int {
 class CPlayerPawnComponent;
 class CCSObserverPawn;
 
-class CPlayer {
+class Player {
 public:
-	CPlayer() = default;
-	~CPlayer() = default;
+	Player() = default;
+	~Player() = default;
 
 	void Init(int slot, uint64 xuid) {
 		m_iSlot = slot;
@@ -78,19 +78,19 @@ private:
 	CSteamID m_unauthenticatedSteamID{k_steamIDNil};
 };
 
-class CPlayerManager {
+class PlayerManager {
 public:
-	CPlayerManager() = default;
-	~CPlayerManager() = default;
+	PlayerManager() = default;
+	~PlayerManager() = default;
 
-	CPlayer* ToPlayer(CServerSideClientBase* pClient) const;
-	CPlayer* ToPlayer(CPlayerPawnComponent* component) const;
-	CPlayer* ToPlayer(CBasePlayerController* controller) const;
-	CPlayer* ToPlayer(CBasePlayerPawn* pawn) const;
-	CPlayer* ToPlayer(CPlayerSlot slot) const;
-	CPlayer* ToPlayer(CEntityIndex entIndex) const;
-	CPlayer* ToPlayer(CPlayerUserId userID) const;
-	CPlayer* ToPlayer(CSteamID steamid, bool validate = false) const;
+	Player* ToPlayer(CServerSideClientBase* pClient) const;
+	Player* ToPlayer(CPlayerPawnComponent* component) const;
+	Player* ToPlayer(CBasePlayerController* controller) const;
+	Player* ToPlayer(CBasePlayerPawn* pawn) const;
+	Player* ToPlayer(CPlayerSlot slot) const;
+	Player* ToPlayer(CEntityIndex entIndex) const;
+	Player* ToPlayer(CPlayerUserId userID) const;
+	Player* ToPlayer(CSteamID steamid, bool validate = false) const;
 
 	void OnSteamAPIActivated();
 	bool OnClientConnect(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID);
@@ -101,16 +101,16 @@ public:
 	void OnClientDisconnect_Post(CPlayerSlot slot, ENetworkDisconnectionReason reason);
 	void OnClientActive(CPlayerSlot slot, bool bLoadGame) const;
 
-	STEAM_GAMESERVER_CALLBACK_MANUAL(CPlayerManager, OnValidateAuthTicket, ValidateAuthTicketResponse_t, m_CallbackValidateAuthTicketResponse);
+	STEAM_GAMESERVER_CALLBACK_MANUAL(PlayerManager, OnValidateAuthTicket, ValidateAuthTicketResponse_t, m_CallbackValidateAuthTicketResponse);
 
-	std::vector<CPlayer*> GetOnlinePlayers() const;
+	std::vector<Player*> GetOnlinePlayers() const;
 	static int MaxClients();
 
 	TargetType TargetPlayerString(int caller, std::string_view target, plg::vector<int>& clients);
 
 protected:
-	std::array<CPlayer, MAXPLAYERS + 1> m_players{};
+	std::array<Player, MAXPLAYERS + 1> m_players{};
 	bool m_callbackRegistered{};
 };
 
-extern CPlayerManager g_PlayerManager;
+extern PlayerManager g_PlayerManager;

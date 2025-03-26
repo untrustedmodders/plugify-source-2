@@ -4,10 +4,10 @@
 
 using namespace std::string_view_literals;
 
-CCoreConfig::CCoreConfig(plg::vector<plg::string> paths) : m_paths(std::move(paths)) {
+CoreConfig::CoreConfig(plg::vector<plg::string> paths) : m_paths(std::move(paths)) {
 }
 
-bool CCoreConfig::Initialize() {
+bool CoreConfig::Initialize() {
 	std::vector<std::string_view> paths;
 	paths.reserve(m_paths.size());
 	for (const auto& path : m_paths) {
@@ -47,11 +47,11 @@ bool CCoreConfig::Initialize() {
 	return true;
 }
 
-const plg::vector<plg::string>& CCoreConfig::GetPaths() const {
+const plg::vector<plg::string>& CoreConfig::GetPaths() const {
 	return m_paths;
 }
 
-bool CCoreConfig::IsTriggerInternal(const std::vector<std::string>& triggers, std::string_view message) {
+bool CoreConfig::IsTriggerInternal(const std::vector<std::string>& triggers, std::string_view message) {
 	for (const std::string& trigger : triggers) {
 		if (message.starts_with(trigger)) {
 			return true;
@@ -61,10 +61,10 @@ bool CCoreConfig::IsTriggerInternal(const std::vector<std::string>& triggers, st
 	return false;
 }
 
-bool CCoreConfig::IsSilentChatTrigger(std::string_view message) const {
+bool CoreConfig::IsSilentChatTrigger(std::string_view message) const {
 	return IsTriggerInternal(SilentChatTrigger, message);
 }
 
-bool CCoreConfig::IsPublicChatTrigger(std::string_view message) const {
+bool CoreConfig::IsPublicChatTrigger(std::string_view message) const {
 	return IsTriggerInternal(PublicChatTrigger, message);
 }

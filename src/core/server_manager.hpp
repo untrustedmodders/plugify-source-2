@@ -5,7 +5,7 @@
 
 using TaskCallback = void (*)(const plg::vector<plg::any>&);
 
-class CServerManager {
+class ServerManager {
 public:
 	void AddTaskForNextWorldUpdate(TaskCallback task, const plg::vector<plg::any>& userData);
 	void AddTaskForNextFrame(TaskCallback task, const plg::vector<plg::any>& userData);
@@ -25,4 +25,4 @@ private:
 	std::mutex m_nextTasksLock;
 };
 
-extern CServerManager g_ServerManager;
+extern ServerManager g_ServerManager;

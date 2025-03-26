@@ -3,12 +3,12 @@
 #include <corecrt_io.h>
 #include <plugify-configs/plugify-configs.hpp>
 
-CGameConfig::CGameConfig(plg::string game, plg::vector<plg::string> paths) : m_gameDir(std::move(game)), m_paths(std::move(paths)) {
+GameConfig::GameConfig(plg::string game, plg::vector<plg::string> paths) : m_gameDir(std::move(game)), m_paths(std::move(paths)) {
 }
 
-CGameConfig::~CGameConfig() = default;
+GameConfig::~GameConfig() = default;
 
-bool CGameConfig::Initialize() {
+bool GameConfig::Initialize() {
 	std::vector<std::string_view> paths;
 	paths.reserve(m_paths.size());
 	for (const auto& path : m_paths) {
@@ -99,32 +99,32 @@ bool CGameConfig::Initialize() {
 	return true;
 }
 
-const plg::vector<plg::string>& CGameConfig::GetPaths() const {
+const plg::vector<plg::string>& GameConfig::GetPaths() const {
 	return m_paths;
 }
 
-std::string_view CGameConfig::GetSignature(const plg::string& name) const {
+std::string_view GameConfig::GetSignature(const plg::string& name) const {
 	auto it = m_signatures.find(name);
 	if (it == m_signatures.end())
 		return {};
 	return std::get<plg::string>(*it);
 }
 
-std::string_view CGameConfig::GetPatch(const plg::string& name) const {
+std::string_view GameConfig::GetPatch(const plg::string& name) const {
 	auto it = m_patches.find(name);
 	if (it == m_patches.end())
 		return {};
 	return std::get<plg::string>(*it);
 }
 
-int32_t CGameConfig::GetOffset(const plg::string& name) const {
+int32_t GameConfig::GetOffset(const plg::string& name) const {
 	auto it = m_offsets.find(name);
 	if (it == m_offsets.end())
 		return -1;
 	return std::get<int32_t>(*it);
 }
 
-std::string_view CGameConfig::GetLibrary(const plg::string& name) const {
+std::string_view GameConfig::GetLibrary(const plg::string& name) const {
 	auto it = m_libraries.find(name);
 	if (it == m_libraries.end())
 		return {};
@@ -134,14 +134,14 @@ std::string_view CGameConfig::GetLibrary(const plg::string& name) const {
 // memory addresses below 0x10000 are automatically considered invalid for dereferencing
 #define VALID_MINIMUM_MEMORY_ADDRESS ((void*) 0x10000)
 
-CMemory CGameConfig::GetAddress(const plg::string& name) const {
+Memory GameConfig::GetAddress(const plg::string& name) const {
 	auto it = m_addresses.find(name);
 	if (it == m_addresses.end())
 		return {};
 
 	const auto& addrConf = std::get<AddressConf>(*it);
 
-	CMemory addr = ResolveSignature(addrConf.signature);
+	Memory addr = ResolveSignature(addrConf.signature);
 	if (!addr)
 		return {};
 
@@ -174,7 +174,7 @@ CMemory CGameConfig::GetAddress(const plg::string& name) const {
 	return addr;
 }
 
-const CModule* CGameConfig::GetModule(const plg::string& name) const {
+const Module* GameConfig::GetModule(const plg::string& name) const {
 	const std::string_view library = GetLibrary(name);
 	if (library.empty())
 		return {};
@@ -182,7 +182,7 @@ const CModule* CGameConfig::GetModule(const plg::string& name) const {
 	return g_GameConfigManager.GetModule(library);
 }
 
-bool CGameConfig::IsSymbol(const plg::string& name) const {
+bool GameConfig::IsSymbol(const plg::string& name) const {
 	const std::string_view sigOrSymbol = GetSignature(name);
 	if (sigOrSymbol.empty()) {
 		S2_LOGF(LS_WARNING, "Missing signature or symbol: %s\n", name.c_str());
@@ -191,7 +191,7 @@ bool CGameConfig::IsSymbol(const plg::string& name) const {
 	return sigOrSymbol[0] == '@';
 }
 
-std::string_view CGameConfig::GetSymbol(const plg::string& name) const {
+std::string_view GameConfig::GetSymbol(const plg::string& name) const {
 	const std::string_view symbol = GetSignature(name);
 
 	if (symbol.size() <= 1) {
@@ -202,14 +202,14 @@ std::string_view CGameConfig::GetSymbol(const plg::string& name) const {
 	return symbol.substr(1);
 }
 
-CMemory CGameConfig::ResolveSignature(const plg::string& name) const {
+Memory GameConfig::ResolveSignature(const plg::string& name) const {
 	auto module = GetModule(name);
 	if (!module) {
 		S2_LOGF(LS_WARNING, "Invalid module: %s\n", name.c_str());
 		return {};
 	}
 
-	CMemory address;
+	Memory address;
 
 	if (IsSymbol(name)) {
 		const std::string_view symbol = GetSymbol(name);
@@ -237,9 +237,9 @@ CMemory CGameConfig::ResolveSignature(const plg::string& name) const {
 	return address;
 }
 
-CGameConfigManager::CGameConfigManager() {
-	m_modules.emplace("engine2", CModule(utils::GameDirectory() + S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "engine2"));
-	m_modules.emplace("server", CModule(utils::GameDirectory() + S2SDK_GAME_BINARY S2SDK_LIBRARY_PREFIX "server"));
+GameConfigManager::GameConfigManager() {
+	m_modules.emplace("engine2", Module(utils::GameDirectory() + S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "engine2"));
+	m_modules.emplace("server", Module(utils::GameDirectory() + S2SDK_GAME_BINARY S2SDK_LIBRARY_PREFIX "server"));
 	/*m_modules.emplace("tier0", CModule(utils::GameDirectory() + S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "tier0"));
 	m_modules.emplace("schemasystem", CModule(utils::GameDirectory() + S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "schemasystem"));
 	m_modules.emplace("filesystem", CModule(utils::GameDirectory() + S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "filesystem_stdio"));
@@ -247,7 +247,7 @@ CGameConfigManager::CGameConfigManager() {
 	m_modules.emplace("networksystem", CModule(utils::GameDirectory() + S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "networksystem"));*/
 }
 
-uint32_t CGameConfigManager::LoadGameConfigFile(plg::vector<plg::string> paths) {
+uint32_t GameConfigManager::LoadGameConfigFile(plg::vector<plg::string> paths) {
 	for (auto& [id, config] : m_configs) {
 		if (config.GetPaths() == paths) {
 			++config.m_refCount;
@@ -255,7 +255,7 @@ uint32_t CGameConfigManager::LoadGameConfigFile(plg::vector<plg::string> paths) 
 		}
 	}
 
-	CGameConfig gameConfig("csgo", std::move(paths));
+	GameConfig gameConfig("csgo", std::move(paths));
 	if (!gameConfig.Initialize()) {
 		return static_cast<uint32_t>(-1);
 	}
@@ -265,36 +265,36 @@ uint32_t CGameConfigManager::LoadGameConfigFile(plg::vector<plg::string> paths) 
 	return id;
 }
 
-void CGameConfigManager::CloseGameConfigFile(uint32_t id) {
+void GameConfigManager::CloseGameConfigFile(uint32_t id) {
 	auto it = m_configs.find(id);
 	if (it != m_configs.end()) {
-		auto& config = std::get<CGameConfig>(*it);
+		auto& config = std::get<GameConfig>(*it);
 		if (--config.m_refCount == 0) {
 			m_configs.erase(it);
 		}
 	}
 }
 
-CGameConfig* CGameConfigManager::GetGameConfig(uint32_t id) {
+GameConfig* GameConfigManager::GetGameConfig(uint32_t id) {
 	auto it = m_configs.find(id);
 	if (it != m_configs.end()) {
-		return &std::get<CGameConfig>(*it);
+		return &std::get<GameConfig>(*it);
 	}
 	return nullptr;
 }
 
-CModule* CGameConfigManager::GetModule(std::string_view name) {
+Module* GameConfigManager::GetModule(std::string_view name) {
 	auto it = m_modules.find(name);
 	if (it != m_modules.end()) {
-		return &std::get<CModule>(*it);
+		return &std::get<Module>(*it);
 	}
 
 	auto system = globals::FindModule(name);
 	if (system != nullptr) {
-		return &m_modules.emplace(name, CModule(system)).first->second;
+		return &m_modules.emplace(name, Module(system)).first->second;
 	}
 
 	return nullptr;
 }
 
-CGameConfigManager g_GameConfigManager;
+GameConfigManager g_GameConfigManager;

@@ -1,6 +1,6 @@
 #include "event_manager.hpp"
 
-CEventManager::~CEventManager() {
+EventManager::~EventManager() {
 	while (!m_freeEvents.empty()) {
 		delete m_freeEvents.top();
 		m_freeEvents.pop();
@@ -11,7 +11,7 @@ CEventManager::~CEventManager() {
 	}
 }
 
-EventHookError CEventManager::HookEvent(const plg::string& name, EventListenerCallback callback, HookMode mode) {
+EventHookError EventManager::HookEvent(const plg::string& name, EventListenerCallback callback, HookMode mode) {
 	std::unique_lock<std::mutex> lock(m_registerEventLock);
 
 	if (!g_pGameEventManager->FindListener(this, name.c_str())) {
@@ -64,7 +64,7 @@ EventHookError CEventManager::HookEvent(const plg::string& name, EventListenerCa
 	return EventHookError::Okay;
 }
 
-EventHookError CEventManager::UnhookEvent(const plg::string& name, EventListenerCallback callback, HookMode mode) {
+EventHookError EventManager::UnhookEvent(const plg::string& name, EventListenerCallback callback, HookMode mode) {
 	std::unique_lock<std::mutex> lock(m_registerEventLock);
 
 	auto it = m_eventHooks.find(name);
@@ -91,16 +91,16 @@ EventHookError CEventManager::UnhookEvent(const plg::string& name, EventListener
 	return EventHookError::Okay;
 }
 
-void CEventManager::FireGameEvent(IGameEvent* event) {
+void EventManager::FireGameEvent(IGameEvent* event) {
 }
 
-void CEventManager::FireEvent(EventInfo* pInfo, bool bDontBroadcast) {
+void EventManager::FireEvent(EventInfo* pInfo, bool bDontBroadcast) {
 	g_pGameEventManager->FireEvent(pInfo->pEvent, bDontBroadcast);
 
 	m_freeEvents.push(pInfo);
 }
 
-EventInfo* CEventManager::CreateEvent(const plg::string& name, bool force) {
+EventInfo* EventManager::CreateEvent(const plg::string& name, bool force) {
 	EventInfo* pInfo;
 	IGameEvent* pEvent = g_pGameEventManager->CreateEvent(name.c_str(), force);
 
@@ -121,19 +121,19 @@ EventInfo* CEventManager::CreateEvent(const plg::string& name, bool force) {
 	return nullptr;
 }
 
-void CEventManager::FireEventToClient(EventInfo* pInfo, CPlayerSlot slot) {
+void EventManager::FireEventToClient(EventInfo* pInfo, CPlayerSlot slot) {
 	IGameEventListener2* pListener = addresses::GetLegacyGameEventListener(slot);
 
 	pListener->FireGameEvent(pInfo->pEvent);
 }
 
-void CEventManager::CancelCreatedEvent(EventInfo* pInfo) {
+void EventManager::CancelCreatedEvent(EventInfo* pInfo) {
 	g_pGameEventManager->FreeEvent(pInfo->pEvent);
 
 	m_freeEvents.push(pInfo);
 }
 
-poly::ReturnAction CEventManager::Hook_OnFireEvent(poly::Params& params, int count, poly::Return& ret) {
+poly::ReturnAction EventManager::Hook_OnFireEvent(poly::Params& params, int count, poly::Return& ret) {
 	auto pEvent = poly::GetArgument<IGameEvent*>(params, 1);
 	auto bDontBroadcast = poly::GetArgument<bool>(params, 2);
 
@@ -181,7 +181,7 @@ poly::ReturnAction CEventManager::Hook_OnFireEvent(poly::Params& params, int cou
 	return poly::ReturnAction::Ignored;
 }
 
-poly::ReturnAction CEventManager::Hook_OnFireEvent_Post(poly::Params& params, int count, poly::Return& ret) {
+poly::ReturnAction EventManager::Hook_OnFireEvent_Post(poly::Params& params, int count, poly::Return& ret) {
 	auto pEvent = poly::GetArgument<IGameEvent*>(params, 1);
 	auto bDontBroadcast = poly::GetArgument<bool>(params, 2);
 
@@ -220,4 +220,4 @@ poly::ReturnAction CEventManager::Hook_OnFireEvent_Post(poly::Params& params, in
 	return poly::ReturnAction::Ignored;
 }
 
-CEventManager g_EventManager;
+EventManager g_EventManager;

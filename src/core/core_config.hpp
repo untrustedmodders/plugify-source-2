@@ -1,9 +1,9 @@
 #pragma once
 
-class CCoreConfig {
+class CoreConfig {
 public:
-	explicit CCoreConfig(plg::vector<plg::string> paths);
-	~CCoreConfig() = default;
+	explicit CoreConfig(plg::vector<plg::string> paths);
+	~CoreConfig() = default;
 
 	bool Initialize();
 

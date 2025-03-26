@@ -27,7 +27,7 @@ struct Timer {
 	}
 };
 
-class CTimerSystem {
+class TimerSystem {
 public:
 	void OnLevelShutdown();
 	void OnGameFrame(bool simulating);
@@ -51,4 +51,4 @@ private:
 	static inline uint32_t s_nextId = static_cast<uint32_t>(-1);
 };
 
-extern CTimerSystem g_TimerSystem;
+extern TimerSystem g_TimerSystem;

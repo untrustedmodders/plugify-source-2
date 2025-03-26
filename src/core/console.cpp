@@ -6,7 +6,7 @@
 plg::string g_ServerCommandBuffer;
 bool g_ShouldCatchSpew = false;
 
-class CLoggingListener final : public ILoggingListener {
+class LoggingListener final : public ILoggingListener {
 public:
 	void Log(const LoggingContext_t* pContext, const tchar* pMessage) override {
 		g_ServerCommandBuffer = pMessage;

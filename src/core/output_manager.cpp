@@ -1,8 +1,8 @@
 #include "output_manager.hpp"
 
-bool CEntityOutputManager::HookEntityOutput(plg::string szClassname, plg::string szOutput, EntityListenerCallback callback, HookMode mode) {
+bool EntityOutputManager::HookEntityOutput(plg::string classname, plg::string output, EntityListenerCallback callback, HookMode mode) {
 	std::lock_guard<std::mutex> lock(m_registerHookLock);
-	OutputKey outputKey{std::move(szClassname), std::move(szOutput)};
+	OutputKey outputKey{std::move(classname), std::move(output)};
 
 	auto it = m_hookMap.find(outputKey);
 	if (it == m_hookMap.end()) {
@@ -14,9 +14,9 @@ bool CEntityOutputManager::HookEntityOutput(plg::string szClassname, plg::string
 	}
 }
 
-bool CEntityOutputManager::UnhookEntityOutput(plg::string szClassname, plg::string szOutput, EntityListenerCallback callback, HookMode mode) {
+bool EntityOutputManager::UnhookEntityOutput(plg::string classname, plg::string output, EntityListenerCallback callback, HookMode mode) {
 	std::lock_guard<std::mutex> lock(m_registerHookLock);
-	OutputKey outputKey{std::move(szClassname), std::move(szOutput)};
+	OutputKey outputKey{std::move(classname), std::move(output)};
 
 	auto it = m_hookMap.find(outputKey);
 	if (it != m_hookMap.end()) {
@@ -31,7 +31,7 @@ bool CEntityOutputManager::UnhookEntityOutput(plg::string szClassname, plg::stri
 	return false;
 }
 
-poly::ReturnAction CEntityOutputManager::Hook_FireOutputInternal(poly::Params& params, int count, poly::Return& ret) {
+poly::ReturnAction EntityOutputManager::Hook_FireOutputInternal(poly::Params& params, int count, poly::Return& ret) {
 	// CEntityIOOutput* const pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* const value, float flDelay
 	auto pThis = poly::GetArgument<CEntityIOOutput* const>(params, 0);
 	auto pActivator = poly::GetArgument<CEntityInstance*>(params, 1);
@@ -86,7 +86,7 @@ poly::ReturnAction CEntityOutputManager::Hook_FireOutputInternal(poly::Params& p
 	return poly::ReturnAction::Ignored;
 }
 
-poly::ReturnAction CEntityOutputManager::Hook_FireOutputInternal_Post(poly::Params& params, int count, poly::Return& ret) {
+poly::ReturnAction EntityOutputManager::Hook_FireOutputInternal_Post(poly::Params& params, int count, poly::Return& ret) {
 	//auto pThis = poly::GetArgument<CEntityIOOutput* const>(params, 0);
 	auto pActivator = poly::GetArgument<CEntityInstance*>(params, 1);
 	auto pCaller = poly::GetArgument<CEntityInstance*>(params, 2);
@@ -104,4 +104,4 @@ poly::ReturnAction CEntityOutputManager::Hook_FireOutputInternal_Post(poly::Para
 	return poly::ReturnAction::Ignored;
 }
 
-CEntityOutputManager g_OutputManager;
+EntityOutputManager g_OutputManager;

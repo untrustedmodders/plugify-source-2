@@ -57,7 +57,7 @@ extern "C" PLUGIN_API void RescheduleTimer(uint32_t id, double newDelay) {
  * @return The tick interval value.
  */
 extern "C" PLUGIN_API double GetTickInterval() {
-	return CTimerSystem::GetTickedInterval();
+	return TimerSystem::GetTickedInterval();
 }
 
 /**
@@ -66,7 +66,7 @@ extern "C" PLUGIN_API double GetTickInterval() {
  * @return The ticked time value.
  */
 extern "C" PLUGIN_API double GetTickedTime() {
-	return CTimerSystem::GetTickedTime();
+	return TimerSystem::GetTickedTime();
 }
 
 PLUGIFY_WARN_POP()

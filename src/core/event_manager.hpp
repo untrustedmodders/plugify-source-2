@@ -12,7 +12,7 @@ struct EventInfo {
 
 using EventListenerCallback = ResultType (*)(const plg::string& name, EventInfo* pEvent, bool bDontBroadcast);
 
-using HookCallback = CListenerManager<EventListenerCallback>;
+using HookCallback = ListenerManager<EventListenerCallback>;
 
 struct EventHook {
 	plg::string name;
@@ -29,10 +29,10 @@ enum class EventHookError : int {
 	InvalidCallback,
 };
 
-class CEventManager : public IGameEventListener2 {
+class EventManager : public IGameEventListener2 {
 public:
-	CEventManager() = default;
-	~CEventManager() override;
+	EventManager() = default;
+	~EventManager() override;
 
 	EventHookError HookEvent(const plg::string& name, EventListenerCallback callback, HookMode mode = HookMode::Post);
 	EventHookError UnhookEvent(const plg::string& name, EventListenerCallback callback, HookMode mode = HookMode::Post);
@@ -56,4 +56,4 @@ private:
 	std::mutex m_registerEventLock;
 };
 
-extern CEventManager g_EventManager;
+extern EventManager g_EventManager;

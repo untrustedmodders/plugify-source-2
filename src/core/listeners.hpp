@@ -5,7 +5,7 @@
 
 #define DEFINE_MANAGER_CREATOR(name, ret, ...) \
 	using Fn##name = ret (*)(__VA_ARGS__);     \
-	CListenerManager<Fn##name>& Get##name##ListenerManager();
+	ListenerManager<Fn##name>& Get##name##ListenerManager();
 
 DEFINE_MANAGER_CREATOR(OnClientConnect, bool, int, const plg::string&, const plg::string&)
 DEFINE_MANAGER_CREATOR(OnClientConnect_Post, void, int)

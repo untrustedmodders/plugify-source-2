@@ -10,7 +10,7 @@ class UserMessage;
 using UserMessageCallback = ResultType (*)(UserMessage* message);
 
 struct UserMessageHook {
-	std::array<CListenerManager<UserMessageCallback>, 2> callbacks;
+	std::array<ListenerManager<UserMessageCallback>, 2> callbacks;
 };
 
 class UserMessageManager {
@@ -26,7 +26,7 @@ public:
 
 private:
 	std::unordered_map<int, UserMessageHook> m_hooksMap;
-	std::array<CListenerManager<UserMessageCallback>, 2> m_globalCallbacks;
+	std::array<ListenerManager<UserMessageCallback>, 2> m_globalCallbacks;
 	std::mutex m_registerCmdLock;
 };
 

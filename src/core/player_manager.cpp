@@ -11,9 +11,9 @@
 #include <inetchannelinfo.h>
 #include <iserver.h>
 
-CPlayerManager g_PlayerManager;
+PlayerManager g_PlayerManager;
 
-CCSPlayerController* CPlayer::GetController() const {
+CCSPlayerController* Player::GetController() const {
 	auto entIndex = GetEntityIndex();
 	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(entIndex));
 	if (!ent) {
@@ -23,56 +23,56 @@ CCSPlayerController* CPlayer::GetController() const {
 	return ent->IsController() ? static_cast<CCSPlayerController*>(ent) : nullptr;
 }
 
-CBasePlayerPawn* CPlayer::GetCurrentPawn() const {
+CBasePlayerPawn* Player::GetCurrentPawn() const {
 	auto controller = GetController();
 	return controller ? controller->GetCurrentPawn() : nullptr;
 }
 
-CCSPlayerPawn* CPlayer::GetPlayerPawn() const {
+CCSPlayerPawn* Player::GetPlayerPawn() const {
 	auto controller = GetController();
 	return controller ? controller->GetPlayerPawn() : nullptr;
 }
 
-CCSObserverPawn* CPlayer::GetObserverPawn() const {
+CCSObserverPawn* Player::GetObserverPawn() const {
 	auto controller = GetController();
 	return controller ? reinterpret_cast<CCSObserverPawn*>(controller->GetObserverPawn()) : nullptr;
 }
 
-CServerSideClientBase* CPlayer::GetClient() const {
+CServerSideClientBase* Player::GetClient() const {
 	return utils::GetClientBySlot(GetPlayerSlot());
 }
 
-bool CPlayer::IsAuthenticated() const {
+bool Player::IsAuthenticated() const {
 	auto client = GetClient();
 	return client && client->IsConnected() && !client->IsFakeClient() && g_pEngineServer2->IsClientFullyAuthenticated(GetPlayerSlot());
 }
 
-bool CPlayer::IsConnected() const {
+bool Player::IsConnected() const {
 	auto client = GetClient();
 	return client && client->IsConnected();
 }
 
-bool CPlayer::IsInGame() const {
+bool Player::IsInGame() const {
 	auto client = GetClient();
 	return client && client->IsActive();
 }
 
-bool CPlayer::IsFakeClient() const {
+bool Player::IsFakeClient() const {
 	auto client = GetClient();
 	return client && client->IsFakeClient();
 }
 
-bool CPlayer::IsSourceTV() const {
+bool Player::IsSourceTV() const {
 	auto client = GetClient();
 	return client && client->IsHLTV();
 }
 
-bool CPlayer::IsAlive() const {
+bool Player::IsAlive() const {
 	auto pawn = GetPlayerPawn();
 	return pawn && pawn->IsAlive();
 }
 
-bool CPlayer::IsValidClient() const {
+bool Player::IsValidClient() const {
 	if (!utils::IsPlayerSlot(GetPlayerSlot())) {
 		return false;
 	}
@@ -86,17 +86,17 @@ bool CPlayer::IsValidClient() const {
 	return controller && controller->IsController() && client->IsConnected() && client->IsInGame() && !client->IsHLTV();
 }
 
-const char* CPlayer::GetName() const {
+const char* Player::GetName() const {
 	auto client = GetClient();
 	return client ? client->GetClientName() : "<blank>";
 }
 
-const char* CPlayer::GetIpAddress() const {
+const char* Player::GetIpAddress() const {
 	auto client = GetClient();
 	return client ? client->GetNetChannel()->GetRemoteAddress().ToString(true) : nullptr;
 }
 
-CSteamID CPlayer::GetSteamId(bool validated) const {
+CSteamID Player::GetSteamId(bool validated) const {
 	bool authenticated = IsAuthenticated();
 	if (validated && !authenticated) {
 		return k_steamIDNil;
@@ -110,11 +110,11 @@ CSteamID CPlayer::GetSteamId(bool validated) const {
 	return m_unauthenticatedSteamID;
 }
 
-INetChannelInfo* CPlayer::GetNetInfo() const {
+INetChannelInfo* Player::GetNetInfo() const {
 	return g_pEngineServer2->GetPlayerNetInfo(m_iSlot);
 }
 
-float CPlayer::GetTimeConnected() const {
+float Player::GetTimeConnected() const {
 	if (!IsConnected() || IsFakeClient()) {
 		return 0;
 	}
@@ -122,27 +122,27 @@ float CPlayer::GetTimeConnected() const {
 	return GetNetInfo()->GetTimeConnected();
 }
 
-float CPlayer::GetLatency() const {
+float Player::GetLatency() const {
 	return GetNetInfo()->GetAvgLatency();
 }
 
-void CPlayer::Kick(const char* internalReason, ENetworkDisconnectionReason reason) const {
+void Player::Kick(const char* internalReason, ENetworkDisconnectionReason reason) const {
 	g_pEngineServer2->KickClient(GetPlayerSlot(), internalReason, reason);
 }
 
-void CPlayerManager::OnSteamAPIActivated() {
+void PlayerManager::OnSteamAPIActivated() {
 	if (m_callbackRegistered)
 		return;
 
 	m_callbackRegistered = true;
-	m_CallbackValidateAuthTicketResponse.Register(this, &CPlayerManager::OnValidateAuthTicket);
+	m_CallbackValidateAuthTicketResponse.Register(this, &PlayerManager::OnValidateAuthTicket);
 }
 
-void CPlayerManager::OnValidateAuthTicket(ValidateAuthTicketResponse_t* pResponse) {
+void PlayerManager::OnValidateAuthTicket(ValidateAuthTicketResponse_t* pResponse) {
 	if (pResponse->m_eAuthSessionResponse != k_EAuthSessionResponseOK)
 		return;
 
-	for (const CPlayer& player : m_players) {
+	for (const Player& player : m_players) {
 		CSteamID steamID = player.GetSteamId();
 		if (steamID == pResponse->m_SteamID) {
 			GetOnClientAuthenticatedListenerManager().Notify(player.GetPlayerSlot(), steamID.ConvertToUint64());
@@ -153,8 +153,8 @@ void CPlayerManager::OnValidateAuthTicket(ValidateAuthTicketResponse_t* pRespons
 
 thread_local bool s_refuseConnection;
 
-bool CPlayerManager::OnClientConnect(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID) {
-	CPlayer* pPlayer = ToPlayer(slot);
+bool PlayerManager::OnClientConnect(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID) {
+	Player* pPlayer = ToPlayer(slot);
 	if (pPlayer) {
 		pPlayer->Init(slot, xuid);
 
@@ -170,8 +170,8 @@ bool CPlayerManager::OnClientConnect(CPlayerSlot slot, const char* pszName, uint
 	return true;
 }
 
-bool CPlayerManager::OnClientConnect_Post(CPlayerSlot slot, bool bOrigRet) {
-	CPlayer* pPlayer = ToPlayer(slot);
+bool PlayerManager::OnClientConnect_Post(CPlayerSlot slot, bool bOrigRet) {
+	Player* pPlayer = ToPlayer(slot);
 	if (pPlayer) {
 		if (s_refuseConnection) {
 			bOrigRet = false;
@@ -187,12 +187,12 @@ bool CPlayerManager::OnClientConnect_Post(CPlayerSlot slot, bool bOrigRet) {
 	return bOrigRet;
 }
 
-void CPlayerManager::OnClientConnected(CPlayerSlot slot) {
+void PlayerManager::OnClientConnected(CPlayerSlot slot) {
 	GetOnClientConnectedListenerManager().Notify(slot);
 }
 
-void CPlayerManager::OnClientPutInServer(CPlayerSlot slot, char const* pszName) {
-	CPlayer* pPlayer = ToPlayer(slot);
+void PlayerManager::OnClientPutInServer(CPlayerSlot slot, char const* pszName) {
+	Player* pPlayer = ToPlayer(slot);
 	if (pPlayer) {
 		// For bots only
 		if (pPlayer->GetPlayerSlot() == CPlayerSlot{-1}) {
@@ -203,36 +203,36 @@ void CPlayerManager::OnClientPutInServer(CPlayerSlot slot, char const* pszName) 
 	}
 }
 
-void CPlayerManager::OnClientDisconnect(CPlayerSlot slot, ENetworkDisconnectionReason reason) {
+void PlayerManager::OnClientDisconnect(CPlayerSlot slot, ENetworkDisconnectionReason reason) {
 	GetOnClientDisconnectListenerManager().Notify(slot, reason);
 }
 
-void CPlayerManager::OnClientDisconnect_Post(CPlayerSlot slot, ENetworkDisconnectionReason reason) {
+void PlayerManager::OnClientDisconnect_Post(CPlayerSlot slot, ENetworkDisconnectionReason reason) {
 	GetOnClientDisconnect_PostListenerManager().Notify(slot, reason);
 
-	CPlayer* pPlayer = ToPlayer(slot);
+	Player* pPlayer = ToPlayer(slot);
 	if (pPlayer) {
 		pPlayer->Reset();
 	}
 }
 
-void CPlayerManager::OnClientActive(CPlayerSlot slot, bool bLoadGame) const {
+void PlayerManager::OnClientActive(CPlayerSlot slot, bool bLoadGame) const {
 	GetOnClientActiveListenerManager().Notify(slot, bLoadGame);
 }
 
-int CPlayerManager::MaxClients() {
+int PlayerManager::MaxClients() {
 	return gpGlobals ? gpGlobals->maxClients : -1;
 }
 
-CPlayer* CPlayerManager::ToPlayer(CServerSideClientBase* pClient) const {
+Player* PlayerManager::ToPlayer(CServerSideClientBase* pClient) const {
 	return ToPlayer(pClient->GetPlayerSlot());
 }
 
-CPlayer* CPlayerManager::ToPlayer(CPlayerPawnComponent* component) const {
+Player* PlayerManager::ToPlayer(CPlayerPawnComponent* component) const {
 	return ToPlayer(component->GetPawn());
 }
 
-CPlayer* CPlayerManager::ToPlayer(CBasePlayerController* controller) const {
+Player* PlayerManager::ToPlayer(CBasePlayerController* controller) const {
 	if (!controller) {
 		return nullptr;
 	}
@@ -240,7 +240,7 @@ CPlayer* CPlayerManager::ToPlayer(CBasePlayerController* controller) const {
 	return ToPlayer(CPlayerSlot(controller->GetPlayerSlot()));
 }
 
-CPlayer* CPlayerManager::ToPlayer(CBasePlayerPawn* pawn) const {
+Player* PlayerManager::ToPlayer(CBasePlayerPawn* pawn) const {
 	if (!pawn) {
 		return nullptr;
 	}
@@ -253,15 +253,15 @@ CPlayer* CPlayerManager::ToPlayer(CBasePlayerPawn* pawn) const {
 	return ToPlayer(controller);
 }
 
-CPlayer* CPlayerManager::ToPlayer(CPlayerSlot slot) const {
+Player* PlayerManager::ToPlayer(CPlayerSlot slot) const {
 	if (utils::IsPlayerSlot(slot)) {
-		return const_cast<CPlayer*>(&m_players.at(slot));
+		return const_cast<Player*>(&m_players.at(slot));
 	}
 
 	return nullptr;
 }
 
-CPlayer* CPlayerManager::ToPlayer(CEntityIndex entIndex) const {
+Player* PlayerManager::ToPlayer(CEntityIndex entIndex) const {
 	CBaseEntity* ent = static_cast<CBaseEntity*>(GameEntitySystem()->GetEntityInstance(entIndex));
 	if (!ent) {
 		return nullptr;
@@ -278,7 +278,7 @@ CPlayer* CPlayerManager::ToPlayer(CEntityIndex entIndex) const {
 	return nullptr;
 }
 
-CPlayer* CPlayerManager::ToPlayer(CPlayerUserId userID) const {
+Player* PlayerManager::ToPlayer(CPlayerUserId userID) const {
 	for (int slot = 0; slot < MaxClients(); slot++) {
 		if (g_pEngineServer2->GetPlayerUserId(slot) == userID) {
 			return ToPlayer(CPlayerSlot(slot));
@@ -288,7 +288,7 @@ CPlayer* CPlayerManager::ToPlayer(CPlayerUserId userID) const {
 	return nullptr;
 }
 
-CPlayer* CPlayerManager::ToPlayer(CSteamID steamid, bool validate) const {
+Player* PlayerManager::ToPlayer(CSteamID steamid, bool validate) const {
 	auto steam64 = steamid.ConvertToUint64();
 	for (auto& player: GetOnlinePlayers()) {
 		if (player->GetSteamId64(validate) == steam64) {
@@ -299,19 +299,19 @@ CPlayer* CPlayerManager::ToPlayer(CSteamID steamid, bool validate) const {
 	return nullptr;
 }
 
-std::vector<CPlayer*> CPlayerManager::GetOnlinePlayers() const {
-	std::vector<CPlayer*> players;
+std::vector<Player*> PlayerManager::GetOnlinePlayers() const {
+	std::vector<Player*> players;
 	players.reserve(MAXPLAYERS);
 	for (auto& player: m_players) {
 		if (utils::IsPlayerSlot(player.GetPlayerSlot())) {
-			players.emplace_back(const_cast<CPlayer*>(&player));
+			players.emplace_back(const_cast<Player*>(&player));
 		}
 	}
 
 	return players;
 }
 
-TargetType CPlayerManager::TargetPlayerString(int caller, std::string_view target, plg::vector<int>& clients) {
+TargetType PlayerManager::TargetPlayerString(int caller, std::string_view target, plg::vector<int>& clients) {
 	TargetType targetType = TargetType::NONE;
 
 	if (target == "@me")

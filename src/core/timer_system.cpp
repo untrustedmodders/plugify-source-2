@@ -6,14 +6,14 @@ double universalTime = 0.0f;
 double timerNextThink = 0.0f;
 const double engineFixedTickInterval = 0.015625;
 
-void CTimerSystem::OnLevelShutdown() {
+void TimerSystem::OnLevelShutdown() {
 	RemoveMapChangeTimers();
 
 	m_hasMapSimulated = false;
 	m_hasMapTicked = false;
 }
 
-void CTimerSystem::OnGameFrame(bool simulating) {
+void TimerSystem::OnGameFrame(bool simulating) {
 	if (simulating && m_hasMapTicked) {
 		universalTime += gpGlobals->curtime - m_lastTickedTime;
 		m_hasMapSimulated = true;
@@ -31,7 +31,7 @@ void CTimerSystem::OnGameFrame(bool simulating) {
 	}
 }
 
-double CTimerSystem::CalculateNextThink(double lastThinkTime, double delay) {
+double TimerSystem::CalculateNextThink(double lastThinkTime, double delay) {
 	if (universalTime - lastThinkTime - delay <= 0.1) {
 		return lastThinkTime + delay;
 	} else {
@@ -39,7 +39,7 @@ double CTimerSystem::CalculateNextThink(double lastThinkTime, double delay) {
 	}
 }
 
-void CTimerSystem::RunFrame() {
+void TimerSystem::RunFrame() {
 	while (!m_timers.empty()) {
 		auto it = m_timers.begin();
 
@@ -62,7 +62,7 @@ void CTimerSystem::RunFrame() {
 	}
 }
 
-void CTimerSystem::RemoveMapChangeTimers() {
+void TimerSystem::RemoveMapChangeTimers() {
 	std::lock_guard<std::mutex> lock(m_createTimerLock);
 
 	for (auto it = m_timers.begin(); it != m_timers.end();) {
@@ -74,7 +74,7 @@ void CTimerSystem::RemoveMapChangeTimers() {
 	}
 }
 
-uint32_t CTimerSystem::CreateTimer(double delay, TimerCallback callback, TimerFlag flags, const plg::vector<plg::any>& userData) {
+uint32_t TimerSystem::CreateTimer(double delay, TimerCallback callback, TimerFlag flags, const plg::vector<plg::any>& userData) {
 	std::lock_guard<std::mutex> lock(m_createTimerLock);
 
 	uint32_t id = ++s_nextId;
@@ -82,7 +82,7 @@ uint32_t CTimerSystem::CreateTimer(double delay, TimerCallback callback, TimerFl
 	return id;
 }
 
-void CTimerSystem::KillTimer(uint32_t id) {
+void TimerSystem::KillTimer(uint32_t id) {
 	std::lock_guard<std::mutex> lock(m_createTimerLock);
 
 	auto it = std::find_if(m_timers.begin(), m_timers.end(), [id](const Timer& timer) {
@@ -98,7 +98,7 @@ void CTimerSystem::KillTimer(uint32_t id) {
 	}
 }
 
-void CTimerSystem::RescheduleTimer(uint32_t id, double newDelay) {
+void TimerSystem::RescheduleTimer(uint32_t id, double newDelay) {
 	std::lock_guard<std::mutex> lock(m_createTimerLock);
 
 	auto it = std::find_if(m_timers.begin(), m_timers.end(), [id](const Timer& timer) {
@@ -116,12 +116,12 @@ void CTimerSystem::RescheduleTimer(uint32_t id, double newDelay) {
 }
 
 
-double CTimerSystem::GetTickedTime() {
+double TimerSystem::GetTickedTime() {
 	return universalTime;
 }
 
-double CTimerSystem::GetTickedInterval() {
+double TimerSystem::GetTickedInterval() {
 	return engineFixedTickInterval;
 }
 
-CTimerSystem g_TimerSystem;
+TimerSystem g_TimerSystem;

@@ -2,7 +2,7 @@
 
 #include <edict.h>
 
-void CServerManager::OnGameFrame() {
+void ServerManager::OnGameFrame() {
 	if (m_nextTasks.empty())
 		return;
 
@@ -17,7 +17,7 @@ void CServerManager::OnGameFrame() {
 	m_nextTasks.clear();
 }
 
-void CServerManager::OnPreWorldUpdate() {
+void ServerManager::OnPreWorldUpdate() {
 	if (m_nextWorldUpdateTasks.empty())
 		return;
 
@@ -32,14 +32,14 @@ void CServerManager::OnPreWorldUpdate() {
 	m_nextWorldUpdateTasks.clear();
 }
 
-void CServerManager::AddTaskForNextFrame(TaskCallback task, const plg::vector<plg::any>& userData) {
+void ServerManager::AddTaskForNextFrame(TaskCallback task, const plg::vector<plg::any>& userData) {
 	std::lock_guard<std::mutex> lock(m_nextTasksLock);
 	m_nextTasks.emplace_back(task, userData);
 }
 
-void CServerManager::AddTaskForNextWorldUpdate(TaskCallback task, const plg::vector<plg::any>& userData) {
+void ServerManager::AddTaskForNextWorldUpdate(TaskCallback task, const plg::vector<plg::any>& userData) {
 	std::lock_guard<std::mutex> lock(m_nextWorldUpdateTasksLock);
 	m_nextWorldUpdateTasks.emplace_back(task, userData);
 }
 
-CServerManager g_ServerManager;
+ServerManager g_ServerManager;

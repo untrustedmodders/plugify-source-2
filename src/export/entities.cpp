@@ -181,14 +181,14 @@ extern "C" PLUGIN_API void* GetConcreteEntityListPointer() {
  * This function hooks a specified output for a given entity class name. The provided
  * callback will be triggered when the output is fired.
  *
- * @param szClassname The class name of the entity to hook the output for.
- * @param szOutput The output event name to hook.
+ * @param classname The class name of the entity to hook the output for.
+ * @param output The output event name to hook.
  * @param callback The callback function to invoke when the output is fired.
  * @param mode Whether the hook was in post mode (after processing) or pre mode (before processing).
  * @return True if the hook was successfully added, false otherwise.
  */
-extern "C" PLUGIN_API bool HookEntityOutput(const plg::string& szClassname, const plg::string& szOutput, EntityListenerCallback callback, HookMode mode) {
-	return g_OutputManager.HookEntityOutput(szClassname, szOutput, callback, mode);
+extern "C" PLUGIN_API bool HookEntityOutput(const plg::string& classname, const plg::string& output, EntityListenerCallback callback, HookMode mode) {
+	return g_OutputManager.HookEntityOutput(classname, output, callback, mode);
 }
 
 /**
@@ -196,14 +196,14 @@ extern "C" PLUGIN_API bool HookEntityOutput(const plg::string& szClassname, cons
  *
  * This function unhooks a previously set output for a given entity class name.
  *
- * @param szClassname The class name of the entity from which to unhook the output.
- * @param szOutput The output event name to unhook.
+ * @param classname The class name of the entity from which to unhook the output.
+ * @param output The output event name to unhook.
  * @param callback The callback function that was previously hooked.
  * @param mode Whether the hook was in post mode (after processing) or pre mode (before processing).
 * @return True if the hook was successfully removed, false otherwise.
  */
-extern "C" PLUGIN_API bool UnhookEntityOutput(const plg::string& szClassname, const plg::string& szOutput, EntityListenerCallback callback, HookMode mode) {
-	return g_OutputManager.UnhookEntityOutput(szClassname, szOutput, callback, mode);
+extern "C" PLUGIN_API bool UnhookEntityOutput(const plg::string& classname, const plg::string& output, EntityListenerCallback callback, HookMode mode) {
+	return g_OutputManager.UnhookEntityOutput(classname, output, callback, mode);
 }
 
 ////////////////////////

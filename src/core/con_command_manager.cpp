@@ -10,7 +10,7 @@
 #include <igameevents.h>
 #undef CreateEvent
 
-CConCommandManager::~CConCommandManager() {
+ConCommandManager::~ConCommandManager() {
 	if (!g_pCVar) {
 		return;
 	}
@@ -28,7 +28,7 @@ void CommandCallback(const CCommandContext&, const CCommand&) {
 ConCommandInfo::ConCommandInfo(plg::string name, plg::string description) : name(std::move(name)), description(std::move(description)) {
 }
 
-bool CConCommandManager::AddCommandListener(const plg::string& name, CommandListenerCallback callback, HookMode mode) {
+bool ConCommandManager::AddCommandListener(const plg::string& name, CommandListenerCallback callback, HookMode mode) {
 	std::lock_guard<std::mutex> lock(m_registerCmdLock);
 
 	if (name.empty()) {
@@ -52,7 +52,7 @@ bool CConCommandManager::AddCommandListener(const plg::string& name, CommandList
 	}
 }
 
-bool CConCommandManager::RemoveCommandListener(const plg::string& name, CommandListenerCallback callback, HookMode mode) {
+bool ConCommandManager::RemoveCommandListener(const plg::string& name, CommandListenerCallback callback, HookMode mode) {
 	std::lock_guard<std::mutex> lock(m_registerCmdLock);
 
 	if (name.empty()) {
@@ -68,7 +68,7 @@ bool CConCommandManager::RemoveCommandListener(const plg::string& name, CommandL
 	return commandInfo.callbacks[static_cast<size_t>(mode)].Unregister(callback);
 }
 
-bool CConCommandManager::AddValveCommand(const plg::string& name, const plg::string& description, ConVarFlag flags, uint64 adminFlags) {
+bool ConCommandManager::AddValveCommand(const plg::string& name, const plg::string& description, ConVarFlag flags, uint64 adminFlags) {
 	std::lock_guard<std::mutex> lock(m_registerCmdLock);
 
 	if (name.empty() || g_pCVar->FindConVar(name.c_str()).IsValidRef()) {
@@ -92,7 +92,7 @@ bool CConCommandManager::AddValveCommand(const plg::string& name, const plg::str
 	return true;
 }
 
-bool CConCommandManager::RemoveValveCommand(const plg::string& name) {
+bool ConCommandManager::RemoveValveCommand(const plg::string& name) {
 	std::lock_guard<std::mutex> lock(m_registerCmdLock);
 
 	auto hFoundCommand = g_pCVar->FindConCommand(name.c_str());
@@ -111,7 +111,7 @@ bool CConCommandManager::RemoveValveCommand(const plg::string& name) {
 	return true;
 }
 
-bool CConCommandManager::IsValidValveCommand(const plg::string& name) const {
+bool ConCommandManager::IsValidValveCommand(const plg::string& name) const {
 	ConCommandRef hFoundCommand = g_pCVar->FindConCommand(name.c_str());
 	return hFoundCommand.IsValidRef();
 }
@@ -134,7 +134,7 @@ static bool CheckCommandAccess(CPlayerSlot slot, uint64 flags) {
 	return true;
 }
 
-ResultType CConCommandManager::ExecuteCommandCallbacks(const plg::string& name, const CCommandContext& ctx, const CCommand& args, HookMode mode, CommandCallingContext callingContext) {
+ResultType ConCommandManager::ExecuteCommandCallbacks(const plg::string& name, const CCommandContext& ctx, const CCommand& args, HookMode mode, CommandCallingContext callingContext) {
 	//S2_LOGF(LS_DEBUG, "[ConCommandManager::ExecuteCommandCallbacks][%s]: %s\n", mode == HookMode::Pre ? "Pre" : "Post", name.c_str());
 
 	int size = args.ArgC();
@@ -192,7 +192,7 @@ ResultType CConCommandManager::ExecuteCommandCallbacks(const plg::string& name, 
 	return result;
 }
 
-poly::ReturnAction CConCommandManager::Hook_DispatchConCommand(poly::Params& params, int count, poly::Return& ret, HookMode mode) {
+poly::ReturnAction ConCommandManager::Hook_DispatchConCommand(poly::Params& params, int count, poly::Return& ret, HookMode mode) {
 	// auto cmd = poly::GetArgument<ConCommandRef* const>(params, 1);
 	auto ctx = poly::GetArgument<const CCommandContext*>(params, 2);
 	auto args = poly::GetArgument<const CCommand*>(params, 3);
@@ -241,4 +241,4 @@ poly::ReturnAction CConCommandManager::Hook_DispatchConCommand(poly::Params& par
 	return poly::ReturnAction::Ignored;
 }
 
-CConCommandManager g_CommandManager;
+ConCommandManager g_CommandManager;

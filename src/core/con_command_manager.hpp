@@ -25,16 +25,16 @@ struct ConCommandInfo {
 	uint64 adminFlags{};
 	ConCommandData* command{};
 	std::unique_ptr<ConCommand> commandRef;
-	std::array<CListenerManager<CommandListenerCallback>, 2> callbacks;
+	std::array<ListenerManager<CommandListenerCallback>, 2> callbacks;
 	bool defaultCommand{};
 };
 
 using CommandInfoPtr = std::unique_ptr<ConCommandInfo>;
 
-class CConCommandManager {
+class ConCommandManager {
 public:
-	CConCommandManager() = default;
-	~CConCommandManager();
+	ConCommandManager() = default;
+	~ConCommandManager();
 
 	bool AddCommandListener(const plg::string& name, CommandListenerCallback callback, HookMode mode);
 	bool RemoveCommandListener(const plg::string& name, CommandListenerCallback callback, HookMode mode);
@@ -48,8 +48,8 @@ public:
 private:
 	//std::vector<ConCommandInfo*> m_cmdList;
 	std::map<plg::string, CommandInfoPtr, utils::case_ins_comparator> m_cmdLookup;
-	std::array<CListenerManager<CommandListenerCallback>, 2> m_globalCallbacks;
+	std::array<ListenerManager<CommandListenerCallback>, 2> m_globalCallbacks;
 	std::mutex m_registerCmdLock;
 };
 
-extern CConCommandManager g_CommandManager;
+extern ConCommandManager g_CommandManager;
