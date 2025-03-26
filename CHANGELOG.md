@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.1.15](https://github.com/untrustedmodders/plugify-source-2/compare/v1.1.14...v1.1.15) (2025-03-26)
+
+
+### Bug Fixes
+
+* add modules export methods ([da5799d](https://github.com/untrustedmodders/plugify-source-2/commit/da5799d6dece7d6bbafb63d3fc19479ec3c4b6b0))
+* add schema for gamedata ([c7ba244](https://github.com/untrustedmodders/plugify-source-2/commit/c7ba24489a0a58fa9820e8ae78434c09f33a4b30))
+* added IAppSystem module and interface lookup ([2e33840](https://github.com/untrustedmodders/plugify-source-2/commit/2e3384097b9f4b1e9968f648c6dfa08af6592881))
+* added new config system instead of keyvalues ([4f4271f](https://github.com/untrustedmodders/plugify-source-2/commit/4f4271fb55e4aefc27639c00f8d266c549956a99))
+* build issue ([8c5d504](https://github.com/untrustedmodders/plugify-source-2/commit/8c5d504dced001016c3b3393a1ad81b592726776))
+* change post event abstract ([97a86fb](https://github.com/untrustedmodders/plugify-source-2/commit/97a86fbd24d99aab45471f1ba93a07aa7b19fcac))
+* rename schema ([0e8c0b5](https://github.com/untrustedmodders/plugify-source-2/commit/0e8c0b595ab9b77f5f72c85676f2e449d8ace879))
+* rework gameconfigs ([233e2c4](https://github.com/untrustedmodders/plugify-source-2/commit/233e2c489ab508f294880dab2b3c017f78487edd))
+* rework timers ([e3e3b78](https://github.com/untrustedmodders/plugify-source-2/commit/e3e3b780d67b05edce3e03a4bcf125b9643475eb))
+* timer improvements ([d9090bd](https://github.com/untrustedmodders/plugify-source-2/commit/d9090bde48bdb375a356f154f60f1ad3cf2aa1aa))
+* update build action ([706e620](https://github.com/untrustedmodders/plugify-source-2/commit/706e620e65abc68e6b69a9860352b4209ae911a4))
+* update manifest ([747023b](https://github.com/untrustedmodders/plugify-source-2/commit/747023b821598562a8384506c977b624446efaf4))
+* update schema ([a837645](https://github.com/untrustedmodders/plugify-source-2/commit/a837645a15c0e1fbbb967af0b841f84419553672))
+
 ## [1.1.14](https://github.com/untrustedmodders/plugify-source-2/compare/v1.1.13...v1.1.14) (2025-03-17)
 
 
