@@ -1,7 +1,7 @@
 #include "user_message_manager.hpp"
 #include "user_message.hpp"
 
-bool CUserMessageManager::HookUserMessage(int messageId, UserMessageCallback callback, HookMode mode) {
+bool UserMessageManager::HookUserMessage(int messageId, UserMessageCallback callback, HookMode mode) {
 	std::lock_guard<std::mutex> lock(m_registerCmdLock);
 	
 	if (messageId == 0) {
@@ -18,7 +18,7 @@ bool CUserMessageManager::HookUserMessage(int messageId, UserMessageCallback cal
 	}
 }
 
-bool CUserMessageManager::UnhookUserMessage(int messageId, UserMessageCallback callback, HookMode mode) {
+bool UserMessageManager::UnhookUserMessage(int messageId, UserMessageCallback callback, HookMode mode) {
 	std::lock_guard<std::mutex> lock(m_registerCmdLock);
 	
 	if (messageId == 0) {
@@ -34,7 +34,7 @@ bool CUserMessageManager::UnhookUserMessage(int messageId, UserMessageCallback c
 	return commandInfo.callbacks[static_cast<size_t>(mode)].Unregister(callback);
 }
 
-ResultType CUserMessageManager::ExecuteMessageCallbacks(INetworkMessageInternal* pEvent, CNetMessage* pData, int nClientCount, uint64* clients, HookMode mode) {
+ResultType UserMessageManager::ExecuteMessageCallbacks(INetworkMessageInternal* pEvent, CNetMessage* pData, int nClientCount, uint64* clients, HookMode mode) {
 	UserMessage message(pEvent, pData, nClientCount, clients);
 
 	int messageID = message.GetMessageID();
@@ -81,7 +81,7 @@ ResultType CUserMessageManager::ExecuteMessageCallbacks(INetworkMessageInternal*
 	return result;
 }
 
-poly::ReturnAction CUserMessageManager::Hook_PostEvent(poly::Params& params, int count, poly::Return& ret, HookMode mode) {
+poly::ReturnAction UserMessageManager::Hook_PostEvent(poly::Params& params, int count, poly::Return& ret, HookMode mode) {
 	auto nClientCount = poly::GetArgument<int>(params, 3);
 	auto clients = poly::GetArgument<uint64*>(params, 4);
 	auto pEvent = poly::GetArgument<INetworkMessageInternal*>(params, 5);
@@ -97,4 +97,4 @@ poly::ReturnAction CUserMessageManager::Hook_PostEvent(poly::Params& params, int
 	return poly::ReturnAction::Ignored;
 }
 
-CUserMessageManager g_UserMessageManager;
+UserMessageManager g_UserMessageManager;

@@ -19,6 +19,8 @@
 
 #define MAXPLAYERS 64
 
+class CAppSystemDict;
+class IAppSystem;
 class IGameEventSystem;
 class IGameEventManager2;
 class IEngineSound;
@@ -38,7 +40,7 @@ class CBaseEntity;
 
 extern IGameEventSystem* g_pGameEventSystem;
 extern IGameEventManager2* g_pGameEventManager;
-extern IGameEventManager2** p_ppGameEventManager;
+extern CAppSystemDict* g_pCurrentAppSystem;
 extern INetworkGameServer* g_pNetworkGameServer;
 extern CGlobalVars* gpGlobals;
 extern IVEngineServer2* g_pEngineServer2;
@@ -61,6 +63,9 @@ extern std::unique_ptr<CGameConfig> g_pGameConfig;
 namespace globals {
 	void Initialize(std::unordered_map<std::string, fs::path> paths);
 	void Terminate();
+
+	PlatModule_t FindModule(std::string_view name);
+	IAppSystem* FindInterface(std::string_view name);
 }// namespace globals
 
 namespace DynLibUtils {
@@ -70,16 +75,6 @@ namespace DynLibUtils {
 
 using CMemory = DynLibUtils::CMemory;
 using CModule = DynLibUtils::CModule;
-
-namespace modules {
-	extern CModule* engine;
-	extern CModule* tier0;
-	extern CModule* server;
-	extern CModule* schemasystem;
-	extern CModule* filesystem;
-	extern CModule* vscript;
-	extern CModule* networksystem;
-}// namespace modules
 
 class CPlayer_WeaponServices;
 class IEntityFindFilter;

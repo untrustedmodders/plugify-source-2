@@ -1,5 +1,6 @@
 #pragma once
 
+#include <core/sdk/utils.h>
 #include <dynlibutils/memaddr.hpp>
 #include <dynlibutils/module.hpp>
 
@@ -19,9 +20,9 @@ public:
 	std::string_view GetSignature(const plg::string& name) const;
 	std::string_view GetSymbol(const plg::string& name) const;
 	std::string_view GetPatch(const plg::string& name) const;
-	int GetOffset(const plg::string& name) const;
+	int32_t GetOffset(const plg::string& name) const;
 	CMemory GetAddress(const plg::string& name) const;
-	CModule* GetModule(const plg::string& name) const;
+	const CModule* GetModule(const plg::string& name) const;
 	bool IsSymbol(const plg::string& name) const;
 	CMemory ResolveSignature(const plg::string& name) const;
 
@@ -33,26 +34,28 @@ private:
 	};
 
 private:
-	plg::string m_szGameDir;
-	plg::vector<plg::string> m_szPaths;
-	std::unordered_map<plg::string, int> m_umOffsets;
-	std::unordered_map<plg::string, plg::string> m_umSignatures;
-	std::unordered_map<plg::string, AddressConf> m_umAddresses;
-	std::unordered_map<plg::string, plg::string> m_umLibraries;
-	std::unordered_map<plg::string, plg::string> m_umPatches;
+	plg::string m_gameDir;
+	plg::vector<plg::string> m_paths;
+	std::unordered_map<plg::string, int32_t> m_offsets;
+	std::unordered_map<plg::string, plg::string> m_signatures;
+	std::unordered_map<plg::string, AddressConf> m_addresses;
+	std::unordered_map<plg::string, plg::string> m_libraries;
+	std::unordered_map<plg::string, plg::string> m_patches;
 };
 
 class CGameConfigManager {
 public:
-	CGameConfigManager() = default;
+	CGameConfigManager();
 	~CGameConfigManager() = default;
 
 	Handle LoadGameConfigFile(plg::vector<plg::string> paths);
 	void CloseGameConfigFile(Handle handle);
 	CGameConfig* GetGameConfig(Handle handle);
+	CModule* GetModule(std::string_view name);
 
 private:
 	std::unordered_map<Handle, CGameConfig> m_configs;
+	std::unordered_map<plg::string, CModule, utils::string_hash,std::equal_to<>> m_modules;
 };
 
 extern CGameConfigManager g_pGameConfigManager;

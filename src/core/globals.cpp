@@ -16,7 +16,7 @@
 
 IGameEventSystem* g_pGameEventSystem = nullptr;
 IGameEventManager2* g_pGameEventManager = nullptr;
-IGameEventManager2** p_ppGameEventManager = nullptr;
+CAppSystemDict* g_pCurrentAppSystem = nullptr;
 INetworkGameServer* g_pNetworkGameServer = nullptr;
 CGlobalVars* gpGlobals = nullptr;
 IVEngineServer2* g_pEngineServer2 = nullptr;
@@ -28,95 +28,59 @@ CCSGameRules* g_pGameRules = nullptr;
 #define RESOLVE_SIG(gameConfig, name, variable) \
 	variable = (decltype(variable)) (void*) (gameConfig)->ResolveSignature(name)
 
-namespace modules {
-	CModule* engine = nullptr;
-	CModule* tier0 = nullptr;
-	CModule* server = nullptr;
-	CModule* schemasystem = nullptr;
-	CModule* filesystem = nullptr;
-	CModule* vscript = nullptr;
-	CModule* networksystem = nullptr;
-}// namespace modules
-
 IMetamodListener* g_pMetamodListener = nullptr;
 std::unique_ptr<CCoreConfig> g_pCoreConfig = nullptr;
 std::unique_ptr<CGameConfig> g_pGameConfig = nullptr;
 
-template<class T>
-static T* FindInterface(const CModule* module, const char* name) {
-	auto CreateInterface = module->GetFunctionByName("CreateInterface").CCast<CreateInterfaceFn>();
-	if (!CreateInterface) {
-		S2_LOGF(LS_ERROR, "Could not find \"%s\"\n", name);
-		return nullptr;
-	}
-
-	void* pInterface = CreateInterface(name, nullptr);
-	if (!pInterface) {
-		S2_LOGF(LS_ERROR, "Could not find interface %s in %s at \"%s\"\n", name, module->GetName().data(), module->GetPath().data());
-		return nullptr;
-	}
-
-	return reinterpret_cast<T*>(pInterface);
-}
-
-// we cannot return a char array from a function, therefore we need a wrapper
-template<size_t N>
-struct String {
-	char c[N];
-};
-
-template<size_t N>
-constexpr auto ModulePath(const char (&str)[N]) {
-	constexpr auto length = N - 1;
-	String<N> result = {};
-	for (size_t i = 0; i < length; ++i) {
-		result.c[i] = str[i];
-#if S2SDK_PLATFORM_WINDOWS
-		if (result.c[i] == '/')
-			result.c[i] = '\\';
-#endif
-	}
-	result.c[length] = '\0';
-	return result;
-}
-
-#if S2SDK_PLATFORM_WINDOWS
-#undef GetModuleHandle
-#endif
-
-static CModule* CreateModule(const char* p) {
-	plg::string path = utils::GameDirectory() + p;
-	auto* module = new CModule(path);
-	if (!module->GetHandle()) {
-		S2_LOGF(LS_ERROR, "Could not find module at \"%s\"\n", path.c_str());
-	}
-	return module;
-}
-
 namespace globals {
 	void Initialize(std::unordered_map<std::string, fs::path> paths) {
-		modules::engine = CreateModule(ModulePath(S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "engine2").c);
-		modules::tier0 = CreateModule(ModulePath(S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "tier0").c);
-		modules::server = CreateModule(ModulePath(S2SDK_GAME_BINARY S2SDK_LIBRARY_PREFIX "server").c);
-		modules::schemasystem = CreateModule(ModulePath(S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "schemasystem").c);
-		modules::filesystem = CreateModule(ModulePath(S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "filesystem_stdio").c);
-		modules::vscript = CreateModule(ModulePath(S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "vscript").c);
-		modules::networksystem = CreateModule(ModulePath(S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "networksystem").c);
+		g_pCoreConfig = std::make_unique<CCoreConfig>(plg::vector<plg::string>{
+				(paths["base"] / "settings.json").generic_string(),
+				(paths["configs"] / "settings.json").generic_string(),
+				(paths["data"] / "settings.json").generic_string()
+		});
+		if (!g_pCoreConfig->Initialize()) {
+			S2_LOG(LS_ERROR, "Failed to load settings configuration!");
+			return;
+		}
+		g_pGameConfig = std::make_unique<CGameConfig>("csgo", plg::vector<plg::string>{
+				(paths["base"] / "gamedata.jsonc").generic_string(),
+				(paths["configs"] / "gamedata.jsonc").generic_string(),
+				(paths["data"] / "gamedata.jsonc").generic_string()
+		});
+		if (!g_pGameConfig->Initialize()) {
+			S2_LOG(LS_ERROR, "Failed to load gamedata configuration!");
+			return;
+		}
 
-		g_pCVar = FindInterface<ICvar>(modules::tier0, CVAR_INTERFACE_VERSION);
-		g_pSchemaSystem2 = FindInterface<CSchemaSystem>(modules::schemasystem, SCHEMASYSTEM_INTERFACE_VERSION);
-		g_pSource2Server = FindInterface<ISource2Server>(modules::server, SOURCE2SERVER_INTERFACE_VERSION);
-		g_pSource2GameEntities = FindInterface<ISource2GameEntities>(modules::server, SOURCE2GAMEENTITIES_INTERFACE_VERSION);
-		g_pSource2GameClients = FindInterface<IServerGameClients>(modules::server, SOURCE2GAMECLIENTS_INTERFACE_VERSION);
-		g_pGameResourceServiceServer = FindInterface<IGameResourceService>(modules::engine, GAMERESOURCESERVICESERVER_INTERFACE_VERSION);
-		g_pEngineServiceMgr = FindInterface<IEngineServiceMgr>(modules::engine, ENGINESERVICEMGR_INTERFACE_VERSION);
+		CAppSystemDict** p_ppCurrentAppSystem = g_pGameConfig->GetAddress("&s_pCurrentAppSystem").RCast<CAppSystemDict**>();
+		if (!p_ppCurrentAppSystem) {
+			S2_LOG(LS_ERROR, "s_pCurrentAppSystem not found!");
+			return;
+		}
+		g_pCurrentAppSystem = *p_ppCurrentAppSystem;
 
-		g_pEngineServer2 = FindInterface<IVEngineServer2>(modules::engine, SOURCE2ENGINETOSERVER_INTERFACE_VERSION);
-		g_pFullFileSystem = FindInterface<IFileSystem>(modules::filesystem, FILESYSTEM_INTERFACE_VERSION);
-		g_pGameEventSystem = FindInterface<IGameEventSystem>(modules::engine, GAMEEVENTSYSTEM_INTERFACE_VERSION);
-		g_pNetworkServerService = FindInterface<INetworkServerService>(modules::engine, NETWORKSERVERSERVICE_INTERFACE_VERSION);
-		//g_pEngineSound = FindInterface<IEngineSound>(modules::engine, IENGINESOUND_SERVER_INTERFACE_VERSION);
-		g_pNetworkMessages = FindInterface<INetworkMessages>(modules::networksystem, NETWORKMESSAGES_INTERFACE_VERSION);
+		IGameEventManager2** p_ppGameEventManager = g_pGameConfig->GetAddress("&s_GameEventManager").RCast<IGameEventManager2**>();
+		if (!p_ppGameEventManager) {
+			S2_LOG(LS_ERROR, "s_GameEventManager not found!");
+			return;
+		}
+		g_pGameEventManager = *p_ppGameEventManager;
+
+		g_pCVar = static_cast<ICvar*>(FindInterface(CVAR_INTERFACE_VERSION));
+		g_pSchemaSystem2 = reinterpret_cast<CSchemaSystem*>(FindInterface(SCHEMASYSTEM_INTERFACE_VERSION));
+		g_pSource2Server = static_cast<ISource2Server*>(FindInterface(SOURCE2SERVER_INTERFACE_VERSION));
+		g_pSource2GameEntities = static_cast<ISource2GameEntities*>(FindInterface(SOURCE2GAMEENTITIES_INTERFACE_VERSION));
+		g_pSource2GameClients = static_cast<ISource2GameClients*>(FindInterface(SOURCE2GAMECLIENTS_INTERFACE_VERSION));
+		g_pGameResourceServiceServer = reinterpret_cast<IGameResourceService*>(FindInterface(GAMERESOURCESERVICESERVER_INTERFACE_VERSION));
+		g_pEngineServiceMgr = reinterpret_cast<IEngineServiceMgr*>(FindInterface(ENGINESERVICEMGR_INTERFACE_VERSION));
+
+		g_pEngineServer2 = static_cast<IVEngineServer2*>(FindInterface(SOURCE2ENGINETOSERVER_INTERFACE_VERSION));
+		g_pFullFileSystem = reinterpret_cast<IFileSystem*>(FindInterface(FILESYSTEM_INTERFACE_VERSION));
+		g_pGameEventSystem = static_cast<IGameEventSystem*>(FindInterface(GAMEEVENTSYSTEM_INTERFACE_VERSION));
+		g_pNetworkServerService = reinterpret_cast<INetworkServerService*>(FindInterface(NETWORKSERVERSERVICE_INTERFACE_VERSION));
+		//g_pEngineSound = FindInterface(IENGINESOUND_SERVER_INTERFACE_VERSION);
+		g_pNetworkMessages = reinterpret_cast<INetworkMessages*>(FindInterface(NETWORKMESSAGES_INTERFACE_VERSION));
 
 		ConVar_Register(FCVAR_RELEASE | FCVAR_SERVER_CAN_EXECUTE | FCVAR_GAMEDLL);
 
@@ -127,34 +91,6 @@ namespace globals {
 		if (Plugify_ImmListener) {
 			g_pMetamodListener = Plugify_ImmListener.CCast<IMetamodListenerFn>()();
 		}
-
-		g_pCoreConfig = std::make_unique<CCoreConfig>(plg::vector<plg::string>{
-			(paths["base"] / "settings.json").generic_string(),
-			(paths["configs"] / "settings.json").generic_string(),
-			(paths["data"] / "settings.json").generic_string()
-		});
-		if (!g_pCoreConfig->Initialize()) {
-			S2_LOG(LS_ERROR, "Failed to load settings configuration!");
-			return;
-		}
-		g_pGameConfig = std::make_unique<CGameConfig>("csgo", plg::vector<plg::string>{
-			(paths["base"] / "gamedata.jsonc").generic_string(),
-			(paths["configs"] / "gamedata.jsonc").generic_string(),
-			(paths["data"] / "gamedata.jsonc").generic_string()
-		});
-		if (!g_pGameConfig->Initialize()) {
-			S2_LOG(LS_ERROR, "Failed to load gamedata configuration!");
-			return;
-		}
-
-		p_ppGameEventManager = g_pGameConfig->GetAddress("&s_GameEventManager").RCast<IGameEventManager2**>();
-		if (!p_ppGameEventManager) {
-			S2_LOG(LS_ERROR, "s_GameEventManager not found!");
-			return;
-		}
-		g_pGameEventManager = *p_ppGameEventManager;
-
-		g_pCVar->StripDevelopmentFlags();
 
 		// load more if needed
 		RESOLVE_SIG(g_pGameConfig, "LegacyGameEventListener", addresses::GetLegacyGameEventListener);
@@ -179,12 +115,23 @@ namespace globals {
 	void Terminate() {
 		g_pGameConfig.reset();
 		g_pCoreConfig.reset();
-		delete modules::engine;
-		delete modules::tier0;
-		delete modules::server;
-		delete modules::schemasystem;
-		delete modules::filesystem;
-		delete modules::vscript;
 	}
 
+	PlatModule_t FindModule(std::string_view name) {
+		for (const auto& module : g_pCurrentAppSystem->m_Modules) {
+			if (module.m_pModuleName == name) {
+				return module.m_hModule;
+			}
+		}
+		return {};
+	}
+	
+	IAppSystem* FindInterface(std::string_view name) {
+		for (const auto& system : g_pCurrentAppSystem->m_Systems) {
+			if (system.m_pInterfaceName == name) {
+				return system.m_pSystem;
+			}
+		}
+		return {};
+	}
 }// namespace globals

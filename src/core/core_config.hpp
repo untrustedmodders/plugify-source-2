@@ -22,5 +22,5 @@ public:
 	std::string ServerLanguage{"en"};
 
 private:
-	plg::vector<plg::string> m_szPaths;
+	plg::vector<plg::string> m_paths;
 };

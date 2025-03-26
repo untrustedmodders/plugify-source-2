@@ -202,7 +202,7 @@ namespace utils {
 	}// namespace
 
 	template<typename T1, typename T2>
-	struct PairHash {
+	struct pair_hash {
 		std::size_t operator()(std::pair<T1, T2> const& p) const {
 			std::size_t seed{};
 			hash_combine(seed, p.first, p.second);
@@ -210,12 +210,27 @@ namespace utils {
 		}
 	};
 
-	struct CaseInsensitiveComparator {
+	struct case_ins_comparator {
 		bool operator()(const plg::string& lhs, const plg::string& rhs) const {
 			return std::lexicographical_compare(
 					lhs.begin(), lhs.end(),
 					rhs.begin(), rhs.end(),
 					[](char a, char b) { return std::tolower(a) < std::tolower(b); });
+		}
+	};
+
+	struct string_hash {
+		using is_transparent = void;
+		[[nodiscard]] size_t operator()(const char* txt) const {
+			return std::hash<std::string_view>{}(txt);
+		}
+
+		[[nodiscard]] size_t operator()(std::string_view txt) const {
+			return std::hash<std::string_view>{}(txt);
+		}
+
+		[[nodiscard]] size_t operator()(const std::string& txt) const {
+			return std::hash<std::string>{}(txt);
 		}
 	};
 

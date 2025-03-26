@@ -13,10 +13,10 @@ struct UserMessageHook {
 	std::array<CListenerManager<UserMessageCallback>, 2> callbacks;
 };
 
-class CUserMessageManager {
+class UserMessageManager {
 public:
-	CUserMessageManager() = default;
-	~CUserMessageManager() = default;
+	UserMessageManager() = default;
+	~UserMessageManager() = default;
 
 	bool HookUserMessage(int messageId, UserMessageCallback callback, HookMode mode);
 	bool UnhookUserMessage(int messageId, UserMessageCallback callback, HookMode mode);
@@ -30,4 +30,4 @@ private:
 	std::mutex m_registerCmdLock;
 };
 
-extern CUserMessageManager g_UserMessageManager;
+extern UserMessageManager g_UserMessageManager;

@@ -6,7 +6,7 @@
 namespace pb = google::protobuf;
 
 #define GETCHECK_FIELD()                                                                          \
-	const pb::FieldDescriptor* field = msg->GetDescriptor()->FindFieldByName(pszFieldName); \
+	const pb::FieldDescriptor* field = m_msg->GetDescriptor()->FindFieldByName(pszFieldName); \
 	if (!field) {                                                                                 \
 		return false;                                                                             \
 	}
@@ -40,7 +40,7 @@ namespace pb = google::protobuf;
 	}
 
 #define CHECK_REPEATED_ELEMENT(idx)                               \
-	int elemCount = msg->GetReflection()->FieldSize(*msg, field); \
+	int elemCount = m_msg->GetReflection()->FieldSize(*m_msg, field); \
 	if (elemCount == 0 || idx >= elemCount || idx < 0) {          \
 		return false;                                             \
 	};
@@ -52,53 +52,53 @@ namespace google::protobuf {
 
 class UserMessage {
 public:
-	UserMessage(INetworkMessageInternal* msgSerializable, const CNetMessage* message, int nRecipientCount, uint64* recipientMask)
-		: msgSerializable(msgSerializable), msg(const_cast<CNetMessage*>(message)->ToPB<pb::Message>()), nRecipientCount(nRecipientCount),
-		  recipientMask(recipientMask) {
+	UserMessage(INetworkMessageInternal* m_msgSerializable, const CNetMessage* message, int m_recipientCount, uint64* m_recipientMask)
+		: m_msgSerializable(m_msgSerializable), m_msg(const_cast<CNetMessage*>(message)->ToPB<pb::Message>()), m_recipientCount(m_recipientCount),
+		  m_recipientMask(m_recipientMask) {
 	}
 
 	explicit UserMessage(const char* messageName) {
-		manuallyAllocated = true;
-		msgSerializable = g_pNetworkMessages->FindNetworkMessagePartial(messageName);
-		if (!msgSerializable) return;
+		m_manuallyAllocated = true;
+		m_msgSerializable = g_pNetworkMessages->FindNetworkMessagePartial(messageName);
+		if (!m_msgSerializable) return;
 
-		msg = msgSerializable->AllocateMessage()->ToPB<pb::Message>();
-		recipientMask = new uint64(0);
+		m_msg = m_msgSerializable->AllocateMessage()->ToPB<pb::Message>();
+		m_recipientMask = new uint64(0);
 	}
 
 	explicit UserMessage(int messageId) {
-		manuallyAllocated = true;
-		msgSerializable = g_pNetworkMessages->FindNetworkMessageById(messageId);
-		if (!msgSerializable) return;
+		m_manuallyAllocated = true;
+		m_msgSerializable = g_pNetworkMessages->FindNetworkMessageById(messageId);
+		if (!m_msgSerializable) return;
 
-		msg = msgSerializable->AllocateMessage()->ToPB<pb::Message>();
-		recipientMask = new uint64(0);
+		m_msg = m_msgSerializable->AllocateMessage()->ToPB<pb::Message>();
+		m_recipientMask = new uint64(0);
 	}
 
 	~UserMessage() {
-		if (manuallyAllocated) delete recipientMask;
+		if (m_manuallyAllocated) delete m_recipientMask;
 	}
 
 	std::string GetMessageName();
 	int GetMessageID();
 	bool HasField(const std::string& fieldName);
 	const CNetMessagePB<pb::Message>* GetProtobufMessage();
-	INetworkMessageInternal* GetSerializableMessage() { return msgSerializable; }
-	uint64* GetRecipientMask() { return recipientMask; }
-	bool IsManuallyAllocated() const { return manuallyAllocated; }
+	INetworkMessageInternal* GetSerializableMessage() { return m_msgSerializable; }
+	uint64* GetRecipientMask() { return m_recipientMask; }
+	bool IsManuallyAllocated() const { return m_manuallyAllocated; }
 
 private:
-	INetworkMessageInternal* msgSerializable{};
-	CNetMessagePB<pb::Message>* msg{};
-	int nRecipientCount{};
-	bool manuallyAllocated{};
-	uint64* recipientMask{};
+	INetworkMessageInternal* m_msgSerializable{};
+	CNetMessagePB<pb::Message>* m_msg{};
+	int m_recipientCount{};
+	bool m_manuallyAllocated{};
+	uint64* m_recipientMask{};
 
 public:
 	bool HasField(const char* pszFieldName) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_NOT_REPEATED();
-		return msg->GetReflection()->HasField(*msg, field);
+		return m_msg->GetReflection()->HasField(*m_msg, field);
 	}
 
 	bool GetInt32(const char* pszFieldName, int32* out) {
@@ -106,7 +106,7 @@ public:
 		CHECK_FIELD_TYPE(INT32);
 		CHECK_FIELD_NOT_REPEATED();
 
-		*out = msg->GetReflection()->GetInt32(*msg, field);
+		*out = m_msg->GetReflection()->GetInt32(*m_msg, field);
 		return true;
 	}
 
@@ -115,7 +115,7 @@ public:
 		CHECK_FIELD_TYPE(INT32);
 		CHECK_FIELD_NOT_REPEATED();
 
-		msg->GetReflection()->SetInt32(msg, field, value);
+		m_msg->GetReflection()->SetInt32(m_msg, field, value);
 		return true;
 	}
 
@@ -125,7 +125,7 @@ public:
 		CHECK_FIELD_REPEATED();
 		CHECK_REPEATED_ELEMENT(index);
 
-		*out = msg->GetReflection()->GetRepeatedInt32(*msg, field, index);
+		*out = m_msg->GetReflection()->GetRepeatedInt32(*m_msg, field, index);
 		return true;
 	}
 
@@ -135,7 +135,7 @@ public:
 		CHECK_FIELD_REPEATED();
 		CHECK_REPEATED_ELEMENT(index);
 
-		msg->GetReflection()->SetRepeatedInt32(msg, field, index, value);
+		m_msg->GetReflection()->SetRepeatedInt32(m_msg, field, index, value);
 		return true;
 	}
 
@@ -144,7 +144,7 @@ public:
 		CHECK_FIELD_TYPE(INT32);
 		CHECK_FIELD_REPEATED();
 
-		msg->GetReflection()->AddInt32(msg, field, value);
+		m_msg->GetReflection()->AddInt32(m_msg, field, value);
 		return true;
 	}
 
@@ -153,7 +153,7 @@ public:
 		CHECK_FIELD_TYPE(INT64);
 		CHECK_FIELD_NOT_REPEATED();
 
-		*out = msg->GetReflection()->GetInt64(*msg, field);
+		*out = m_msg->GetReflection()->GetInt64(*m_msg, field);
 		return true;
 	}
 
@@ -162,7 +162,7 @@ public:
 		CHECK_FIELD_TYPE(INT64);
 		CHECK_FIELD_NOT_REPEATED();
 
-		msg->GetReflection()->SetInt64(msg, field, value);
+		m_msg->GetReflection()->SetInt64(m_msg, field, value);
 		return true;
 	}
 
@@ -172,7 +172,7 @@ public:
 		CHECK_FIELD_REPEATED();
 		CHECK_REPEATED_ELEMENT(index);
 
-		*out = msg->GetReflection()->GetRepeatedInt64(*msg, field, index);
+		*out = m_msg->GetReflection()->GetRepeatedInt64(*m_msg, field, index);
 		return true;
 	}
 
@@ -182,7 +182,7 @@ public:
 		CHECK_FIELD_REPEATED();
 		CHECK_REPEATED_ELEMENT(index);
 
-		msg->GetReflection()->SetRepeatedInt64(msg, field, index, value);
+		m_msg->GetReflection()->SetRepeatedInt64(m_msg, field, index, value);
 		return true;
 	}
 
@@ -191,7 +191,7 @@ public:
 		CHECK_FIELD_TYPE(INT64);
 		CHECK_FIELD_REPEATED();
 
-		msg->GetReflection()->AddInt64(msg, field, value);
+		m_msg->GetReflection()->AddInt64(m_msg, field, value);
 		return true;
 	}
 
@@ -200,7 +200,7 @@ public:
 		CHECK_FIELD_TYPE(UINT32);
 		CHECK_FIELD_NOT_REPEATED();
 
-		*out = msg->GetReflection()->GetUInt32(*msg, field);
+		*out = m_msg->GetReflection()->GetUInt32(*m_msg, field);
 		return true;
 	}
 
@@ -209,7 +209,7 @@ public:
 		CHECK_FIELD_TYPE(UINT32);
 		CHECK_FIELD_NOT_REPEATED();
 
-		msg->GetReflection()->SetUInt32(msg, field, value);
+		m_msg->GetReflection()->SetUInt32(m_msg, field, value);
 		return true;
 	}
 
@@ -219,7 +219,7 @@ public:
 		CHECK_FIELD_REPEATED();
 		CHECK_REPEATED_ELEMENT(index);
 
-		*out = msg->GetReflection()->GetRepeatedUInt32(*msg, field, index);
+		*out = m_msg->GetReflection()->GetRepeatedUInt32(*m_msg, field, index);
 		return true;
 	}
 
@@ -229,7 +229,7 @@ public:
 		CHECK_FIELD_REPEATED();
 		CHECK_REPEATED_ELEMENT(index);
 
-		msg->GetReflection()->SetRepeatedUInt32(msg, field, index, value);
+		m_msg->GetReflection()->SetRepeatedUInt32(m_msg, field, index, value);
 		return true;
 	}
 
@@ -238,7 +238,7 @@ public:
 		CHECK_FIELD_TYPE(UINT32);
 		CHECK_FIELD_REPEATED();
 
-		msg->GetReflection()->AddUInt32(msg, field, value);
+		m_msg->GetReflection()->AddUInt32(m_msg, field, value);
 		return true;
 	}
 
@@ -247,7 +247,7 @@ public:
 		CHECK_FIELD_TYPE(UINT64);
 		CHECK_FIELD_NOT_REPEATED();
 
-		*out = msg->GetReflection()->GetUInt64(*msg, field);
+		*out = m_msg->GetReflection()->GetUInt64(*m_msg, field);
 		return true;
 	}
 
@@ -256,7 +256,7 @@ public:
 		CHECK_FIELD_TYPE(UINT64);
 		CHECK_FIELD_NOT_REPEATED();
 
-		msg->GetReflection()->SetUInt64(msg, field, value);
+		m_msg->GetReflection()->SetUInt64(m_msg, field, value);
 		return true;
 	}
 
@@ -266,7 +266,7 @@ public:
 		CHECK_FIELD_REPEATED();
 		CHECK_REPEATED_ELEMENT(index);
 
-		*out = msg->GetReflection()->GetRepeatedUInt64(*msg, field, index);
+		*out = m_msg->GetReflection()->GetRepeatedUInt64(*m_msg, field, index);
 		return true;
 	}
 
@@ -276,7 +276,7 @@ public:
 		CHECK_FIELD_REPEATED();
 		CHECK_REPEATED_ELEMENT(index);
 
-		msg->GetReflection()->SetRepeatedUInt64(msg, field, index, value);
+		m_msg->GetReflection()->SetRepeatedUInt64(m_msg, field, index, value);
 		return true;
 	}
 
@@ -285,7 +285,7 @@ public:
 		CHECK_FIELD_TYPE(UINT64);
 		CHECK_FIELD_REPEATED();
 
-		msg->GetReflection()->AddUInt32(msg, field, value);
+		m_msg->GetReflection()->AddUInt32(m_msg, field, value);
 		return true;
 	}
 
@@ -294,11 +294,11 @@ public:
 		CHECK_FIELD_TYPE3(INT32, UINT32, ENUM);
 		CHECK_FIELD_NOT_REPEATED();
 
-		if (fieldType == pb::FieldDescriptor::CPPTYPE_UINT32) *out = (int32) msg->GetReflection()->GetUInt32(*msg, field);
+		if (fieldType == pb::FieldDescriptor::CPPTYPE_UINT32) *out = (int32) m_msg->GetReflection()->GetUInt32(*m_msg, field);
 		else if (fieldType == pb::FieldDescriptor::CPPTYPE_INT32)
-			*out = msg->GetReflection()->GetInt32(*msg, field);
+			*out = m_msg->GetReflection()->GetInt32(*m_msg, field);
 		else// CPPTYPE_ENUM
-			*out = msg->GetReflection()->GetEnum(*msg, field)->number();
+			*out = m_msg->GetReflection()->GetEnum(*m_msg, field)->number();
 
 		return true;
 	}
@@ -308,9 +308,9 @@ public:
 		CHECK_FIELD_TYPE2(INT64, UINT64);
 		CHECK_FIELD_NOT_REPEATED();
 
-		if (fieldType == pb::FieldDescriptor::CPPTYPE_UINT64) *out = (int64) msg->GetReflection()->GetUInt64(*msg, field);
+		if (fieldType == pb::FieldDescriptor::CPPTYPE_UINT64) *out = (int64) m_msg->GetReflection()->GetUInt64(*m_msg, field);
 		else
-			*out = msg->GetReflection()->GetInt64(*msg, field);
+			*out = m_msg->GetReflection()->GetInt64(*m_msg, field);
 
 		return true;
 	}
@@ -321,15 +321,15 @@ public:
 		CHECK_FIELD_NOT_REPEATED();
 
 		if (fieldType == pb::FieldDescriptor::CPPTYPE_UINT32) {
-			msg->GetReflection()->SetUInt32(msg, field, (uint32) value);
+			m_msg->GetReflection()->SetUInt32(m_msg, field, (uint32) value);
 		} else if (fieldType == pb::FieldDescriptor::CPPTYPE_INT32) {
-			msg->GetReflection()->SetInt32(msg, field, value);
+			m_msg->GetReflection()->SetInt32(m_msg, field, value);
 		} else// CPPTYPE_ENUM
 		{
 			const pb::EnumValueDescriptor* pEnumValue = field->enum_type()->FindValueByNumber(value);
 			if (!pEnumValue) return false;
 
-			msg->GetReflection()->SetEnum(msg, field, pEnumValue);
+			m_msg->GetReflection()->SetEnum(m_msg, field, pEnumValue);
 		}
 
 		return true;
@@ -341,9 +341,9 @@ public:
 		CHECK_FIELD_NOT_REPEATED();
 
 		if (fieldType == pb::FieldDescriptor::CPPTYPE_UINT64) {
-			msg->GetReflection()->SetUInt64(msg, field, (uint64) value);
+			m_msg->GetReflection()->SetUInt64(m_msg, field, (uint64) value);
 		} else {
-			msg->GetReflection()->SetInt64(msg, field, value);
+			m_msg->GetReflection()->SetInt64(m_msg, field, value);
 		}
 
 		return true;
@@ -356,11 +356,11 @@ public:
 		CHECK_REPEATED_ELEMENT(index);
 
 		if (fieldType == pb::FieldDescriptor::CPPTYPE_UINT32)
-			*out = (int32) msg->GetReflection()->GetRepeatedUInt32(*msg, field, index);
+			*out = (int32) m_msg->GetReflection()->GetRepeatedUInt32(*m_msg, field, index);
 		else if (fieldType == pb::FieldDescriptor::CPPTYPE_INT32)
-			*out = msg->GetReflection()->GetRepeatedInt32(*msg, field, index);
+			*out = m_msg->GetReflection()->GetRepeatedInt32(*m_msg, field, index);
 		else// CPPTYPE_ENUM
-			*out = msg->GetReflection()->GetRepeatedEnum(*msg, field, index)->number();
+			*out = m_msg->GetReflection()->GetRepeatedEnum(*m_msg, field, index)->number();
 
 		return true;
 	}
@@ -372,9 +372,9 @@ public:
 		CHECK_REPEATED_ELEMENT(index);
 
 		if (fieldType == pb::FieldDescriptor::CPPTYPE_UINT64)
-			*out = (int64) msg->GetReflection()->GetRepeatedUInt64(*msg, field, index);
+			*out = (int64) m_msg->GetReflection()->GetRepeatedUInt64(*m_msg, field, index);
 		else
-			*out = msg->GetReflection()->GetRepeatedInt64(*msg, field, index);
+			*out = m_msg->GetReflection()->GetRepeatedInt64(*m_msg, field, index);
 
 		return true;
 	}
@@ -386,15 +386,15 @@ public:
 		CHECK_REPEATED_ELEMENT(index);
 
 		if (fieldType == pb::FieldDescriptor::CPPTYPE_UINT32) {
-			msg->GetReflection()->SetRepeatedUInt32(msg, field, index, (uint32) value);
+			m_msg->GetReflection()->SetRepeatedUInt32(m_msg, field, index, (uint32) value);
 		} else if (fieldType == pb::FieldDescriptor::CPPTYPE_INT32) {
-			msg->GetReflection()->SetRepeatedInt32(msg, field, index, value);
+			m_msg->GetReflection()->SetRepeatedInt32(m_msg, field, index, value);
 		} else// CPPTYPE_ENUM
 		{
 			const pb::EnumValueDescriptor* pEnumValue = field->enum_type()->FindValueByNumber(value);
 			if (!pEnumValue) return false;
 
-			msg->GetReflection()->SetRepeatedEnum(msg, field, index, pEnumValue);
+			m_msg->GetReflection()->SetRepeatedEnum(m_msg, field, index, pEnumValue);
 		}
 
 		return true;
@@ -407,9 +407,9 @@ public:
 		CHECK_REPEATED_ELEMENT(index);
 
 		if (fieldType == pb::FieldDescriptor::CPPTYPE_UINT64) {
-			msg->GetReflection()->SetRepeatedUInt64(msg, field, index, (uint64) value);
+			m_msg->GetReflection()->SetRepeatedUInt64(m_msg, field, index, (uint64) value);
 		} else {
-			msg->GetReflection()->SetRepeatedInt64(msg, field, index, value);
+			m_msg->GetReflection()->SetRepeatedInt64(m_msg, field, index, value);
 		}
 
 		return true;
@@ -421,15 +421,15 @@ public:
 		CHECK_FIELD_REPEATED();
 
 		if (fieldType == pb::FieldDescriptor::CPPTYPE_UINT32) {
-			msg->GetReflection()->AddUInt32(msg, field, (uint32) value);
+			m_msg->GetReflection()->AddUInt32(m_msg, field, (uint32) value);
 		} else if (fieldType == pb::FieldDescriptor::CPPTYPE_INT32) {
-			msg->GetReflection()->AddInt32(msg, field, value);
+			m_msg->GetReflection()->AddInt32(m_msg, field, value);
 		} else// CPPTYPE_ENUM
 		{
 			const pb::EnumValueDescriptor* pEnumValue = field->enum_type()->FindValueByNumber(value);
 			if (!pEnumValue) return false;
 
-			msg->GetReflection()->AddEnum(msg, field, pEnumValue);
+			m_msg->GetReflection()->AddEnum(m_msg, field, pEnumValue);
 		}
 
 		return true;
@@ -441,9 +441,9 @@ public:
 		CHECK_FIELD_REPEATED();
 
 		if (fieldType == pb::FieldDescriptor::CPPTYPE_UINT64) {
-			msg->GetReflection()->AddUInt64(msg, field, (uint64) value);
+			m_msg->GetReflection()->AddUInt64(m_msg, field, (uint64) value);
 		} else {
-			msg->GetReflection()->AddInt64(msg, field, value);
+			m_msg->GetReflection()->AddInt64(m_msg, field, value);
 		}
 
 		return true;
@@ -454,7 +454,7 @@ public:
 		CHECK_FIELD_TYPE(BOOL);
 		CHECK_FIELD_NOT_REPEATED();
 
-		*out = msg->GetReflection()->GetBool(*msg, field);
+		*out = m_msg->GetReflection()->GetBool(*m_msg, field);
 		return true;
 	}
 
@@ -463,7 +463,7 @@ public:
 		CHECK_FIELD_TYPE(BOOL);
 		CHECK_FIELD_NOT_REPEATED();
 
-		msg->GetReflection()->SetBool(msg, field, value);
+		m_msg->GetReflection()->SetBool(m_msg, field, value);
 		return true;
 	}
 
@@ -473,7 +473,7 @@ public:
 		CHECK_FIELD_REPEATED();
 		CHECK_REPEATED_ELEMENT(index);
 
-		*out = msg->GetReflection()->GetRepeatedBool(*msg, field, index);
+		*out = m_msg->GetReflection()->GetRepeatedBool(*m_msg, field, index);
 		return true;
 	}
 
@@ -483,7 +483,7 @@ public:
 		CHECK_FIELD_REPEATED();
 		CHECK_REPEATED_ELEMENT(index);
 
-		msg->GetReflection()->SetRepeatedBool(msg, field, index, value);
+		m_msg->GetReflection()->SetRepeatedBool(m_msg, field, index, value);
 		return true;
 	}
 
@@ -492,7 +492,7 @@ public:
 		CHECK_FIELD_TYPE(BOOL);
 		CHECK_FIELD_REPEATED();
 
-		msg->GetReflection()->AddBool(msg, field, value);
+		m_msg->GetReflection()->AddBool(m_msg, field, value);
 		return true;
 	}
 
@@ -501,7 +501,7 @@ public:
 		CHECK_FIELD_TYPE(FLOAT);
 		CHECK_FIELD_NOT_REPEATED();
 
-		*out = msg->GetReflection()->GetFloat(*msg, field);
+		*out = m_msg->GetReflection()->GetFloat(*m_msg, field);
 		return true;
 	}
 
@@ -510,7 +510,7 @@ public:
 		CHECK_FIELD_TYPE(FLOAT);
 		CHECK_FIELD_NOT_REPEATED();
 
-		msg->GetReflection()->SetFloat(msg, field, value);
+		m_msg->GetReflection()->SetFloat(m_msg, field, value);
 		return true;
 	}
 
@@ -520,7 +520,7 @@ public:
 		CHECK_FIELD_REPEATED();
 		CHECK_REPEATED_ELEMENT(index);
 
-		*out = msg->GetReflection()->GetRepeatedFloat(*msg, field, index);
+		*out = m_msg->GetReflection()->GetRepeatedFloat(*m_msg, field, index);
 		return true;
 	}
 
@@ -530,7 +530,7 @@ public:
 		CHECK_FIELD_REPEATED();
 		CHECK_REPEATED_ELEMENT(index);
 
-		msg->GetReflection()->SetRepeatedFloat(msg, field, index, value);
+		m_msg->GetReflection()->SetRepeatedFloat(m_msg, field, index, value);
 		return true;
 	}
 
@@ -539,7 +539,7 @@ public:
 		CHECK_FIELD_TYPE(FLOAT);
 		CHECK_FIELD_REPEATED();
 
-		msg->GetReflection()->AddFloat(msg, field, value);
+		m_msg->GetReflection()->AddFloat(m_msg, field, value);
 		return true;
 	}
 
@@ -548,7 +548,7 @@ public:
 		CHECK_FIELD_TYPE(DOUBLE);
 		CHECK_FIELD_NOT_REPEATED();
 
-		*out = msg->GetReflection()->GetDouble(*msg, field);
+		*out = m_msg->GetReflection()->GetDouble(*m_msg, field);
 		return true;
 	}
 
@@ -557,7 +557,7 @@ public:
 		CHECK_FIELD_TYPE(DOUBLE);
 		CHECK_FIELD_NOT_REPEATED();
 
-		msg->GetReflection()->SetDouble(msg, field, value);
+		m_msg->GetReflection()->SetDouble(m_msg, field, value);
 		return true;
 	}
 
@@ -567,7 +567,7 @@ public:
 		CHECK_FIELD_REPEATED();
 		CHECK_REPEATED_ELEMENT(index);
 
-		*out = msg->GetReflection()->GetRepeatedDouble(*msg, field, index);
+		*out = m_msg->GetReflection()->GetRepeatedDouble(*m_msg, field, index);
 		return true;
 	}
 
@@ -577,7 +577,7 @@ public:
 		CHECK_FIELD_REPEATED();
 		CHECK_REPEATED_ELEMENT(index);
 
-		msg->GetReflection()->SetRepeatedDouble(msg, field, index, value);
+		m_msg->GetReflection()->SetRepeatedDouble(m_msg, field, index, value);
 		return true;
 	}
 
@@ -586,7 +586,7 @@ public:
 		CHECK_FIELD_TYPE(DOUBLE);
 		CHECK_FIELD_REPEATED();
 
-		msg->GetReflection()->AddDouble(msg, field, value);
+		m_msg->GetReflection()->AddDouble(m_msg, field, value);
 		return true;
 	}
 
@@ -595,9 +595,9 @@ public:
 		CHECK_FIELD_TYPE2(FLOAT, DOUBLE);
 		CHECK_FIELD_NOT_REPEATED();
 
-		if (fieldType == pb::FieldDescriptor::CPPTYPE_DOUBLE) *out = (float) msg->GetReflection()->GetDouble(*msg, field);
+		if (fieldType == pb::FieldDescriptor::CPPTYPE_DOUBLE) *out = (float) m_msg->GetReflection()->GetDouble(*m_msg, field);
 		else
-			*out = msg->GetReflection()->GetFloat(*msg, field);
+			*out = m_msg->GetReflection()->GetFloat(*m_msg, field);
 
 		return true;
 	}
@@ -607,9 +607,9 @@ public:
 		CHECK_FIELD_TYPE2(FLOAT, DOUBLE);
 		CHECK_FIELD_NOT_REPEATED();
 
-		if (fieldType == pb::FieldDescriptor::CPPTYPE_DOUBLE) msg->GetReflection()->SetDouble(msg, field, (double) value);
+		if (fieldType == pb::FieldDescriptor::CPPTYPE_DOUBLE) m_msg->GetReflection()->SetDouble(m_msg, field, (double) value);
 		else
-			msg->GetReflection()->SetFloat(msg, field, value);
+			m_msg->GetReflection()->SetFloat(m_msg, field, value);
 
 		return true;
 	}
@@ -621,9 +621,9 @@ public:
 		CHECK_REPEATED_ELEMENT(index);
 
 		if (fieldType == pb::FieldDescriptor::CPPTYPE_DOUBLE)
-			*out = (float) msg->GetReflection()->GetRepeatedDouble(*msg, field, index);
+			*out = (float) m_msg->GetReflection()->GetRepeatedDouble(*m_msg, field, index);
 		else
-			*out = msg->GetReflection()->GetRepeatedFloat(*msg, field, index);
+			*out = m_msg->GetReflection()->GetRepeatedFloat(*m_msg, field, index);
 
 		return true;
 	}
@@ -635,9 +635,9 @@ public:
 		CHECK_REPEATED_ELEMENT(index);
 
 		if (fieldType == pb::FieldDescriptor::CPPTYPE_DOUBLE)
-			msg->GetReflection()->SetRepeatedDouble(msg, field, index, (double) value);
+			m_msg->GetReflection()->SetRepeatedDouble(m_msg, field, index, (double) value);
 		else
-			msg->GetReflection()->SetRepeatedFloat(msg, field, index, value);
+			m_msg->GetReflection()->SetRepeatedFloat(m_msg, field, index, value);
 
 		return true;
 	}
@@ -647,9 +647,9 @@ public:
 		CHECK_FIELD_TYPE2(FLOAT, DOUBLE);
 		CHECK_FIELD_REPEATED();
 
-		if (fieldType == pb::FieldDescriptor::CPPTYPE_DOUBLE) msg->GetReflection()->AddDouble(msg, field, (double) value);
+		if (fieldType == pb::FieldDescriptor::CPPTYPE_DOUBLE) m_msg->GetReflection()->AddDouble(m_msg, field, (double) value);
 		else
-			msg->GetReflection()->AddFloat(msg, field, value);
+			m_msg->GetReflection()->AddFloat(m_msg, field, value);
 
 		return true;
 	}
@@ -659,7 +659,7 @@ public:
 		CHECK_FIELD_TYPE(STRING);
 		CHECK_FIELD_NOT_REPEATED();
 
-		out = msg->GetReflection()->GetString(*msg, field);
+		out = m_msg->GetReflection()->GetString(*m_msg, field);
 
 		return true;
 	}
@@ -669,7 +669,7 @@ public:
 		CHECK_FIELD_TYPE(STRING);
 		CHECK_FIELD_NOT_REPEATED();
 
-		msg->GetReflection()->SetString(msg, field, std::move(value));
+		m_msg->GetReflection()->SetString(m_msg, field, std::move(value));
 		return true;
 	}
 
@@ -679,7 +679,7 @@ public:
 		CHECK_FIELD_REPEATED();
 		CHECK_REPEATED_ELEMENT(index);
 
-		out = msg->GetReflection()->GetRepeatedString(*msg, field, index);
+		out = m_msg->GetReflection()->GetRepeatedString(*m_msg, field, index);
 
 		return true;
 	}
@@ -690,7 +690,7 @@ public:
 		CHECK_FIELD_REPEATED();
 		CHECK_REPEATED_ELEMENT(index);
 
-		msg->GetReflection()->SetRepeatedString(msg, field, index, std::move(value));
+		m_msg->GetReflection()->SetRepeatedString(m_msg, field, index, std::move(value));
 
 		return true;
 	}
@@ -700,7 +700,7 @@ public:
 		CHECK_FIELD_TYPE(STRING);
 		CHECK_FIELD_REPEATED();
 
-		msg->GetReflection()->AddString(msg, field, value);
+		m_msg->GetReflection()->AddString(m_msg, field, value);
 		return true;
 	}
 
@@ -709,7 +709,7 @@ public:
 		CHECK_FIELD_TYPE(MESSAGE);
 		CHECK_FIELD_NOT_REPEATED();
 
-		auto msgRGBA = *(CMsgRGBA*) msg->GetReflection()->MutableMessage(msg, field);
+		auto msgRGBA = *(CMsgRGBA*) m_msg->GetReflection()->MutableMessage(m_msg, field);
 		out->SetColor(msgRGBA.r(), msgRGBA.g(), msgRGBA.b(), msgRGBA.a());
 
 		return true;
@@ -720,7 +720,7 @@ public:
 		CHECK_FIELD_TYPE(MESSAGE);
 		CHECK_FIELD_NOT_REPEATED();
 
-		CMsgRGBA* msgRGBA = (CMsgRGBA*) msg->GetReflection()->MutableMessage(msg, field);
+		CMsgRGBA* msgRGBA = (CMsgRGBA*) m_msg->GetReflection()->MutableMessage(m_msg, field);
 		msgRGBA->set_r(value.r());
 		msgRGBA->set_g(value.g());
 		msgRGBA->set_b(value.b());
@@ -735,7 +735,7 @@ public:
 		CHECK_FIELD_REPEATED();
 		CHECK_REPEATED_ELEMENT(index);
 
-		const CMsgRGBA& msgRGBA = (const CMsgRGBA&) msg->GetReflection()->GetRepeatedMessage(*msg, field, index);
+		const CMsgRGBA& msgRGBA = (const CMsgRGBA&) m_msg->GetReflection()->GetRepeatedMessage(*m_msg, field, index);
 		out->SetColor(msgRGBA.r(), msgRGBA.g(), msgRGBA.b(), msgRGBA.a());
 
 		return true;
@@ -747,7 +747,7 @@ public:
 		CHECK_FIELD_REPEATED();
 		CHECK_REPEATED_ELEMENT(index);
 
-		CMsgRGBA* msgRGBA = (CMsgRGBA*) msg->GetReflection()->MutableRepeatedMessage(msg, field, index);
+		CMsgRGBA* msgRGBA = (CMsgRGBA*) m_msg->GetReflection()->MutableRepeatedMessage(m_msg, field, index);
 		msgRGBA->set_r(value.r());
 		msgRGBA->set_g(value.g());
 		msgRGBA->set_b(value.b());
@@ -761,7 +761,7 @@ public:
 		CHECK_FIELD_TYPE(MESSAGE);
 		CHECK_FIELD_REPEATED();
 
-		CMsgRGBA* msgRGBA = (CMsgRGBA*) msg->GetReflection()->AddMessage(msg, field);
+		CMsgRGBA* msgRGBA = (CMsgRGBA*) m_msg->GetReflection()->AddMessage(m_msg, field);
 		msgRGBA->set_r(value.r());
 		msgRGBA->set_g(value.g());
 		msgRGBA->set_b(value.b());
@@ -775,7 +775,7 @@ public:
 		CHECK_FIELD_TYPE(MESSAGE);
 		CHECK_FIELD_NOT_REPEATED();
 
-		auto msgVec2d = *(CMsgVector2D*) msg->GetReflection()->MutableMessage(msg, field);
+		auto msgVec2d = *(CMsgVector2D*) m_msg->GetReflection()->MutableMessage(m_msg, field);
 		out->Init(msgVec2d.x(), msgVec2d.y());
 
 		return true;
@@ -786,7 +786,7 @@ public:
 		CHECK_FIELD_TYPE(MESSAGE);
 		CHECK_FIELD_NOT_REPEATED();
 
-		CMsgVector2D* msgVec2d = (CMsgVector2D*) msg->GetReflection()->MutableMessage(msg, field);
+		CMsgVector2D* msgVec2d = (CMsgVector2D*) m_msg->GetReflection()->MutableMessage(m_msg, field);
 		msgVec2d->set_x(vec.x);
 		msgVec2d->set_y(vec.y);
 
@@ -799,7 +799,7 @@ public:
 		CHECK_FIELD_REPEATED();
 		CHECK_REPEATED_ELEMENT(index);
 
-		const CMsgVector2D& msgVec2d = (const CMsgVector2D&) msg->GetReflection()->GetRepeatedMessage(*msg, field, index);
+		const CMsgVector2D& msgVec2d = (const CMsgVector2D&) m_msg->GetReflection()->GetRepeatedMessage(*m_msg, field, index);
 		out->Init(msgVec2d.x(), msgVec2d.y());
 
 		return true;
@@ -811,7 +811,7 @@ public:
 		CHECK_FIELD_REPEATED();
 		CHECK_REPEATED_ELEMENT(index);
 
-		CMsgVector2D* msgVec2d = (CMsgVector2D*) msg->GetReflection()->MutableRepeatedMessage(msg, field, index);
+		CMsgVector2D* msgVec2d = (CMsgVector2D*) m_msg->GetReflection()->MutableRepeatedMessage(m_msg, field, index);
 		msgVec2d->set_x(vec.x);
 		msgVec2d->set_y(vec.y);
 
@@ -823,7 +823,7 @@ public:
 		CHECK_FIELD_TYPE(MESSAGE);
 		CHECK_FIELD_REPEATED();
 
-		CMsgVector2D* msgVec2d = (CMsgVector2D*) msg->GetReflection()->AddMessage(msg, field);
+		CMsgVector2D* msgVec2d = (CMsgVector2D*) m_msg->GetReflection()->AddMessage(m_msg, field);
 		msgVec2d->set_x(vec.x);
 		msgVec2d->set_y(vec.y);
 
@@ -835,7 +835,7 @@ public:
 		CHECK_FIELD_TYPE(MESSAGE);
 		CHECK_FIELD_NOT_REPEATED();
 
-		auto msgVec = *(CMsgVector*) msg->GetReflection()->MutableMessage(msg, field);
+		auto msgVec = *(CMsgVector*) m_msg->GetReflection()->MutableMessage(m_msg, field);
 		out->Init(msgVec.x(), msgVec.y(), msgVec.z());
 
 		return true;
@@ -846,7 +846,7 @@ public:
 		CHECK_FIELD_TYPE(MESSAGE);
 		CHECK_FIELD_NOT_REPEATED();
 
-		CMsgVector* msgVec = (CMsgVector*) msg->GetReflection()->MutableMessage(msg, field);
+		CMsgVector* msgVec = (CMsgVector*) m_msg->GetReflection()->MutableMessage(m_msg, field);
 		msgVec->set_x(vec.x);
 		msgVec->set_y(vec.y);
 		msgVec->set_z(vec.z);
@@ -860,7 +860,7 @@ public:
 		CHECK_FIELD_REPEATED();
 		CHECK_REPEATED_ELEMENT(index);
 
-		const CMsgVector& msgVec = (const CMsgVector&) msg->GetReflection()->GetRepeatedMessage(*msg, field, index);
+		const CMsgVector& msgVec = (const CMsgVector&) m_msg->GetReflection()->GetRepeatedMessage(*m_msg, field, index);
 		out->Init(msgVec.x(), msgVec.y(), msgVec.z());
 
 		return true;
@@ -872,7 +872,7 @@ public:
 		CHECK_FIELD_REPEATED();
 		CHECK_REPEATED_ELEMENT(index);
 
-		CMsgVector* msgVec = (CMsgVector*) msg->GetReflection()->MutableRepeatedMessage(msg, field, index);
+		CMsgVector* msgVec = (CMsgVector*) m_msg->GetReflection()->MutableRepeatedMessage(m_msg, field, index);
 		msgVec->set_x(vec.x);
 		msgVec->set_y(vec.y);
 		msgVec->set_z(vec.z);
@@ -885,7 +885,7 @@ public:
 		CHECK_FIELD_TYPE(MESSAGE);
 		CHECK_FIELD_REPEATED();
 
-		CMsgVector* msgVec = (CMsgVector*) msg->GetReflection()->AddMessage(msg, field);
+		CMsgVector* msgVec = (CMsgVector*) m_msg->GetReflection()->AddMessage(m_msg, field);
 		msgVec->set_x(vec.x);
 		msgVec->set_y(vec.y);
 		msgVec->set_z(vec.z);
@@ -898,7 +898,7 @@ public:
 		CHECK_FIELD_TYPE(MESSAGE);
 		CHECK_FIELD_NOT_REPEATED();
 
-		auto msgAng = *(CMsgQAngle*) msg->GetReflection()->MutableMessage(msg, field);
+		auto msgAng = *(CMsgQAngle*) m_msg->GetReflection()->MutableMessage(m_msg, field);
 		out->Init(msgAng.x(), msgAng.y(), msgAng.z());
 
 		return true;
@@ -909,7 +909,7 @@ public:
 		CHECK_FIELD_TYPE(MESSAGE);
 		CHECK_FIELD_NOT_REPEATED();
 
-		CMsgQAngle* msgAng = (CMsgQAngle*) msg->GetReflection()->MutableMessage(msg, field);
+		CMsgQAngle* msgAng = (CMsgQAngle*) m_msg->GetReflection()->MutableMessage(m_msg, field);
 		msgAng->set_x(vec.x);
 		msgAng->set_y(vec.y);
 		msgAng->set_z(vec.z);
@@ -923,7 +923,7 @@ public:
 		CHECK_FIELD_REPEATED();
 		CHECK_REPEATED_ELEMENT(index);
 
-		const CMsgQAngle& msgAng = (const CMsgQAngle&) msg->GetReflection()->GetRepeatedMessage(*msg, field, index);
+		const CMsgQAngle& msgAng = (const CMsgQAngle&) m_msg->GetReflection()->GetRepeatedMessage(*m_msg, field, index);
 		out->Init(msgAng.x(), msgAng.y(), msgAng.z());
 
 		return true;
@@ -935,7 +935,7 @@ public:
 		CHECK_FIELD_REPEATED();
 		CHECK_REPEATED_ELEMENT(index);
 
-		CMsgQAngle* msgAng = (CMsgQAngle*) msg->GetReflection()->MutableRepeatedMessage(msg, field, index);
+		CMsgQAngle* msgAng = (CMsgQAngle*) m_msg->GetReflection()->MutableRepeatedMessage(m_msg, field, index);
 		msgAng->set_x(vec.x);
 		msgAng->set_y(vec.y);
 		msgAng->set_z(vec.z);
@@ -948,7 +948,7 @@ public:
 		CHECK_FIELD_TYPE(MESSAGE);
 		CHECK_FIELD_REPEATED();
 
-		CMsgQAngle* msgAng = (CMsgQAngle*) msg->GetReflection()->AddMessage(msg, field);
+		CMsgQAngle* msgAng = (CMsgQAngle*) m_msg->GetReflection()->AddMessage(m_msg, field);
 		msgAng->set_x(vec.x);
 		msgAng->set_y(vec.y);
 		msgAng->set_z(vec.z);
@@ -961,7 +961,7 @@ public:
 		CHECK_FIELD_TYPE(MESSAGE);
 		CHECK_FIELD_NOT_REPEATED();
 
-		*message = msg->GetReflection()->MutableMessage(msg, field);
+		*message = m_msg->GetReflection()->MutableMessage(m_msg, field);
 
 		return true;
 	}
@@ -972,7 +972,7 @@ public:
 		CHECK_FIELD_REPEATED();
 		CHECK_REPEATED_ELEMENT(index);
 
-		const pb::Message* m = &msg->GetReflection()->GetRepeatedMessage(*msg, field, index);
+		const pb::Message* m = &m_msg->GetReflection()->GetRepeatedMessage(*m_msg, field, index);
 		*message = m;
 
 		return true;
@@ -983,18 +983,18 @@ public:
 		CHECK_FIELD_TYPE(MESSAGE);
 		CHECK_FIELD_REPEATED();
 
-		*message = msg->GetReflection()->AddMessage(msg, field);
+		*message = m_msg->GetReflection()->AddMessage(m_msg, field);
 
 		return true;
 	}
 
 	int GetRepeatedFieldCount(const char* pszFieldName) {
-		const pb::FieldDescriptor* field = msg->GetDescriptor()->FindFieldByName(pszFieldName);
+		const pb::FieldDescriptor* field = m_msg->GetDescriptor()->FindFieldByName(pszFieldName);
 		if (!field) return -1;
 
 		if (field->label() != pb::FieldDescriptor::LABEL_REPEATED) return -1;
 
-		return msg->GetReflection()->FieldSize(*msg, field);
+		return m_msg->GetReflection()->FieldSize(*m_msg, field);
 	}
 
 	bool RemoveRepeatedFieldValue(const char* pszFieldName, int index) {
@@ -1003,15 +1003,15 @@ public:
 		CHECK_REPEATED_ELEMENT(index);
 
 		// Protobuf guarantees that repeated field values will stay in order and so must we.
-		const pb::Reflection* pReflection = msg->GetReflection();
+		const pb::Reflection* pReflection = m_msg->GetReflection();
 		for (int i = index; i < elemCount - 1; ++i) {
-			pReflection->SwapElements(msg, field, i, i + 1);
+			pReflection->SwapElements(m_msg, field, i, i + 1);
 		}
 
-		pReflection->RemoveLast(msg, field);
+		pReflection->RemoveLast(m_msg, field);
 
 		return true;
 	}
 
-	std::string GetDebugString() { return msg->DebugString(); }
+	std::string GetDebugString() { return m_msg->DebugString(); }
 };

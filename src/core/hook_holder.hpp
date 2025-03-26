@@ -120,7 +120,7 @@ public:
 
 private:
 	std::unordered_map<plg::string, std::unique_ptr<poly::CHook>> m_dhooks;
-	std::unordered_map<std::pair<void*, void*>, std::unique_ptr<poly::CHook>, utils::PairHash<void*, void*>> m_vhooks;
+	std::unordered_map<std::pair<void*, void*>, std::unique_ptr<poly::CHook>, utils::pair_hash<void*, void*>> m_vhooks;
 };
 
 extern CHookHolder g_PH;

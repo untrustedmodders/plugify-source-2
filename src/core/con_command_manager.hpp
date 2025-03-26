@@ -47,7 +47,7 @@ public:
 
 private:
 	//std::vector<ConCommandInfo*> m_cmdList;
-	std::map<plg::string, CommandInfoPtr, utils::CaseInsensitiveComparator> m_cmdLookup;
+	std::map<plg::string, CommandInfoPtr, utils::case_ins_comparator> m_cmdLookup;
 	std::array<CListenerManager<CommandListenerCallback>, 2> m_globalCallbacks;
 	std::mutex m_registerCmdLock;
 };

@@ -4,13 +4,13 @@
 
 using namespace std::string_view_literals;
 
-CCoreConfig::CCoreConfig(plg::vector<plg::string> paths) : m_szPaths(std::move(paths)) {
+CCoreConfig::CCoreConfig(plg::vector<plg::string> paths) : m_paths(std::move(paths)) {
 }
 
 bool CCoreConfig::Initialize() {
 	std::vector<std::string_view> paths;
-	paths.reserve(m_szPaths.size());
-	for (const auto& path : m_szPaths) {
+	paths.reserve(m_paths.size());
+	for (const auto& path : m_paths) {
 		paths.emplace_back(path);
 	}
 	auto config = ReadConfigs(paths);
@@ -48,7 +48,7 @@ bool CCoreConfig::Initialize() {
 }
 
 const plg::vector<plg::string>& CCoreConfig::GetPaths() const {
-	return m_szPaths;
+	return m_paths;
 }
 
 bool CCoreConfig::IsTriggerInternal(const std::vector<std::string>& triggers, std::string_view message) {

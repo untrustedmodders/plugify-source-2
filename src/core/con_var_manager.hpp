@@ -157,7 +157,7 @@ public:
 	static void ChangeGlobal(ConVarRefAbstract* ref, CSplitScreenSlot nSlot, const char* pNewValue, const char* pOldValue);
 
 private:
-	std::map<plg::string, ConVarInfoPtr, utils::CaseInsensitiveComparator> m_cnvLookup;
+	std::map<plg::string, ConVarInfoPtr, utils::case_ins_comparator> m_cnvLookup;
 	std::map<const ConVarRef*, const ConVarInfo*> m_cnvCache;
 	CListenerManager<ConVarChangeListenerCallback> m_global;
 	std::mutex m_registerCnvLock;

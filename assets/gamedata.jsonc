@@ -2,10 +2,15 @@
   "$schema": "https://raw.githubusercontent.com/untrustedmodders/plugify-source-2/refs/heads/main/schemas/gamedata.schema.json",
   "csgo": {
     "Signatures": {
-      // PreloadLibrary signature for engine
+      // PreloadLibrary signature for engine2
       "PreloadLibrary": {
-        "library": "engine",
+        "library": "engine2",
         "win64": "48 89 4C 24 08 53 56 57 48 83 EC 60"
+      },
+      "AppSystemCreateInterfaceFn": {
+        "library": "engine2",
+        "win64": "40 53 48 83 EC 20 48 8B DA 48 8B D1 48 8B 0D E5 C0 28 00",
+        "linuxsteamrt64": "55 48 89 E5 41 55 41 54 49 89 FC 53 48 8D 7D DE"
       },
       // String: "CCSPlayerPawnBase::SwitchTeam", just keep in mind this is actually CCSPlayerController::SwitchTeam
       "CCSPlayerController_SwitchTeam": {
@@ -303,6 +308,20 @@
         "linuxsteamrt64": [
           {
             "read_offs32": 106
+          }
+        ]
+      },
+      "&s_pCurrentAppSystem": {
+        // Can be found inside Source2Main
+        "signature": "AppSystemCreateInterfaceFn",
+        "win64": [
+          {
+            "read_offs32": 15
+          }
+        ],
+        "linuxsteamrt64": [
+          {
+            "read_offs32": 29
           }
         ]
       }
