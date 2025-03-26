@@ -143,6 +143,9 @@
         GetClientConVarValue;
         SetFakeClientConVarValue;
 
+        FindModule;
+        FindInterface;
+        QueryInterface;
         GetGameDirectory;
         GetCurrentMap;
         IsMapValid;
@@ -345,6 +348,7 @@
 
         CreateTimer;
         KillsTimer;
+        RescheduleTimer;
         GetTickInterval;
         GetTickedTime;
 

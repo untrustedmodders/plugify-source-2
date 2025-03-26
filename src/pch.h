@@ -12,6 +12,7 @@
 #include <memory>
 #include <optional>
 #include <span>
+#include <set>
 #include <mutex>
 #include <atomic>
 #include <sstream>
@@ -26,4 +27,3 @@ namespace fs = std::filesystem;
 
 #include "core/globals.hpp"
 #include "core/logger.hpp"
-#include "core/handle.hpp"

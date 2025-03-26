@@ -10,20 +10,20 @@ PLUGIFY_WARN_IGNORE(4190)
 #endif
 
 /**
- * @brief Creates a new timer that executes a callback function at specified intervals.
+ * @brief Creates a new timer that executes a callback function at specified delays.
  *
  * This function initializes a timer that will call the provided callback function
- * after the specified interval in seconds. The timer can be configured with various flags
+ * after the specified delay in seconds. The timer can be configured with various flags
  * to control its behavior.
  *
- * @param interval The time interval in seconds between each callback execution.
+ * @param delay The time delay in seconds between each callback execution.
  * @param callback The function to be called when the timer expires.
  * @param flags Flags that modify the behavior of the timer (e.g., no-map change, repeating).
  * @param userData An array intended to hold user-related data, allowing for elements of any type.
  * @return A handle of the newly created CTimer object, or -1 if the timer could not be created.
  */
-extern "C" PLUGIN_API Handle CreateTimer(double interval, TimerCallback callback, TimerFlag flags, const plg::vector<plg::any>& userData) {
-	return g_TimerSystem.CreateTimer(interval, callback, flags, userData);
+extern "C" PLUGIN_API uint32_t CreateTimer(double delay, TimerCallback callback, TimerFlag flags, const plg::vector<plg::any>& userData) {
+	return g_TimerSystem.CreateTimer(delay, callback, flags, userData);
 }
 
 /**
@@ -34,8 +34,21 @@ extern "C" PLUGIN_API Handle CreateTimer(double interval, TimerCallback callback
  *
  * @param handle A handle of the CTimer object to be stopped and removed.
  */
-extern "C" PLUGIN_API void KillsTimer(Handle handle) {
-	g_TimerSystem.KillTimer(handle);
+extern "C" PLUGIN_API void KillsTimer(uint32_t id) {
+	g_TimerSystem.KillTimer(id);
+}
+
+/**
+ * @brief Reschedules an existing timer with a new delay.
+ *
+ * This function changes the delay of the specified timer to the new value.
+ * The timer will continue to execute its callback function at the new delay.
+ *
+ * @param id A handle of the CTimer object to be rescheduled.
+ * @param newDelay The new delay in seconds between each callback execution.
+ */
+extern "C" PLUGIN_API void RescheduleTimer(uint32_t id, double newDelay) {
+	g_TimerSystem.RescheduleTimer(id, newDelay);
 }
 
 /**

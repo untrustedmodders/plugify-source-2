@@ -6,27 +6,6 @@ double universalTime = 0.0f;
 double timerNextThink = 0.0f;
 const double engineFixedTickInterval = 0.015625;
 
-CTimer::CTimer(double interval, double execTime, TimerCallback callback, TimerFlag flags, const plg::vector<plg::any>& userData)
-	: m_interval(interval), m_execTime(execTime), m_callback(callback), m_flags(flags), m_userData(userData) {
-}
-
-CTimer::~CTimer() = default;
-
-bool CTimer::KillMe(TimerFlag flag) {
-	if (!flag || m_flags & flag) {
-		if (m_killMe)
-			return true;
-
-		// If were executing, make sure it doesn't run again next time.
-		if (m_inExec) {
-			m_killMe = true;
-			return true;
-		}
-	}
-
-	return false;
-}
-
 void CTimerSystem::OnLevelShutdown() {
 	RemoveMapChangeTimers();
 
@@ -52,101 +31,81 @@ void CTimerSystem::OnGameFrame(bool simulating) {
 	}
 }
 
-double CTimerSystem::CalculateNextThink(double lastThinkTime, double interval) {
-	if (universalTime - lastThinkTime - interval <= 0.1) {
-		return lastThinkTime + interval;
+double CTimerSystem::CalculateNextThink(double lastThinkTime, double delay) {
+	if (universalTime - lastThinkTime - delay <= 0.1) {
+		return lastThinkTime + delay;
 	} else {
-		return universalTime + interval;
+		return universalTime + delay;
 	}
 }
 
 void CTimerSystem::RunFrame() {
-	for (auto it = m_onceOffTimers.begin(); it != m_onceOffTimers.end();) {
-		auto& [handle, timer] = *it;
-		if (universalTime >= timer.m_execTime) {
-			timer.m_inExec = true;
-			timer.m_callback(handle, timer.m_userData);
-			it = m_onceOffTimers.erase(it);
-			continue;
-		}
+	std::lock_guard<std::mutex> lock(m_createTimerLock);
 
-		++it;
-	}
+	while (!m_timers.empty()) {
+		auto it = m_timers.begin();
 
-	for (auto it = m_repeatTimers.begin(); it != m_repeatTimers.end();) {
-		auto& [handle, timer] = *it;
-		if (universalTime >= timer.m_execTime) {
-			timer.m_inExec = true;
-			timer.m_callback(handle, timer.m_userData);
+		if (universalTime >= it->executeTime) {
+			it->callback(it->id, it->userData);
 
-			if (timer.m_killMe) {
-				it = m_repeatTimers.erase(it);
-				continue;
+			if (it->flags & TimerFlag::Repeat) {
+				auto node = m_timers.extract(it);
+				node.value().executeTime = universalTime + node.value().delay;
+				m_timers.insert(std::move(node));
+			} else {
+				m_timers.erase(it); // Only erase non-repeating tasks
 			}
-
-			timer.m_inExec = false;
-			timer.m_execTime = CalculateNextThink(timer.m_execTime, timer.m_interval);
+		} else {
+			break;
 		}
-
-		++it;
 	}
 }
 
 void CTimerSystem::RemoveMapChangeTimers() {
-	for (auto it = m_onceOffTimers.begin(); it != m_onceOffTimers.end();) {
-		auto& timer = std::get<CTimer>(*it);
-		if (timer.KillMe(TimerFlag::NoMapChange)) {
-			it = m_onceOffTimers.erase(it);
-		} else {
-			++it;
-		}
-	}
-
-	for (auto it = m_repeatTimers.begin(); it != m_repeatTimers.end();) {
-		auto& timer = std::get<CTimer>(*it);
-		if (timer.KillMe(TimerFlag::NoMapChange)) {
-			it = m_repeatTimers.erase(it);
+	for (auto it = m_timers.begin(); it != m_timers.end();) {
+		if (it->flags & TimerFlag::NoMapChange) {
+			it = m_timers.erase(it);
 		} else {
 			++it;
 		}
 	}
 }
 
-Handle CTimerSystem::CreateTimer(double interval, TimerCallback callback, TimerFlag flags, const plg::vector<plg::any>& userData) {
-	double execTime = universalTime + interval;
-	Handle handle = CreateHandle();
-
+uint32_t CTimerSystem::CreateTimer(double delay, TimerCallback callback, TimerFlag flags, const plg::vector<plg::any>& userData) {
 	std::lock_guard<std::mutex> lock(m_createTimerLock);
-	if (flags & TimerFlag::Repeat) {
-		m_repeatTimers.emplace(handle, CTimer(interval, execTime, callback, flags, userData));
-	} else {
-		m_onceOffTimers.emplace(handle, CTimer(interval, execTime, callback, flags, userData));
-	}
-
-	return handle;
+	
+	uint32_t id = ++s_nextId;
+	m_timers.emplace(id, flags, universalTime + delay, delay, callback, userData);
+	return id;
 }
 
-void CTimerSystem::KillTimer(Handle handle) {
-	if (auto it = m_repeatTimers.find(handle); it != m_repeatTimers.end()) {
-		auto& timer = std::get<CTimer>(*it);
-		if (!timer.KillMe(TimerFlag::Default)) {
-			std::lock_guard<std::mutex> lock(m_createTimerLock);
-			m_repeatTimers.erase(it);
-		}
-		return;
-	}
+void CTimerSystem::KillTimer(uint32_t id) {
+	std::lock_guard<std::mutex> lock(m_createTimerLock);
 
-	if (auto it = m_onceOffTimers.find(handle); it != m_onceOffTimers.end()) {
-		auto& timer = std::get<CTimer>(*it);
-		if (!timer.KillMe(TimerFlag::Default)) {
-			std::lock_guard<std::mutex> lock(m_createTimerLock);
-			m_onceOffTimers.erase(it);
-		}
-		return;
-	}
+	auto it = std::find_if(m_timers.begin(), m_timers.end(), [id](const Timer& timer) {
+		return timer.id == id;
+	});
 
-	S2_LOGF(LS_WARNING, "KillTimer: Timer with handle %u was not found.", handle);
+	if (it != m_timers.end()) {
+		m_timers.erase(it);
+	}
 }
+
+void CTimerSystem::RescheduleTimer(uint32_t id, double newDelay) {
+	std::lock_guard<std::mutex> lock(m_createTimerLock);
+
+	auto it = std::find_if(m_timers.begin(), m_timers.end(), [id](const Timer& timer) {
+		return timer.id == id;
+	});
+
+	if (it != m_timers.end()) {
+		auto node = m_timers.extract(it);
+		node.value().delay = newDelay;
+		node.value().executeTime = universalTime + newDelay;
+		m_timers.insert(std::move(node));
+	}
+}
+
 
 double CTimerSystem::GetTickedTime() {
 	return universalTime;

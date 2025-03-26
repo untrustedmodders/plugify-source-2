@@ -46,7 +46,7 @@ namespace utils {
 	}
 
 
-	inline void SetConVarStringByHandle(Handle conVarHandle, const plg::string& value, bool replicate, bool notify) {
+	inline void SetConVarStringByHandle(uint64_t conVarHandle, const plg::string& value, bool replicate, bool notify) {
 		ConVarRef conVarRef(conVarHandle);
 	
 		if (!conVarRef.IsValidRef()) {
@@ -103,7 +103,7 @@ namespace utils {
 	}
 
 	template<typename T>
-	void SetConVarByHandle(Handle conVarHandle, const T& value, bool replicate, bool notify) {
+	void SetConVarByHandle(uint64_t conVarHandle, const T& value, bool replicate, bool notify) {
 		ConVarRef conVarRef(conVarHandle);
 
 		if (!conVarRef.IsValidRef()) {
@@ -143,7 +143,7 @@ namespace utils {
 	}
 
 	template<typename T>
-	T GetConVarValueByHandle(Handle conVarHandle) {
+	T GetConVarValueByHandle(uint64_t conVarHandle) {
 		ConVarRef conVarRef(conVarHandle);
 	
 		if (!conVarRef.IsValidRef()) {

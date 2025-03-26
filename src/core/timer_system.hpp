@@ -8,9 +8,9 @@ enum TimerFlag : int {
 
 class CTimer;
 
-using TimerCallback = void (*)(Handle, const plg::vector<plg::any>&);
+using TimerCallback = void (*)(uint32_t, const plg::vector<plg::any>&);
 
-class CTimer {
+/*class CTimer {
 	friend class CTimerSystem;
 
 public:
@@ -28,6 +28,20 @@ private:
 	bool m_inExec{};
 	bool m_killMe{};
 	plg::vector<plg::any> m_userData;
+};*/
+
+struct Timer {
+	uint32_t id;
+	TimerFlag flags;
+	double executeTime;
+	double delay;
+	TimerCallback callback;
+	plg::vector<plg::any> userData;
+
+	bool operator<(const Timer& other) const {
+		return executeTime < other.executeTime ||
+			   (executeTime == other.executeTime && id < other.id);
+	}
 };
 
 class CTimerSystem {
@@ -37,20 +51,21 @@ public:
 
 	void RunFrame();
 	void RemoveMapChangeTimers();
-	static double CalculateNextThink(double lastThinkTime, double interval);
+	static double CalculateNextThink(double lastThinkTime, double delay);
 	static double GetTickedTime();
 	static double GetTickedInterval();
 
-	Handle CreateTimer(double interval, TimerCallback callback, TimerFlag flags, const plg::vector<plg::any>&);
-	void KillTimer(Handle handle);
+	uint32_t CreateTimer(double delay, TimerCallback callback, TimerFlag flags, const plg::vector<plg::any>&);
+	void KillTimer(uint32_t id);
+	void RescheduleTimer(uint32_t id, double newDelay);
 
 private:
 	bool m_hasMapTicked{};
 	bool m_hasMapSimulated{};
 	float m_lastTickedTime{};
-	std::unordered_map<Handle, CTimer> m_onceOffTimers;
-	std::unordered_map<Handle, CTimer> m_repeatTimers;
+	std::set<Timer> m_timers;
 	std::mutex m_createTimerLock;
+	static inline uint32_t s_nextId = static_cast<uint32_t>(-1);
 };
 
 extern CTimerSystem g_TimerSystem;
