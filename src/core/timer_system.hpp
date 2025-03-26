@@ -2,37 +2,20 @@
 
 enum TimerFlag : int {
 	Default = 0,
+
 	Repeat = (1 << 0),
 	NoMapChange = (1 << 1)
 };
 
-class CTimer;
-
 using TimerCallback = void (*)(uint32_t, const plg::vector<plg::any>&);
-
-/*class CTimer {
-	friend class CTimerSystem;
-
-public:
-	CTimer() = delete;
-	CTimer(double interval, double execTime, TimerCallback callback, TimerFlag flags, const plg::vector<plg::any>& userData);
-	~CTimer();
-
-private:
-	bool KillMe(TimerFlag flag);
-
-	double m_interval;
-	double m_execTime;
-	TimerCallback m_callback;
-	TimerFlag m_flags;
-	bool m_inExec{};
-	bool m_killMe{};
-	plg::vector<plg::any> m_userData;
-};*/
 
 struct Timer {
 	uint32_t id;
-	TimerFlag flags;
+	bool repeat;
+	bool noMapChange;
+	mutable bool exec;
+	mutable bool kill;
+	//double createTime;
 	double executeTime;
 	double delay;
 	TimerCallback callback;

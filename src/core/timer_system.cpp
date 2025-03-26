@@ -40,21 +40,22 @@ double CTimerSystem::CalculateNextThink(double lastThinkTime, double delay) {
 }
 
 void CTimerSystem::RunFrame() {
-	std::lock_guard<std::mutex> lock(m_createTimerLock);
-
 	while (!m_timers.empty()) {
 		auto it = m_timers.begin();
 
 		if (universalTime >= it->executeTime) {
+			it->exec = true;
 			it->callback(it->id, it->userData);
+			it->exec = false;
 
-			if (it->flags & TimerFlag::Repeat) {
+			if (it->repeat && !it->kill) {
 				auto node = m_timers.extract(it);
 				node.value().executeTime = universalTime + node.value().delay;
 				m_timers.insert(std::move(node));
-			} else {
-				m_timers.erase(it); // Only erase non-repeating tasks
+				continue;
 			}
+
+			m_timers.erase(it); // Only erase non-repeating tasks
 		} else {
 			break;
 		}
@@ -62,8 +63,10 @@ void CTimerSystem::RunFrame() {
 }
 
 void CTimerSystem::RemoveMapChangeTimers() {
+	std::lock_guard<std::mutex> lock(m_createTimerLock);
+
 	for (auto it = m_timers.begin(); it != m_timers.end();) {
-		if (it->flags & TimerFlag::NoMapChange) {
+		if (it->noMapChange) {
 			it = m_timers.erase(it);
 		} else {
 			++it;
@@ -73,9 +76,9 @@ void CTimerSystem::RemoveMapChangeTimers() {
 
 uint32_t CTimerSystem::CreateTimer(double delay, TimerCallback callback, TimerFlag flags, const plg::vector<plg::any>& userData) {
 	std::lock_guard<std::mutex> lock(m_createTimerLock);
-	
+
 	uint32_t id = ++s_nextId;
-	m_timers.emplace(id, flags, universalTime + delay, delay, callback, userData);
+	m_timers.emplace(id, flags & Repeat, flags & NoMapChange, false, false, universalTime + delay, delay, callback, userData);
 	return id;
 }
 
@@ -87,7 +90,11 @@ void CTimerSystem::KillTimer(uint32_t id) {
 	});
 
 	if (it != m_timers.end()) {
-		m_timers.erase(it);
+		if (it->exec) {
+			it->kill = true;
+		} else {
+			m_timers.erase(it);
+		}
 	}
 }
 
@@ -99,10 +106,12 @@ void CTimerSystem::RescheduleTimer(uint32_t id, double newDelay) {
 	});
 
 	if (it != m_timers.end()) {
-		auto node = m_timers.extract(it);
-		node.value().delay = newDelay;
-		node.value().executeTime = universalTime + newDelay;
-		m_timers.insert(std::move(node));
+		if (!it->exec) {
+			auto node = m_timers.extract(it);
+			node.value().delay = newDelay;
+			node.value().executeTime = universalTime + newDelay;
+			m_timers.insert(std::move(node));
+		}
 	}
 }
 
