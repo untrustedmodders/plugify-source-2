@@ -179,7 +179,7 @@ const CModule* CGameConfig::GetModule(const plg::string& name) const {
 	if (library.empty())
 		return {};
 
-	return g_pGameConfigManager.GetModule(library);
+	return g_GameConfigManager.GetModule(library);
 }
 
 bool CGameConfig::IsSymbol(const plg::string& name) const {
@@ -247,32 +247,36 @@ CGameConfigManager::CGameConfigManager() {
 	m_modules.emplace("networksystem", CModule(utils::GameDirectory() + S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "networksystem"));*/
 }
 
-Handle CGameConfigManager::LoadGameConfigFile(plg::vector<plg::string> paths) {
-	for (const auto& [handle, config] : m_configs) {
+uint32_t CGameConfigManager::LoadGameConfigFile(plg::vector<plg::string> paths) {
+	for (auto& [id, config] : m_configs) {
 		if (config.GetPaths() == paths) {
-			return handle;
+			++config.m_refCount;
+			return id;
 		}
 	}
 
 	CGameConfig gameConfig("csgo", std::move(paths));
 	if (!gameConfig.Initialize()) {
-		return InvalidHandle();
+		return static_cast<uint32_t>(-1);
 	}
 
-	Handle handle = CreateHandle();
-	m_configs.emplace(handle, std::move(gameConfig));
-	return handle;
+	uint32_t id = ++s_nextId;
+	m_configs.emplace(id, std::move(gameConfig));
+	return id;
 }
 
-void CGameConfigManager::CloseGameConfigFile(Handle handle) {
-	auto it = m_configs.find(handle);
+void CGameConfigManager::CloseGameConfigFile(uint32_t id) {
+	auto it = m_configs.find(id);
 	if (it != m_configs.end()) {
-		m_configs.erase(it);
+		auto& config = std::get<CGameConfig>(*it);
+		if (--config.m_refCount == 0) {
+			m_configs.erase(it);
+		}
 	}
 }
 
-CGameConfig* CGameConfigManager::GetGameConfig(Handle handle) {
-	auto it = m_configs.find(handle);
+CGameConfig* CGameConfigManager::GetGameConfig(uint32_t id) {
+	auto it = m_configs.find(id);
 	if (it != m_configs.end()) {
 		return &std::get<CGameConfig>(*it);
 	}
@@ -293,4 +297,4 @@ CModule* CGameConfigManager::GetModule(std::string_view name) {
 	return nullptr;
 }
 
-CGameConfigManager g_pGameConfigManager;
+CGameConfigManager g_GameConfigManager;
