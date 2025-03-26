@@ -9,6 +9,7 @@
 
 #include <dynlibutils/module.hpp>
 
+#include <IEngineSound.h>
 #include <ISmmPlugin.h>
 #include <engine/igameeventsystem.h>
 #include <igameevents.h>
@@ -22,7 +23,6 @@ CGlobalVars* gpGlobals = nullptr;
 IVEngineServer2* g_pEngineServer2 = nullptr;
 CSchemaSystem* g_pSchemaSystem2 = nullptr;
 CGameEntitySystem* g_pGameEntitySystem = nullptr;
-IEngineSound* g_pEngineSound = nullptr;
 CCSGameRules* g_pGameRules = nullptr;
 
 #define RESOLVE_SIG(gameConfig, name, variable) \
@@ -79,8 +79,7 @@ namespace globals {
 		g_pFullFileSystem = reinterpret_cast<IFileSystem*>(FindInterface(FILESYSTEM_INTERFACE_VERSION));
 		g_pGameEventSystem = static_cast<IGameEventSystem*>(FindInterface(GAMEEVENTSYSTEM_INTERFACE_VERSION));
 		g_pNetworkServerService = reinterpret_cast<INetworkServerService*>(FindInterface(NETWORKSERVERSERVICE_INTERFACE_VERSION));
-		//g_pEngineSound = FindInterface(IENGINESOUND_SERVER_INTERFACE_VERSION);
-		g_pNetworkMessages = reinterpret_cast<INetworkMessages*>(FindInterface(NETWORKMESSAGES_INTERFACE_VERSION));
+		g_pNetworkMessages = reinterpret_cast<INetworkMessages*>(QueryInterface("networksystem", NETWORKMESSAGES_INTERFACE_VERSION));
 
 		ConVar_Register(FCVAR_RELEASE | FCVAR_SERVER_CAN_EXECUTE | FCVAR_GAMEDLL);
 
@@ -123,6 +122,7 @@ namespace globals {
 				return module.m_hModule;
 			}
 		}
+		S2_LOGF(LS_ERROR, "Could not find module at \"%s\"\n", name.data());
 		return {};
 	}
 	
@@ -132,6 +132,19 @@ namespace globals {
 				return system.m_pSystem;
 			}
 		}
+		S2_LOGF(LS_ERROR, "Could not find interface at \"%s\"\n", name.data());
+		return {};
+	}
+
+	void* QueryInterface(std::string_view module, std::string_view name) {
+		for (const auto& system : g_pCurrentAppSystem->m_Systems) {
+			if (system.m_pModuleName && system.m_pModuleName == module) {
+				if (auto* interface = system.m_pSystem->QueryInterface(name.data())) {
+					return interface;
+				}
+			}
+		}
+		S2_LOGF(LS_ERROR, "Could not query interface at \"%s\"\n", name.data());
 		return {};
 	}
 }// namespace globals

@@ -15,6 +15,36 @@ PLUGIFY_WARN_IGNORE(4190)
 #endif
 
 /**
+ * @brief Finds a module by name.
+ *
+ * @return A pointer to the specified module.
+ */
+extern "C" PLUGIN_API void* FindModule(const plg::string& name) {
+	return globals::FindModule(name);
+}
+
+/**
+ * @brief Finds an interface by name.
+ *
+ * @param name The name of the interface to find.
+ * @return A pointer to the interface.
+ */
+extern "C" PLUGIN_API void* FindInterface(const plg::string& name) {
+	return globals::FindInterface(name);
+}
+
+/**
+ * @brief Queries an interface from a specified module.
+ *
+ * @param module The name of the module to query the interface from.
+ * @param name The name of the interface to query.
+ * @return A pointer to the queried interface.
+ */
+extern "C" PLUGIN_API void* QueryInterface(const plg::string& module, const plg::string& name) {
+	return globals::QueryInterface(module, name);
+}
+
+/**
  * @brief Returns the path of the game's directory.
  *
  * @param result A reference to a string where the game directory path will be stored.
@@ -156,7 +186,7 @@ extern "C" PLUGIN_API bool IsModelPrecache(const plg::string& model) {
  * @return True if the sound is successfully precached, false otherwise.
  */
 extern "C" PLUGIN_API bool PrecacheSound(const plg::string& sound, bool preload) {
-	return g_pEngineSound->PrecacheSound(sound.c_str(), preload);
+	return false;//g_pEngineSound->PrecacheSound(sound.c_str(), preload);
 }
 
 /**
@@ -166,7 +196,7 @@ extern "C" PLUGIN_API bool PrecacheSound(const plg::string& sound, bool preload)
  * @return True if the sound is precached, false otherwise.
  */
 extern "C" PLUGIN_API bool IsSoundPrecached(const plg::string& sound) {
-	return g_pEngineSound->IsSoundPrecached(sound.c_str());
+	return false;//g_pEngineSound->IsSoundPrecached(sound.c_str());
 }
 
 /**
@@ -235,7 +265,7 @@ extern "C" PLUGIN_API void QueueTaskForNextWorldUpdate(TaskCallback callback, co
  * @return The duration of the sound in seconds.
  */
 extern "C" PLUGIN_API float GetSoundDuration(const plg::string& name) {
-	return g_pEngineSound->GetSoundDuration(name.c_str());
+	return false;//g_pEngineSound->GetSoundDuration(name.c_str());
 }
 
 /**

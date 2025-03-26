@@ -46,7 +46,6 @@ extern CGlobalVars* gpGlobals;
 extern IVEngineServer2* g_pEngineServer2;
 extern CSchemaSystem* g_pSchemaSystem2;
 extern CGameEntitySystem* g_pGameEntitySystem;
-extern IEngineSound* g_pEngineSound;
 extern CCSGameRules* g_pGameRules;
 
 class CCoreConfig;
@@ -66,6 +65,7 @@ namespace globals {
 
 	PlatModule_t FindModule(std::string_view name);
 	IAppSystem* FindInterface(std::string_view name);
+	void* QueryInterface(std::string_view module, std::string_view name);
 }// namespace globals
 
 namespace DynLibUtils {

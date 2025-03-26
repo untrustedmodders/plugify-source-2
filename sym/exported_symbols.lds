@@ -142,6 +142,9 @@ SendConVarValue
 GetClientConVarValue
 SetFakeClientConVarValue
 
+FindModule
+FindInterface
+QueryInterface
 GetGameDirectory
 GetCurrentMap
 IsMapValid
@@ -344,6 +347,7 @@ NetworkStateChanged
 
 CreateTimer
 KillsTimer
+RescheduleTimer
 GetTickInterval
 GetTickedTime
 
