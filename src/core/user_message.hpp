@@ -52,9 +52,9 @@ namespace google::protobuf {
 
 class UserMessage {
 public:
-	UserMessage(INetworkMessageInternal* m_msgSerializable, const CNetMessage* message, int m_recipientCount, uint64* m_recipientMask)
-		: m_msgSerializable(m_msgSerializable), m_msg(const_cast<CNetMessage*>(message)->ToPB<pb::Message>()), m_recipientCount(m_recipientCount),
-		  m_recipientMask(m_recipientMask) {
+	UserMessage(INetworkMessageInternal* msgSerializable, const CNetMessage* message, int recipientCount, uint64_t* recipientMask)
+		: m_msgSerializable(msgSerializable), m_msg(const_cast<CNetMessage*>(message)->ToPB<pb::Message>()), m_recipientCount(recipientCount),
+		  m_recipientMask(recipientMask) {
 	}
 
 	explicit UserMessage(const char* messageName) {
@@ -63,16 +63,16 @@ public:
 		if (!m_msgSerializable) return;
 
 		m_msg = m_msgSerializable->AllocateMessage()->ToPB<pb::Message>();
-		m_recipientMask = new uint64(0);
+		m_recipientMask = new uint64_t(0);
 	}
 
-	explicit UserMessage(int messageId) {
+	explicit UserMessage(uint16_t messageId) {
 		m_manuallyAllocated = true;
-		m_msgSerializable = g_pNetworkMessages->FindNetworkMessageById(messageId);
+		m_msgSerializable = g_pNetworkMessages->FindNetworkMessageById(static_cast<int32_t>(messageId));
 		if (!m_msgSerializable) return;
 
 		m_msg = m_msgSerializable->AllocateMessage()->ToPB<pb::Message>();
-		m_recipientMask = new uint64(0);
+		m_recipientMask = new uint64_t(0);
 	}
 
 	~UserMessage() {
@@ -80,11 +80,11 @@ public:
 	}
 
 	std::string GetMessageName();
-	int GetMessageID();
+	uint16_t GetMessageID();
 	bool HasField(const std::string& fieldName);
 	const CNetMessagePB<pb::Message>* GetProtobufMessage();
 	INetworkMessageInternal* GetSerializableMessage() { return m_msgSerializable; }
-	uint64* GetRecipientMask() { return m_recipientMask; }
+	uint64_t* GetRecipientMask() { return m_recipientMask; }
 	bool IsManuallyAllocated() const { return m_manuallyAllocated; }
 
 private:
@@ -92,7 +92,7 @@ private:
 	CNetMessagePB<pb::Message>* m_msg{};
 	int m_recipientCount{};
 	bool m_manuallyAllocated{};
-	uint64* m_recipientMask{};
+	uint64_t* m_recipientMask{};
 
 public:
 	bool HasField(const char* pszFieldName) {
@@ -101,7 +101,60 @@ public:
 		return m_msg->GetReflection()->HasField(*m_msg, field);
 	}
 
-	bool GetInt32(const char* pszFieldName, int32* out) {
+	bool GetEnum(const char* pszFieldName, int* out) {
+		GETCHECK_FIELD();
+		CHECK_FIELD_TYPE(ENUM);
+		CHECK_FIELD_NOT_REPEATED();
+
+		*out = m_msg->GetReflection()->GetEnum(*m_msg, field)->number();
+		return true;
+	}
+
+	bool SetEnum(const char* pszFieldName, int value) {
+		GETCHECK_FIELD();
+		CHECK_FIELD_TYPE(ENUM);
+		CHECK_FIELD_NOT_REPEATED();
+
+		const pb::EnumValueDescriptor* pEnumValue = field->enum_type()->FindValueByNumber(value);
+		if (!pEnumValue) return false;
+		m_msg->GetReflection()->SetEnum(m_msg, field, pEnumValue);
+		return true;
+	}
+
+	bool GetRepeatedEnum(const char* pszFieldName, int index, int* out) {
+		GETCHECK_FIELD();
+		CHECK_FIELD_TYPE(ENUM);
+		CHECK_FIELD_REPEATED();
+		CHECK_REPEATED_ELEMENT(index);
+
+		*out = m_msg->GetReflection()->GetRepeatedEnum(*m_msg, field, index)->number();
+		return true;
+	}
+
+	bool SetRepeatedEnum(const char* pszFieldName, int index, int value) {
+		GETCHECK_FIELD();
+		CHECK_FIELD_TYPE(ENUM);
+		CHECK_FIELD_REPEATED();
+		CHECK_REPEATED_ELEMENT(index);
+
+		const pb::EnumValueDescriptor* pEnumValue = field->enum_type()->FindValueByNumber(value);
+		if (!pEnumValue) return false;
+		m_msg->GetReflection()->SetRepeatedEnum(m_msg, field, index, pEnumValue);
+		return true;
+	}
+
+	bool AddEnum(const char* pszFieldName, int value) {
+		GETCHECK_FIELD();
+		CHECK_FIELD_TYPE(ENUM);
+		CHECK_FIELD_REPEATED();
+
+		const pb::EnumValueDescriptor* pEnumValue = field->enum_type()->FindValueByNumber(value);
+		if (!pEnumValue) return false;
+		m_msg->GetReflection()->AddEnum(m_msg, field, pEnumValue);
+		return true;
+	}
+
+	bool GetInt32(const char* pszFieldName, int32_t* out) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(INT32);
 		CHECK_FIELD_NOT_REPEATED();
@@ -110,7 +163,7 @@ public:
 		return true;
 	}
 
-	bool SetInt32(const char* pszFieldName, int32 value) {
+	bool SetInt32(const char* pszFieldName, int32_t value) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(INT32);
 		CHECK_FIELD_NOT_REPEATED();
@@ -119,7 +172,7 @@ public:
 		return true;
 	}
 
-	bool GetRepeatedInt32(const char* pszFieldName, int index, int32* out) {
+	bool GetRepeatedInt32(const char* pszFieldName, int index, int32_t* out) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(INT32);
 		CHECK_FIELD_REPEATED();
@@ -129,7 +182,7 @@ public:
 		return true;
 	}
 
-	bool SetRepeatedInt32(const char* pszFieldName, int index, int32 value) {
+	bool SetRepeatedInt32(const char* pszFieldName, int index, int32_t value) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(INT32);
 		CHECK_FIELD_REPEATED();
@@ -139,7 +192,7 @@ public:
 		return true;
 	}
 
-	bool AddInt32(const char* pszFieldName, int32 value) {
+	bool AddInt32(const char* pszFieldName, int32_t value) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(INT32);
 		CHECK_FIELD_REPEATED();
@@ -148,7 +201,7 @@ public:
 		return true;
 	}
 
-	bool GetInt64(const char* pszFieldName, int64* out) {
+	bool GetInt64(const char* pszFieldName, int64_t* out) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(INT64);
 		CHECK_FIELD_NOT_REPEATED();
@@ -157,7 +210,7 @@ public:
 		return true;
 	}
 
-	bool SetInt64(const char* pszFieldName, int64 value) {
+	bool SetInt64(const char* pszFieldName, int64_t value) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(INT64);
 		CHECK_FIELD_NOT_REPEATED();
@@ -166,7 +219,7 @@ public:
 		return true;
 	}
 
-	bool GetRepeatedInt64(const char* pszFieldName, int index, int64* out) {
+	bool GetRepeatedInt64(const char* pszFieldName, int index, int64_t* out) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(INT64);
 		CHECK_FIELD_REPEATED();
@@ -176,7 +229,7 @@ public:
 		return true;
 	}
 
-	bool SetRepeatedInt64(const char* pszFieldName, int index, int64 value) {
+	bool SetRepeatedInt64(const char* pszFieldName, int index, int64_t value) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(INT64);
 		CHECK_FIELD_REPEATED();
@@ -186,7 +239,7 @@ public:
 		return true;
 	}
 
-	bool AddInt64(const char* pszFieldName, int64 value) {
+	bool AddInt64(const char* pszFieldName, int64_t value) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(INT64);
 		CHECK_FIELD_REPEATED();
@@ -195,7 +248,7 @@ public:
 		return true;
 	}
 
-	bool GetUInt32(const char* pszFieldName, uint32* out) {
+	bool GetUInt32(const char* pszFieldName, uint32_t* out) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(UINT32);
 		CHECK_FIELD_NOT_REPEATED();
@@ -204,7 +257,7 @@ public:
 		return true;
 	}
 
-	bool SetUInt32(const char* pszFieldName, uint32 value) {
+	bool SetUInt32(const char* pszFieldName, uint32_t value) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(UINT32);
 		CHECK_FIELD_NOT_REPEATED();
@@ -213,7 +266,7 @@ public:
 		return true;
 	}
 
-	bool GetRepeatedUInt32(const char* pszFieldName, int index, uint32* out) {
+	bool GetRepeatedUInt32(const char* pszFieldName, int index, uint32_t* out) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(UINT32);
 		CHECK_FIELD_REPEATED();
@@ -223,7 +276,7 @@ public:
 		return true;
 	}
 
-	bool SetRepeatedUInt32(const char* pszFieldName, int index, uint32 value) {
+	bool SetRepeatedUInt32(const char* pszFieldName, int index, uint32_t value) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(UINT32);
 		CHECK_FIELD_REPEATED();
@@ -233,7 +286,7 @@ public:
 		return true;
 	}
 
-	bool AddUInt32(const char* pszFieldName, uint32 value) {
+	bool AddUInt32(const char* pszFieldName, uint32_t value) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(UINT32);
 		CHECK_FIELD_REPEATED();
@@ -242,7 +295,7 @@ public:
 		return true;
 	}
 
-	bool GetUInt64(const char* pszFieldName, uint64* out) {
+	bool GetUInt64(const char* pszFieldName, uint64_t* out) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(UINT64);
 		CHECK_FIELD_NOT_REPEATED();
@@ -251,7 +304,7 @@ public:
 		return true;
 	}
 
-	bool SetUInt64(const char* pszFieldName, uint64 value) {
+	bool SetUInt64(const char* pszFieldName, uint64_t value) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(UINT64);
 		CHECK_FIELD_NOT_REPEATED();
@@ -260,7 +313,7 @@ public:
 		return true;
 	}
 
-	bool GetRepeatedUInt64(const char* pszFieldName, int index, uint64* out) {
+	bool GetRepeatedUInt64(const char* pszFieldName, int index, uint64_t* out) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(UINT64);
 		CHECK_FIELD_REPEATED();
@@ -270,7 +323,7 @@ public:
 		return true;
 	}
 
-	bool SetRepeatedUInt64(const char* pszFieldName, int index, uint64 value) {
+	bool SetRepeatedUInt64(const char* pszFieldName, int index, uint64_t value) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(UINT64);
 		CHECK_FIELD_REPEATED();
@@ -280,172 +333,12 @@ public:
 		return true;
 	}
 
-	bool AddUInt64(const char* pszFieldName, uint64 value) {
+	bool AddUInt64(const char* pszFieldName, uint64_t value) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(UINT64);
 		CHECK_FIELD_REPEATED();
 
 		m_msg->GetReflection()->AddUInt32(m_msg, field, value);
-		return true;
-	}
-
-	bool GetInt32OrUnsignedOrEnum(const char* pszFieldName, int32* out) {
-		GETCHECK_FIELD();
-		CHECK_FIELD_TYPE3(INT32, UINT32, ENUM);
-		CHECK_FIELD_NOT_REPEATED();
-
-		if (fieldType == pb::FieldDescriptor::CPPTYPE_UINT32) *out = (int32) m_msg->GetReflection()->GetUInt32(*m_msg, field);
-		else if (fieldType == pb::FieldDescriptor::CPPTYPE_INT32)
-			*out = m_msg->GetReflection()->GetInt32(*m_msg, field);
-		else// CPPTYPE_ENUM
-			*out = m_msg->GetReflection()->GetEnum(*m_msg, field)->number();
-
-		return true;
-	}
-
-	bool GetInt64OrUnsigned(const char* pszFieldName, int64* out) {
-		GETCHECK_FIELD();
-		CHECK_FIELD_TYPE2(INT64, UINT64);
-		CHECK_FIELD_NOT_REPEATED();
-
-		if (fieldType == pb::FieldDescriptor::CPPTYPE_UINT64) *out = (int64) m_msg->GetReflection()->GetUInt64(*m_msg, field);
-		else
-			*out = m_msg->GetReflection()->GetInt64(*m_msg, field);
-
-		return true;
-	}
-
-	bool SetInt32OrUnsignedOrEnum(const char* pszFieldName, int32 value) {
-		GETCHECK_FIELD();
-		CHECK_FIELD_TYPE3(INT32, UINT32, ENUM);
-		CHECK_FIELD_NOT_REPEATED();
-
-		if (fieldType == pb::FieldDescriptor::CPPTYPE_UINT32) {
-			m_msg->GetReflection()->SetUInt32(m_msg, field, (uint32) value);
-		} else if (fieldType == pb::FieldDescriptor::CPPTYPE_INT32) {
-			m_msg->GetReflection()->SetInt32(m_msg, field, value);
-		} else// CPPTYPE_ENUM
-		{
-			const pb::EnumValueDescriptor* pEnumValue = field->enum_type()->FindValueByNumber(value);
-			if (!pEnumValue) return false;
-
-			m_msg->GetReflection()->SetEnum(m_msg, field, pEnumValue);
-		}
-
-		return true;
-	}
-
-	bool SetInt64OrUnsigned(const char* pszFieldName, int64 value) {
-		GETCHECK_FIELD();
-		CHECK_FIELD_TYPE2(INT64, UINT64);
-		CHECK_FIELD_NOT_REPEATED();
-
-		if (fieldType == pb::FieldDescriptor::CPPTYPE_UINT64) {
-			m_msg->GetReflection()->SetUInt64(m_msg, field, (uint64) value);
-		} else {
-			m_msg->GetReflection()->SetInt64(m_msg, field, value);
-		}
-
-		return true;
-	}
-
-	bool GetRepeatedInt32OrUnsignedOrEnum(const char* pszFieldName, int index, int32* out) {
-		GETCHECK_FIELD();
-		CHECK_FIELD_TYPE3(INT32, UINT32, ENUM);
-		CHECK_FIELD_REPEATED();
-		CHECK_REPEATED_ELEMENT(index);
-
-		if (fieldType == pb::FieldDescriptor::CPPTYPE_UINT32)
-			*out = (int32) m_msg->GetReflection()->GetRepeatedUInt32(*m_msg, field, index);
-		else if (fieldType == pb::FieldDescriptor::CPPTYPE_INT32)
-			*out = m_msg->GetReflection()->GetRepeatedInt32(*m_msg, field, index);
-		else// CPPTYPE_ENUM
-			*out = m_msg->GetReflection()->GetRepeatedEnum(*m_msg, field, index)->number();
-
-		return true;
-	}
-
-	bool GetRepeatedInt64OrUnsigned(const char* pszFieldName, int index, int64* out) {
-		GETCHECK_FIELD();
-		CHECK_FIELD_TYPE2(INT64, UINT64);
-		CHECK_FIELD_REPEATED();
-		CHECK_REPEATED_ELEMENT(index);
-
-		if (fieldType == pb::FieldDescriptor::CPPTYPE_UINT64)
-			*out = (int64) m_msg->GetReflection()->GetRepeatedUInt64(*m_msg, field, index);
-		else
-			*out = m_msg->GetReflection()->GetRepeatedInt64(*m_msg, field, index);
-
-		return true;
-	}
-
-	bool SetRepeatedInt32OrUnsignedOrEnum(const char* pszFieldName, int index, int32 value) {
-		GETCHECK_FIELD();
-		CHECK_FIELD_TYPE3(INT32, UINT32, ENUM);
-		CHECK_FIELD_REPEATED();
-		CHECK_REPEATED_ELEMENT(index);
-
-		if (fieldType == pb::FieldDescriptor::CPPTYPE_UINT32) {
-			m_msg->GetReflection()->SetRepeatedUInt32(m_msg, field, index, (uint32) value);
-		} else if (fieldType == pb::FieldDescriptor::CPPTYPE_INT32) {
-			m_msg->GetReflection()->SetRepeatedInt32(m_msg, field, index, value);
-		} else// CPPTYPE_ENUM
-		{
-			const pb::EnumValueDescriptor* pEnumValue = field->enum_type()->FindValueByNumber(value);
-			if (!pEnumValue) return false;
-
-			m_msg->GetReflection()->SetRepeatedEnum(m_msg, field, index, pEnumValue);
-		}
-
-		return true;
-	}
-
-	bool SetRepeatedInt64OrUnsigned(const char* pszFieldName, int index, int64 value) {
-		GETCHECK_FIELD();
-		CHECK_FIELD_TYPE2(INT64, UINT64);
-		CHECK_FIELD_REPEATED();
-		CHECK_REPEATED_ELEMENT(index);
-
-		if (fieldType == pb::FieldDescriptor::CPPTYPE_UINT64) {
-			m_msg->GetReflection()->SetRepeatedUInt64(m_msg, field, index, (uint64) value);
-		} else {
-			m_msg->GetReflection()->SetRepeatedInt64(m_msg, field, index, value);
-		}
-
-		return true;
-	}
-
-	bool AddInt32OrUnsignedOrEnum(const char* pszFieldName, int32 value) {
-		GETCHECK_FIELD();
-		CHECK_FIELD_TYPE3(INT32, UINT32, ENUM);
-		CHECK_FIELD_REPEATED();
-
-		if (fieldType == pb::FieldDescriptor::CPPTYPE_UINT32) {
-			m_msg->GetReflection()->AddUInt32(m_msg, field, (uint32) value);
-		} else if (fieldType == pb::FieldDescriptor::CPPTYPE_INT32) {
-			m_msg->GetReflection()->AddInt32(m_msg, field, value);
-		} else// CPPTYPE_ENUM
-		{
-			const pb::EnumValueDescriptor* pEnumValue = field->enum_type()->FindValueByNumber(value);
-			if (!pEnumValue) return false;
-
-			m_msg->GetReflection()->AddEnum(m_msg, field, pEnumValue);
-		}
-
-		return true;
-	}
-
-	bool AddInt64OrUnsigned(const char* pszFieldName, int64 value) {
-		GETCHECK_FIELD();
-		CHECK_FIELD_TYPE2(INT64, UINT64);
-		CHECK_FIELD_REPEATED();
-
-		if (fieldType == pb::FieldDescriptor::CPPTYPE_UINT64) {
-			m_msg->GetReflection()->AddUInt64(m_msg, field, (uint64) value);
-		} else {
-			m_msg->GetReflection()->AddInt64(m_msg, field, value);
-		}
-
 		return true;
 	}
 
@@ -590,71 +483,7 @@ public:
 		return true;
 	}
 
-	bool GetFloatOrDouble(const char* pszFieldName, float* out) {
-		GETCHECK_FIELD();
-		CHECK_FIELD_TYPE2(FLOAT, DOUBLE);
-		CHECK_FIELD_NOT_REPEATED();
-
-		if (fieldType == pb::FieldDescriptor::CPPTYPE_DOUBLE) *out = (float) m_msg->GetReflection()->GetDouble(*m_msg, field);
-		else
-			*out = m_msg->GetReflection()->GetFloat(*m_msg, field);
-
-		return true;
-	}
-
-	bool SetFloatOrDouble(const char* pszFieldName, float value) {
-		GETCHECK_FIELD();
-		CHECK_FIELD_TYPE2(FLOAT, DOUBLE);
-		CHECK_FIELD_NOT_REPEATED();
-
-		if (fieldType == pb::FieldDescriptor::CPPTYPE_DOUBLE) m_msg->GetReflection()->SetDouble(m_msg, field, (double) value);
-		else
-			m_msg->GetReflection()->SetFloat(m_msg, field, value);
-
-		return true;
-	}
-
-	bool GetRepeatedFloatOrDouble(const char* pszFieldName, int index, float* out) {
-		GETCHECK_FIELD();
-		CHECK_FIELD_TYPE2(FLOAT, DOUBLE);
-		CHECK_FIELD_REPEATED();
-		CHECK_REPEATED_ELEMENT(index);
-
-		if (fieldType == pb::FieldDescriptor::CPPTYPE_DOUBLE)
-			*out = (float) m_msg->GetReflection()->GetRepeatedDouble(*m_msg, field, index);
-		else
-			*out = m_msg->GetReflection()->GetRepeatedFloat(*m_msg, field, index);
-
-		return true;
-	}
-
-	bool SetRepeatedFloatOrDouble(const char* pszFieldName, int index, float value) {
-		GETCHECK_FIELD();
-		CHECK_FIELD_TYPE2(FLOAT, DOUBLE);
-		CHECK_FIELD_REPEATED();
-		CHECK_REPEATED_ELEMENT(index);
-
-		if (fieldType == pb::FieldDescriptor::CPPTYPE_DOUBLE)
-			m_msg->GetReflection()->SetRepeatedDouble(m_msg, field, index, (double) value);
-		else
-			m_msg->GetReflection()->SetRepeatedFloat(m_msg, field, index, value);
-
-		return true;
-	}
-
-	bool AddFloatOrDouble(const char* pszFieldName, float value) {
-		GETCHECK_FIELD();
-		CHECK_FIELD_TYPE2(FLOAT, DOUBLE);
-		CHECK_FIELD_REPEATED();
-
-		if (fieldType == pb::FieldDescriptor::CPPTYPE_DOUBLE) m_msg->GetReflection()->AddDouble(m_msg, field, (double) value);
-		else
-			m_msg->GetReflection()->AddFloat(m_msg, field, value);
-
-		return true;
-	}
-
-	bool GetString(const char* pszFieldName, std::string& out) {
+	bool GetString(const char* pszFieldName, plg::string& out) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(STRING);
 		CHECK_FIELD_NOT_REPEATED();
@@ -673,7 +502,7 @@ public:
 		return true;
 	}
 
-	bool GetRepeatedString(const char* pszFieldName, int index, std::string& out) {
+	bool GetRepeatedString(const char* pszFieldName, int index, plg::string& out) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(STRING);
 		CHECK_FIELD_REPEATED();
@@ -781,7 +610,7 @@ public:
 		return true;
 	}
 
-	bool SetVector2D(const char* pszFieldName, Vector2D& vec) {
+	bool SetVector2D(const char* pszFieldName, const Vector2D& vec) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(MESSAGE);
 		CHECK_FIELD_NOT_REPEATED();
@@ -805,7 +634,7 @@ public:
 		return true;
 	}
 
-	bool SetRepeatedVector2D(const char* pszFieldName, int index, Vector2D& vec) {
+	bool SetRepeatedVector2D(const char* pszFieldName, int index, const Vector2D& vec) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(MESSAGE);
 		CHECK_FIELD_REPEATED();
@@ -818,7 +647,7 @@ public:
 		return true;
 	}
 
-	bool AddVector2D(const char* pszFieldName, Vector2D& vec) {
+	bool AddVector2D(const char* pszFieldName, const Vector2D& vec) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(MESSAGE);
 		CHECK_FIELD_REPEATED();
@@ -841,7 +670,7 @@ public:
 		return true;
 	}
 
-	bool SetVector(const char* pszFieldName, Vector& vec) {
+	bool SetVector(const char* pszFieldName, const Vector& vec) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(MESSAGE);
 		CHECK_FIELD_NOT_REPEATED();
@@ -866,7 +695,7 @@ public:
 		return true;
 	}
 
-	bool SetRepeatedVector(const char* pszFieldName, int index, Vector& vec) {
+	bool SetRepeatedVector(const char* pszFieldName, int index, const Vector& vec) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(MESSAGE);
 		CHECK_FIELD_REPEATED();
@@ -880,7 +709,7 @@ public:
 		return true;
 	}
 
-	bool AddVector(const char* pszFieldName, Vector& vec) {
+	bool AddVector(const char* pszFieldName, const Vector& vec) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(MESSAGE);
 		CHECK_FIELD_REPEATED();
@@ -904,7 +733,7 @@ public:
 		return true;
 	}
 
-	bool SetQAngle(const char* pszFieldName, QAngle& vec) {
+	bool SetQAngle(const char* pszFieldName, const QAngle& vec) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(MESSAGE);
 		CHECK_FIELD_NOT_REPEATED();
@@ -929,7 +758,7 @@ public:
 		return true;
 	}
 
-	bool SetRepeatedQAngle(const char* pszFieldName, int index, QAngle& vec) {
+	bool SetRepeatedQAngle(const char* pszFieldName, int index, const QAngle& vec) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(MESSAGE);
 		CHECK_FIELD_REPEATED();
@@ -943,7 +772,7 @@ public:
 		return true;
 	}
 
-	bool AddQAngle(const char* pszFieldName, QAngle& vec) {
+	bool AddQAngle(const char* pszFieldName, const QAngle& vec) {
 		GETCHECK_FIELD();
 		CHECK_FIELD_TYPE(MESSAGE);
 		CHECK_FIELD_REPEATED();

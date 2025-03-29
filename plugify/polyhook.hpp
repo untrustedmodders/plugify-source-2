@@ -185,14 +185,6 @@ namespace poly
 		int m_index;
 	};
 
-	inline void* FindOriginalAddr(void* pClass, void* pAddr)
-	{
-		using FindOriginalAddrFn = IHook* (*)(void*, void*);
-		static FindOriginalAddrFn func = nullptr;
-		if (func == nullptr) plg::GetMethodPtr2("polyhook.FindOriginalAddr", reinterpret_cast<void**>(&func));
-		return func(pClass, pAddr);
-	}
-
 	inline int GetVTableIndex(void* pFunc)
 	{
 		using GetVTableIndexFn = int (*)(void*);

@@ -52,7 +52,7 @@ public:
 		m_bInitMessage = source->IsInitMessage();
 		m_Recipients.RemoveAll();
 
-		for (int i = 0; i < source->GetRecipientCount(); i++) {
+		for (int i = 0; i < source->GetRecipientCount(); ++i) {
 			if (source->GetRecipientIndex(i).Get() != iExcept)
 				m_Recipients.AddToTail(source->GetRecipientIndex(i));
 		}
@@ -74,7 +74,7 @@ public:
 	void AddAllPlayers() {
 		m_Recipients.RemoveAll();
 
-		for (int i = 0; i < PlayerManager::MaxClients(); i++) {
+		for (int i = 0; i < PlayerManager::MaxClients(); ++i) {
 			auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(i));
 			if (!pPlayer)
 				continue;
@@ -89,6 +89,14 @@ public:
 			return;
 
 		m_Recipients.AddToTail(slot);
+	}
+
+	void AddRecipientsFromMask(uint64 mask) {
+		for (int i = 0; i < PlayerManager::MaxClients(); ++i) {
+			if (mask & (uint64)(1 << i)) {
+				AddRecipient(CPlayerSlot(i));
+			}
+		}
 	}
 
 private:

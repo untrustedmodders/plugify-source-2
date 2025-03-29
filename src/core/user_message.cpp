@@ -1,6 +1,6 @@
 #include "user_message.hpp"
 
-int UserMessage::GetMessageID() { return m_msgSerializable->GetNetMessageInfo()->m_MessageId; }
+uint16_t UserMessage::GetMessageID() { return m_msgSerializable->GetNetMessageInfo()->m_MessageId; }
 
 std::string UserMessage::GetMessageName() { return m_msgSerializable->GetUnscopedName(); }
 

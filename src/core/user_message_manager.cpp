@@ -1,7 +1,7 @@
 #include "user_message_manager.hpp"
 #include "user_message.hpp"
 
-bool UserMessageManager::HookUserMessage(int messageId, UserMessageCallback callback, HookMode mode) {
+bool UserMessageManager::HookUserMessage(uint16_t messageId, UserMessageCallback callback, HookMode mode) {
 	std::lock_guard<std::mutex> lock(m_registerCmdLock);
 	
 	if (messageId == 0) {
@@ -18,7 +18,7 @@ bool UserMessageManager::HookUserMessage(int messageId, UserMessageCallback call
 	}
 }
 
-bool UserMessageManager::UnhookUserMessage(int messageId, UserMessageCallback callback, HookMode mode) {
+bool UserMessageManager::UnhookUserMessage(uint16_t messageId, UserMessageCallback callback, HookMode mode) {
 	std::lock_guard<std::mutex> lock(m_registerCmdLock);
 	
 	if (messageId == 0) {
@@ -37,7 +37,7 @@ bool UserMessageManager::UnhookUserMessage(int messageId, UserMessageCallback ca
 ResultType UserMessageManager::ExecuteMessageCallbacks(INetworkMessageInternal* pEvent, CNetMessage* pData, int nClientCount, uint64* clients, HookMode mode) {
 	UserMessage message(pEvent, pData, nClientCount, clients);
 
-	int messageID = message.GetMessageID();
+	uint16_t messageID = message.GetMessageID();
 	
 	//S2_LOGF(LS_DEBUG, "[CUserMessageManager::ExecuteMessageCallbacks][%s] Pushing user message `%d` pointer: %p\n", mode == HookMode::Pre ? "Pre" : "Post",  messageID, pEvent);
 
