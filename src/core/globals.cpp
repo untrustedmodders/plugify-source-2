@@ -67,19 +67,19 @@ namespace globals {
 		}
 		g_pGameEventManager = *p_ppGameEventManager;
 
-		g_pCVar = static_cast<ICvar*>(FindInterface(CVAR_INTERFACE_VERSION));
-		g_pSchemaSystem2 = reinterpret_cast<CSchemaSystem*>(FindInterface(SCHEMASYSTEM_INTERFACE_VERSION));
-		g_pSource2Server = static_cast<ISource2Server*>(FindInterface(SOURCE2SERVER_INTERFACE_VERSION));
-		g_pSource2GameEntities = static_cast<ISource2GameEntities*>(FindInterface(SOURCE2GAMEENTITIES_INTERFACE_VERSION));
-		g_pSource2GameClients = static_cast<ISource2GameClients*>(FindInterface(SOURCE2GAMECLIENTS_INTERFACE_VERSION));
-		g_pGameResourceServiceServer = reinterpret_cast<IGameResourceService*>(FindInterface(GAMERESOURCESERVICESERVER_INTERFACE_VERSION));
-		g_pEngineServiceMgr = reinterpret_cast<IEngineServiceMgr*>(FindInterface(ENGINESERVICEMGR_INTERFACE_VERSION));
+		g_pCVar = static_cast<ICvar*>(QueryInterface("tier0", CVAR_INTERFACE_VERSION));
+		g_pSchemaSystem2 = static_cast<CSchemaSystem*>(QueryInterface("schemasystem", SCHEMASYSTEM_INTERFACE_VERSION));
+		g_pSource2Server = static_cast<ISource2Server*>(QueryInterface("server", SOURCE2SERVER_INTERFACE_VERSION));
+		g_pSource2GameEntities = static_cast<ISource2GameEntities*>(QueryInterface("server", SOURCE2GAMEENTITIES_INTERFACE_VERSION));
+		g_pSource2GameClients = static_cast<ISource2GameClients*>(QueryInterface("server", SOURCE2GAMECLIENTS_INTERFACE_VERSION));
+		g_pGameResourceServiceServer = static_cast<IGameResourceService*>(QueryInterface("engine2", GAMERESOURCESERVICESERVER_INTERFACE_VERSION));
+		g_pEngineServiceMgr = static_cast<IEngineServiceMgr*>(QueryInterface("engine2", ENGINESERVICEMGR_INTERFACE_VERSION));
 
-		g_pEngineServer2 = static_cast<IVEngineServer2*>(FindInterface(SOURCE2ENGINETOSERVER_INTERFACE_VERSION));
-		g_pFullFileSystem = reinterpret_cast<IFileSystem*>(FindInterface(FILESYSTEM_INTERFACE_VERSION));
-		g_pGameEventSystem = static_cast<IGameEventSystem*>(FindInterface(GAMEEVENTSYSTEM_INTERFACE_VERSION));
-		g_pNetworkServerService = reinterpret_cast<INetworkServerService*>(FindInterface(NETWORKSERVERSERVICE_INTERFACE_VERSION));
-		g_pNetworkMessages = reinterpret_cast<INetworkMessages*>(QueryInterface("networksystem", NETWORKMESSAGES_INTERFACE_VERSION));
+		g_pEngineServer2 = static_cast<IVEngineServer2*>(QueryInterface("engine2", SOURCE2ENGINETOSERVER_INTERFACE_VERSION));
+		g_pFullFileSystem = static_cast<IFileSystem*>(QueryInterface("filesystem", FILESYSTEM_INTERFACE_VERSION));
+		g_pGameEventSystem = static_cast<IGameEventSystem*>(QueryInterface("engine2", GAMEEVENTSYSTEM_INTERFACE_VERSION));
+		g_pNetworkServerService = static_cast<INetworkServerService*>(QueryInterface("engine", NETWORKSERVERSERVICE_INTERFACE_VERSION));
+		g_pNetworkMessages = static_cast<INetworkMessages*>(QueryInterface("networksystem", NETWORKMESSAGES_INTERFACE_VERSION));
 
 		ConVar_Register(FCVAR_RELEASE | FCVAR_SERVER_CAN_EXECUTE | FCVAR_GAMEDLL);
 
@@ -129,7 +129,7 @@ namespace globals {
 	
 	IAppSystem* FindInterface(std::string_view name) {
 		for (const auto& system : g_pCurrentAppSystem->m_Systems) {
-			if (system.m_pInterfaceName == name) {
+			if (system.m_pInterfaceName && system.m_pInterfaceName == name) {
 				return system.m_pSystem;
 			}
 		}
@@ -139,12 +139,17 @@ namespace globals {
 
 	void* QueryInterface(std::string_view module, std::string_view name) {
 		for (const auto& system : g_pCurrentAppSystem->m_Systems) {
+			if (system.m_pInterfaceName && system.m_pInterfaceName == name) {
+				return system.m_pSystem;
+			}
+
 			if (system.m_pModuleName && system.m_pModuleName == module) {
 				if (auto* interface = system.m_pSystem->QueryInterface(name.data())) {
 					return interface;
 				}
 			}
 		}
+
 		S2_LOGF(LS_ERROR, "Could not query interface at \"%s\"\n", name.data());
 		return {};
 	}
