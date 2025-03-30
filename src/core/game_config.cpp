@@ -1,6 +1,5 @@
 #include "game_config.hpp"
 #include <core/sdk/utils.h>
-#include <corecrt_io.h>
 #include <plugify-configs/plugify-configs.hpp>
 
 GameConfig::GameConfig(plg::string game, plg::vector<plg::string> paths) : m_gameDir(std::move(game)), m_paths(std::move(paths)) {

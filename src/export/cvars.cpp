@@ -391,7 +391,7 @@ extern "C" PLUGIN_API void UnhookConVarChange(const plg::string& name, ConVarCha
  * @param flag The flag to check against the console variable.
  * @return True if the flag is set; otherwise, false.
  */
-extern "C" PLUGIN_API bool IsConVarFlagSet(uint64_t conVarHandle, ConVarFlag flag) {
+extern "C" PLUGIN_API bool IsConVarFlagSet(uint64 conVarHandle, ConVarFlag flag) {
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {
@@ -414,7 +414,7 @@ extern "C" PLUGIN_API bool IsConVarFlagSet(uint64_t conVarHandle, ConVarFlag fla
  * @param conVarHandle The handle to the console variable data.
  * @param flags The flags to be added.
  */
-extern "C" PLUGIN_API void AddConVarFlags(uint64_t conVarHandle, ConVarFlag flags) {
+extern "C" PLUGIN_API void AddConVarFlags(uint64 conVarHandle, ConVarFlag flags) {
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {
@@ -437,7 +437,7 @@ extern "C" PLUGIN_API void AddConVarFlags(uint64_t conVarHandle, ConVarFlag flag
  * @param conVarHandle The handle to the console variable data.
  * @param flags The flags to be removed.
  */
-extern "C" PLUGIN_API void RemoveConVarFlags(uint64_t conVarHandle, ConVarFlag flags) {
+extern "C" PLUGIN_API void RemoveConVarFlags(uint64 conVarHandle, ConVarFlag flags) {
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {
@@ -460,7 +460,7 @@ extern "C" PLUGIN_API void RemoveConVarFlags(uint64_t conVarHandle, ConVarFlag f
  * @param conVarHandle The handle to the console variable data.
  * @return The current flags set on the console variable.
  */
-extern "C" PLUGIN_API ConVarFlag GetConVarFlags(uint64_t conVarHandle) {
+extern "C" PLUGIN_API ConVarFlag GetConVarFlags(uint64 conVarHandle) {
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {
@@ -484,7 +484,7 @@ extern "C" PLUGIN_API ConVarFlag GetConVarFlags(uint64_t conVarHandle) {
  * @param max Indicates whether to get the maximum (true) or minimum (false) bound.
  * @return The bound value.
  */
-extern "C" PLUGIN_API plg::string GetConVarBounds(uint64_t conVarHandle, bool max) {
+extern "C" PLUGIN_API plg::string GetConVarBounds(uint64 conVarHandle, bool max) {
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {
@@ -515,7 +515,7 @@ extern "C" PLUGIN_API plg::string GetConVarBounds(uint64_t conVarHandle, bool ma
  * @param max Indicates whether to set the maximum (true) or minimum (false) bound.
  * @param value The value to set as the bound.
  */
-extern "C" PLUGIN_API void SetConVarBounds(uint64_t conVarHandle, bool max, const plg::string& value) {
+extern "C" PLUGIN_API void SetConVarBounds(uint64 conVarHandle, bool max, const plg::string& value) {
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {
@@ -542,7 +542,7 @@ extern "C" PLUGIN_API void SetConVarBounds(uint64_t conVarHandle, bool max, cons
  * @param conVarHandle The handle to the console variable data.
  * @return The output value in string format.
  */
-extern "C" PLUGIN_API plg::string GetConVarDefault(uint64_t conVarHandle) {
+extern "C" PLUGIN_API plg::string GetConVarDefault(uint64 conVarHandle) {
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {
@@ -569,7 +569,7 @@ extern "C" PLUGIN_API plg::string GetConVarDefault(uint64_t conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The output value in string format.
  */
-extern "C" PLUGIN_API plg::string GetConVarValue(uint64_t conVarHandle) {
+extern "C" PLUGIN_API plg::string GetConVarValue(uint64 conVarHandle) {
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {
@@ -596,7 +596,7 @@ extern "C" PLUGIN_API plg::string GetConVarValue(uint64_t conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The output value.
  */
-extern "C" PLUGIN_API plg::any GetConVar(uint64_t conVarHandle) {
+extern "C" PLUGIN_API plg::any GetConVar(uint64 conVarHandle) {
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {
@@ -619,7 +619,7 @@ extern "C" PLUGIN_API plg::any GetConVar(uint64_t conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The current boolean value of the console variable.
  */
-extern "C" PLUGIN_API bool GetConVarBool(uint64_t conVarHandle) {
+extern "C" PLUGIN_API bool GetConVarBool(uint64 conVarHandle) {
 	return utils::GetConVarValueByHandle<bool>(conVarHandle);
 }
 
@@ -629,7 +629,7 @@ extern "C" PLUGIN_API bool GetConVarBool(uint64_t conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The current int16 value of the console variable.
  */
-extern "C" PLUGIN_API int16 GetConVarInt16(uint64_t conVarHandle) {
+extern "C" PLUGIN_API int16 GetConVarInt16(uint64 conVarHandle) {
 	return utils::GetConVarValueByHandle<int16>(conVarHandle);
 }
 
@@ -639,7 +639,7 @@ extern "C" PLUGIN_API int16 GetConVarInt16(uint64_t conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The current uint16 value of the console variable.
  */
-extern "C" PLUGIN_API uint16 GetConVarUInt16(uint64_t conVarHandle) {
+extern "C" PLUGIN_API uint16 GetConVarUInt16(uint64 conVarHandle) {
 	return utils::GetConVarValueByHandle<uint16>(conVarHandle);
 }
 
@@ -649,7 +649,7 @@ extern "C" PLUGIN_API uint16 GetConVarUInt16(uint64_t conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The current int32 value of the console variable.
  */
-extern "C" PLUGIN_API int32 GetConVarInt32(uint64_t conVarHandle) {
+extern "C" PLUGIN_API int32 GetConVarInt32(uint64 conVarHandle) {
 	return utils::GetConVarValueByHandle<int32>(conVarHandle);
 }
 
@@ -659,7 +659,7 @@ extern "C" PLUGIN_API int32 GetConVarInt32(uint64_t conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The current uint32 value of the console variable.
  */
-extern "C" PLUGIN_API uint32 GetConVarUInt32(uint64_t conVarHandle) {
+extern "C" PLUGIN_API uint32 GetConVarUInt32(uint64 conVarHandle) {
 	return utils::GetConVarValueByHandle<uint32>(conVarHandle);
 }
 
@@ -669,7 +669,7 @@ extern "C" PLUGIN_API uint32 GetConVarUInt32(uint64_t conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The current int64 value of the console variable.
  */
-extern "C" PLUGIN_API int64 GetConVarInt64(uint64_t conVarHandle) {
+extern "C" PLUGIN_API int64 GetConVarInt64(uint64 conVarHandle) {
 	return utils::GetConVarValueByHandle<int64>(conVarHandle);
 }
 
@@ -679,7 +679,7 @@ extern "C" PLUGIN_API int64 GetConVarInt64(uint64_t conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The current uint64 value of the console variable.
  */
-extern "C" PLUGIN_API uint64 GetConVarUInt64(uint64_t conVarHandle) {
+extern "C" PLUGIN_API uint64 GetConVarUInt64(uint64 conVarHandle) {
 	return utils::GetConVarValueByHandle<uint64>(conVarHandle);
 }
 
@@ -689,7 +689,7 @@ extern "C" PLUGIN_API uint64 GetConVarUInt64(uint64_t conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The current float value of the console variable.
  */
-extern "C" PLUGIN_API float GetConVarFloat(uint64_t conVarHandle) {
+extern "C" PLUGIN_API float GetConVarFloat(uint64 conVarHandle) {
 	return utils::GetConVarValueByHandle<float>(conVarHandle);
 }
 
@@ -699,7 +699,7 @@ extern "C" PLUGIN_API float GetConVarFloat(uint64_t conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The current double value of the console variable.
  */
-extern "C" PLUGIN_API double GetConVarDouble(uint64_t conVarHandle) {
+extern "C" PLUGIN_API double GetConVarDouble(uint64 conVarHandle) {
 	return utils::GetConVarValueByHandle<double>(conVarHandle);
 }
 
@@ -709,7 +709,7 @@ extern "C" PLUGIN_API double GetConVarDouble(uint64_t conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The current string value of the console variable.
  */
-extern "C" PLUGIN_API plg::string GetConVarString(uint64_t conVarHandle) {
+extern "C" PLUGIN_API plg::string GetConVarString(uint64 conVarHandle) {
 	return utils::GetConVarValueByHandle<CUtlString>(conVarHandle).Get();
 }
 
@@ -719,7 +719,7 @@ extern "C" PLUGIN_API plg::string GetConVarString(uint64_t conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The current Color value of the console variable.
  */
-extern "C" PLUGIN_API int GetConVarColor(uint64_t conVarHandle) {
+extern "C" PLUGIN_API int GetConVarColor(uint64 conVarHandle) {
 	return utils::GetConVarValueByHandle<Color>(conVarHandle).GetRawColor();
 }
 
@@ -729,7 +729,7 @@ extern "C" PLUGIN_API int GetConVarColor(uint64_t conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The current Vector2D value of the console variable.
  */
-extern "C" PLUGIN_API plg::vec2 GetConVarVector2(uint64_t conVarHandle) {
+extern "C" PLUGIN_API plg::vec2 GetConVarVector2(uint64 conVarHandle) {
 	const Vector2D& vec = utils::GetConVarValueByHandle<Vector2D>(conVarHandle);
 	return *reinterpret_cast<const plg::vec2*>(&vec);
 }
@@ -740,7 +740,7 @@ extern "C" PLUGIN_API plg::vec2 GetConVarVector2(uint64_t conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The current Vector value of the console variable.
  */
-extern "C" PLUGIN_API plg::vec3 GetConVarVector(uint64_t conVarHandle) {
+extern "C" PLUGIN_API plg::vec3 GetConVarVector(uint64 conVarHandle) {
 	const Vector& vec = utils::GetConVarValueByHandle<Vector>(conVarHandle);
 	return *reinterpret_cast<const plg::vec3*>(&vec);
 }
@@ -751,7 +751,7 @@ extern "C" PLUGIN_API plg::vec3 GetConVarVector(uint64_t conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The current Vector4D value of the console variable.
  */
-extern "C" PLUGIN_API plg::vec4 GetConVarVector4(uint64_t conVarHandle) {
+extern "C" PLUGIN_API plg::vec4 GetConVarVector4(uint64 conVarHandle) {
 	const Vector4D& vec = utils::GetConVarValueByHandle<Vector4D>(conVarHandle);
 	return *reinterpret_cast<const plg::vec4*>(&vec);
 }
@@ -762,7 +762,7 @@ extern "C" PLUGIN_API plg::vec4 GetConVarVector4(uint64_t conVarHandle) {
  * @param conVarHandle The handle to the console variable data.
  * @return The current QAngle value of the console variable.
  */
-extern "C" PLUGIN_API plg::vec3 GetConVarQAngle(uint64_t conVarHandle) {
+extern "C" PLUGIN_API plg::vec3 GetConVarQAngle(uint64 conVarHandle) {
 	const QAngle& ang = utils::GetConVarValueByHandle<QAngle>(conVarHandle);
 	return *reinterpret_cast<const plg::vec3*>(&ang);
 }
@@ -775,7 +775,7 @@ extern "C" PLUGIN_API plg::vec3 GetConVarQAngle(uint64_t conVarHandle) {
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarValue(uint64_t conVarHandle, const plg::string& value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarValue(uint64 conVarHandle, const plg::string& value, bool replicate, bool notify) {
 	utils::SetConVarStringByHandle(conVarHandle, value, replicate, notify);
 }
 
@@ -787,7 +787,7 @@ extern "C" PLUGIN_API void SetConVarValue(uint64_t conVarHandle, const plg::stri
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVar(uint64_t conVarHandle, const plg::any& value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVar(uint64 conVarHandle, const plg::any& value, bool replicate, bool notify) {
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {
@@ -925,7 +925,7 @@ extern "C" PLUGIN_API void SetConVar(uint64_t conVarHandle, const plg::any& valu
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarBool(uint64_t conVarHandle, bool value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarBool(uint64 conVarHandle, bool value, bool replicate, bool notify) {
 	utils::SetConVarByHandle(conVarHandle, value, replicate, notify);
 }
 
@@ -937,7 +937,7 @@ extern "C" PLUGIN_API void SetConVarBool(uint64_t conVarHandle, bool value, bool
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarInt16(uint64_t conVarHandle, int16 value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarInt16(uint64 conVarHandle, int16 value, bool replicate, bool notify) {
 	utils::SetConVarByHandle(conVarHandle, value, replicate, notify);
 }
 
@@ -949,7 +949,7 @@ extern "C" PLUGIN_API void SetConVarInt16(uint64_t conVarHandle, int16 value, bo
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarUInt16(uint64_t conVarHandle, uint16 value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarUInt16(uint64 conVarHandle, uint16 value, bool replicate, bool notify) {
 	utils::SetConVarByHandle(conVarHandle, value, replicate, notify);
 }
 
@@ -961,7 +961,7 @@ extern "C" PLUGIN_API void SetConVarUInt16(uint64_t conVarHandle, uint16 value, 
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarInt32(uint64_t conVarHandle, int32 value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarInt32(uint64 conVarHandle, int32 value, bool replicate, bool notify) {
 	utils::SetConVarByHandle(conVarHandle, value, replicate, notify);
 }
 
@@ -973,7 +973,7 @@ extern "C" PLUGIN_API void SetConVarInt32(uint64_t conVarHandle, int32 value, bo
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarUInt32(uint64_t conVarHandle, uint32 value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarUInt32(uint64 conVarHandle, uint32 value, bool replicate, bool notify) {
 	utils::SetConVarByHandle(conVarHandle, value, replicate, notify);
 }
 
@@ -985,7 +985,7 @@ extern "C" PLUGIN_API void SetConVarUInt32(uint64_t conVarHandle, uint32 value, 
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarInt64(uint64_t conVarHandle, int64 value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarInt64(uint64 conVarHandle, int64 value, bool replicate, bool notify) {
 	utils::SetConVarByHandle(conVarHandle, value, replicate, notify);
 }
 
@@ -997,7 +997,7 @@ extern "C" PLUGIN_API void SetConVarInt64(uint64_t conVarHandle, int64 value, bo
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarUInt64(uint64_t conVarHandle, uint64 value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarUInt64(uint64 conVarHandle, uint64 value, bool replicate, bool notify) {
 	utils::SetConVarByHandle(conVarHandle, value, replicate, notify);
 }
 
@@ -1009,7 +1009,7 @@ extern "C" PLUGIN_API void SetConVarUInt64(uint64_t conVarHandle, uint64 value, 
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarFloat(uint64_t conVarHandle, float value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarFloat(uint64 conVarHandle, float value, bool replicate, bool notify) {
 	utils::SetConVarByHandle(conVarHandle, value, replicate, notify);
 }
 
@@ -1021,7 +1021,7 @@ extern "C" PLUGIN_API void SetConVarFloat(uint64_t conVarHandle, float value, bo
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarDouble(uint64_t conVarHandle, double value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarDouble(uint64 conVarHandle, double value, bool replicate, bool notify) {
 	utils::SetConVarByHandle(conVarHandle, value, replicate, notify);
 }
 
@@ -1033,7 +1033,7 @@ extern "C" PLUGIN_API void SetConVarDouble(uint64_t conVarHandle, double value, 
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarString(uint64_t conVarHandle, const plg::string& value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarString(uint64 conVarHandle, const plg::string& value, bool replicate, bool notify) {
 	utils::SetConVarByHandle(conVarHandle, CUtlString(value.c_str()), replicate, notify);
 }
 
@@ -1045,7 +1045,7 @@ extern "C" PLUGIN_API void SetConVarString(uint64_t conVarHandle, const plg::str
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarColor(uint64_t conVarHandle, int value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarColor(uint64 conVarHandle, int value, bool replicate, bool notify) {
 	utils::SetConVarByHandle(conVarHandle, *reinterpret_cast<Color*>(&value), replicate, notify);
 }
 
@@ -1057,7 +1057,7 @@ extern "C" PLUGIN_API void SetConVarColor(uint64_t conVarHandle, int value, bool
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarVector2(uint64_t conVarHandle, const Vector2D& value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarVector2(uint64 conVarHandle, const Vector2D& value, bool replicate, bool notify) {
 	utils::SetConVarByHandle(conVarHandle, value, replicate, notify);
 }
 
@@ -1069,7 +1069,7 @@ extern "C" PLUGIN_API void SetConVarVector2(uint64_t conVarHandle, const Vector2
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarVector3(uint64_t conVarHandle, const Vector& value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarVector3(uint64 conVarHandle, const Vector& value, bool replicate, bool notify) {
 	utils::SetConVarByHandle(conVarHandle, value, replicate, notify);
 }
 
@@ -1081,7 +1081,7 @@ extern "C" PLUGIN_API void SetConVarVector3(uint64_t conVarHandle, const Vector&
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarVector4(uint64_t conVarHandle, const Vector4D& value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarVector4(uint64 conVarHandle, const Vector4D& value, bool replicate, bool notify) {
 	utils::SetConVarByHandle(conVarHandle, value, replicate, notify);
 }
 
@@ -1093,7 +1093,7 @@ extern "C" PLUGIN_API void SetConVarVector4(uint64_t conVarHandle, const Vector4
  * @param replicate If set to true, the new convar value will be set on all clients. This will only work if the convar has the FCVAR_REPLICATED flag and actually exists on clients.
  * @param notify If set to true, clients will be notified that the convar has changed. This will only work if the convar has the FCVAR_NOTIFY flag.
  */
-extern "C" PLUGIN_API void SetConVarQAngle(uint64_t conVarHandle, const QAngle& value, bool replicate, bool notify) {
+extern "C" PLUGIN_API void SetConVarQAngle(uint64 conVarHandle, const QAngle& value, bool replicate, bool notify) {
 	utils::SetConVarByHandle(conVarHandle, value, replicate, notify);
 }
 
@@ -1104,7 +1104,7 @@ extern "C" PLUGIN_API void SetConVarQAngle(uint64_t conVarHandle, const QAngle& 
  * @param conVarHandle The handle to the console variable data.
  * @param value The value to send to the client.
  */
-extern "C" PLUGIN_API void SendConVarValue(int playerSlot, uint64_t conVarHandle, const plg::string& value) {
+extern "C" PLUGIN_API void SendConVarValue(int playerSlot, uint64 conVarHandle, const plg::string& value) {
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {

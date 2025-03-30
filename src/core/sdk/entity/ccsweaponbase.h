@@ -122,7 +122,13 @@ public:
 	SCHEMA_FIELD(CSWeaponCategory, m_WeaponCategory)
 	SCHEMA_FIELD(gear_slot_t, m_GearSlot)
 	SCHEMA_FIELD(int, m_nPrice)
+	SCHEMA_FIELD(int, m_nKillAward);
 	SCHEMA_FIELD(int, m_nPrimaryReserveAmmoMax);
+	SCHEMA_FIELD(int, m_nSecondaryReserveAmmoMax);
+	SCHEMA_FIELD(bool, m_bMeleeWeapon);
+	SCHEMA_FIELD(bool, m_bHasBurstMode);
+	SCHEMA_FIELD(bool, m_bIsRevolver);
+	SCHEMA_FIELD(bool, m_bCannotShootUnderwater);
 };
 
 class CBasePlayerWeapon : public CEconEntity {

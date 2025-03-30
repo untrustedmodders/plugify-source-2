@@ -77,6 +77,7 @@ using Memory = DynLibUtils::CMemory;
 using Module = DynLibUtils::CModule;
 
 class CPlayer_WeaponServices;
+class CCSWeaponBaseVData;
 class IEntityFindFilter;
 class CEntitySystem;
 class CCSPlayerPawn;
@@ -97,6 +98,8 @@ namespace addresses {
 	//inline void (*TracePlayerBBox)(const Vector& start, const Vector& end, const bbox_t& bounds, CTraceFilterS2* filter, trace_t_s2& pm);
 
 	inline void (*CCSPlayer_WeaponServices_RemoveItem)(CPlayer_WeaponServices* player, CBasePlayerWeapon* weapon);
+
+	inline CCSWeaponBaseVData* (*GetCSWeaponDataFromKey)(int, const char*);
 
 	inline void (*CCSPlayerController_SwitchTeam)(CCSPlayerController* controller, int team);
 

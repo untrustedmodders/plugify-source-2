@@ -18595,7 +18595,7 @@
         }
       ],
       "retType": {
-        "type": "uint32_t",
+        "type": "uint32",
         "description": "The type of the weapon, or WEAPONTYPE_UNKNOWN if the entity is invalid.",
         "enum": {
           "name": "CSWeaponType",

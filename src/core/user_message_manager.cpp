@@ -34,7 +34,7 @@ bool UserMessageManager::UnhookUserMessage(uint16_t messageId, UserMessageCallba
 	return commandInfo.callbacks[static_cast<size_t>(mode)].Unregister(callback);
 }
 
-ResultType UserMessageManager::ExecuteMessageCallbacks(INetworkMessageInternal* pEvent, CNetMessage* pData, int nClientCount, uint64* clients, HookMode mode) {
+ResultType UserMessageManager::ExecuteMessageCallbacks(INetworkMessageInternal* pEvent, CNetMessage* pData, int nClientCount, uint64_t* clients, HookMode mode) {
 	UserMessage message(pEvent, pData, nClientCount, clients);
 
 	uint16_t messageID = message.GetMessageID();
@@ -83,7 +83,7 @@ ResultType UserMessageManager::ExecuteMessageCallbacks(INetworkMessageInternal* 
 
 poly::ReturnAction UserMessageManager::Hook_PostEvent(poly::Params& params, int count, poly::Return& ret, HookMode mode) {
 	auto nClientCount = poly::GetArgument<int>(params, 3);
-	auto clients = poly::GetArgument<uint64*>(params, 4);
+	auto clients = poly::GetArgument<uint64_t*>(params, 4);
 	auto pEvent = poly::GetArgument<INetworkMessageInternal*>(params, 5);
 	auto pData = poly::GetArgument<CNetMessage*>(params, 6);
 
