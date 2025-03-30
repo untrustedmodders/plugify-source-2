@@ -459,6 +459,9 @@
         PbAddQAngle;
 
         GetWeaponVData;
+        GetWeaponType;
+        GetWeaponCategory;
+        GetWeaponGearSlot;
         GetWeaponDefIndex;
     local: *;
 };

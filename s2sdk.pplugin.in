@@ -18582,6 +18582,118 @@
       }
     },
     {
+      "name": "GetWeaponType",
+      "group": "Weapons",
+      "description": "Retrieves the weapon type of a given entity.",
+      "funcName": "GetWeaponType",
+      "paramTypes": [
+        {
+          "name": "entityHandle",
+          "type": "int32",
+          "ref": false,
+          "description": "The handle of the entity (weapon)."
+        }
+      ],
+      "retType": {
+        "type": "uint32_t",
+        "description": "The type of the weapon, or WEAPONTYPE_UNKNOWN if the entity is invalid.",
+        "enum": {
+          "name": "CSWeaponType",
+          "description": "Enum representing different weapon types.",
+          "values": [
+            { "value": 0, "name": "Knife" },
+            { "value": 1, "name": "Pistol" },
+            { "value": 2, "name": "SubmachineGun" },
+            { "value": 3, "name": "Rifle" },
+            { "value": 4, "name": "Shotgun" },
+            { "value": 5, "name": "SniperRifle" },
+            { "value": 6, "name": "MachineGun" },
+            { "value": 7, "name": "C4" },
+            { "value": 8, "name": "Taser" },
+            { "value": 9, "name": "Grenade" },
+            { "value": 10, "name": "Equipment" },
+            { "value": 11, "name": "StackableItem" },
+            { "value": 12, "name": "Fists" },
+            { "value": 13, "name": "BreachCharge" },
+            { "value": 14, "name": "BumpMine" },
+            { "value": 15, "name": "Tablet" },
+            { "value": 16, "name": "Melee" },
+            { "value": 17, "name": "Shield" },
+            { "value": 18, "name": "ZoneRepulsor" },
+            { "value": 19, "name": "Unknown" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "GetWeaponCategory",
+      "group": "Weapons",
+      "description": "Retrieves the weapon category of a given entity.",
+      "funcName": "GetWeaponCategory",
+      "paramTypes": [
+        {
+          "name": "entityHandle",
+          "type": "int32",
+          "ref": false,
+          "description": "The handle of the entity (weapon)."
+        }
+      ],
+      "retType": {
+        "type": "uint32",
+        "description": "The category of the weapon, or WEAPONCATEGORY_OTHER if the entity is invalid.",
+        "enum": {
+          "name": "CSWeaponCategory",
+          "description": "Enum representing different weapon categories.",
+          "values": [
+            { "value": 0, "name": "Other" },
+            { "value": 1, "name": "Melee" },
+            { "value": 2, "name": "Secondary" },
+            { "value": 3, "name": "SMG" },
+            { "value": 4, "name": "Rifle" },
+            { "value": 5, "name": "Heavy" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "GetWeaponGearSlot",
+      "group": "Weapons",
+      "description": "Retrieves the gear slot of a given weapon entity.",
+      "funcName": "GetWeaponGearSlot",
+      "paramTypes": [
+        {
+          "name": "entityHandle",
+          "type": "int32",
+          "ref": false,
+          "description": "The handle of the entity (weapon)."
+        }
+      ],
+      "retType": {
+        "type": "uint32",
+        "description": "The gear slot of the weapon, or GEAR_SLOT_INVALID if the entity is invalid.",
+        "enum": {
+          "name": "GearSlot",
+          "description": "Enum representing different gear slots.",
+          "values": [
+            { "value": 4294967295, "name": "Invalid" },
+            { "value": 0, "name": "Rifle" },
+            { "value": 1, "name": "Pistol" },
+            { "value": 2, "name": "Knife" },
+            { "value": 3, "name": "Grenades" },
+            { "value": 4, "name": "C4" },
+            { "value": 5, "name": "ReservedSlot6" },
+            { "value": 6, "name": "ReservedSlot7" },
+            { "value": 7, "name": "ReservedSlot8" },
+            { "value": 8, "name": "ReservedSlot9" },
+            { "value": 9, "name": "ReservedSlot10" },
+            { "value": 10, "name": "ReservedSlot11" },
+            { "value": 11, "name": "Boosts" },
+            { "value": 12, "name": "Utility" }
+          ]
+        }
+      }
+    },
+    {
       "name": "GetWeaponDefIndex",
       "group": "Weapons",
       "description": "Retrieves the weapon definition index for a given entity handle.",
@@ -18596,7 +18708,85 @@
       ],
       "retType": {
         "type": "uint16",
-        "description": "The weapon definition index as a `uint16_t`, or 0 if the entity handle is invalid."
+        "description": "The weapon definition index as a `uint16_t`, or 0 if the entity handle is invalid.",
+        "enum": {
+          "name": "WeaponDefIndex",
+          "description": "Enum representing different weapon definition indices.",
+          "values": [
+            { "value": 0, "name": "InvDefInd" },
+            { "value": 1, "name": "Deagle" },
+            { "value": 2, "name": "Elite" },
+            { "value": 3, "name": "FiveSeven" },
+            { "value": 4, "name": "Glock" },
+            { "value": 7, "name": "AK47" },
+            { "value": 8, "name": "AUG" },
+            { "value": 9, "name": "AWP" },
+            { "value": 10, "name": "FAMAS" },
+            { "value": 11, "name": "G3SG1" },
+            { "value": 13, "name": "GalilAR" },
+            { "value": 14, "name": "M249" },
+            { "value": 16, "name": "M4A1" },
+            { "value": 17, "name": "MAC10" },
+            { "value": 19, "name": "P90" },
+            { "value": 20, "name": "ZoneRepulsor" },
+            { "value": 23, "name": "MP5SD" },
+            { "value": 24, "name": "UMP45" },
+            { "value": 25, "name": "XM1014" },
+            { "value": 26, "name": "Bizon" },
+            { "value": 27, "name": "MAG7" },
+            { "value": 28, "name": "Negev" },
+            { "value": 29, "name": "SawedOff" },
+            { "value": 30, "name": "Tec9" },
+            { "value": 31, "name": "Taser" },
+            { "value": 32, "name": "HKP2000" },
+            { "value": 33, "name": "MP7" },
+            { "value": 34, "name": "MP9" },
+            { "value": 35, "name": "Nova" },
+            { "value": 36, "name": "P250" },
+            { "value": 37, "name": "Shield" },
+            { "value": 38, "name": "SCAR20" },
+            { "value": 39, "name": "SG556" },
+            { "value": 40, "name": "SSG08" },
+            { "value": 41, "name": "KnifeEgg" },
+            { "value": 42, "name": "Knife" },
+            { "value": 43, "name": "Flashbang" },
+            { "value": 44, "name": "HEGrenade" },
+            { "value": 45, "name": "SmokeGrenade" },
+            { "value": 46, "name": "Molotov" },
+            { "value": 47, "name": "Decoy" },
+            { "value": 48, "name": "IncGrenade" },
+            { "value": 49, "name": "C4" },
+            { "value": 50, "name": "Kevlar" },
+            { "value": 51, "name": "AssaultSuit" },
+            { "value": 52, "name": "HeavyAssaultSuit" },
+            { "value": 54, "name": "NVG" },
+            { "value": 55, "name": "Defuser" },
+            { "value": 56, "name": "Cutters" },
+            { "value": 57, "name": "HealthShot" },
+            { "value": 58, "name": "MusicKitDefault" },
+            { "value": 59, "name": "KnifeT" },
+            { "value": 60, "name": "M4A1Silencer" },
+            { "value": 61, "name": "USPSilencer" },
+            { "value": 62, "name": "RecipeTradeUp" },
+            { "value": 63, "name": "CZ75A" },
+            { "value": 64, "name": "Revolver" },
+            { "value": 65, "name": "RemoveKeychainTool" },
+            { "value": 68, "name": "TagGrenade" },
+            { "value": 69, "name": "Fists" },
+            { "value": 70, "name": "BreachCharge" },
+            { "value": 72, "name": "Tablet" },
+            { "value": 74, "name": "Melee" },
+            { "value": 75, "name": "Axe" },
+            { "value": 76, "name": "Hammer" },
+            { "value": 78, "name": "Spanner" },
+            { "value": 80, "name": "KnifeGhost" },
+            { "value": 81, "name": "Firebomb" },
+            { "value": 82, "name": "Diversion" },
+            { "value": 83, "name": "FragGrenade" },
+            { "value": 84, "name": "Snowball" },
+            { "value": 85, "name": "BumpMine" }
+          ]
+        }
       }
     }
   ]

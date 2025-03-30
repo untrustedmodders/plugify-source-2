@@ -23,7 +23,7 @@
 #include "cbasemodelentity.h"
 #include "ccollisionproperty.h"
 
-enum gear_slot_t : uint32_t {
+enum class gear_slot_t : uint32_t {
 	GEAR_SLOT_INVALID = 0xffffffff,
 	GEAR_SLOT_RIFLE = 0x0,
 	GEAR_SLOT_PISTOL = 0x1,
@@ -41,6 +41,39 @@ enum gear_slot_t : uint32_t {
 	GEAR_SLOT_COUNT = 0xd,
 	GEAR_SLOT_FIRST = 0x0,
 	GEAR_SLOT_LAST = 0xc,
+};
+
+enum class CSWeaponType : uint32_t {
+	WEAPONTYPE_KNIFE = 0x0,
+	WEAPONTYPE_PISTOL = 0x1,
+	WEAPONTYPE_SUBMACHINEGUN = 0x2,
+	WEAPONTYPE_RIFLE = 0x3,
+	WEAPONTYPE_SHOTGUN = 0x4,
+	WEAPONTYPE_SNIPER_RIFLE = 0x5,
+	WEAPONTYPE_MACHINEGUN = 0x6,
+	WEAPONTYPE_C4 = 0x7,
+	WEAPONTYPE_TASER = 0x8,
+	WEAPONTYPE_GRENADE = 0x9,
+	WEAPONTYPE_EQUIPMENT = 0xa,
+	WEAPONTYPE_STACKABLEITEM = 0xb,
+	WEAPONTYPE_FISTS = 0xc,
+	WEAPONTYPE_BREACHCHARGE = 0xd,
+	WEAPONTYPE_BUMPMINE = 0xe,
+	WEAPONTYPE_TABLET = 0xf,
+	WEAPONTYPE_MELEE = 0x10,
+	WEAPONTYPE_SHIELD = 0x11,
+	WEAPONTYPE_ZONE_REPULSOR = 0x12,
+	WEAPONTYPE_UNKNOWN = 0x13,
+};
+
+enum class CSWeaponCategory : uint32_t {
+	WEAPONCATEGORY_OTHER = 0x0,
+	WEAPONCATEGORY_MELEE = 0x1,
+	WEAPONCATEGORY_SECONDARY = 0x2,
+	WEAPONCATEGORY_SMG = 0x3,
+	WEAPONCATEGORY_RIFLE = 0x4,
+	WEAPONCATEGORY_HEAVY = 0x5,
+	WEAPONCATEGORY_COUNT = 0x6,
 };
 
 class CEconItemView {
@@ -85,6 +118,8 @@ class CCSWeaponBaseVData : public CBasePlayerWeaponVData {
 public:
 	DECLARE_SCHEMA_CLASS(CCSWeaponBaseVData)
 
+	SCHEMA_FIELD(CSWeaponType, m_WeaponType)
+	SCHEMA_FIELD(CSWeaponCategory, m_WeaponCategory)
 	SCHEMA_FIELD(gear_slot_t, m_GearSlot)
 	SCHEMA_FIELD(int, m_nPrice)
 	SCHEMA_FIELD(int, m_nPrimaryReserveAmmoMax);
