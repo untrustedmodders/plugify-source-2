@@ -237,13 +237,15 @@ Memory GameConfig::ResolveSignature(const plg::string& name) const {
 }
 
 GameConfigManager::GameConfigManager() {
-	m_modules.emplace("engine2", Module(utils::GameDirectory() + S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "engine2"));
-	m_modules.emplace("server", Module(utils::GameDirectory() + S2SDK_GAME_BINARY S2SDK_LIBRARY_PREFIX "server"));
-	/*m_modules.emplace("tier0", CModule(utils::GameDirectory() + S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "tier0"));
-	m_modules.emplace("schemasystem", CModule(utils::GameDirectory() + S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "schemasystem"));
-	m_modules.emplace("filesystem", CModule(utils::GameDirectory() + S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "filesystem_stdio"));
-	m_modules.emplace("vscript", CModule(utils::GameDirectory() + S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "vscript"));
-	m_modules.emplace("networksystem", CModule(utils::GameDirectory() + S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "networksystem"));*/
+	// metamod workaround
+	if (Module("metamod.2.cs2").GetHandle() != nullptr) {
+		m_modules.emplace("engine2", Module(utils::GameDirectory() + S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "engine2"));
+		m_modules.emplace("server", Module(utils::GameDirectory() + S2SDK_GAME_BINARY S2SDK_LIBRARY_PREFIX "server"));
+	} else {
+		m_modules.emplace("engine2", Module("engine2"));
+		m_modules.emplace("server", Module("server"));
+	}
+	// add more for preload
 }
 
 uint32_t GameConfigManager::LoadGameConfigFile(plg::vector<plg::string> paths) {
