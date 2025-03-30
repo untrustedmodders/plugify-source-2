@@ -8,7 +8,7 @@
 #include <igamesystemfactory.h>
 #include <networksystem/inetworkmessages.h>
 
-class Source2SDK final : public plg::IPluginEntry, public CBaseGameSystem {
+class Source2SDK final : public plg::IPluginEntry {
 public:
 	void OnPluginStart() final;
 	void OnPluginEnd() final;
