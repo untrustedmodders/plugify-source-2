@@ -7452,6 +7452,57 @@
       }
     },
     {
+      "name": "FindModule",
+      "group": "Engine",
+      "description": "Finds a module by name.",
+      "funcName": "FindModule",
+      "paramTypes": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": ""
+        }
+      ],
+      "retType": {
+        "type": "ptr64",
+        "description": "A pointer to the specified module."
+      }
+    },
+    {
+      "name": "FindInterface",
+      "group": "Engine",
+      "description": "Finds an interface by name.",
+      "funcName": "FindInterface",
+      "paramTypes": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "The name of the interface to find."
+        }
+      ],
+      "retType": {
+        "type": "ptr64",
+        "description": "A pointer to the interface."
+      }
+    },
+    {
+      "name": "QueryInterface",
+      "group": "Engine",
+      "description": "Queries an interface from a specified module.",
+      "funcName": "QueryInterface",
+      "paramTypes": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "The name of the module to query the interface from."
+        }
+      ],
+      "retType": {
+        "type": "ptr64",
+        "description": "A pointer to the queried interface."
+      }
+    },
+    {
       "name": "GetGameDirectory",
       "group": "Engine",
       "description": "Returns the path of the game's directory.",
