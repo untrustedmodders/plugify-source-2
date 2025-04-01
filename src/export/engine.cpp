@@ -17,6 +17,7 @@ PLUGIFY_WARN_IGNORE(4190)
 /**
  * @brief Finds a module by name.
  *
+ * @param name The name of the module to find.
  * @return A pointer to the specified module.
  */
 extern "C" PLUGIN_API void* FindModule(const plg::string& name) {

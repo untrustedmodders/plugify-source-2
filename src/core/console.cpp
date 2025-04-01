@@ -1,5 +1,3 @@
-#pragma once
-
 #include <tier0/logging.h>
 #include <convar.h>
 
