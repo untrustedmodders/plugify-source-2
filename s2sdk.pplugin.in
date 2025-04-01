@@ -7460,7 +7460,7 @@
         {
           "name": "name",
           "type": "string",
-          "description": ""
+          "description": "The name of the module to find."
         }
       ],
       "retType": {
