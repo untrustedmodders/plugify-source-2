@@ -13,9 +13,9 @@ bool CoreConfig::Initialize() {
 	for (const auto& path : m_paths) {
 		paths.emplace_back(path);
 	}
-	auto config = ReadConfigs(paths);
+	auto config = pcf::ReadConfigs(paths);
 	if (!config) {
-		S2_LOGF(LS_ERROR, "Failed to load configuration file: \"%s\"\n", GetError().data());
+		S2_LOGF(LS_ERROR, "Failed to load configuration file: \"%s\"\n", pcf::GetError().data());
 		return false;
 	}
 
