@@ -93,10 +93,10 @@ public:
 	Player* ToPlayer(CSteamID steamid, bool validate = false) const;
 
 	void OnSteamAPIActivated();
-	bool OnClientConnect(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID);
-	bool OnClientConnect_Post(CPlayerSlot slot, bool bOrigRet);
+	bool OnClientConnect(CPlayerSlot slot, const char* name, uint64 xuid, const char* networkID);
+	bool OnClientConnect_Post(CPlayerSlot slot, bool origRet);
 	void OnClientConnected(CPlayerSlot slot);
-	void OnClientPutInServer(CPlayerSlot slot, char const* pszName);
+	void OnClientPutInServer(CPlayerSlot slot, char const* name);
 	void OnClientDisconnect(CPlayerSlot slot, ENetworkDisconnectionReason reason);
 	void OnClientDisconnect_Post(CPlayerSlot slot, ENetworkDisconnectionReason reason);
 	void OnClientActive(CPlayerSlot slot, bool bLoadGame) const;

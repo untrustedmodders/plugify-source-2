@@ -153,15 +153,15 @@ void PlayerManager::OnValidateAuthTicket(ValidateAuthTicketResponse_t* pResponse
 
 thread_local bool s_refuseConnection;
 
-bool PlayerManager::OnClientConnect(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID) {
-	Player* pPlayer = ToPlayer(slot);
-	if (pPlayer) {
-		pPlayer->Init(slot, xuid);
+bool PlayerManager::OnClientConnect(CPlayerSlot slot, const char* name, uint64 xuid, const char* networkID) {
+	Player* player = ToPlayer(slot);
+	if (player) {
+		player->Init(slot, xuid);
 
 		s_refuseConnection = false;
 
 		for (size_t i = 0; i < GetOnClientConnectListenerManager().GetCount(); ++i) {
-			s_refuseConnection |= !GetOnClientConnectListenerManager().Notify(i, slot, pszName, pszNetworkID);
+			s_refuseConnection |= !GetOnClientConnectListenerManager().Notify(i, slot, name, networkID);
 		}
 
 		return s_refuseConnection;
@@ -170,33 +170,33 @@ bool PlayerManager::OnClientConnect(CPlayerSlot slot, const char* pszName, uint6
 	return true;
 }
 
-bool PlayerManager::OnClientConnect_Post(CPlayerSlot slot, bool bOrigRet) {
-	Player* pPlayer = ToPlayer(slot);
-	if (pPlayer) {
+bool PlayerManager::OnClientConnect_Post(CPlayerSlot slot, bool origRet) {
+	Player* player = ToPlayer(slot);
+	if (player) {
 		if (s_refuseConnection) {
-			bOrigRet = false;
+			origRet = false;
 		}
 
-		if (bOrigRet) {
+		if (origRet) {
 			GetOnClientConnect_PostListenerManager().Notify(slot);
 		} else {
-			pPlayer->Reset();
+			player->Reset();
 		}
 	}
 
-	return bOrigRet;
+	return origRet;
 }
 
 void PlayerManager::OnClientConnected(CPlayerSlot slot) {
 	GetOnClientConnectedListenerManager().Notify(slot);
 }
 
-void PlayerManager::OnClientPutInServer(CPlayerSlot slot, char const* pszName) {
-	Player* pPlayer = ToPlayer(slot);
-	if (pPlayer) {
+void PlayerManager::OnClientPutInServer(CPlayerSlot slot, char const* name) {
+	Player* player = ToPlayer(slot);
+	if (player) {
 		// For bots only
-		if (pPlayer->GetPlayerSlot() == CPlayerSlot{-1}) {
-			pPlayer->Init(slot, 0);
+		if (player->GetPlayerSlot() == CPlayerSlot{-1}) {
+			player->Init(slot, 0);
 		}
 
 		GetOnClientPutInServerListenerManager().Notify(slot);
@@ -210,9 +210,9 @@ void PlayerManager::OnClientDisconnect(CPlayerSlot slot, ENetworkDisconnectionRe
 void PlayerManager::OnClientDisconnect_Post(CPlayerSlot slot, ENetworkDisconnectionReason reason) {
 	GetOnClientDisconnect_PostListenerManager().Notify(slot, reason);
 
-	Player* pPlayer = ToPlayer(slot);
-	if (pPlayer) {
-		pPlayer->Reset();
+	Player* player = ToPlayer(slot);
+	if (player) {
+		player->Reset();
 	}
 }
 

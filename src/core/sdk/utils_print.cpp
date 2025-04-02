@@ -182,12 +182,12 @@ bool utils::CFormat(char* buffer, uint64_t buffer_size, const char* text) {
 
 void utils::ClientPrintFilter(IRecipientFilter* filter, int msg_dest, const char* msg_name) {
 	INetworkMessageInternal* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("TextMsg");
-	auto* pMessage = pNetMsg->AllocateMessage()->ToPB<CUserMessageTextMsg>();
+	auto* msg = pNetMsg->AllocateMessage()->ToPB<CUserMessageTextMsg>();
 
-	pMessage->set_dest(msg_dest);
-	pMessage->add_param(msg_name);
+	msg->set_dest(msg_dest);
+	msg->add_param(msg_name);
 
-	g_pGameEventSystem->PostEventAbstract(-1, false, filter, pNetMsg, pMessage, 0);
+	g_pGameEventSystem->PostEventAbstract(-1, false, filter, pNetMsg, msg, 0);
 }
 
 void utils::PrintConsole(CPlayerSlot slot, const char* message) {
@@ -211,19 +211,19 @@ void utils::PrintAlert(CPlayerSlot slot, const char* message) {
 }
 
 void utils::PrintHtmlCentre(CPlayerSlot slot, const char* message) {
-	IGameEvent* pEvent = g_pGameEventManager->CreateEvent("show_survival_respawn_status");
-	if (!pEvent) {
+	IGameEvent* event = g_pGameEventManager->CreateEvent("show_survival_respawn_status");
+	if (!event) {
 		return;
 	}
 
-	pEvent->SetString("loc_token", message);
-	pEvent->SetInt("duration", 5);
-	pEvent->SetInt("userid", slot);
+	event->SetString("loc_token", message);
+	event->SetInt("duration", 5);
+	event->SetInt("userid", slot);
 
 	IGameEventListener2* listener = addresses::GetLegacyGameEventListener(slot);
-	listener->FireGameEvent(pEvent);
+	listener->FireGameEvent(event);
 
-	g_pGameEventManager->FreeEvent(pEvent);
+	g_pGameEventManager->FreeEvent(event);
 }
 
 void utils::PrintConsoleAll(const char* message) {
@@ -251,16 +251,16 @@ void utils::PrintAlertAll(const char* message) {
 }
 
 void utils::PrintHtmlCentreAll(const char* message) {
-	IGameEvent* pEvent = g_pGameEventManager->CreateEvent("show_survival_respawn_status", true);
-	if (!pEvent) {
+	IGameEvent* event = g_pGameEventManager->CreateEvent("show_survival_respawn_status", true);
+	if (!event) {
 		return;
 	}
 
-	pEvent->SetString("loc_token", message);
-	pEvent->SetInt("duration", 5);
-	pEvent->SetInt("userid", -1);
+	event->SetString("loc_token", message);
+	event->SetInt("duration", 5);
+	event->SetInt("userid", -1);
 
-	g_pGameEventManager->FireEvent(pEvent);
+	g_pGameEventManager->FireEvent(event);
 }
 
 void utils::CPrintChat(CPlayerSlot slot, const char* message) {

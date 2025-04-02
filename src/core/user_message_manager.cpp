@@ -34,8 +34,8 @@ bool UserMessageManager::UnhookUserMessage(uint16_t messageId, UserMessageCallba
 	return commandInfo.callbacks[static_cast<size_t>(mode)].Unregister(callback);
 }
 
-ResultType UserMessageManager::ExecuteMessageCallbacks(INetworkMessageInternal* pEvent, CNetMessage* pData, int nClientCount, uint64_t* clients, HookMode mode) {
-	UserMessage message(pEvent, pData, nClientCount, clients);
+ResultType UserMessageManager::ExecuteMessageCallbacks(INetworkMessageInternal* msgSerializable, CNetMessage* msgData, int clientCount, uint64_t* clients, HookMode mode) {
+	UserMessage message(msgSerializable, msgData, clientCount, clients);
 
 	uint16_t messageID = message.GetMessageID();
 	
@@ -79,22 +79,6 @@ ResultType UserMessageManager::ExecuteMessageCallbacks(INetworkMessageInternal* 
 	}
 
 	return result;
-}
-
-poly::ReturnAction UserMessageManager::Hook_PostEvent(poly::Params& params, int count, poly::Return& ret, HookMode mode) {
-	auto nClientCount = poly::GetArgument<int>(params, 3);
-	auto clients = poly::GetArgument<uint64_t*>(params, 4);
-	auto pEvent = poly::GetArgument<INetworkMessageInternal*>(params, 5);
-	auto pData = poly::GetArgument<CNetMessage*>(params, 6);
-
-	//S2_LOGF(LS_DEBUG, "[CUserMessageManager::Hook_PostEvent]\n");
-
-	auto result = ExecuteMessageCallbacks(pEvent, pData, nClientCount, clients, mode);
-	if (result >= ResultType::Handled) {
-		return poly::ReturnAction::Supercede;
-	}
-
-	return poly::ReturnAction::Ignored;
 }
 
 UserMessageManager g_UserMessageManager;

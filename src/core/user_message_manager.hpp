@@ -4,8 +4,6 @@
 
 #include <networksystem/netmessage.h>
 
-#include <plugify/polyhook.hpp>
-
 class UserMessage;
 using UserMessageCallback = ResultType (*)(UserMessage* message);
 
@@ -21,8 +19,7 @@ public:
 	bool HookUserMessage(uint16_t messageId, UserMessageCallback callback, HookMode mode);
 	bool UnhookUserMessage(uint16_t messageId, UserMessageCallback callback, HookMode mode);
 
-	poly::ReturnAction Hook_PostEvent(poly::Params& params, int count, poly::Return& ret, HookMode node);
-	ResultType ExecuteMessageCallbacks(INetworkMessageInternal* pEvent, CNetMessage* pData, int nClientCount, uint64_t* clients, HookMode mode);
+	ResultType ExecuteMessageCallbacks(INetworkMessageInternal* msgSerializable, CNetMessage* msgData, int clientCount, uint64_t* clients, HookMode mode);
 
 private:
 	std::unordered_map<uint16_t, UserMessageHook> m_hooksMap;

@@ -3,11 +3,9 @@
 #include "listener_manager.hpp"
 #include <igameevents.h>
 
-#include <plugify/polyhook.hpp>
-
 struct EventInfo {
-	IGameEvent* pEvent{};
-	bool bDontBroadcast{};
+	IGameEvent* event{};
+	bool dontBroadcast{};
 };
 
 using EventListenerCallback = ResultType (*)(const plg::string& name, EventInfo* pEvent, bool bDontBroadcast);
@@ -38,12 +36,12 @@ public:
 	EventHookError UnhookEvent(const plg::string& name, EventListenerCallback callback, HookMode mode = HookMode::Post);
 
 	EventInfo* CreateEvent(const plg::string& name, bool force = false);
-	void FireEvent(EventInfo* pInfo, bool bDontBroadcast);
-	void FireEventToClient(EventInfo* pInfo, CPlayerSlot slot);
-	void CancelCreatedEvent(EventInfo* pInfo);
+	void FireEvent(EventInfo* info, bool dontBroadcast);
+	void FireEventToClient(EventInfo* info, CPlayerSlot slot);
+	void CancelCreatedEvent(EventInfo* info);
 
-	poly::ReturnAction Hook_OnFireEvent(poly::Params& params, int count, poly::Return& ret);
-	poly::ReturnAction Hook_OnFireEvent_Post(poly::Params& params, int count, poly::Return& ret);
+	ResultType OnFireEvent(IGameEvent* event, bool dontBroadcast);
+	ResultType OnFireEvent_Post(IGameEvent* event, bool dontBroadcast);
 
 private:
 	void FireGameEvent(IGameEvent* event) override;

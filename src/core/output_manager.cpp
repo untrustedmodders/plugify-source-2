@@ -31,14 +31,7 @@ bool EntityOutputManager::UnhookEntityOutput(plg::string classname, plg::string 
 	return false;
 }
 
-poly::ReturnAction EntityOutputManager::Hook_FireOutputInternal(poly::Params& params, int count, poly::Return& ret) {
-	// CEntityIOOutput* const pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* const value, float flDelay
-	auto pThis = poly::GetArgument<CEntityIOOutput* const>(params, 0);
-	auto pActivator = poly::GetArgument<CEntityInstance*>(params, 1);
-	auto pCaller = poly::GetArgument<CEntityInstance*>(params, 2);
-	//auto value = poly::GetArgument<const CVariant* const>(params, 3);
-	auto flDelay = poly::GetArgument<float>(params, 4);
-
+ResultType EntityOutputManager::FireOutputInternal(CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, float flDelay) {
 	if (pCaller) {
 		//S2_LOGF(LS_DEBUG, "[EntityOutputManager][FireOutputHook] - %s, %s\n", pThis->m_pDesc->m_pName, pCaller->GetClassname());
 
@@ -79,20 +72,10 @@ poly::ReturnAction EntityOutputManager::Hook_FireOutputInternal(poly::Params& pa
 		}
 	}
 
-	if (result >= ResultType::Handled) {
-		return poly::ReturnAction::Supercede;
-	}
-
-	return poly::ReturnAction::Ignored;
+	return result;
 }
 
-poly::ReturnAction EntityOutputManager::Hook_FireOutputInternal_Post(poly::Params& params, int count, poly::Return& ret) {
-	//auto pThis = poly::GetArgument<CEntityIOOutput* const>(params, 0);
-	auto pActivator = poly::GetArgument<CEntityInstance*>(params, 1);
-	auto pCaller = poly::GetArgument<CEntityInstance*>(params, 2);
-	//auto value = poly::GetArgument<const CVariant* const>(params, 3);
-	auto flDelay = poly::GetArgument<float>(params, 4);
-
+ResultType EntityOutputManager::FireOutputInternal_Post(CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, float flDelay) {
 	int activator = pActivator != nullptr ? pActivator->GetRefEHandle().ToInt() : INVALID_EHANDLE_INDEX;
 	int caller = pCaller != nullptr ? pCaller->GetRefEHandle().ToInt() : INVALID_EHANDLE_INDEX;
 
@@ -101,7 +84,7 @@ poly::ReturnAction EntityOutputManager::Hook_FireOutputInternal_Post(poly::Param
 		cb.Notify(activator, caller, flDelay);
 	}
 
-	return poly::ReturnAction::Ignored;
+	return ResultType::Continue;
 }
 
 EntityOutputManager g_OutputManager;

@@ -5,7 +5,6 @@
 #include <core/sdk/utils.h>
 
 #include <convar.h>
-#include <plugify/polyhook.hpp>
 
 enum CommandCallingContext : int {
 	Invalid = -1,
@@ -42,7 +41,7 @@ public:
 	bool AddValveCommand(const plg::string& name, const plg::string& description, ConVarFlag flags = ConVarFlag::None, uint64 adminFlags = 0);
 	bool RemoveValveCommand(const plg::string& name);
 
-	poly::ReturnAction Hook_DispatchConCommand(poly::Params& params, int count, poly::Return& ret, HookMode mode);
+	ResultType DispatchConCommand(const CCommandContext* ctx, const CCommand* args, HookMode mode);
 	ResultType ExecuteCommandCallbacks(const plg::string& name, const CCommandContext& ctx, const CCommand& args, HookMode mode, CommandCallingContext callingContext);
 
 private:
