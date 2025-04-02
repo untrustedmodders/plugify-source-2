@@ -11,7 +11,7 @@ public:
 	}
 } g_LoggingListener;
 
-CON_COMMAND_F(conhook_start, "", FCVAR_PROTECTED) {
+CON_COMMAND_F(s2_conhook_start, "", FCVAR_PROTECTED) {
 	if (!g_ShouldCatchSpew)
 		return;
 
@@ -19,7 +19,7 @@ CON_COMMAND_F(conhook_start, "", FCVAR_PROTECTED) {
 	LoggingSystem_RegisterLoggingListener(&g_LoggingListener);
 }
 
-CON_COMMAND_F(conhook_stop, "", FCVAR_PROTECTED) {
+CON_COMMAND_F(s2_conhook_stop, "", FCVAR_PROTECTED) {
 	if (!g_ShouldCatchSpew)
 		return;
 

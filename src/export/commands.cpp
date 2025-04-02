@@ -107,9 +107,9 @@ extern "C" PLUGIN_API plg::string ServerCommandEx(const plg::string& command) {
 
 	if (!g_ShouldCatchSpew) {
 		g_ShouldCatchSpew = true;
-		g_pEngineServer2->ServerCommand("conhook_start\n");
+		g_pEngineServer2->ServerCommand("s2_conhook_start\n");
 		g_pEngineServer2->ServerCommand(cleanCommand.c_str());
-		g_pEngineServer2->ServerCommand("conhook_stop\n");
+		g_pEngineServer2->ServerCommand("s2_conhook_stop\n");
 	} else {
 		g_pEngineServer2->ServerCommand(cleanCommand.c_str());
 	}
