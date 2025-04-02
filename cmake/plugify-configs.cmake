@@ -6,6 +6,7 @@ FetchContent_Declare(
         plugify-configs
         GIT_REPOSITORY https://github.com/untrustedmodders/plugify-configs.git
 		GIT_TAG 928a797f3ccd254d4aa79b4415bf4bfc70d8fc02
+		GIT_SHALLOW TRUE
 )
 
 FetchContent_MakeAvailable(plugify-configs)

@@ -41,6 +41,19 @@ bool CoreConfig::Initialize() {
 		config->JumpBack();
 	}
 
+	FilterConsoleCleaner.clear();
+	if (config->JumpKey("FilterConsoleCleaner")) {
+		if (config->IsArray() && config->JumpFirst()) {
+			do {
+				RE2::Options options;
+				options.set_dot_nl(true);
+				FilterConsoleCleaner.emplace_back(std::make_unique<re2::RE2>(config->GetString(), options));
+			} while (config->JumpNext());
+			config->JumpBack();
+		}
+		config->JumpBack();
+	}
+
 	FollowCS2ServerGuidelines = config->GetBool("FollowCS2ServerGuidelines");
 	ServerLanguage = config->GetString("ServerLanguage", "en");
 
@@ -67,4 +80,12 @@ bool CoreConfig::IsSilentChatTrigger(std::string_view message) const {
 
 bool CoreConfig::IsPublicChatTrigger(std::string_view message) const {
 	return IsTriggerInternal(PublicChatTrigger, message);
+}
+
+bool CoreConfig::IsRegexMatch(std::string_view message) const {
+	for (auto& regex : FilterConsoleCleaner) {
+		if (RE2::FullMatch(message, *regex))
+			return true;
+	}
+	return false;
 }

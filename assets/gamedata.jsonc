@@ -18,6 +18,12 @@
         "win64": "40 56 57 48 81 EC ? ? ? ? 48 8B F9 8B F2 8B CA",
         "linuxsteamrt64": "55 48 89 E5 41 55 49 89 FD 89 F7"
       },
+      // Called inside "Msg", "Warning", "LoggingSystem_Log"
+      "LogDirect": {
+        "library": "tier0",
+        "win64": "4C 89 4C 24 20 44 89 44 24 18 89 54 24 10 55",
+        "linuxsteamrt64": "55 89 D0 48 89 E5 41 57 41 56 41 55"
+      },
       // Called from Host_Say
       "UTIL_SayText2Filter": {
         "library": "server",
@@ -194,10 +200,10 @@
         "win64": "48 ? ? 0F 84 ? ? ? ? 48 89 5C 24 ? 57 48 ? ? ? 48 ? ? 48 ? ? E8",
         "linuxsteamrt64": "55 48 89 ? 41 ? 49 89 ? 41 ? 49 89 ? E8 ? ? ? ? 49 39"
       },
-      // String: "weapon_fists"
+      // search for "item_pickup", right before the function with 2 parameters and empty string inside
       "CCSPlayer_WeaponServices::Weapon_Equip": {
         "library": "server",
-        "linuxsteamrt64": "55 48 89 E5 41 56 41 55 41 54 49 89 F4 53 48 8B 77",
+        "linuxsteamrt64": "55 48 89 E5 41 55 41 54 49 89 F4 53 48 89 FB 48 83 EC 08 48 8B 77 30",
         "win64": "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC 20 48 8B DA 48 8B F9 48 8B 51"
       },
       "GetCSWeaponDataFromKey": {

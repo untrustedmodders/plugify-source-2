@@ -1,5 +1,5 @@
 # plugify-source-2
-# Copyright (C) 2024 untrustedmodders
+# Copyright (C) 2023-2025 untrustedmodders
 # Licensed under the MIT license. See LICENSE file in the project root for details.
 
 include(FetchContent)
@@ -10,6 +10,7 @@ FetchContent_Declare(
         fmt
         GIT_REPOSITORY https://github.com/fmtlib/fmt.git
         GIT_TAG 10.2.1
+        GIT_SHALLOW TRUE
 )
 
 set(FMT_DOC OFF CACHE INTERNAL "Generate the doc target.")

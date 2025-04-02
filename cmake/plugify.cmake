@@ -1,5 +1,5 @@
 # plugify-source-2
-# Copyright (C) 2024 untrustedmodders
+# Copyright (C) 2023-2025 untrustedmodders
 # Licensed under the MIT license. See LICENSE file in the project root for details.
 
 set(PLUGIFY_COMPILE_DEFINITIONS

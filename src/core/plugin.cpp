@@ -9,6 +9,7 @@
 
 #include <ISmmPlugin.h>
 
+#include "core_config.hpp"
 #include "con_command_manager.hpp"
 #include "con_var_manager.hpp"
 #include "event_manager.hpp"
@@ -104,6 +105,9 @@ void Source2SDK::OnPluginStart() {
 
 	using FireOutputInternal = void(*)(CEntityIOOutput* const, CEntityInstance*, CEntityInstance*, const CVariant* const, float);
 	g_PH.AddHookDetourFunc<FireOutputInternal>("CEntityIOOutput_FireOutputInternal", Hook_FireOutputInternal, Pre, Post);
+
+	using LogDirect = int (*)(void* loggingSystem, int channel, int severity, LeafCodeInfo_t*, LoggingMetaData_t*, Color, char const*, va_list*);
+	g_PH.AddHookDetourFunc<LogDirect>("LogDirect", Hook_LogDirect, Pre);
 
 #if S2SDK_PLATFORM_WINDOWS
 	using PreloadLibrary = void(*)(void* const);
@@ -409,6 +413,27 @@ poly::ReturnAction Source2SDK::Hook_DispatchConCommand(poly::IHook& hook, poly::
 	return g_CommandManager.Hook_DispatchConCommand(params, count, ret, static_cast<HookMode>(type));
 }
 
+poly::ReturnAction Source2SDK::Hook_LogDirect(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
+	auto str = poly::GetArgument<char const*>(params, 6);
+	auto args = poly::GetArgument<va_list*>(params, 7);
+
+	char buffer[MAX_LOGGING_MESSAGE_LENGTH];
+	bool matched;
+
+	if (args) {
+		va_list args2;
+		va_copy(args2, *args);
+		V_vsnprintf(buffer, sizeof buffer, str, args2);
+		va_end(args2);
+
+		matched = g_pCoreConfig->IsRegexMatch(buffer);
+	} else {
+		matched = g_pCoreConfig->IsRegexMatch(str);
+	}
+
+	return matched ? poly::ReturnAction::Supercede : poly::ReturnAction::Ignored;
+}
+
 /*poly::ReturnAction Source2SDK::Hook_HostSay(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	return g_ChatManager.Hook_HostSay(hook, params, count, ret, static_cast<HookMode>(type));
 }*/
@@ -416,11 +441,11 @@ poly::ReturnAction Source2SDK::Hook_DispatchConCommand(poly::IHook& hook, poly::
 #if S2SDK_PLATFORM_WINDOWS
 
 #if PLUGIFY_ARCH_BITS == 64
-const WORD PE_FILE_MACHINE = IMAGE_FILE_MACHINE_AMD64;
-const WORD PE_NT_OPTIONAL_HDR_MAGIC = IMAGE_NT_OPTIONAL_HDR64_MAGIC;
+constexpr WORD PE_FILE_MACHINE = IMAGE_FILE_MACHINE_AMD64;
+constexpr WORD PE_NT_OPTIONAL_HDR_MAGIC = IMAGE_NT_OPTIONAL_HDR64_MAGIC;
 #else
-const WORD PE_FILE_MACHINE = IMAGE_FILE_MACHINE_I386;
-const WORD PE_NT_OPTIONAL_HDR_MAGIC = IMAGE_NT_OPTIONAL_HDR32_MAGIC;
+constexpr WORD PE_FILE_MACHINE = IMAGE_FILE_MACHINE_I386;
+constexpr WORD PE_NT_OPTIONAL_HDR_MAGIC = IMAGE_NT_OPTIONAL_HDR32_MAGIC;
 #endif // PLUGIFY_ARCH_BITS
 
 poly::ReturnAction Source2SDK::Hook_PreloadLibrary(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {

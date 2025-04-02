@@ -96,7 +96,7 @@ LoggingResponse_t Logger::LogFormat(LoggingSeverity_t severity, const char* form
 	LoggingResponse_t response = LR_ABORT;
 
 	if (IsChannelEnabled(severity)) {
-		char buffer[1024];
+		char buffer[MAX_LOGGING_MESSAGE_LENGTH];
 
 		va_list params;
 
@@ -114,7 +114,7 @@ LoggingResponse_t Logger::LogFormat(LoggingSeverity_t severity, const Color& col
 	LoggingResponse_t response = LR_ABORT;
 
 	if (IsChannelEnabled(severity)) {
-		char buffer[1024];
+		char buffer[MAX_LOGGING_MESSAGE_LENGTH];
 
 		va_list params;
 
@@ -132,7 +132,7 @@ LoggingResponse_t Logger::LogFormat(LoggingSeverity_t severity, const LeafCodeIn
 	LoggingResponse_t response = LR_ABORT;
 
 	if (IsChannelEnabled(severity)) {
-		char buffer[1024];
+		char buffer[MAX_LOGGING_MESSAGE_LENGTH];
 
 		va_list params;
 
@@ -150,7 +150,7 @@ LoggingResponse_t Logger::LogFormat(LoggingSeverity_t severity, const LeafCodeIn
 	LoggingResponse_t response = LR_ABORT;
 
 	if (IsChannelEnabled(severity)) {
-		char buffer[1024];
+		char buffer[MAX_LOGGING_MESSAGE_LENGTH];
 
 		va_list params;
 

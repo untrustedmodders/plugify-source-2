@@ -3,7 +3,7 @@
 #define CALL_VIRTUAL(retType, idx, ...) CallVirtual<retType>(idx, __VA_ARGS__)
 
 template<typename T = void*>
-inline T GetVMethod(uint32_t uIndex, void* pClass) {
+T GetVMethod(uint32_t uIndex, void* pClass) {
 	if (!pClass) {
 		return T{};
 	}
@@ -17,7 +17,7 @@ inline T GetVMethod(uint32_t uIndex, void* pClass) {
 }
 
 template<typename T, typename... Args>
-inline T CallVirtual(uint32_t uIndex, void* pClass, Args... args) {
+T CallVirtual(uint32_t uIndex, void* pClass, Args... args) {
 #if S2SDK_PLATFORM_WINDOWS
 	auto pFunc = GetVMethod<T(__thiscall*)(void*, Args...)>(uIndex, pClass);
 #else

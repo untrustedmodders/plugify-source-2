@@ -18664,14 +18664,7 @@
             { "value": 9, "name": "Grenade" },
             { "value": 10, "name": "Equipment" },
             { "value": 11, "name": "StackableItem" },
-            { "value": 12, "name": "Fists" },
-            { "value": 13, "name": "BreachCharge" },
-            { "value": 14, "name": "BumpMine" },
-            { "value": 15, "name": "Tablet" },
-            { "value": 16, "name": "Melee" },
-            { "value": 17, "name": "Shield" },
-            { "value": 18, "name": "ZoneRepulsor" },
-            { "value": 19, "name": "Unknown" }
+            { "value": 12, "name": "Unknown" }
           ]
         }
       }

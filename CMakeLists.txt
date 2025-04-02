@@ -64,6 +64,7 @@ if(NOT S2SDK_BUILD_DOCS)
     include(cmake/dynlibutils.cmake)
     include(cmake/metamod.cmake)
     include(cmake/plugify.cmake)
+    include(cmake/re2.cmake)
     include(cmake/sourcesdk.cmake)
 endif()
 
@@ -131,7 +132,7 @@ target_precompile_headers(${PROJECT_NAME} PRIVATE ${PRECOMPILER_HEADERS})
 target_compile_definitions(${PROJECT_NAME} PRIVATE ${COMPILE_DEFINITIONS} ${METAMOD_COMPILE_DEFINITIONS} ${PLUGIFY_COMPILE_DEFINITIONS})
 target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDE_DIRS} ${DYNLIBUTILS_INCLUDE_DIRS} ${METAMOD_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE cpp-memory_utils ${PLUGIFY_LINK_LIBRARIES} ${SOURCESDK_BINARY_DIR})
+target_link_libraries(${PROJECT_NAME} PRIVATE cpp-memory_utils re2::re2 absl::log ${PLUGIFY_LINK_LIBRARIES} ${SOURCESDK_BINARY_DIR})
 
 file(READ "${CMAKE_CURRENT_SOURCE_DIR}/version.txt" VERSION_FILE_CONTENTS)
 string(STRIP "${VERSION_FILE_CONTENTS}" VERSION_FILE_CONTENTS)

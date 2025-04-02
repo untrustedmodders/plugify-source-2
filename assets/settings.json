@@ -5,6 +5,15 @@
   "SilentChatTrigger": [
     "/"
   ],
+  "FilterConsoleCleaner": [
+    ".*CQ resync.*",
+    ".*LATE Recv usercmd.*",
+    ".*CQ bloat.*",
+    ".*CQ catchup:.*",
+    ".*generating substitute command.*",
+    ".*OnSimulateUserCommands.*",
+    ".*OnBufferNotStarved\\(\\),.*"
+  ],
   "FollowCS2ServerGuidelines": true,
   "ServerLanguage": "en"
 }
