@@ -73,6 +73,37 @@ public:
 		return true;
 	}
 
+	template<typename F>
+	bool AddHookDetourFunc(void* addr, const std::function<void(poly::Hook&)>& callback = {}) {
+		auto name = std::format("0x{:x}", reinterpret_cast<uintptr_t>(addr));
+
+		auto it = m_dhooks.find(name);
+		if (it != m_dhooks.end()) {
+			callback(*it->second);
+			return true;
+		}
+
+		auto ihook = poly::Hook::FindDetour(addr);
+		if (ihook != nullptr) {
+			callback(*ihook);
+			return true;
+		}
+
+		using trait = poly::details::function_traits<F>;
+		auto args = trait::args();
+		auto ret = trait::ret();
+
+		ihook = poly::Hook::CreateDetourHook(addr, ret, plg::vector(args.begin(), args.end()));
+		if (ihook == nullptr) {
+			S2_LOGF(LS_WARNING, "Could not hook detour function \"%s\".\n", name.c_str());
+			return false;
+		}
+
+		callback(*ihook);
+		m_dhooks.emplace(std::move(name), std::move(ihook));
+		return true;
+	}
+
 	template<typename F, typename C, typename... T>
 		requires(std::is_pointer_v<C> && std::is_function_v<std::remove_pointer_t<C>>)
 	bool AddHookMemFunc(F func, void* ptr, C callback, T... types) {
@@ -85,6 +116,14 @@ public:
 		requires(std::is_pointer_v<C> && std::is_function_v<std::remove_pointer_t<C>>)
 	bool AddHookDetourFunc(const plg::string& name, C callback, T... types) {
 		return AddHookDetourFunc<F>(name, [&](const poly::Hook& hook) {
+			([&]() { hook.AddCallback(types, callback); }(), ...);
+		});
+	}
+
+	template<typename F, typename C, typename... T>
+		requires(std::is_pointer_v<C> && std::is_function_v<std::remove_pointer_t<C>>)
+	bool AddHookDetourFunc(void* addr, C callback, T... types) {
+		return AddHookDetourFunc<F>(addr, [&](const poly::Hook& hook) {
 			([&]() { hook.AddCallback(types, callback); }(), ...);
 		});
 	}
