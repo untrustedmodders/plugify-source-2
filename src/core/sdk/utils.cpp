@@ -277,8 +277,8 @@ const plg::string& utils::GameDirectory() {
 	return gameDirectory;
 }
 
-std::vector<plg::string> utils::Split(std::string_view strv, std::string_view delims) {
-	std::vector<plg::string> output;
+std::vector<std::string_view> utils::split(std::string_view strv, std::string_view delims) {
+	std::vector<std::string_view> output;
 	size_t first = 0;
 
 	while (first < strv.size()) {
@@ -294,9 +294,4 @@ std::vector<plg::string> utils::Split(std::string_view strv, std::string_view de
 	}
 
 	return output;
-}
-
-bool utils::ParseInt(std::string_view str, int& out, int base) {
-	auto [ptr, err] = std::from_chars(str.data(), str.data() + str.size(), out, base);
-	return err == std::errc{};
 }

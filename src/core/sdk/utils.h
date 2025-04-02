@@ -74,7 +74,7 @@ namespace utils {
 				if (replicate) ReplicateConVar(conVar, value.Get());
 				if (notify) NotifyConVar(conVar, value.Get());
 			} else {
-				std::string val;
+				plg::string val;
 				if constexpr (std::is_same_v<T, Color>) {
 					val = std::format("{} {} {} {}", value.r(), value.g(), value.b(), value.a());
 				} else if constexpr (std::is_same_v<T, Vector2D>) {
@@ -189,9 +189,40 @@ namespace utils {
 
 	const plg::string& GameDirectory();
 
-	std::vector<plg::string> Split(std::string_view strv, std::string_view delims);
+	std::vector<std::string_view> split(std::string_view strv, std::string_view delims);
 
-	bool ParseInt(std::string_view str, int& out, int base = 10);
+	template<typename T>
+	std::optional<T> string_to_int(std::string_view str, int base = 10) {
+		T value;
+		auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), value, base);
+		if (ec == std::errc()) {
+			return value;
+		}
+		return std::nullopt;
+	}
+
+	template<typename T>
+	std::vector<T> string_to_vector(std::string_view str) {
+		std::vector<T> vec;
+		for (const auto& item : split(str, ",")) {
+			if (auto value = string_to_int<T>(item)) {
+				vec.emplace_back(*value);
+			}
+		}
+		return vec;
+	}
+
+	template<typename T>
+	plg::string vector_to_string(const std::vector<T>& vec) {
+		if (vec.empty()) {
+			return {};
+		}
+		plg::string buffer(vec[0]);
+		for (auto it = std::next(vec.begin()); it != vec.end(); ++it) {
+			std::format_to(std::back_inserter(vec), ",{}", *it);
+		}
+		return buffer;
+	}
 
 	namespace {
 		template<typename T, typename... Rest>

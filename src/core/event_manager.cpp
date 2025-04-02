@@ -33,7 +33,7 @@ EventHookError EventManager::HookEvent(const plg::string& name, EventListenerCal
 			eventHook.postCopy = (mode == HookMode::Post);
 		}
 
-		eventHook.refCount++;
+		++eventHook.refCount;
 
 		m_eventHooks.emplace(name, std::move(eventHook));
 
@@ -59,7 +59,7 @@ EventHookError EventManager::HookEvent(const plg::string& name, EventListenerCal
 		eventHook.postHook->Register(callback);
 	}
 
-	eventHook.refCount++;
+	++eventHook.refCount;
 
 	return EventHookError::Okay;
 }
@@ -143,7 +143,7 @@ ResultType EventManager::OnFireEvent(IGameEvent* event, const bool dontBroadcast
 	auto it = m_eventHooks.find(name);
 	if (it != m_eventHooks.end()) {
 		auto& eventHook = std::get<EventHook>(*it);
-		eventHook.refCount++;
+		++eventHook.refCount;
 		m_eventStack.push(&eventHook);
 
 		if (eventHook.preHook != nullptr) {

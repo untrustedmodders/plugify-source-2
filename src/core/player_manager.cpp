@@ -334,7 +334,7 @@ TargetType PlayerManager::TargetPlayerString(int caller, std::string_view target
 	clients.clear();
 
 	if (targetType == TargetType::SELF && caller != -1) {
-		clients.push_back(caller);
+		clients.emplace_back(caller);
 	} else if (targetType == TargetType::ALL) {
 		for (int i = 0; i < MaxClients(); ++i) {
 			if (!m_players[i].IsConnected())
@@ -345,7 +345,7 @@ TargetType PlayerManager::TargetPlayerString(int caller, std::string_view target
 			if (!player || !player->IsController() || !player->IsConnected())
 				continue;
 
-			clients.push_back(i);
+			clients.emplace_back(i);
 		}
 	} else if (targetType >= TargetType::SPECTATOR) {
 		for (int i = 0; i < MaxClients(); ++i) {
@@ -360,7 +360,7 @@ TargetType PlayerManager::TargetPlayerString(int caller, std::string_view target
 			if (player->m_iTeamNum() != (targetType == TargetType::T ? CS_TEAM_T : targetType == TargetType::CT ? CS_TEAM_CT : CS_TEAM_SPECTATOR))
 				continue;
 
-			clients.push_back(i);
+			clients.emplace_back(i);
 		}
 	} else if (targetType >= TargetType::RANDOM && targetType <= TargetType::RANDOM_CT) {
 		int attempts = 0;
@@ -382,14 +382,14 @@ TargetType PlayerManager::TargetPlayerString(int caller, std::string_view target
 			if (targetType >= TargetType::RANDOM_T && (player->m_iTeamNum() != (targetType == TargetType::RANDOM_T ? CS_TEAM_T : CS_TEAM_CT)))
 				continue;
 
-			clients.push_back(i);
+			clients.emplace_back(i);
 		}
 	} else if (target.starts_with('#')) {
-		if (int slot; utils::ParseInt(target.substr(1), slot)) {
+		if (auto slot = utils::string_to_int<int>(target.substr(1))) {
 			targetType = TargetType::PLAYER;
-			CBasePlayerController* player = utils::GetController(slot);
+			CBasePlayerController* player = utils::GetController(*slot);
 			if (player && player->IsController() && player->IsConnected()) {
-				clients.push_back(slot);
+				clients.emplace_back(*slot);
 			}
 		}
 	} else {
@@ -405,7 +405,7 @@ TargetType PlayerManager::TargetPlayerString(int caller, std::string_view target
 			std::string_view playerName(player->GetPlayerName());
 			if (playerName.find(playerName) != std::string_view::npos) {
 				targetType = TargetType::PLAYER;
-				clients.push_back(i);
+				clients.emplace_back(i);
 				break;
 			}
 		}

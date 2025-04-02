@@ -192,12 +192,9 @@ ResultType ConCommandManager::ExecuteCommandCallbacks(const plg::string& name, c
 	return result;
 }
 
-poly::ReturnAction ConCommandManager::Hook_DispatchConCommand(poly::Params& params, int count, poly::Return& ret, HookMode mode) {
-	// auto cmd = poly::GetArgument<ConCommandRef* const>(params, 1);
-	auto ctx = poly::GetArgument<const CCommandContext*>(params, 2);
-	auto args = poly::GetArgument<const CCommand*>(params, 3);
+ResultType ConCommandManager::DispatchConCommand(const CCommandContext* ctx, const CCommand* args, HookMode mode) {
 	if (ctx == nullptr || args == nullptr) {
-		return poly::ReturnAction::Ignored;
+		return ResultType::Continue;
 	}
 
 	const char* arg0 = args->Arg(0);
@@ -206,39 +203,34 @@ poly::ReturnAction ConCommandManager::Hook_DispatchConCommand(poly::Params& para
 
 	static const char sayCommand[] = "say";
 	constexpr size_t sayNullTerminated = sizeof(sayCommand) - 1;
-	if (!V_strncmp(arg0, sayCommand, sayNullTerminated)) {
-		if (!arg0[sayNullTerminated] || !V_strcmp(&arg0[sayNullTerminated], "_team")) {
+	if (!std::strncmp(arg0, sayCommand, sayNullTerminated)) {
+		if (!arg0[sayNullTerminated] || !std::strcmp(&arg0[sayNullTerminated], "_team")) {
 			const char* arg1 = args->Arg(1);
 			while (*arg1 == ' ') {
 				arg1++;
 			}
 
-			bool bSilent = g_pCoreConfig->IsSilentChatTrigger(arg1);
-			if (bSilent || g_pCoreConfig->IsPublicChatTrigger(arg1)) {
-				char* pszMessage = (char*) (args->ArgS() + 1);
-				++pszMessage;
+			bool silent = g_pCoreConfig->IsSilentChatTrigger(arg1);
+			if (silent || g_pCoreConfig->IsPublicChatTrigger(arg1)) {
+				char* message = (char*) (args->ArgS() + 1);
+				++message;
 
 				// Trailing slashes are only removed if Host_Say has been called.
-				bool bHostSay = bSilent && mode == HookMode::Pre;
-				if (bHostSay) pszMessage[V_strlen(pszMessage) - 1] = 0;
+				bool hostSay = silent && mode == HookMode::Pre;
+				if (hostSay) message[std::strlen(message) - 1] = 0;
 
 				CCommand nargs;
-				nargs.Tokenize(pszMessage);
+				nargs.Tokenize(message);
 
 				auto result = ExecuteCommandCallbacks(nargs[0], *ctx, nargs, mode, CommandCallingContext::Chat);
-				if (result >= ResultType::Handled || bHostSay) {
-					return poly::ReturnAction::Supercede;
+				if (result >= ResultType::Handled || hostSay) {
+					return ResultType::Stop;
 				}
 			}
 		}
 	}
 
-	auto result = ExecuteCommandCallbacks(arg0, *ctx, *args, mode, CommandCallingContext::Console);
-	if (result >= ResultType::Handled) {
-		return poly::ReturnAction::Supercede;
-	}
-
-	return poly::ReturnAction::Ignored;
+	return ExecuteCommandCallbacks(arg0, *ctx, *args, mode, CommandCallingContext::Console);
 }
 
 ConCommandManager g_CommandManager;
