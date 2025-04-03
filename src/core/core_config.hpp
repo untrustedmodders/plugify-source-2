@@ -1,11 +1,19 @@
 #pragma once
 
-#include <re2/re2.h>
+#if S2SDK_PLATFORM_WINDOWS
+#include <regex>
+using regex = std::regex;
+#else
+namespace re2 {
+	class RE2;
+}
+using regex = re2::RE2;
+#endif
 
 class CoreConfig {
 public:
 	explicit CoreConfig(plg::vector<plg::string> paths);
-	~CoreConfig() = default;
+	~CoreConfig();
 
 	bool Initialize();
 
@@ -21,9 +29,14 @@ private:
 public:
 	std::vector<std::string> PublicChatTrigger{"!"};
 	std::vector<std::string> SilentChatTrigger{"/"};
-	std::vector<std::unique_ptr<re2::RE2>> FilterConsoleCleaner{};
-	bool FollowCS2ServerGuidelines{true};
+	std::vector<regex*> FilterConsoleCleaner{};
 	std::string ServerLanguage{"en"};
+	std::vector<uint64_t> ExtraAddons{};
+	double RejoinTimeout{10.0};
+	bool AddonMountDownload{};
+	bool CacheClientsWithAddons{};
+	bool BlockDisconnectMessages{};
+	bool FollowCS2ServerGuidelines{true};
 
 private:
 	plg::vector<plg::string> m_paths;

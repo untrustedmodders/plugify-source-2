@@ -1,6 +1,7 @@
 #pragma once
 
 #include <playerslot.h>
+#include <steam_api.h>
 #include <plugify/cpp_plugin.hpp>
 #include <tier0/platform.h>
 #include <tier0/utlstring.h>
@@ -47,6 +48,7 @@ extern IVEngineServer2* g_pEngineServer2;
 extern CSchemaSystem* g_pSchemaSystem2;
 extern CGameEntitySystem* g_pGameEntitySystem;
 extern CCSGameRules* g_pGameRules;
+extern CSteamGameServerAPIContext g_SteamAPI;
 
 class CoreConfig;
 class GameConfig;

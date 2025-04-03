@@ -2,9 +2,22 @@
 #include <core/sdk/utils.h>
 #include <plugify-configs/plugify-configs.hpp>
 
+#if S2SDK_PLATFORM_WINDOWS
+#include <regex>
+#else
+#undef POSIX
+#include <re2/re2.h>
+#endif
+
 using namespace std::string_view_literals;
 
 CoreConfig::CoreConfig(plg::vector<plg::string> paths) : m_paths(std::move(paths)) {
+}
+
+CoreConfig::~CoreConfig() {
+	for (auto& regex : FilterConsoleCleaner) {
+		delete regex;
+	}
 }
 
 bool CoreConfig::Initialize() {
@@ -45,17 +58,39 @@ bool CoreConfig::Initialize() {
 	if (config->JumpKey("FilterConsoleCleaner")) {
 		if (config->IsArray() && config->JumpFirst()) {
 			do {
+#if S2SDK_PLATFORM_WINDOWS
+				plg::string pattern = config->GetString();
+				FilterConsoleCleaner.emplace_back(new std::regex(pattern.begin(), pattern.end()));
+#else
 				RE2::Options options;
 				options.set_dot_nl(true);
-				FilterConsoleCleaner.emplace_back(std::make_unique<re2::RE2>(config->GetString(), options));
+				FilterConsoleCleaner.emplace_back(new re2::RE2(config->GetString(), options));
+#endif
 			} while (config->JumpNext());
 			config->JumpBack();
 		}
 		config->JumpBack();
 	}
 
-	FollowCS2ServerGuidelines = config->GetBool("FollowCS2ServerGuidelines");
 	ServerLanguage = config->GetString("ServerLanguage", "en");
+
+	ExtraAddons.clear();
+	if (config->JumpKey("ExtraAddons")) {
+		if (config->IsArray() && config->JumpFirst()) {
+			do {
+				ExtraAddons.emplace_back(static_cast<uint64_t>(config->GetAsInt64()));
+			} while (config->JumpNext());
+			config->JumpBack();
+		}
+		config->JumpBack();
+	}
+
+	RejoinTimeout = config->GetDouble("RejoinTimeout", 10.0);
+	AddonMountDownload = config->GetBool("AddonMountDownload", false);
+	CacheClientsWithAddons = config->GetBool("CacheClientsWithAddons", false);
+	BlockDisconnectMessages = config->GetBool("BlockDisconnectMessages", false);
+
+	FollowCS2ServerGuidelines = config->GetBool("FollowCS2ServerGuidelines", true);
 
 	return true;
 }
@@ -84,7 +119,11 @@ bool CoreConfig::IsPublicChatTrigger(std::string_view message) const {
 
 bool CoreConfig::IsRegexMatch(std::string_view message) const {
 	for (auto& regex : FilterConsoleCleaner) {
+#if S2SDK_PLATFORM_WINDOWS
+		if (std::regex_match(message.begin(), message.end(), *regex))
+#else
 		if (RE2::FullMatch(message, *regex))
+#endif
 			return true;
 	}
 	return false;

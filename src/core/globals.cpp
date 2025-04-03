@@ -20,7 +20,7 @@ IGameEventManager2* g_pGameEventManager = nullptr;
 CAppSystemDict* g_pCurrentAppSystem = nullptr;
 INetworkGameServer* g_pNetworkGameServer = nullptr;
 CGlobalVars* gpGlobals = nullptr;
-IVEngineServer2* g_pEngineServer2 = nullptr;
+IVEngineServer2* g_pEngineServer2 = nullptr; // TODO
 CSchemaSystem* g_pSchemaSystem2 = nullptr;
 CGameEntitySystem* g_pGameEntitySystem = nullptr;
 CCSGameRules* g_pGameRules = nullptr;
@@ -35,9 +35,9 @@ std::unique_ptr<GameConfig> g_pGameConfig = nullptr;
 namespace globals {
 	void Initialize(std::unordered_map<std::string, fs::path> paths) {
 		g_pCoreConfig = std::make_unique<CoreConfig>(plg::vector<plg::string>{
-				(paths["base"] / "settings.json").generic_string(),
-				(paths["configs"] / "settings.json").generic_string(),
-				(paths["data"] / "settings.json").generic_string()
+				(paths["base"] / "settings.jsonc").generic_string(),
+				(paths["configs"] / "settings.jsonc").generic_string(),
+				(paths["data"] / "settings.jsonc").generic_string()
 		});
 		if (!g_pCoreConfig->Initialize()) {
 			S2_LOG(LS_ERROR, "Failed to load settings configuration!");

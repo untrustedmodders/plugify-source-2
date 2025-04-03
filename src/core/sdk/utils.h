@@ -217,9 +217,9 @@ namespace utils {
 		if (vec.empty()) {
 			return {};
 		}
-		plg::string buffer(vec[0]);
+		plg::string buffer(plg::to_string(vec[0]));
 		for (auto it = std::next(vec.begin()); it != vec.end(); ++it) {
-			std::format_to(std::back_inserter(vec), ",{}", *it);
+			std::format_to(std::back_inserter(buffer), ",{}", *it);
 		}
 		return buffer;
 	}

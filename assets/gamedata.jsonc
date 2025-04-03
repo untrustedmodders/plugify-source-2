@@ -18,11 +18,17 @@
         "win64": "40 56 57 48 81 EC ? ? ? ? 48 8B F9 8B F2 8B CA",
         "linuxsteamrt64": "55 48 89 E5 41 55 49 89 FD 89 F7"
       },
-      // Called inside "Msg", "Warning", "LoggingSystem_Log"
+      // String: "VALVE_TEST_MONITOR_PROCESS"
       "LogDirect": {
         "library": "tier0",
         "win64": "4C 89 4C 24 20 44 89 44 24 18 89 54 24 10 55",
         "linuxsteamrt64": "55 89 D0 48 89 E5 41 57 41 56 41 55"
+      },
+      // String: "Discarding pending request '%s, %u'\n"
+      "HostStateRequest": {
+        "library": "engine2",
+        "win64": "48 89 74 24 2A 57 48 83 EC 2A 33 F6 48 8B FA 48 39 35",
+        "linuxsteamrt64": "55 48 89 E5 41 56 41 55 41 54 49 89 F4 53 48 83 7F"
       },
       // Called from Host_Say
       "UTIL_SayText2Filter": {

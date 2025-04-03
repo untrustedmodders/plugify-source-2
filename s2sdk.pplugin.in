@@ -9634,7 +9634,7 @@
           "description": "The name of the event to hook."
         },
         {
-          "name": "pCallback",
+          "name": "callback",
           "type": "function",
           "ref": false,
           "description": "The callback function to call when the event is fired.",
@@ -9731,7 +9731,7 @@
           "description": "The name of the event to unhook."
         },
         {
-          "name": "pCallback",
+          "name": "callback",
           "type": "function",
           "ref": false,
           "description": "The callback function to remove.",
@@ -9846,13 +9846,13 @@
       "funcName": "FireEvent",
       "paramTypes": [
         {
-          "name": "pInfo",
+          "name": "info",
           "type": "ptr64",
           "ref": false,
           "description": "A pointer to the EventInfo structure containing event data."
         },
         {
-          "name": "bDontBroadcast",
+          "name": "dontBroadcast",
           "type": "bool",
           "ref": false,
           "description": "A boolean indicating whether to broadcast the event."
@@ -9869,7 +9869,7 @@
       "funcName": "FireEventToClient",
       "paramTypes": [
         {
-          "name": "pInfo",
+          "name": "info",
           "type": "ptr64",
           "ref": false,
           "description": "A pointer to the EventInfo structure containing event data."
@@ -9892,7 +9892,7 @@
       "funcName": "CancelCreatedEvent",
       "paramTypes": [
         {
-          "name": "pInfo",
+          "name": "info",
           "type": "ptr64",
           "ref": false,
           "description": "A pointer to the EventInfo structure of the event to cancel."
@@ -9909,7 +9909,7 @@
       "funcName": "GetEventBool",
       "paramTypes": [
         {
-          "name": "pInfo",
+          "name": "info",
           "type": "ptr64",
           "ref": false,
           "description": "A pointer to the EventInfo structure containing event data."
@@ -9933,7 +9933,7 @@
       "funcName": "GetEventFloat",
       "paramTypes": [
         {
-          "name": "pInfo",
+          "name": "info",
           "type": "ptr64",
           "ref": false,
           "description": "A pointer to the EventInfo structure containing event data."
@@ -9957,7 +9957,7 @@
       "funcName": "GetEventInt",
       "paramTypes": [
         {
-          "name": "pInfo",
+          "name": "info",
           "type": "ptr64",
           "ref": false,
           "description": "A pointer to the EventInfo structure containing event data."
@@ -9981,7 +9981,7 @@
       "funcName": "GetEventUInt64",
       "paramTypes": [
         {
-          "name": "pInfo",
+          "name": "info",
           "type": "ptr64",
           "ref": false,
           "description": "A pointer to the EventInfo structure containing event data."
@@ -10005,7 +10005,7 @@
       "funcName": "GetEventString",
       "paramTypes": [
         {
-          "name": "pInfo",
+          "name": "info",
           "type": "ptr64",
           "ref": false,
           "description": "A pointer to the EventInfo structure containing event data."
@@ -10029,7 +10029,7 @@
       "funcName": "GetEventPtr",
       "paramTypes": [
         {
-          "name": "pInfo",
+          "name": "info",
           "type": "ptr64",
           "ref": false,
           "description": "A pointer to the EventInfo structure containing event data."
@@ -10053,7 +10053,7 @@
       "funcName": "GetEventPlayerController",
       "paramTypes": [
         {
-          "name": "pInfo",
+          "name": "info",
           "type": "ptr64",
           "ref": false,
           "description": "A pointer to the EventInfo structure containing event data."
@@ -10077,7 +10077,7 @@
       "funcName": "GetEventPlayerIndex",
       "paramTypes": [
         {
-          "name": "pInfo",
+          "name": "info",
           "type": "ptr64",
           "ref": false,
           "description": "A pointer to the EventInfo structure containing event data."
@@ -10101,7 +10101,7 @@
       "funcName": "GetEventPlayerPawn",
       "paramTypes": [
         {
-          "name": "pInfo",
+          "name": "info",
           "type": "ptr64",
           "ref": false,
           "description": "A pointer to the EventInfo structure containing event data."
@@ -10125,7 +10125,7 @@
       "funcName": "GetEventEntity",
       "paramTypes": [
         {
-          "name": "pInfo",
+          "name": "info",
           "type": "ptr64",
           "ref": false,
           "description": "A pointer to the EventInfo structure containing event data."
@@ -10149,7 +10149,7 @@
       "funcName": "GetEventEntityIndex",
       "paramTypes": [
         {
-          "name": "pInfo",
+          "name": "info",
           "type": "ptr64",
           "ref": false,
           "description": "A pointer to the EventInfo structure containing event data."
@@ -10173,7 +10173,7 @@
       "funcName": "GetEventEntityHandle",
       "paramTypes": [
         {
-          "name": "pInfo",
+          "name": "info",
           "type": "ptr64",
           "ref": false,
           "description": "A pointer to the EventInfo structure containing event data."
@@ -10197,7 +10197,7 @@
       "funcName": "GetEventName",
       "paramTypes": [
         {
-          "name": "pInfo",
+          "name": "info",
           "type": "ptr64",
           "ref": false,
           "description": "A pointer to the EventInfo structure containing event data."
@@ -10215,7 +10215,7 @@
       "funcName": "SetEventBool",
       "paramTypes": [
         {
-          "name": "pInfo",
+          "name": "info",
           "type": "ptr64",
           "ref": false,
           "description": "A pointer to the EventInfo structure containing event data."
@@ -10244,7 +10244,7 @@
       "funcName": "SetEventFloat",
       "paramTypes": [
         {
-          "name": "pInfo",
+          "name": "info",
           "type": "ptr64",
           "ref": false,
           "description": "A pointer to the EventInfo structure containing event data."
@@ -10273,7 +10273,7 @@
       "funcName": "SetEventInt",
       "paramTypes": [
         {
-          "name": "pInfo",
+          "name": "info",
           "type": "ptr64",
           "ref": false,
           "description": "A pointer to the EventInfo structure containing event data."
@@ -10302,7 +10302,7 @@
       "funcName": "SetEventUInt64",
       "paramTypes": [
         {
-          "name": "pInfo",
+          "name": "info",
           "type": "ptr64",
           "ref": false,
           "description": "A pointer to the EventInfo structure containing event data."
@@ -10331,7 +10331,7 @@
       "funcName": "SetEventString",
       "paramTypes": [
         {
-          "name": "pInfo",
+          "name": "info",
           "type": "ptr64",
           "ref": false,
           "description": "A pointer to the EventInfo structure containing event data."
@@ -10360,7 +10360,7 @@
       "funcName": "SetEventPtr",
       "paramTypes": [
         {
-          "name": "pInfo",
+          "name": "info",
           "type": "ptr64",
           "ref": false,
           "description": "A pointer to the EventInfo structure containing event data."
@@ -10389,7 +10389,7 @@
       "funcName": "SetEventPlayerController",
       "paramTypes": [
         {
-          "name": "pInfo",
+          "name": "info",
           "type": "ptr64",
           "ref": false,
           "description": "A pointer to the EventInfo structure containing event data."
@@ -10418,7 +10418,7 @@
       "funcName": "SetEventPlayerIndex",
       "paramTypes": [
         {
-          "name": "pInfo",
+          "name": "info",
           "type": "ptr64",
           "ref": false,
           "description": "A pointer to the EventInfo structure containing event data."
@@ -10447,7 +10447,7 @@
       "funcName": "SetEventEntity",
       "paramTypes": [
         {
-          "name": "pInfo",
+          "name": "info",
           "type": "ptr64",
           "ref": false,
           "description": "A pointer to the EventInfo structure containing event data."
@@ -10476,7 +10476,7 @@
       "funcName": "SetEventEntityIndex",
       "paramTypes": [
         {
-          "name": "pInfo",
+          "name": "info",
           "type": "ptr64",
           "ref": false,
           "description": "A pointer to the EventInfo structure containing event data."
@@ -10505,7 +10505,7 @@
       "funcName": "SetEventEntityHandle",
       "paramTypes": [
         {
-          "name": "pInfo",
+          "name": "info",
           "type": "ptr64",
           "ref": false,
           "description": "A pointer to the EventInfo structure containing event data."
@@ -10534,7 +10534,7 @@
       "funcName": "SetEventBroadcast",
       "paramTypes": [
         {
-          "name": "pInfo",
+          "name": "info",
           "type": "ptr64",
           "ref": false,
           "description": "A pointer to the EventInfo structure containing event data."

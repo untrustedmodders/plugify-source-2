@@ -136,27 +136,27 @@ namespace schema {
 					case SCHEMA_TYPE_BUILTIN: {
 						switch (static_cast<CSchemaType_Builtin*>(pElementType)->m_eBuiltinType) {
 							case SCHEMA_BUILTIN_TYPE_BOOL:
-								return {Array, sizeof(bool)};
+								return {Array, static_cast<int>(sizeof(bool))};
 							case SCHEMA_BUILTIN_TYPE_CHAR:
-								return {Array, sizeof(char)};
+								return {Array, static_cast<int>(sizeof(char))};
 							case SCHEMA_BUILTIN_TYPE_INT8:
-								return {Array, sizeof(int8)};
+								return {Array, static_cast<int>(sizeof(int8))};
 							case SCHEMA_BUILTIN_TYPE_UINT8:
-								return {Array, sizeof(uint8)};
+								return {Array, static_cast<int>(sizeof(uint8))};
 							case SCHEMA_BUILTIN_TYPE_INT16:
-								return {Array, sizeof(int16)};
+								return {Array, static_cast<int>(sizeof(int16))};
 							case SCHEMA_BUILTIN_TYPE_UINT16:
-								return {Array, sizeof(uint16)};
+								return {Array, static_cast<int>(sizeof(uint16))};
 							case SCHEMA_BUILTIN_TYPE_INT32:
-								return {Array, sizeof(int32)};
+								return {Array, static_cast<int>(sizeof(int32))};
 							case SCHEMA_BUILTIN_TYPE_UINT32:
-								return {Array, sizeof(uint32)};
+								return {Array, static_cast<int>(sizeof(uint32))};
 							case SCHEMA_BUILTIN_TYPE_INT64:
-								return {Array, sizeof(int64)};
+								return {Array, static_cast<int>(sizeof(int64))};
 							case SCHEMA_BUILTIN_TYPE_UINT64:
-								return {Array, sizeof(uint64_t)};
+								return {Array, static_cast<int>(sizeof(uint64_t))};
 							case SCHEMA_BUILTIN_TYPE_COUNT:
-								return {Array, sizeof(size_t)};
+								return {Array, static_cast<int>(sizeof(size_t))};
 							default:
 								return {Invalid, -1};
 						}
@@ -171,7 +171,7 @@ namespace schema {
 					case SCHEMA_TYPE_DECLARED_ENUM:
 						return {Array, static_cast<CSchemaType_DeclaredEnum*>(pElementType)->m_pEnumInfo->m_nSize};
 					case SCHEMA_TYPE_POINTER:
-						return {Array, sizeof(void*)};
+						return {Array, static_cast<int>(sizeof(void*))};
 					default:
 						break;
 				}
@@ -188,13 +188,13 @@ namespace schema {
 				if (type->m_eAtomicCategory == SCHEMA_ATOMIC_COLLECTION_OF_T) {
 					switch (static_cast<CSchemaType_Atomic_CollectionOfT*>(type)->m_nElementSize) {
 						case sizeof(int8):
-							return {Collection, sizeof(int8)};
+							return {Collection, static_cast<int>(sizeof(int8))};
 						case sizeof(int16):
-							return {Collection, sizeof(int16)};
+							return {Collection, static_cast<int>(sizeof(int16))};
 						case sizeof(int32):
-							return {Collection, sizeof(int32)};
+							return {Collection, static_cast<int>(sizeof(int32))};
 						case sizeof(int64):
-							return {Collection, sizeof(int64)};
+							return {Collection, static_cast<int>(sizeof(int64))};
 						default:
 							break;
 					}
@@ -204,27 +204,27 @@ namespace schema {
 			case SCHEMA_TYPE_BUILTIN: {
 				switch (static_cast<CSchemaType_Builtin*>(type)->m_eBuiltinType) {
 					case SCHEMA_BUILTIN_TYPE_BOOL:
-						return {Single, sizeof(bool)};
+						return {Single, static_cast<int>(sizeof(bool))};
 					case SCHEMA_BUILTIN_TYPE_CHAR:
-						return {Single, sizeof(char)};
+						return {Single, static_cast<int>(sizeof(char))};
 					case SCHEMA_BUILTIN_TYPE_INT8:
-						return {Single, sizeof(int8)};
+						return {Single, static_cast<int>(sizeof(int8))};
 					case SCHEMA_BUILTIN_TYPE_UINT8:
-						return {Single, sizeof(uint8)};
+						return {Single, static_cast<int>(sizeof(uint8))};
 					case SCHEMA_BUILTIN_TYPE_INT16:
-						return {Single, sizeof(int16)};
+						return {Single, static_cast<int>(sizeof(int16))};
 					case SCHEMA_BUILTIN_TYPE_UINT16:
-						return {Single, sizeof(uint16)};
+						return {Single, static_cast<int>(sizeof(uint16))};
 					case SCHEMA_BUILTIN_TYPE_INT32:
-						return {Single, sizeof(int32)};
+						return {Single, static_cast<int>(sizeof(int32))};
 					case SCHEMA_BUILTIN_TYPE_UINT32:
-						return {Single, sizeof(uint32)};
+						return {Single, static_cast<int>(sizeof(uint32))};
 					case SCHEMA_BUILTIN_TYPE_INT64:
-						return {Single, sizeof(int64)};
+						return {Single, static_cast<int>(sizeof(int64))};
 					case SCHEMA_BUILTIN_TYPE_UINT64:
-						return {Single, sizeof(uint64_t)};
+						return {Single, static_cast<int>(sizeof(uint64_t))};
 					case SCHEMA_BUILTIN_TYPE_COUNT:
-						return {Single, sizeof(size_t)};
+						return {Single, static_cast<int>(sizeof(size_t))};
 					default:
 						return {Invalid, -1};
 				}
@@ -233,7 +233,7 @@ namespace schema {
 				return {Single, static_cast<CSchemaType_DeclaredEnum*>(type)->m_pEnumInfo->m_nSize};
 			}
 			case SCHEMA_TYPE_POINTER: {
-				return {Single, sizeof(void*)};
+				return {Single, static_cast<int>(sizeof(void*))};
 			}
 			default: {
 				return {Invalid, -1};
@@ -250,9 +250,9 @@ namespace schema {
 						auto* pElementTypeBuiltin = static_cast<CSchemaType_Builtin*>(pElementType);
 						switch (pElementTypeBuiltin->m_eBuiltinType) {
 							case SCHEMA_BUILTIN_TYPE_FLOAT32:
-								return {Array, sizeof(float32)};
+								return {Array, static_cast<int>(sizeof(float32))};
 							case SCHEMA_BUILTIN_TYPE_FLOAT64:
-								return {Array, sizeof(float64)};
+								return {Array, static_cast<int>(sizeof(float64))};
 							default:
 								return {Invalid, -1};
 						}
@@ -280,9 +280,9 @@ namespace schema {
 				if (type->m_eAtomicCategory == SCHEMA_ATOMIC_COLLECTION_OF_T) {
 					switch (static_cast<CSchemaType_Atomic_CollectionOfT*>(type)->m_nElementSize) {
 						case sizeof(float32):
-							return {Collection, sizeof(float32)};
+							return {Collection, static_cast<int>(sizeof(float32))};
 						case sizeof(float64):
-							return {Collection, sizeof(float64)};
+							return {Collection, static_cast<int>(sizeof(float64))};
 						default:
 							break;
 					}
@@ -292,9 +292,9 @@ namespace schema {
 			case SCHEMA_TYPE_BUILTIN: {
 				switch (static_cast<CSchemaType_Builtin*>(type)->m_eBuiltinType) {
 					case SCHEMA_BUILTIN_TYPE_FLOAT32:
-						return {Single, sizeof(float32)};
+						return {Single, static_cast<int>(sizeof(float32))};
 					case SCHEMA_BUILTIN_TYPE_FLOAT64:
-						return {Single, sizeof(float64)};
+						return {Single, static_cast<int>(sizeof(float64))};
 					default:
 						return {Invalid, -1};
 				}

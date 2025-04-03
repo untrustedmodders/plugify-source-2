@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
 if(POLICY CMP0091)
     cmake_policy(SET CMP0091 NEW)
@@ -8,8 +8,19 @@ if(POLICY CMP0092)
     cmake_policy(SET CMP0092 NEW) # Don't add -W3 warning level by default.
 endif()
 
+
+file(READ "${CMAKE_CURRENT_SOURCE_DIR}/version.txt" VERSION_FILE_CONTENTS)
+string(STRIP "${VERSION_FILE_CONTENTS}" VERSION_FILE_CONTENTS)
+set(S2SDK_VERSION "${VERSION_FILE_CONTENTS}" CACHE STRING "Set version name")
+set(S2SDK_PACKAGE "cs2sdk" CACHE STRING "Set package name")
+string(REPLACE "v" "" S2SDK_VERSION "${S2SDK_VERSION}")
+string(REGEX REPLACE "[.+-]" ";" S2SDK_VERSION_LIST ${S2SDK_VERSION})
+list(GET S2SDK_VERSION_LIST 0 S2SDK_VERSION_MAJOR)
+list(GET S2SDK_VERSION_LIST 1 S2SDK_VERSION_MINOR)
+list(GET S2SDK_VERSION_LIST 2 S2SDK_VERSION_PATCH)
+
 project(plugify-source-2
-		VERSION 1.0.0.0
+		VERSION "${S2SDK_VERSION_MAJOR}.${S2SDK_VERSION_MINOR}.${S2SDK_VERSION_PATCH}"
 		DESCRIPTION "Source2 SDK Plugin"
 		HOMEPAGE_URL "https://github.com/untrustedmodders/plugify-source-2"
 		LANGUAGES C CXX
@@ -132,14 +143,8 @@ target_precompile_headers(${PROJECT_NAME} PRIVATE ${PRECOMPILER_HEADERS})
 target_compile_definitions(${PROJECT_NAME} PRIVATE ${COMPILE_DEFINITIONS} ${METAMOD_COMPILE_DEFINITIONS} ${PLUGIFY_COMPILE_DEFINITIONS})
 target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDE_DIRS} ${DYNLIBUTILS_INCLUDE_DIRS} ${METAMOD_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE cpp-memory_utils re2::re2 absl::log ${PLUGIFY_LINK_LIBRARIES} ${SOURCESDK_BINARY_DIR})
 
-file(READ "${CMAKE_CURRENT_SOURCE_DIR}/version.txt" VERSION_FILE_CONTENTS)
-string(STRIP "${VERSION_FILE_CONTENTS}" VERSION_FILE_CONTENTS)
-set(S2SDK_VERSION "${VERSION_FILE_CONTENTS}" CACHE STRING "Set version name")
-set(S2SDK_PACKAGE "cs2sdk" CACHE STRING "Set package name")
-string(REPLACE "v" "" S2SDK_VERSION "${S2SDK_VERSION}")
-
+target_link_libraries(${PROJECT_NAME} PRIVATE cpp-memory_utils ${RE2_LINK_LIBRARIES} ${PLUGIFY_LINK_LIBRARIES} ${SOURCESDK_BINARY_DIR})
 
 configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/s2sdk.pplugin.in
@@ -147,4 +152,4 @@ configure_file(
 )
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/assets/gamedata.jsonc ${CMAKE_CURRENT_BINARY_DIR}/gamedata.jsonc COPYONLY)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/assets/settings.json ${CMAKE_CURRENT_BINARY_DIR}/settings.json COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/assets/settings.jsonc ${CMAKE_CURRENT_BINARY_DIR}/settings.json COPYONLY)
