@@ -107,8 +107,8 @@ void Source2SDK::OnPluginStart() {
 	using FireOutputInternal = void(*)(CEntityIOOutput* const, CEntityInstance*, CEntityInstance*, const CVariant* const, float);
 	g_PH.AddHookDetourFunc<FireOutputInternal>("CEntityIOOutput_FireOutputInternal", Hook_FireOutputInternal, Pre, Post);
 
-	using LogDirect = LoggingResponse_t (*)(void* loggingSystem, LoggingChannelID_t channel, LoggingSeverity_t severity, LeafCodeInfo_t*, LoggingMetaData_t*, Color, char const*, va_list*);
-	g_PH.AddHookDetourFunc<LogDirect>("LogDirect", Hook_LogDirect, Pre, Post);
+	//using LogDirect = LoggingResponse_t (*)(void* loggingSystem, LoggingChannelID_t channel, LoggingSeverity_t severity, LeafCodeInfo_t*, LoggingMetaData_t*, Color, char const*, va_list*);
+	//g_PH.AddHookDetourFunc<LogDirect>("LogDirect", Hook_LogDirect, Pre, Post);
 
 	using HostStateRequest = void* (*)(void *a1, void **pRequest);
 	g_PH.AddHookDetourFunc<HostStateRequest>("HostStateRequest", Hook_HostStateRequest, Pre);
@@ -476,7 +476,7 @@ poly::ReturnAction Source2SDK::Hook_DispatchConCommand(poly::IHook& hook, poly::
 	return poly::ReturnAction::Ignored;
 }
 
-poly::ReturnAction Source2SDK::Hook_LogDirect(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
+/*poly::ReturnAction Source2SDK::Hook_LogDirect(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	volatile auto loggingSystem = poly::GetArgument<void*>(params, 0);
 	volatile auto channel = (LoggingChannelID_t) poly::GetArgument<int32_t>(params, 1);
 	volatile auto severity = (LoggingSeverity_t) poly::GetArgument<int32_t>(params, 2);
@@ -504,20 +504,20 @@ poly::ReturnAction Source2SDK::Hook_LogDirect(poly::IHook& hook, poly::Params& p
 	//char buffer[MAX_LOGGING_MESSAGE_LENGTH];
 	//bool matched = false;
 
-	/*if (args) {
+	if (args) {
 		//V_vsnprintf(buffer, sizeof buffer, str, *args);
 		//matched = g_pCoreConfig->IsRegexMatch(buffer);
 	} else {
 		//matched = g_pCoreConfig->IsRegexMatch(str);
-	}*/
+	}
 
-	/*if (matched) {
+	if (matched) {
 		poly::SetReturn<int>(ret, LoggingResponse_t::LR_ABORT);
 		return poly::ReturnAction::Supercede;
-	}*/
+	}
 
 	return poly::ReturnAction::Ignored;
-}
+}*/
 
 poly::ReturnAction Source2SDK::Hook_HostStateRequest(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	auto pRequest = poly::GetArgument<void**>(params, 1);
