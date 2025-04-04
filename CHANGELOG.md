@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.1.16](https://github.com/untrustedmodders/plugify-source-2/compare/v1.1.15...v1.1.16) (2025-04-04)
+
+
+### Bug Fixes
+
+* add console cleaner ([064eec4](https://github.com/untrustedmodders/plugify-source-2/commit/064eec4eb92a6b8da099a236baad904ad2787170))
+* add console cleaner and addon manager ([7371001](https://github.com/untrustedmodders/plugify-source-2/commit/7371001841b86c7838929a54e788eac0ca3dd2c4))
+* add detour by address ([a0be065](https://github.com/untrustedmodders/plugify-source-2/commit/a0be065e2a3afb11571771f97f1b1ff2de6fccbe))
+* configs linkage errors on Linux ([85a84cf](https://github.com/untrustedmodders/plugify-source-2/commit/85a84cf9aa1a28ec6a53ce9da6f5e1e225b12780))
+* missing s2sdk ([77c8a13](https://github.com/untrustedmodders/plugify-source-2/commit/77c8a1323262c3c83fb41ebc9ea80d2097cef915))
+* rename commands ([be17844](https://github.com/untrustedmodders/plugify-source-2/commit/be17844b298ac01e4f42d5c75748552273bff920))
+* update clang tools ([f229969](https://github.com/untrustedmodders/plugify-source-2/commit/f22996970763a12520ddfe1ffaa6ee3633c6e1be))
+* update configs ([083486f](https://github.com/untrustedmodders/plugify-source-2/commit/083486f982a50b56d2fb1a58edb81e40776ef4fd))
+* update configs again ([f871641](https://github.com/untrustedmodders/plugify-source-2/commit/f8716415d852dbc918e0de5530809e33614cf010))
+
 ## [1.1.15](https://github.com/untrustedmodders/plugify-source-2/compare/v1.1.14...v1.1.15) (2025-03-31)
 
 
