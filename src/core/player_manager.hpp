@@ -83,7 +83,7 @@ public:
 	PlayerManager() = default;
 	~PlayerManager() = default;
 
-	Player* ToPlayer(CServerSideClientBase* pClient) const;
+	Player* ToPlayer(CServerSideClientBase* client) const;
 	Player* ToPlayer(CPlayerPawnComponent* component) const;
 	Player* ToPlayer(CBasePlayerController* controller) const;
 	Player* ToPlayer(CBasePlayerPawn* pawn) const;

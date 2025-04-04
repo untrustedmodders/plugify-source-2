@@ -55,7 +55,7 @@ bool MultiAddonManager::MountAddon(uint64_t addon, bool addToTail) {
 		BuildAddonPath(addon, pszPath, sizeof(pszPath), true);
 
 		if (!g_pFullFileSystem->FileExists(pszPath)) {
-			S2_LOGF(LS_ERROR, "%s: Addon %lu not found at %s\n", __func__, addon, pszPath);
+			S2_LOGF(LS_WARNING, "%s: Addon %lu not found at %s\n", __func__, addon, pszPath);
 			return false;
 		}
 	} else {
@@ -64,7 +64,7 @@ bool MultiAddonManager::MountAddon(uint64_t addon, bool addToTail) {
 	}
 
 	if (std::find(m_mountedAddons.begin(), m_mountedAddons.end(), addon) != m_mountedAddons.end()) {
-		S2_LOGF(LS_ERROR, "%s: Addon %lu is already mounted\n", __func__, addon);
+		S2_LOGF(LS_WARNING, "%s: Addon %lu is already mounted\n", __func__, addon);
 		return false;
 	}
 
@@ -76,7 +76,7 @@ bool MultiAddonManager::MountAddon(uint64_t addon, bool addToTail) {
 	return true;
 }
 
-bool MultiAddonManager::UnmountAddon(uint64_t addon) {
+bool MultiAddonManager::UnmountAddon(uint64_t addon, bool remove) {
 	if (!addon)
 		return false;
 
@@ -86,14 +86,16 @@ bool MultiAddonManager::UnmountAddon(uint64_t addon) {
 	if (!g_pFullFileSystem->RemoveSearchPath(path, "GAME"))
 		return false;
 
-	m_mountedAddons.erase(std::remove(m_mountedAddons.begin(), m_mountedAddons.end(), addon), m_mountedAddons.end());
+	if (remove) {
+		m_mountedAddons.erase(std::remove(m_mountedAddons.begin(), m_mountedAddons.end(), addon), m_mountedAddons.end());
+	}
 
 	S2_LOGF(LS_MESSAGE, "Removing search path: %s\n", path);
 
 	return true;
 }
 
-void MultiAddonManager::PrintDownloadProgress() {
+void MultiAddonManager::PrintDownloadProgress() const {
 	if (m_downloadQueue.Count() == 0)
 		return;
 
@@ -123,12 +125,12 @@ bool MultiAddonManager::DownloadAddon(uint64_t addon, bool important, bool force
 	}
 
 	if (addon == 0) {
-		S2_LOGF(LS_ERROR, "%s: Invalid addon %lu\n", __func__, addon);
+		S2_LOGF(LS_WARNING, "%s: Invalid addon %lu\n", __func__, addon);
 		return false;
 	}
 
 	if (m_downloadQueue.Check(addon)) {
-		S2_LOGF(LS_ERROR, "%s: Addon %lu is already queued for download!\n", __func__, addon);
+		S2_LOGF(LS_WARNING, "%s: Addon %lu is already queued for download!\n", __func__, addon);
 		return false;
 	}
 
@@ -140,7 +142,7 @@ bool MultiAddonManager::DownloadAddon(uint64_t addon, bool important, bool force
 	}
 
 	if (!g_SteamAPI.SteamUGC()->DownloadItem(addon, false)) {
-		S2_LOGF(LS_ERROR, "%s: Addon download for %lu failed to start, addon ID is invalid or server is not logged on Steam\n",
+		S2_LOGF(LS_WARNING, "%s: Addon download for %lu failed to start, addon ID is invalid or server is not logged on Steam\n",
 		      __func__, addon);
 		return false;
 	}
@@ -163,18 +165,17 @@ void MultiAddonManager::RefreshAddons(bool reloadMap) {
 
 	// Remove our paths first in case addons were switched
 	for (const auto& addon : m_mountedAddons) {
-		UnmountAddon(addon);
+		UnmountAddon(addon, false);
 	}
+	m_mountedAddons.clear();
 
-	bool allAddonsMounted = true;
+	bool refuseMounting = false;
 
 	for (const auto& addon : m_extraAddons) {
-		if (!MountAddon(addon)) {
-			allAddonsMounted = false;
-		}
+		refuseMounting |= !MountAddon(addon);
 	}
 
-	if (allAddonsMounted && reloadMap)
+	if (!refuseMounting && reloadMap)
 		ReloadMap();
 }
 
@@ -182,8 +183,9 @@ void MultiAddonManager::ClearAddons() {
 	m_extraAddons.clear();
 
 	for (const auto& addon : m_mountedAddons) {
-		UnmountAddon(addon);
+		UnmountAddon(addon, false);
 	}
+	m_mountedAddons.clear();
 }
 
 void MultiAddonManager::ReloadMap() {
@@ -202,7 +204,7 @@ void MultiAddonManager::OnAddonDownloaded(DownloadItemResult_t* result) {
 	if (result->m_eResult == k_EResultOK)
 		S2_LOGF(LS_MESSAGE, "Addon %lu downloaded successfully\n", result->m_nPublishedFileId);
 	else
-		S2_LOGF(LS_ERROR, "Addon %lu download failed with status %i\n", result->m_nPublishedFileId, result->m_eResult);
+		S2_LOGF(LS_WARNING, "Addon %lu download failed with status %i\n", result->m_nPublishedFileId, result->m_eResult);
 
 	// This download isn't triggered by us, don't do anything
 	if (!m_downloadQueue.Check(result->m_nPublishedFileId))
@@ -221,7 +223,7 @@ void MultiAddonManager::OnAddonDownloaded(DownloadItemResult_t* result) {
 
 bool MultiAddonManager::AddAddon(uint64_t addon, bool refresh) {
 	if (std::find(m_extraAddons.begin(), m_extraAddons.end(), addon) != m_extraAddons.end()) {
-		S2_LOGF(LS_ERROR, "Addon %lu is already in the list!\n", addon);
+		S2_LOGF(LS_WARNING, "Addon %lu is already in the list!\n", addon);
 		return false;
 	}
 
@@ -242,7 +244,7 @@ bool MultiAddonManager::RemoveAddon(uint64_t addon, bool refresh) {
 	auto it = std::find(m_extraAddons.begin(), m_extraAddons.end(), addon);
 
 	if (it == m_extraAddons.end()) {
-		S2_LOGF(LS_ERROR, "Addon %lu is not in the list!\n", addon);
+		S2_LOGF(LS_WARNING, "Addon %lu is not in the list!\n", addon);
 		return false;
 	}
 
@@ -272,6 +274,7 @@ void MultiAddonManager::OnSteamAPIActivated() {
 
 void MultiAddonManager::OnStartupServer() {
 	g_ClientsPendingAddon.clear();
+	g_MultiAddonManager.m_extraAddons = g_pCoreConfig->ExtraAddons;
 
 	// Remove empty paths added when there are 2+ addons, they screw up file writes
 	g_pFullFileSystem->RemoveSearchPath("", "GAME");
@@ -456,8 +459,8 @@ void MultiAddonManager::OnClientConnect(CPlayerSlot slot, const char* name, uint
 
 	if (it == g_ClientsPendingAddon.end()) {
 		// Client joined for the first time or after a timeout
-		S2_LOGF(LS_MESSAGE, "first connection, sending addon %lu\n", m_extraAddons[0]);
-		g_ClientsPendingAddon.emplace_back(xuid, 0.0, 0);
+		S2_LOGF(LS_MESSAGE, "first connection, sending addon %lu\n", m_extraAddons[k_PublishedFileIdInvalid]);
+		g_ClientsPendingAddon.emplace_back(xuid, 0.0, k_PublishedFileIdInvalid);
 	} else if (Plat_FloatTime() - it->timestamp < g_pCoreConfig->RejoinTimeout) {
 		// Client reconnected within the timeout interval
 		// If they already have the addon this happens almost instantly after receiving the signon message with the addon

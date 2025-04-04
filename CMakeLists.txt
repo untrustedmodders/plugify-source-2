@@ -75,7 +75,7 @@ if(NOT S2SDK_BUILD_DOCS)
     include(cmake/dynlibutils.cmake)
     include(cmake/metamod.cmake)
     include(cmake/plugify.cmake)
-    include(cmake/re2.cmake)
+    #include(cmake/re2.cmake)
     include(cmake/sourcesdk.cmake)
 endif()
 

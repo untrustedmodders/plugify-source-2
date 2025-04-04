@@ -8,15 +8,16 @@
 #include <steam/isteamugc.h>
 
 class CServerSideClient;
+
 class MultiAddonManager {
 public:
 	void BuildAddonPath(uint64_t addon, char* buf, size_t len, bool legacy = false);
 	bool MountAddon(uint64_t addon, bool addToTail = false);
-	bool UnmountAddon(uint64_t addon);
+	bool UnmountAddon(uint64_t addon, bool remove = true);
 	bool AddAddon(uint64_t addon, bool refresh = false);
 	bool RemoveAddon(uint64_t addon, bool refresh = false);
 	bool DownloadAddon(uint64_t addon, bool important = false, bool force = false);
-	void PrintDownloadProgress();
+	void PrintDownloadProgress() const;
 	void RefreshAddons(bool reloadMap = false);
 	void ClearAddons();
 	void ReloadMap();

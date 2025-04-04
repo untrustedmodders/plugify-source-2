@@ -118,7 +118,7 @@ void Source2SDK::OnPluginStart() {
 	auto fSendNetMessage = &CServerSideClientBase::SendNetMessage;
 	int iSendNetMessageOffset = poly::GetVTableIndex((void*&) fSendNetMessage);
 	using SendNetMessage = decltype(&CServerSideClientBase::SendNetMessage);
-	g_PH.AddHookDetourFunc<SendNetMessage>(&pServerSideClientVTable[iSendNetMessageOffset], Hook_SendNetMessage, Pre);
+	g_PH.AddHookDetourFunc<SendNetMessage>(pServerSideClientVTable[iSendNetMessageOffset], Hook_SendNetMessage, Pre);
 
 #if S2SDK_PLATFORM_WINDOWS
 	using PreloadLibrary = void(*)(void* const);

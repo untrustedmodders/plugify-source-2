@@ -224,8 +224,8 @@ int PlayerManager::MaxClients() {
 	return gpGlobals ? gpGlobals->maxClients : -1;
 }
 
-Player* PlayerManager::ToPlayer(CServerSideClientBase* pClient) const {
-	return ToPlayer(pClient->GetPlayerSlot());
+Player* PlayerManager::ToPlayer(CServerSideClientBase* client) const {
+	return ToPlayer(client->GetPlayerSlot());
 }
 
 Player* PlayerManager::ToPlayer(CPlayerPawnComponent* component) const {

@@ -27,7 +27,7 @@
       // String: "Discarding pending request '%s, %u'\n"
       "HostStateRequest": {
         "library": "engine2",
-        "win64": "48 89 74 24 2A 57 48 83 EC 2A 33 F6 48 8B FA 48 39 35",
+        "win64": "48 89 74 24 10 57 48 83 EC 30 33 F6 48 8B FA",
         "linuxsteamrt64": "55 48 89 E5 41 56 41 55 41 54 49 89 F4 53 48 83 7F"
       },
       // Called from Host_Say

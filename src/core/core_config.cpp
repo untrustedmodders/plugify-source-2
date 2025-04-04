@@ -2,12 +2,12 @@
 #include <core/sdk/utils.h>
 #include <plugify-configs/plugify-configs.hpp>
 
-#if S2SDK_PLATFORM_WINDOWS
+/*#if S2SDK_PLATFORM_WINDOWS
 #include <regex>
 #else
 #undef POSIX
 #include <re2/re2.h>
-#endif
+#endif*/
 
 using namespace std::string_view_literals;
 
@@ -15,9 +15,9 @@ CoreConfig::CoreConfig(plg::vector<plg::string> paths) : m_paths(std::move(paths
 }
 
 CoreConfig::~CoreConfig() {
-	for (auto& regex : FilterConsoleCleaner) {
+	/*for (auto& regex : FilterConsoleCleaner) {
 		delete regex;
-	}
+	}*/
 }
 
 bool CoreConfig::Initialize() {
@@ -54,7 +54,7 @@ bool CoreConfig::Initialize() {
 		config->JumpBack();
 	}
 
-	FilterConsoleCleaner.clear();
+	/*FilterConsoleCleaner.clear();
 	if (config->JumpKey("FilterConsoleCleaner")) {
 		if (config->IsArray() && config->JumpFirst()) {
 			do {
@@ -70,7 +70,7 @@ bool CoreConfig::Initialize() {
 			config->JumpBack();
 		}
 		config->JumpBack();
-	}
+	}*/
 
 	ServerLanguage = config->GetString("ServerLanguage", "en");
 
@@ -78,7 +78,10 @@ bool CoreConfig::Initialize() {
 	if (config->JumpKey("ExtraAddons")) {
 		if (config->IsArray() && config->JumpFirst()) {
 			do {
-				ExtraAddons.emplace_back(static_cast<uint64_t>(config->GetAsInt64()));
+				uint64_t value = static_cast<uint64_t>(config->GetAsInt64());
+				if (std::find(ExtraAddons.begin(), ExtraAddons.end(), value) == ExtraAddons.end()) {
+					ExtraAddons.emplace_back(value);
+				}
 			} while (config->JumpNext());
 			config->JumpBack();
 		}
@@ -118,13 +121,13 @@ bool CoreConfig::IsPublicChatTrigger(std::string_view message) const {
 }
 
 bool CoreConfig::IsRegexMatch(std::string_view message) const {
-	for (auto& regex : FilterConsoleCleaner) {
+	/*for (auto& regex : FilterConsoleCleaner) {
 #if S2SDK_PLATFORM_WINDOWS
 		if (std::regex_match(message.begin(), message.end(), *regex))
 #else
 		if (RE2::FullMatch(message, *regex))
 #endif
 			return true;
-	}
+	}*/
 	return false;
 }
