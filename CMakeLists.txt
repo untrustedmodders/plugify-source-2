@@ -75,7 +75,6 @@ if(NOT S2SDK_BUILD_DOCS)
     include(cmake/dynlibutils.cmake)
     include(cmake/metamod.cmake)
     include(cmake/plugify.cmake)
-    #include(cmake/re2.cmake)
     include(cmake/sourcesdk.cmake)
 endif()
 
@@ -152,4 +151,4 @@ configure_file(
 )
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/assets/gamedata.jsonc ${CMAKE_CURRENT_BINARY_DIR}/gamedata.jsonc COPYONLY)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/assets/settings.jsonc ${CMAKE_CURRENT_BINARY_DIR}/settings.json COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/assets/settings.jsonc ${CMAKE_CURRENT_BINARY_DIR}/settings.jsonc COPYONLY)

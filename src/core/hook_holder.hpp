@@ -29,7 +29,11 @@ public:
 
 		ihook = poly::Hook::CreateHookVirtualByFunc(ptr, (void*&) func, ret, plg::vector(args.begin(), args.end()), varIndex);
 		if (ihook == nullptr) {
+#if PLUGIFY_IS_DEBUG
+			S2_LOGF(LS_WARNING, "Could not hook member function \"%p\".\n", ptr);
+#else
 			S2_LOGF(LS_WARNING, "Could not hook member function \"%s\".\n", typeid(func).name());
+#endif
 			return false;
 		}
 
@@ -39,7 +43,7 @@ public:
 	}
 
 	template<typename F>
-	bool AddHookDetourFunc(const plg::string& name, const std::function<void(poly::Hook&)>& callback = {}, int varIndex = -1) {
+	bool AddHookDetourFunc(std::string_view name, const std::function<void(poly::Hook&)>& callback = {}, int varIndex = -1) {
 		auto it = m_dhooks.find(name);
 		if (it != m_dhooks.end()) {
 			callback(*it->second);
@@ -48,7 +52,7 @@ public:
 
 		auto addr = g_pGameConfig->ResolveSignature(name);
 		if (!addr) {
-			S2_LOGF(LS_WARNING, "Could not hook detour function \"%s\".\n", name.c_str());
+			S2_LOGF(LS_WARNING, "Could not hook detour function \"%s\".\n", name.data());
 			return false;
 		}
 
@@ -64,7 +68,7 @@ public:
 
 		ihook = poly::Hook::CreateDetourHook(addr, ret, plg::vector(args.begin(), args.end()), varIndex);
 		if (ihook == nullptr) {
-			S2_LOGF(LS_WARNING, "Could not hook detour function \"%s\".\n", name.c_str());
+			S2_LOGF(LS_WARNING, "Could not hook detour function \"%s\".\n", name.data());
 			return false;
 		}
 
@@ -75,7 +79,7 @@ public:
 
 	template<typename F>
 	bool AddHookDetourFunc(void* addr, const std::function<void(poly::Hook&)>& callback = {}, int varIndex = -1) {
-		auto name = std::format("0x{:x}", reinterpret_cast<uintptr_t>(addr));
+		plg::string name = std::format("0x{:x}", reinterpret_cast<uintptr_t>(addr));
 
 		auto it = m_dhooks.find(name);
 		if (it != m_dhooks.end()) {
@@ -114,7 +118,7 @@ public:
 
 	template<typename F, int V = -1, typename C, typename... T>
 		requires(std::is_pointer_v<C> && std::is_function_v<std::remove_pointer_t<C>>)
-	bool AddHookDetourFunc(const plg::string& name, C callback, T... types) {
+	bool AddHookDetourFunc(std::string_view name, C callback, T... types) {
 		return AddHookDetourFunc<F>(name, [&](const poly::Hook& hook) {
 			([&]() { hook.AddCallback(types, callback); }(), ...);
 		}, V);
@@ -128,7 +132,7 @@ public:
 		}, V);
 	}
 
-	bool RemoveHookDetourFunc(const plg::string& name) {
+	bool RemoveHookDetourFunc(std::string_view name) {
 		auto it = m_dhooks.find(name);
 		if (it != m_dhooks.end()) {
 			m_dhooks.erase(it);
@@ -139,7 +143,7 @@ public:
 
 	template<typename F>
 	bool RemoveHookMemFunc(F func, void* ptr) {
-		auto it = m_vhooks.find(std::pair{(void*&) func, ptr});
+		auto it = m_vhooks.find({(void*&) func, ptr});
 		if (it != m_vhooks.end()) {
 			m_vhooks.erase(it);
 			return true;
@@ -158,7 +162,7 @@ public:
 	}
 
 private:
-	std::unordered_map<plg::string, std::unique_ptr<poly::Hook>> m_dhooks;
+	std::unordered_map<plg::string, std::unique_ptr<poly::Hook>, utils::string_hash,std::equal_to<>> m_dhooks;
 	std::unordered_map<std::pair<void*, void*>, std::unique_ptr<poly::Hook>, utils::pair_hash<void*, void*>> m_vhooks;
 };
 

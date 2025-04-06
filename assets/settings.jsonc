@@ -9,6 +9,7 @@
   ],
   // Allows you to filter out console prints with regular expressions
   "FilterConsoleCleaner": [
+    ".*sequence\/animation name collision found.*",
     ".*CNavGenParams.*",
     ".*CQ resync.*",
     ".*LATE Recv usercmd.*",

@@ -75,7 +75,7 @@ public:
 		std::lock_guard<std::mutex> lock(m_registerCnvLock);
 
 		if (name.empty() || g_pCVar->FindConVar(name.c_str()).IsValidRef()) {
-			return ConVarRef();
+			return {};
 		}
 
 		auto it = m_cnvLookup.find(name);

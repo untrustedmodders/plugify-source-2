@@ -1,6 +1,11 @@
 #include "game_config.hpp"
+
 #include <core/sdk/utils.h>
 #include <plugify-configs/plugify-configs.hpp>
+
+#if S2SDK_PLATFORM_LINUX
+#include <link.h>
+#endif
 
 GameConfig::GameConfig(plg::string game, plg::vector<plg::string> paths) : m_gameDir(std::move(game)), m_paths(std::move(paths)) {
 }
@@ -102,28 +107,28 @@ const plg::vector<plg::string>& GameConfig::GetPaths() const {
 	return m_paths;
 }
 
-std::string_view GameConfig::GetSignature(const plg::string& name) const {
+std::string_view GameConfig::GetSignature(std::string_view name) const {
 	auto it = m_signatures.find(name);
 	if (it == m_signatures.end())
 		return {};
 	return std::get<plg::string>(*it);
 }
 
-std::string_view GameConfig::GetPatch(const plg::string& name) const {
+std::string_view GameConfig::GetPatch(std::string_view name) const {
 	auto it = m_patches.find(name);
 	if (it == m_patches.end())
 		return {};
 	return std::get<plg::string>(*it);
 }
 
-int32_t GameConfig::GetOffset(const plg::string& name) const {
+int32_t GameConfig::GetOffset(std::string_view name) const {
 	auto it = m_offsets.find(name);
 	if (it == m_offsets.end())
 		return -1;
 	return std::get<int32_t>(*it);
 }
 
-std::string_view GameConfig::GetLibrary(const plg::string& name) const {
+std::string_view GameConfig::GetLibrary(std::string_view name) const {
 	auto it = m_libraries.find(name);
 	if (it == m_libraries.end())
 		return {};
@@ -133,7 +138,7 @@ std::string_view GameConfig::GetLibrary(const plg::string& name) const {
 // memory addresses below 0x10000 are automatically considered invalid for dereferencing
 #define VALID_MINIMUM_MEMORY_ADDRESS ((void*) 0x10000)
 
-Memory GameConfig::GetAddress(const plg::string& name) const {
+Memory GameConfig::GetAddress(std::string_view name) const {
 	auto it = m_addresses.find(name);
 	if (it == m_addresses.end())
 		return {};
@@ -173,7 +178,7 @@ Memory GameConfig::GetAddress(const plg::string& name) const {
 	return addr;
 }
 
-const Module* GameConfig::GetModule(const plg::string& name) const {
+const Module* GameConfig::GetModule(std::string_view name) const {
 	const std::string_view library = GetLibrary(name);
 	if (library.empty())
 		return {};
@@ -181,30 +186,30 @@ const Module* GameConfig::GetModule(const plg::string& name) const {
 	return g_GameConfigManager.GetModule(library);
 }
 
-bool GameConfig::IsSymbol(const plg::string& name) const {
+bool GameConfig::IsSymbol(std::string_view name) const {
 	const std::string_view sigOrSymbol = GetSignature(name);
 	if (sigOrSymbol.empty()) {
-		S2_LOGF(LS_WARNING, "Missing signature or symbol: %s\n", name.c_str());
+		S2_LOGF(LS_WARNING, "Missing signature or symbol: %s\n", name.data());
 		return false;
 	}
 	return sigOrSymbol[0] == '@';
 }
 
-std::string_view GameConfig::GetSymbol(const plg::string& name) const {
+std::string_view GameConfig::GetSymbol(std::string_view name) const {
 	const std::string_view symbol = GetSignature(name);
 
 	if (symbol.size() <= 1) {
-		S2_LOGF(LS_WARNING, "Missing symbol: %s\n", name.c_str());
+		S2_LOGF(LS_WARNING, "Missing symbol: %s\n", name.data());
 		return {};
 	}
 
 	return symbol.substr(1);
 }
 
-Memory GameConfig::ResolveSignature(const plg::string& name) const {
+Memory GameConfig::ResolveSignature(std::string_view name) const {
 	auto module = GetModule(name);
 	if (!module) {
-		S2_LOGF(LS_WARNING, "Invalid module: %s\n", name.c_str());
+		S2_LOGF(LS_WARNING, "Invalid module: %s\n", name.data());
 		return {};
 	}
 
@@ -213,7 +218,7 @@ Memory GameConfig::ResolveSignature(const plg::string& name) const {
 	if (IsSymbol(name)) {
 		const std::string_view symbol = GetSymbol(name);
 		if (symbol.empty()) {
-			S2_LOGF(LS_WARNING, "Invalid symbol for %s\n", name.c_str());
+			S2_LOGF(LS_WARNING, "Invalid symbol for %s\n", name.data());
 			return {};
 		}
 
@@ -221,7 +226,7 @@ Memory GameConfig::ResolveSignature(const plg::string& name) const {
 	} else {
 		const std::string_view signature = GetSignature(name);
 		if (signature.empty()) {
-			S2_LOGF(LS_WARNING, "Failed to find signature for %s\n", name.c_str());
+			S2_LOGF(LS_WARNING, "Failed to find signature for %s\n", name.data());
 			return {};
 		}
 
@@ -229,7 +234,7 @@ Memory GameConfig::ResolveSignature(const plg::string& name) const {
 	}
 
 	if (!address) {
-		S2_LOGF(LS_WARNING, "Failed to find address for %s\n", name.c_str());
+		S2_LOGF(LS_WARNING, "Failed to find address for %s\n", name.data());
 		return {};
 	}
 
@@ -292,7 +297,11 @@ Module* GameConfigManager::GetModule(std::string_view name) {
 
 	auto system = globals::FindModule(name);
 	if (system != nullptr) {
+#if S2SDK_PLATFORM_LINUX
+		return &m_modules.emplace(name, Module(reinterpret_cast<link_map*>(system)->l_addr)).first->second;
+#else
 		return &m_modules.emplace(name, Module(system)).first->second;
+#endif
 	}
 
 	return nullptr;

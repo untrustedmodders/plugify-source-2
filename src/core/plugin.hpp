@@ -38,7 +38,7 @@ public:
 	static poly::ReturnAction Hook_FireOutputInternal(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type);
 	static poly::ReturnAction Hook_DispatchConCommand(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type);
 	//static poly::ReturnAction Hook_HostSay(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type);
-	//static poly::ReturnAction Hook_LogDirect(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type);
+	static poly::ReturnAction Hook_LogDirect(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type);
 	static poly::ReturnAction Hook_HostStateRequest(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type);
 	static poly::ReturnAction Hook_SendNetMessage(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type);
 #if S2SDK_PLATFORM_WINDOWS

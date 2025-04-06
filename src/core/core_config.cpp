@@ -2,13 +2,6 @@
 #include <core/sdk/utils.h>
 #include <plugify-configs/plugify-configs.hpp>
 
-/*#if S2SDK_PLATFORM_WINDOWS
-#include <regex>
-#else
-#undef POSIX
-#include <re2/re2.h>
-#endif*/
-
 using namespace std::string_view_literals;
 
 CoreConfig::CoreConfig(plg::vector<plg::string> paths) : m_paths(std::move(paths)) {
@@ -54,23 +47,17 @@ bool CoreConfig::Initialize() {
 		config->JumpBack();
 	}
 
-	/*FilterConsoleCleaner.clear();
+	FilterConsoleCleaner.clear();
 	if (config->JumpKey("FilterConsoleCleaner")) {
 		if (config->IsArray() && config->JumpFirst()) {
 			do {
-#if S2SDK_PLATFORM_WINDOWS
 				plg::string pattern = config->GetString();
-				FilterConsoleCleaner.emplace_back(new std::regex(pattern.begin(), pattern.end()));
-#else
-				RE2::Options options;
-				options.set_dot_nl(true);
-				FilterConsoleCleaner.emplace_back(new re2::RE2(config->GetString(), options));
-#endif
+				FilterConsoleCleaner.emplace_back(pattern.begin(), pattern.end());
 			} while (config->JumpNext());
 			config->JumpBack();
 		}
 		config->JumpBack();
-	}*/
+	}
 
 	ServerLanguage = config->GetString("ServerLanguage", "en");
 
@@ -102,8 +89,8 @@ const plg::vector<plg::string>& CoreConfig::GetPaths() const {
 	return m_paths;
 }
 
-bool CoreConfig::IsTriggerInternal(const std::vector<std::string>& triggers, std::string_view message) {
-	for (const std::string& trigger : triggers) {
+bool CoreConfig::IsTriggerInternal(const std::vector<plg::string>& triggers, std::string_view message) {
+	for (const plg::string& trigger : triggers) {
 		if (message.starts_with(trigger)) {
 			return true;
 		}
@@ -121,13 +108,9 @@ bool CoreConfig::IsPublicChatTrigger(std::string_view message) const {
 }
 
 bool CoreConfig::IsRegexMatch(std::string_view message) const {
-	/*for (auto& regex : FilterConsoleCleaner) {
-#if S2SDK_PLATFORM_WINDOWS
-		if (std::regex_match(message.begin(), message.end(), *regex))
-#else
-		if (RE2::FullMatch(message, *regex))
-#endif
+	for (const auto& regex : FilterConsoleCleaner) {
+		if (std::regex_match(message.begin(), message.end(), regex))
 			return true;
-	}*/
+	}
 	return false;
 }

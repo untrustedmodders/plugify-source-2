@@ -1,7 +1,7 @@
 #include <tier0/logging.h>
 #include <convar.h>
 
-plg::string g_ServerCommandBuffer;
+plg::string g_ServerCommandBuffer; // TODO: need to be thread_local ?
 bool g_ShouldCatchSpew = false;
 
 class LoggingListener final : public ILoggingListener {

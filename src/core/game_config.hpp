@@ -17,15 +17,15 @@ public:
 	bool Initialize();
 
 	const plg::vector<plg::string>& GetPaths() const;
-	std::string_view GetLibrary(const plg::string& name) const;
-	std::string_view GetSignature(const plg::string& name) const;
-	std::string_view GetSymbol(const plg::string& name) const;
-	std::string_view GetPatch(const plg::string& name) const;
-	int32_t GetOffset(const plg::string& name) const;
-	Memory GetAddress(const plg::string& name) const;
-	const Module* GetModule(const plg::string& name) const;
-	bool IsSymbol(const plg::string& name) const;
-	Memory ResolveSignature(const plg::string& name) const;
+	std::string_view GetLibrary(std::string_view name) const;
+	std::string_view GetSignature(std::string_view name) const;
+	std::string_view GetSymbol(std::string_view name) const;
+	std::string_view GetPatch(std::string_view name) const;
+	int32_t GetOffset(std::string_view name) const;
+	Memory GetAddress(std::string_view name) const;
+	const Module* GetModule(std::string_view name) const;
+	bool IsSymbol(std::string_view name) const;
+	Memory ResolveSignature(std::string_view name) const;
 
 private:
 	struct AddressConf {
@@ -37,12 +37,12 @@ private:
 private:
 	plg::string m_gameDir;
 	plg::vector<plg::string> m_paths;
-	std::unordered_map<plg::string, int32_t> m_offsets;
-	std::unordered_map<plg::string, plg::string> m_signatures;
-	std::unordered_map<plg::string, AddressConf> m_addresses;
-	std::unordered_map<plg::string, plg::string> m_libraries;
-	std::unordered_map<plg::string, plg::string> m_patches;
-	size_t m_refCount = 1;
+	std::unordered_map<plg::string, int32_t, utils::string_hash, std::equal_to<>> m_offsets;
+	std::unordered_map<plg::string, plg::string, utils::string_hash, std::equal_to<>> m_signatures;
+	std::unordered_map<plg::string, AddressConf, utils::string_hash, std::equal_to<>> m_addresses;
+	std::unordered_map<plg::string, plg::string, utils::string_hash, std::equal_to<>> m_libraries;
+	std::unordered_map<plg::string, plg::string, utils::string_hash, std::equal_to<>> m_patches;
+	size_t m_refCount{1};
 };
 
 class GameConfigManager {
@@ -57,7 +57,7 @@ public:
 
 private:
 	std::unordered_map<uint32_t, GameConfig> m_configs;
-	std::unordered_map<plg::string, Module, utils::string_hash,std::equal_to<>> m_modules;
+	std::unordered_map<plg::string, Module, utils::string_hash, std::equal_to<>> m_modules;
 	static inline uint32_t s_nextId = static_cast<uint32_t>(-1);
 };
 

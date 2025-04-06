@@ -5,44 +5,44 @@
 
 namespace pb = google::protobuf;
 
-#define GETCHECK_FIELD()                                                                          \
+#define GETCHECK_FIELD()                                                                   \
 	const pb::FieldDescriptor* field = m_msg->GetDescriptor()->FindFieldByName(fieldName); \
-	if (!field) {                                                                                 \
-		return false;                                                                             \
+	if (!field) {                                                                          \
+		return false;                                                                      \
 	}
 
-#define CHECK_FIELD_TYPE(type)                                            \
+#define CHECK_FIELD_TYPE(type)                                      \
 	if (field->cpp_type() != pb::FieldDescriptor::CPPTYPE_##type) { \
-		return false;                                                     \
+		return false;                                               \
 	}
 
-#define CHECK_FIELD_TYPE2(type1, type2)                                                                                       \
-	pb::FieldDescriptor::CppType fieldType = field->cpp_type();                                                         \
+#define CHECK_FIELD_TYPE2(type1, type2)                                                                           \
+	pb::FieldDescriptor::CppType fieldType = field->cpp_type();                                                   \
 	if (fieldType != pb::FieldDescriptor::CPPTYPE_##type1 && fieldType != pb::FieldDescriptor::CPPTYPE_##type2) { \
-		return false;                                                                                                         \
+		return false;                                                                                             \
 	}
 
-#define CHECK_FIELD_TYPE3(type1, type2, type3)                                                                                \
-	pb::FieldDescriptor::CppType fieldType = field->cpp_type();                                                         \
+#define CHECK_FIELD_TYPE3(type1, type2, type3)                                                                    \
+	pb::FieldDescriptor::CppType fieldType = field->cpp_type();                                                   \
 	if (fieldType != pb::FieldDescriptor::CPPTYPE_##type1 && fieldType != pb::FieldDescriptor::CPPTYPE_##type2 && \
-		fieldType != pb::FieldDescriptor::CPPTYPE_##type3) {                                                            \
-		return false;                                                                                                         \
+		fieldType != pb::FieldDescriptor::CPPTYPE_##type3) {                                                      \
+		return false;                                                                                             \
 	}
 
-#define CHECK_FIELD_REPEATED()                                         \
+#define CHECK_FIELD_REPEATED()                                   \
 	if (field->label() != pb::FieldDescriptor::LABEL_REPEATED) { \
-		return false;                                                  \
+		return false;                                            \
 	}
 
-#define CHECK_FIELD_NOT_REPEATED()                                     \
+#define CHECK_FIELD_NOT_REPEATED()                               \
 	if (field->label() == pb::FieldDescriptor::LABEL_REPEATED) { \
-		return false;                                                  \
+		return false;                                            \
 	}
 
-#define CHECK_REPEATED_ELEMENT(idx)                               \
+#define CHECK_REPEATED_ELEMENT(idx)                                   \
 	int elemCount = m_msg->GetReflection()->FieldSize(*m_msg, field); \
-	if (elemCount == 0 || idx >= elemCount || idx < 0) {          \
-		return false;                                             \
+	if (elemCount == 0 || idx >= elemCount || idx < 0) {              \
+		return false;                                                 \
 	};
 
 class INetworkMessageInternal;
