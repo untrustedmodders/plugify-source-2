@@ -41,7 +41,7 @@ ConVarRef ConVarManager::FindConVar(const plg::string& name) {
 	m_cnvCache.emplace(conVarInfo.conVar.get(), &conVarInfo);
 
 	if (!conVarInfo.conVar->IsValidRef()) {
-		S2_LOGF(LS_WARNING, "Failed to find \"%s\" convar\n", name.c_str());
+		S2_LOGF(LS_WARNING, "Failed to find \"{}\" convar\n", name);
 		return {};
 	}
 

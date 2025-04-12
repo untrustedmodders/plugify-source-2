@@ -22,12 +22,12 @@ struct ClientJoinInfo {
 std::vector<ClientJoinInfo> g_ClientsPendingAddon; // List of clients who are still downloading addons
 std::unordered_set<uint64> g_ClientsWithAddons; // List of clients who already downloaded everything so they don't get reconnects on mapchange/rejoin
 
-void MultiAddonManager::BuildAddonPath(uint64_t addon, char* buf, size_t len, bool legacy) {
+std::string MultiAddonManager::BuildAddonPath(uint64_t addon) {
     // The workshop on a dedicated server is stored relative to the working directory for whatever reason
     static CBufferStringGrowable<MAX_PATH> s_sWorkingDir;
     ExecuteOnce(g_pFullFileSystem->GetSearchPath("EXECUTABLE_PATH", GET_SEARCH_PATH_ALL, s_sWorkingDir, 1));
 
-    V_snprintf(buf, static_cast<int>(len), "%ssteamapps/workshop/content/730/%lu/%lu%s.vpk", s_sWorkingDir.Get(), addon, addon, legacy ? "" : "_dir");
+    return std::format("{}steamapps/workshop/content/730/{}/{}_dir.vpk", s_sWorkingDir.Get(), addon, addon);
 }
 
 bool MultiAddonManager::MountAddon(uint64_t addon, bool addToTail) {
@@ -37,7 +37,7 @@ bool MultiAddonManager::MountAddon(uint64_t addon, bool addToTail) {
 	uint32 addonState = g_SteamAPI.SteamUGC()->GetItemState(addon);
 
 	if (!(addonState & k_EItemStateInstalled)) {
-		S2_LOGF(LS_MESSAGE, "%s: Addon %lu is not installed, queuing a download\n", __func__, addon);
+		S2_LOGF(LS_MESSAGE, "{}: Addon {} is not installed, queuing a download\n", __func__, addon);
 		DownloadAddon(addon, true, true);
 		return false;
 	}
@@ -47,30 +47,32 @@ bool MultiAddonManager::MountAddon(uint64_t addon, bool addToTail) {
 		DownloadAddon(addon, false, true);
 	}
 
-	char pszPath[MAX_PATH];
-	BuildAddonPath(addon, pszPath, sizeof(pszPath));
+	auto path = BuildAddonPath(addon);
 
-	if (!g_pFullFileSystem->FileExists(pszPath)) {
+	constexpr std::string_view current = "_dir.vpk";
+	constexpr std::string_view legacy = ".vpk";
+
+	if (!g_pFullFileSystem->FileExists(path.c_str())) {
 		// This might be a legacy addon (before multi-chunk was introduced), try again without the _dir
-		BuildAddonPath(addon, pszPath, sizeof(pszPath), true);
+		path.replace(path.size() - current.size(), current.size(), legacy);
 
-		if (!g_pFullFileSystem->FileExists(pszPath)) {
-			S2_LOGF(LS_WARNING, "%s: Addon %lu not found at %s\n", __func__, addon, pszPath);
+		if (!g_pFullFileSystem->FileExists(path.c_str())) {
+			S2_LOGF(LS_WARNING, "{}: Addon {} not found at {}\n", __func__, addon, path);
 			return false;
 		}
 	} else {
 		// We still need it without _dir anyway because the filesystem will append suffixes if needed
-		BuildAddonPath(addon, pszPath, sizeof(pszPath), true);
+		path.replace(path.size() - current.size(), current.size(), legacy);
 	}
 
 	if (std::find(m_mountedAddons.begin(), m_mountedAddons.end(), addon) != m_mountedAddons.end()) {
-		S2_LOGF(LS_WARNING, "%s: Addon %lu is already mounted\n", __func__, addon);
+		S2_LOGF(LS_WARNING, "{}: Addon {} is already mounted\n", __func__, addon);
 		return false;
 	}
 
-	S2_LOGF(LS_MESSAGE, "Adding search path: %s\n", pszPath);
+	S2_LOGF(LS_MESSAGE, "Adding search path: {}\n", path);
 
-	g_pFullFileSystem->AddSearchPath(pszPath, "GAME", addToTail ? PATH_ADD_TO_TAIL : PATH_ADD_TO_HEAD);
+	g_pFullFileSystem->AddSearchPath(path.c_str(), "GAME", addToTail ? PATH_ADD_TO_TAIL : PATH_ADD_TO_HEAD);
 	m_mountedAddons.emplace_back(addon);
 
 	return true;
@@ -80,17 +82,16 @@ bool MultiAddonManager::UnmountAddon(uint64_t addon, bool remove) {
 	if (!addon)
 		return false;
 
-	char path[MAX_PATH];
-	BuildAddonPath(addon, path, sizeof(path));
+	auto path = BuildAddonPath(addon);
 
-	if (!g_pFullFileSystem->RemoveSearchPath(path, "GAME"))
+	if (!g_pFullFileSystem->RemoveSearchPath(path.c_str(), "GAME"))
 		return false;
 
 	if (remove) {
 		std::erase(m_mountedAddons, addon);
 	}
 
-	S2_LOGF(LS_MESSAGE, "Removing search path: %s\n", path);
+	S2_LOGF(LS_MESSAGE, "Removing search path: {}\n", path);
 
 	return true;
 }
@@ -112,7 +113,7 @@ void MultiAddonManager::PrintDownloadProgress() const {
 	double flProgress = static_cast<double>(iBytesDownloaded) / static_cast<double>(iTotalBytes);
 	flProgress *= 100.f;
 
-	S2_LOGF(LS_MESSAGE, "Downloading addon %lu: %.2f/%.2f MB (%.2f%%)\n", m_downloadQueue.Head(), flMBDownloaded, flTotalMB, flProgress);
+	S2_LOGF(LS_MESSAGE, "Downloading addon {}: {:.2f}/{:.2f} MB ({:.2f}%)\n", m_downloadQueue.Head(), flMBDownloaded, flTotalMB, flProgress);
 }
 
 // important adds downloads to the pending list, which will reload the current map once the list is exhausted
@@ -120,29 +121,29 @@ void MultiAddonManager::PrintDownloadProgress() const {
 // Internally, downloads are queued up and processed one at a time
 bool MultiAddonManager::DownloadAddon(uint64_t addon, bool important, bool force) {
 	if (!g_SteamAPI.SteamUGC()) {
-		S2_LOGF(LS_ERROR, "%s: Cannot download addons as the Steam API is not initialized\n", __func__);
+		S2_LOGF(LS_ERROR, "{}: Cannot download addons as the Steam API is not initialized\n", __func__);
 		return false;
 	}
 
 	if (addon == 0) {
-		S2_LOGF(LS_WARNING, "%s: Invalid addon %lu\n", __func__, addon);
+		S2_LOGF(LS_WARNING, "{}: Invalid addon {}\n", __func__, addon);
 		return false;
 	}
 
 	if (m_downloadQueue.Check(addon)) {
-		S2_LOGF(LS_WARNING, "%s: Addon %lu is already queued for download!\n", __func__, addon);
+		S2_LOGF(LS_WARNING, "{}: Addon {} is already queued for download!\n", __func__, addon);
 		return false;
 	}
 
 	uint32 itemState = g_SteamAPI.SteamUGC()->GetItemState(addon);
 
 	if (!force && (itemState & k_EItemStateInstalled)) {
-		S2_LOGF(LS_MESSAGE, "Addon %lu is already installed\n", addon);
+		S2_LOGF(LS_MESSAGE, "Addon {} is already installed\n", addon);
 		return true;
 	}
 
 	if (!g_SteamAPI.SteamUGC()->DownloadItem(addon, false)) {
-		S2_LOGF(LS_WARNING, "%s: Addon download for %lu failed to start, addon ID is invalid or server is not logged on Steam\n",
+		S2_LOGF(LS_WARNING, "{}: Addon download for {} failed to start, addon ID is invalid or server is not logged on Steam\n",
 		      __func__, addon);
 		return false;
 	}
@@ -152,7 +153,7 @@ bool MultiAddonManager::DownloadAddon(uint64_t addon, bool important, bool force
 
 	m_downloadQueue.Insert(addon);
 
-	S2_LOGF(LS_MESSAGE, "Addon download started for %lu\n", addon);
+	S2_LOGF(LS_MESSAGE, "Addon download started for {}\n", addon);
 
 	return true;
 }
@@ -161,7 +162,7 @@ void MultiAddonManager::RefreshAddons(bool reloadMap) {
 	if (!g_SteamAPI.SteamUGC())
 		return;
 
-	S2_LOGF(LS_MESSAGE, "Refreshing addons (%s)\n", utils::vector_to_string(m_extraAddons).c_str());
+	S2_LOGF(LS_MESSAGE, "Refreshing addons ({})\n", utils::vector_to_string(m_extraAddons));
 
 	// Remove our paths first in case addons were switched
 	for (const auto& addon : m_mountedAddons) {
@@ -189,22 +190,22 @@ void MultiAddonManager::ClearAddons() {
 }
 
 void MultiAddonManager::ReloadMap() {
-	char cmd[MAX_PATH];
+	std::string cmd;
 
 	// Using the concommand here as g_pEngineServer->ChangeLevel somehow doesn't unmount workshop maps and we wanna be clean
 	if (m_currentWorkshopMap == k_PublishedFileIdInvalid)
-		V_snprintf(cmd, sizeof(cmd), "changelevel %s", gpGlobals->mapname.ToCStr());
+		cmd = std::format("changelevel {}", gpGlobals->mapname.ToCStr());
 	else
-		V_snprintf(cmd, sizeof(cmd), "host_workshop_map %lu", m_currentWorkshopMap);
+		cmd = std::format("host_workshop_map {}", m_currentWorkshopMap);
 
-	g_pEngineServer2->ServerCommand(cmd);
+	g_pEngineServer2->ServerCommand(cmd.c_str());
 }
 
 void MultiAddonManager::OnAddonDownloaded(DownloadItemResult_t* result) {
 	if (result->m_eResult == k_EResultOK)
-		S2_LOGF(LS_MESSAGE, "Addon %lu downloaded successfully\n", result->m_nPublishedFileId);
+		S2_LOGF(LS_MESSAGE, "Addon {} downloaded successfully\n", static_cast<uint64_t>(result->m_nPublishedFileId));
 	else
-		S2_LOGF(LS_WARNING, "Addon %lu download failed with status %i\n", result->m_nPublishedFileId, result->m_eResult);
+		S2_LOGF(LS_WARNING, "Addon {} download failed with status {}\n", static_cast<uint64_t>(result->m_nPublishedFileId), static_cast<int>(result->m_eResult));
 
 	// This download isn't triggered by us, don't do anything
 	if (!m_downloadQueue.Check(result->m_nPublishedFileId))
@@ -216,26 +217,27 @@ void MultiAddonManager::OnAddonDownloaded(DownloadItemResult_t* result) {
 
 	// That was the last important download, now reload the map
 	if (found && m_importantDownloads.Count() == 0) {
-		S2_LOGF(LS_MESSAGE, "All addon downloads finished, reloading map %s\n", gpGlobals->mapname);
+		S2_LOGF(LS_MESSAGE, "All addon downloads finished, reloading map {}\n", gpGlobals->mapname.ToCStr());
 		ReloadMap();
 	}
 }
 
 bool MultiAddonManager::AddAddon(uint64_t addon, bool refresh) {
 	if (std::find(m_extraAddons.begin(), m_extraAddons.end(), addon) != m_extraAddons.end()) {
-		S2_LOGF(LS_WARNING, "Addon %lu is already in the list!\n", addon);
+		S2_LOGF(LS_WARNING, "Addon {} is already in the list!\n", addon);
 		return false;
 	}
 
-	S2_LOGF(LS_MESSAGE, "Adding %lu to addon list\n", addon);
+	S2_LOGF(LS_MESSAGE, "Adding {} to addon list\n", addon);
 
 	m_extraAddons.emplace_back(addon);
 
 	g_ClientsWithAddons.clear();
 	S2_LOGF(LS_MESSAGE, "Clearing client cache due to addons changing");
 
-	if (refresh)
+	if (refresh) {
 		RefreshAddons();
+	}
 
 	return true;
 }
@@ -244,19 +246,20 @@ bool MultiAddonManager::RemoveAddon(uint64_t addon, bool refresh) {
 	auto it = std::find(m_extraAddons.begin(), m_extraAddons.end(), addon);
 
 	if (it == m_extraAddons.end()) {
-		S2_LOGF(LS_WARNING, "Addon %lu is not in the list!\n", addon);
+		S2_LOGF(LS_WARNING, "Addon {} is not in the list!\n", addon);
 		return false;
 	}
 
-	S2_LOGF(LS_MESSAGE, "Removing %lu from addon list\n", addon);
+	S2_LOGF(LS_MESSAGE, "Removing {} from addon list\n", addon);
 
 	m_extraAddons.erase(it);
 
 	g_ClientsWithAddons.clear();
 	S2_LOGF(LS_MESSAGE, "Clearing client cache due to addons changing");
 
-	if (refresh)
+	if (refresh) {
 		RefreshAddons();
+	}
 
 	return true;
 }
@@ -268,7 +271,7 @@ void MultiAddonManager::OnSteamAPIActivated() {
 	m_callbackRegistered = true;
 	m_CallbackDownloadItemResult.Register(this, &MultiAddonManager::OnAddonDownloaded);
 
-	S2_LOGF(LS_MESSAGE, "Refreshing addons to check for updates\n");
+	S2_LOG(LS_MESSAGE, "Refreshing addons to check for updates\n");
 	RefreshAddons(true);
 }
 
@@ -288,7 +291,7 @@ void MultiAddonManager::OnStartupServer() {
 
 CON_COMMAND_F(s2_extra_addons, "The workshop IDs of extra addons separated by commas, addons will be downloaded (if not present) and mounted",  FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY) {
 	if (args.ArgC() < 2) {
-		S2_LOGF(LS_WARNING, "%s %s\n", args[0], utils::vector_to_string(g_MultiAddonManager.m_extraAddons).c_str());
+		S2_LOGF(LS_WARNING, "{} {}\n", args[0], utils::vector_to_string(g_MultiAddonManager.m_extraAddons));
 		return;
 	}
 
@@ -302,7 +305,7 @@ CON_COMMAND_F(s2_extra_addons, "The workshop IDs of extra addons separated by co
 
 CON_COMMAND_F(s2_add_addon, "Add a workshop ID to the extra addon list", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY) {
 	if (args.ArgC() < 2) {
-		S2_LOGF(LS_WARNING, "Usage: %s <ID>\n", args[0]);
+		S2_LOGF(LS_WARNING, "Usage: {} <ID>\n", args[0]);
 		return;
 	}
 
@@ -313,7 +316,7 @@ CON_COMMAND_F(s2_add_addon, "Add a workshop ID to the extra addon list", FCVAR_L
 
 CON_COMMAND_F(s2_remove_addon, "Remove a workshop ID from the extra addon list",  FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY) {
 	if (args.ArgC() < 2) {
-		S2_LOGF(LS_WARNING, "Usage: %s <ID>\n", args[0]);
+		S2_LOGF(LS_WARNING, "Usage: {} <ID>\n", args[0]);
 		return;
 	}
 
@@ -324,7 +327,7 @@ CON_COMMAND_F(s2_remove_addon, "Remove a workshop ID from the extra addon list",
 
 CON_COMMAND_F(s2_download_addon, "Download an addon manually", FCVAR_GAMEDLL | FCVAR_RELEASE | FCVAR_SPONLY) {
 	if (args.ArgC() != 2) {
-		S2_LOGF(LS_WARNING, "Usage: %s <ID>\n", args[0]);
+		S2_LOGF(LS_WARNING, "Usage: {} <ID>\n", args[0]);
 		return;
 	}
 
@@ -354,12 +357,12 @@ bool MultiAddonManager::OnHostStateRequest(CUtlString* addonString) {
 
 	// If it's empty or the first addon in the string is ours, it means we're on a default map
 	if (vecAddons.empty() || std::find(m_extraAddons.begin(), m_extraAddons.end(), vecAddons[0]) != m_extraAddons.end()) {
-		S2_LOGF(LS_MESSAGE, "%s: setting addon string to \"%s\"\n", __func__, extraAddonString.c_str());
+		S2_LOGF(LS_MESSAGE, "{}: setting addon string to \"{}\"\n", __func__, extraAddonString);
 		addonString->Set(extraAddonString.c_str());
 		ClearCurrentWorkshopMap();
 	} else {
-		S2_LOGF(LS_MESSAGE, "%s: appending \"%s\" to addon string \"%lu\"\n", __func__, extraAddonString.c_str(), vecAddons[0]);
-		addonString->Format("%lu,%s", vecAddons[0], extraAddonString.c_str());
+		S2_LOGF(LS_MESSAGE, "{}: appending \"{}\" to addon string \"{}\"\n", __func__, extraAddonString, vecAddons[0]);
+		addonString->Set(std::format("{},{}", vecAddons[0], extraAddonString).c_str());
 		SetCurrentWorkshopMap(vecAddons[0]);
 	}
 
@@ -393,7 +396,7 @@ bool MultiAddonManager::OnSendNetMessage(CServerSideClient* client, CNetMessage*
 	if (it != g_ClientsPendingAddon.end()) {
 		// This only happens after the client connects, therefore the signon message is for SIGNONSTATE_PRESPAWN
 		// and we can proceed to send addons as usual
-		S2_LOGF(LS_MESSAGE, "%s: Sending addon %lu to client %lu\n", __func__, m_extraAddons[it->addon], it->xuid);
+		S2_LOGF(LS_MESSAGE, "{}: Sending addon {} to client {}\n", __func__, m_extraAddons[it->addon], it->xuid);
 
 		msg->set_addons(std::to_string(m_extraAddons[it->addon]));
 		msg->set_signon_state(SIGNONSTATE_CHANGELEVEL);
@@ -442,7 +445,7 @@ void MultiAddonManager::OnClientConnect(CPlayerSlot slot, const char* name, uint
 	if (m_extraAddons.size() == 1 && m_currentWorkshopMap == k_PublishedFileIdInvalid)
 		return;
 
-	S2_LOGF(LS_MESSAGE, "Client %s (%lu) connected:\n", name, xuid);
+	S2_LOGF(LS_MESSAGE, "Client {} ({}) connected:\n", name, xuid);
 
 	if (g_pCoreConfig->CacheClientsWithAddons && g_ClientsWithAddons.contains(xuid)) {
 		S2_LOGF(LS_MESSAGE, "new connection but client was cached earlier so allowing immediately\n");
@@ -459,15 +462,15 @@ void MultiAddonManager::OnClientConnect(CPlayerSlot slot, const char* name, uint
 
 	if (it == g_ClientsPendingAddon.end()) {
 		// Client joined for the first time or after a timeout
-		S2_LOGF(LS_MESSAGE, "first connection, sending addon %lu\n", m_extraAddons[k_PublishedFileIdInvalid]);
+		S2_LOGF(LS_MESSAGE, "first connection, sending addon {}\n", m_extraAddons[k_PublishedFileIdInvalid]);
 		g_ClientsPendingAddon.emplace_back(xuid, 0.0, k_PublishedFileIdInvalid);
 	} else if (Plat_FloatTime() - it->timestamp < g_pCoreConfig->RejoinTimeout) {
 		// Client reconnected within the timeout interval
 		// If they already have the addon this happens almost instantly after receiving the signon message with the addon
 		if (++it->addon < m_extraAddons.size()) {
-			S2_LOGF(LS_MESSAGE, "reconnected within the interval, sending next addon %lu\n", m_extraAddons[it->addon]);
+			S2_LOGF(LS_MESSAGE, "reconnected within the interval, sending next addon {}\n", m_extraAddons[it->addon]);
 		} else {
-			S2_LOGF(LS_MESSAGE, "reconnected within the interval and has all addons, allowing\n");
+			S2_LOG(LS_MESSAGE, "reconnected within the interval and has all addons, allowing\n");
 			g_ClientsPendingAddon.erase(it);
 
 			if (g_pCoreConfig->CacheClientsWithAddons) {
@@ -475,7 +478,7 @@ void MultiAddonManager::OnClientConnect(CPlayerSlot slot, const char* name, uint
 			}
 		}
 	} else {
-		S2_LOGF(LS_MESSAGE, "reconnected after the timeout or did not receive the addon message, will resend addon %lu\n", m_extraAddons[it->addon]);
+		S2_LOGF(LS_MESSAGE, "reconnected after the timeout or did not receive the addon message, will resend addon {}\n", m_extraAddons[it->addon]);
 	}
 }
 

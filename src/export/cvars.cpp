@@ -395,7 +395,7 @@ extern "C" PLUGIN_API bool IsConVarFlagSet(uint64 conVarHandle, ConVarFlag flag)
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {
-		S2_LOGF(LS_WARNING, "Invalid convar handle\n");
+		S2_LOG(LS_WARNING, "Invalid convar handle\n");
 		return false;
 	}
 
@@ -418,7 +418,7 @@ extern "C" PLUGIN_API void AddConVarFlags(uint64 conVarHandle, ConVarFlag flags)
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {
-		S2_LOGF(LS_WARNING, "Invalid convar handle\n");
+		S2_LOG(LS_WARNING, "Invalid convar handle\n");
 		return;
 	}
 
@@ -441,7 +441,7 @@ extern "C" PLUGIN_API void RemoveConVarFlags(uint64 conVarHandle, ConVarFlag fla
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {
-		S2_LOGF(LS_WARNING, "Invalid convar handle\n");
+		S2_LOG(LS_WARNING, "Invalid convar handle\n");
 		return;
 	}
 
@@ -464,7 +464,7 @@ extern "C" PLUGIN_API ConVarFlag GetConVarFlags(uint64 conVarHandle) {
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {
-		S2_LOGF(LS_WARNING, "Invalid convar handle\n");
+		S2_LOG(LS_WARNING, "Invalid convar handle\n");
 		return ConVarFlag::None;
 	}
 
@@ -488,7 +488,7 @@ extern "C" PLUGIN_API plg::string GetConVarBounds(uint64 conVarHandle, bool max)
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {
-		S2_LOGF(LS_WARNING, "Invalid convar handle\n");
+		S2_LOG(LS_WARNING, "Invalid convar handle\n");
 		return {};
 	}
 
@@ -519,7 +519,7 @@ extern "C" PLUGIN_API void SetConVarBounds(uint64 conVarHandle, bool max, const 
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {
-		S2_LOGF(LS_WARNING, "Invalid convar handle\n");
+		S2_LOG(LS_WARNING, "Invalid convar handle\n");
 		return;
 	}
 
@@ -546,7 +546,7 @@ extern "C" PLUGIN_API plg::string GetConVarDefault(uint64 conVarHandle) {
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {
-		S2_LOGF(LS_WARNING, "Invalid convar handle\n");
+		S2_LOG(LS_WARNING, "Invalid convar handle\n");
 		return {};
 	}
 
@@ -573,7 +573,7 @@ extern "C" PLUGIN_API plg::string GetConVarValue(uint64 conVarHandle) {
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {
-		S2_LOGF(LS_WARNING, "Invalid convar handle\n");
+		S2_LOG(LS_WARNING, "Invalid convar handle\n");
 		return {};
 	}
 
@@ -600,7 +600,7 @@ extern "C" PLUGIN_API plg::any GetConVar(uint64 conVarHandle) {
 	ConVarRef conVarRef(conVarHandle);
 
 	if (!conVarRef.IsValidRef()) {
-		S2_LOGF(LS_WARNING, "Invalid convar handle\n");
+		S2_LOG(LS_WARNING, "Invalid convar handle\n");
 		return {};
 	}
 
@@ -1113,7 +1113,7 @@ extern "C" PLUGIN_API void SendConVarValue(int playerSlot, uint64 conVarHandle, 
 	}
 
 	if (!utils::IsPlayerSlot(playerSlot)) {
-		S2_LOGF(LS_WARNING, "Cannot execute 'SendConVarValue' on invalid player slot: %d\n", playerSlot);
+		S2_LOGF(LS_WARNING, "Cannot execute 'SendConVarValue' on invalid player slot: {}\n", playerSlot);
 		return;
 	}
 
@@ -1135,7 +1135,7 @@ extern "C" PLUGIN_API void SendConVarValue(int playerSlot, uint64 conVarHandle, 
  */
 extern "C" PLUGIN_API plg::string GetClientConVarValue(int playerSlot, const plg::string& convarName) {
 	if (!utils::IsPlayerSlot(playerSlot)) {
-		S2_LOGF(LS_WARNING, "Cannot execute 'GetClientConVarValue' on invalid player slot: %d\n", playerSlot);
+		S2_LOGF(LS_WARNING, "Cannot execute 'GetClientConVarValue' on invalid player slot: {}\n", playerSlot);
 		return {};
 	}
 
@@ -1151,7 +1151,7 @@ extern "C" PLUGIN_API plg::string GetClientConVarValue(int playerSlot, const plg
  */
 extern "C" PLUGIN_API void SetFakeClientConVarValue(int playerSlot, const plg::string& convarName, const plg::string& convarValue) {
 	if (!utils::IsPlayerSlot(playerSlot)) {
-		S2_LOGF(LS_WARNING, "Cannot execute 'SetFakeClientConVarValue' on invalid player slot: %d\n", playerSlot);
+		S2_LOGF(LS_WARNING, "Cannot execute 'SetFakeClientConVarValue' on invalid player slot: {}\n", playerSlot);
 		return;
 	}
 

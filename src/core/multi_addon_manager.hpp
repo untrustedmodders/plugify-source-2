@@ -11,7 +11,7 @@ class CServerSideClient;
 
 class MultiAddonManager {
 public:
-	void BuildAddonPath(uint64_t addon, char* buf, size_t len, bool legacy = false);
+	std::string BuildAddonPath(uint64_t addon);
 	bool MountAddon(uint64_t addon, bool addToTail = false);
 	bool UnmountAddon(uint64_t addon, bool remove = true);
 	bool AddAddon(uint64_t addon, bool refresh = false);

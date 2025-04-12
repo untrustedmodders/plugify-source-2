@@ -147,7 +147,7 @@ ResultType EventManager::OnFireEvent(IGameEvent* event, const bool dontBroadcast
 		m_eventStack.push(&eventHook);
 
 		if (eventHook.preHook != nullptr) {
-			//S2_LOGF(LS_DEBUG, "Pushing event `%s` pointer: %p, dont broadcast: %d, post: %d\n", pEvent->GetName(), pEvent, bDontBroadcast, false);
+			//S2_LOGF(LS_DEBUG, "Pushing event `{}` pointer: {}, dont broadcast: {}, post: {}\n", pEvent->GetName(), pEvent, bDontBroadcast, false);
 
 			EventInfo eventInfo{event, dontBroadcast};
 
@@ -187,7 +187,7 @@ ResultType EventManager::OnFireEvent_Post(IGameEvent* event, bool dontBroadcast)
 		if (hook->postHook != nullptr) {
 			if (hook->postCopy) {
 				auto eventCopy = m_eventCopies.top();
-				//S2_LOGF(LS_DEBUG, "Pushing event `%s` pointer: %p, dont broadcast: %d, post: %d\n", eventCopy->GetName(), eventCopy, bDontBroadcast, true);
+				//S2_LOGF(LS_DEBUG, "Pushing event `{}` pointer: {}, dont broadcast: {}, post: {}\n", eventCopy->GetName(), eventCopy, bDontBroadcast, true);
 				EventInfo eventInfo{eventCopy, dontBroadcast};
 
 				hook->postHook->Notify(hook->name, &eventInfo, dontBroadcast);

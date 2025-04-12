@@ -33,7 +33,7 @@ bool EntityOutputManager::UnhookEntityOutput(plg::string classname, plg::string 
 
 ResultType EntityOutputManager::FireOutputInternal(CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, float flDelay) {
 	if (pCaller) {
-		//S2_LOGF(LS_DEBUG, "[EntityOutputManager][FireOutputHook] - %s, %s\n", pThis->m_pDesc->m_pName, pCaller->GetClassname());
+		//S2_LOGF(LS_DEBUG, "[EntityOutputManager][FireOutputHook] - {}, {}\n", pThis->m_pDesc->m_pName, pCaller->GetClassname());
 
 		std::array<OutputKey, 4> vecSearchKeys{
 				OutputKey{"*", pThis->m_pDesc->m_pName},
@@ -50,7 +50,7 @@ ResultType EntityOutputManager::FireOutputInternal(CEntityIOOutput* pThis, CEnti
 			}
 		}
 	} else {
-		//S2_LOGF(LS_DEBUG, "[EntityOutputManager][FireOutputHook] - %s, unknown caller\n", pThis->m_pDesc->m_pName);
+		//S2_LOGF(LS_DEBUG, "[EntityOutputManager][FireOutputHook] - {}, unknown caller\n", pThis->m_pDesc->m_pName);
 	}
 
 	ResultType result = ResultType::Continue;

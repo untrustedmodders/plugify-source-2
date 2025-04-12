@@ -25,11 +25,13 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include <tier0/memdbgon.h>
 
+#include "utils.h"
+
 extern CSchemaSystem* g_pSchemaSystem2;
 extern CGlobalVars* gpGlobals;
 
-using SchemaKeyValueMap = std::unordered_map<plg::string, SchemaKey>;
-using SchemaTableMap = std::unordered_map<plg::string, SchemaKeyValueMap>;
+using SchemaKeyValueMap = std::unordered_map<plg::string, SchemaKey, utils::string_hash, std::equal_to<>>;
+using SchemaTableMap = std::unordered_map<plg::string, SchemaKeyValueMap, utils::string_hash, std::equal_to<>>;
 
 namespace {
 	bool IsFieldNetworked(const SchemaClassFieldData_t& field) {
@@ -42,34 +44,34 @@ namespace {
 		return false;
 	}
 
-	bool InitSchemaFieldsForClass(SchemaTableMap& tableMap, const plg::string& className) {
+	bool InitSchemaFieldsForClass(SchemaTableMap& tableMap, std::string_view className) {
 		CSchemaSystemTypeScope2* pType = g_pSchemaSystem2->FindTypeScopeForModule(S2SDK_LIBRARY_PREFIX "server" S2SDK_LIBRARY_SUFFIX);
 		if (!pType)
 			return false;
 
-		SchemaClassInfoData_t* pClassInfo = pType->FindDeclaredClass(className.c_str());
+		SchemaClassInfoData_t* pClassInfo = pType->FindDeclaredClass(className.data());
 		if (!pClassInfo) {
 			tableMap.emplace(className, SchemaKeyValueMap());
 
-			S2_LOGF(LS_ERROR, "InitSchemaFieldsForClass(): '%s' was not found!\n", className.c_str());
+			S2_LOGF(LS_ERROR, "InitSchemaFieldsForClass(): '{}' was not found!\n", className);
 			return false;
 		}
 
 		size_t fieldsSize = pClassInfo->m_nFieldCount;
-		SchemaClassFieldData_t* pFields = pClassInfo->m_pFields;
+		SchemaClassFieldData_t* fields = pClassInfo->m_pFields;
 
 		SchemaKeyValueMap keyValueMap;
 		keyValueMap.reserve(fieldsSize);
 
 		for (size_t i = 0; i < fieldsSize; ++i) {
-			const SchemaClassFieldData_t& field = pFields[i];
+			const SchemaClassFieldData_t& field = fields[i];
 
-			int nSize = 0;
-			uint8 nAlignment = 0;
-			field.m_pType->GetSizeAndAlignment(nSize, nAlignment);
-			keyValueMap.emplace(field.m_pszName, SchemaKey{field.m_nSingleInheritanceOffset, IsFieldNetworked(field), nSize, field.m_pType});
+			int size = 0;
+			uint8 alignment = 0;
+			field.m_pType->GetSizeAndAlignment(size, alignment);
+			keyValueMap.emplace(field.m_pszName, SchemaKey{field.m_nSingleInheritanceOffset, IsFieldNetworked(field), size, field.m_pType});
 
-			//S2_LOGF(LS_DEBUG, "%s::%s found at -> 0x%X - %llx\n", className.c_str(), field.m_pszName, field.m_nSingleInheritanceOffset, &field);
+			//S2_LOGF(LS_DEBUG, "{}::{} found at -> 0x{:x} - {}\reworn", className, field.m_pszName, field.m_nSingleInheritanceOffset, &field);
 		}
 
 		tableMap.emplace(className, std::move(keyValueMap));
@@ -80,12 +82,12 @@ namespace {
 }// namespace
 
 namespace schema {
-	int32_t FindChainOffset(const plg::string& className) {
+	int32_t FindChainOffset(std::string_view className) {
 		const auto schemaKey = GetOffset(className, "__m_pChainEntity");
 		return schemaKey.offset;
 	}
 
-	SchemaKey GetOffset(const plg::string& className, const plg::string& memberName) {
+	SchemaKey GetOffset(std::string_view className, std::string_view memberName) {
 		static SchemaTableMap schemaTableMap;
 
 		auto tableIt = schemaTableMap.find(className);
@@ -104,11 +106,11 @@ namespace schema {
 		return {};
 	}
 
-	void NetworkStateChanged(intptr_t chainEntity, uint nLocalOffset, int nArrayIndex) {
+	void NetworkStateChanged(intptr_t chainEntity, uint localOffset, int arrayIndex) {
 		CNetworkVarChainer* chainEnt = reinterpret_cast<CNetworkVarChainer*>(chainEntity);
 		CEntityInstance* pEntity = chainEnt->GetObject();
 		if (pEntity && !(pEntity->m_pEntity->m_flags & EF_IS_CONSTRUCTION_IN_PROGRESS)) {
-			pEntity->NetworkStateChanged(nLocalOffset, nArrayIndex, chainEnt->m_PathIndex.m_Value);
+			pEntity->NetworkStateChanged(localOffset, arrayIndex, chainEnt->m_PathIndex.m_Value);
 		}
 	}
 

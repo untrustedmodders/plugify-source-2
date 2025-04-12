@@ -30,9 +30,9 @@ public:
 		ihook = poly::Hook::CreateHookVirtualByFunc(ptr, (void*&) func, ret, plg::vector(args.begin(), args.end()), varIndex);
 		if (ihook == nullptr) {
 #if PLUGIFY_IS_DEBUG
-			S2_LOGF(LS_WARNING, "Could not hook member function \"%p\".\n", ptr);
+			S2_LOGF(LS_WARNING, "Could not hook member function \"{}\".\n", ptr);
 #else
-			S2_LOGF(LS_WARNING, "Could not hook member function \"%s\".\n", typeid(func).name());
+			S2_LOGF(LS_WARNING, "Could not hook member function \"{}\".\n", typeid(func).name());
 #endif
 			return false;
 		}
@@ -52,7 +52,7 @@ public:
 
 		auto addr = g_pGameConfig->ResolveSignature(name).GetPtr();
 		if (!addr) {
-			S2_LOGF(LS_WARNING, "Could not hook detour function \"%s\".\n", name.data());
+			S2_LOGF(LS_WARNING, "Could not hook detour function \"{}\".\n", name);
 			return false;
 		}
 
@@ -68,7 +68,7 @@ public:
 
 		ihook = poly::Hook::CreateDetourHook(addr, ret, plg::vector(args.begin(), args.end()), varIndex);
 		if (ihook == nullptr) {
-			S2_LOGF(LS_WARNING, "Could not hook detour function \"%s\".\n", name.data());
+			S2_LOGF(LS_WARNING, "Could not hook detour function \"{}\".\n", name);
 			return false;
 		}
 
@@ -99,7 +99,7 @@ public:
 
 		ihook = poly::Hook::CreateDetourHook(addr, ret, plg::vector(args.begin(), args.end()), varIndex);
 		if (ihook == nullptr) {
-			S2_LOGF(LS_WARNING, "Could not hook detour function \"%s\".\n", name.c_str());
+			S2_LOGF(LS_WARNING, "Could not hook detour function \"{}\".\n", name);
 			return false;
 		}
 

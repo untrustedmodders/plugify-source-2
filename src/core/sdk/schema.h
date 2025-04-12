@@ -105,9 +105,9 @@ namespace schema {
 		Class
 	};
 
-	int32_t FindChainOffset(const plg::string& className);
-	SchemaKey GetOffset(const plg::string& className, const plg::string& memberName);
-	void NetworkStateChanged(intptr_t chainEntity, uint nLocalOffset, int nArrayIndex = 0xFFFFFFFF);
+	int32_t FindChainOffset(std::string_view className);
+	SchemaKey GetOffset(std::string_view className, std::string_view memberName);
+	void NetworkStateChanged(intptr_t chainEntity, uint localOffset, int arrayIndex = 0xFFFFFFFF);
 
 	ElementType GetElementType(CSchemaType* type);
 	std::pair<ElementType, int> IsIntType(CSchemaType* type);
@@ -159,11 +159,13 @@ class CBaseEntity;
 		operator std::add_lvalue_reference_t<type>() { return Get(); }                                                                 \
 		std::add_lvalue_reference_t<type> operator()() { return Get(); }                                                               \
 		std::add_lvalue_reference_t<type> operator->() { return Get(); }                                                               \
-		void operator()(type val) {                                                                                                    \
+		varName##_prop& operator()(type val) {                                                                                         \
 			Set(val);                                                                                                                  \
+			return *this;                                                                                                              \
 		}                                                                                                                              \
-		void operator=(type val) {                                                                                                     \
+		varName##_prop& operator=(type val) {                                                                                          \
 			Set(val);                                                                                                                  \
+			return *this;                                                                                                              \
 		}                                                                                                                              \
 	} varName;
 
@@ -192,9 +194,9 @@ class CBaseEntity;
 #define SCHEMA_FIELD_POINTER(type, varName) \
 	SCHEMA_FIELD_POINTER_OFFSET(type, varName, 0)
 
-#define DECLARE_SCHEMA_CLASS_BASE(className, isStruct)       \
-	typedef className ThisClass;                             \
-	static constexpr const char* ThisClassName = #className; \
+#define DECLARE_SCHEMA_CLASS_BASE(className, isStruct)            \
+	typedef className ThisClass;                                  \
+	static constexpr std::string_view ThisClassName = #className; \
 	static constexpr bool IsStruct = isStruct;
 
 #define DECLARE_SCHEMA_CLASS(className) DECLARE_SCHEMA_CLASS_BASE(className, false)

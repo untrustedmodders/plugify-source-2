@@ -265,21 +265,19 @@ void utils::PrintHtmlCentreAll(const char* message) {
 
 void utils::CPrintChat(CPlayerSlot slot, const char* message) {
 	CSingleRecipientFilter filter(slot);
-	char coloredBuffer[512];
-	if (CFormat(coloredBuffer, sizeof(coloredBuffer), message)) {
+	if (char coloredBuffer[512]; CFormat(coloredBuffer, sizeof(coloredBuffer), message)) {
 		ClientPrintFilter(&filter, HUD_PRINTTALK, coloredBuffer);
 	} else {
-		Warning("utils::CPrintChat did not have enough space to print: %s\n", message);
+		S2_LOGF(LS_WARNING, "utils::CPrintChat did not have enough space to print: {}\n", message);
 	}
 }
 
 void utils::CPrintChatAll(const char* message) {
 	CRecipientFilter filter;
 	filter.AddAllPlayers();
-	char coloredBuffer[512];
-	if (CFormat(coloredBuffer, sizeof(coloredBuffer), message)) {
+	if (char coloredBuffer[512]; CFormat(coloredBuffer, sizeof(coloredBuffer), message)) {
 		ClientPrintFilter(&filter, HUD_PRINTTALK, coloredBuffer);
 	} else {
-		Warning("utils::CPrintChatAll did not have enough space to print: %s\n", message);
+		S2_LOGF(LS_WARNING, "utils::CPrintChatAll did not have enough space to print: {}\n", message);
 	}
 }

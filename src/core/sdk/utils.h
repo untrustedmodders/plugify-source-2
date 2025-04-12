@@ -95,7 +95,7 @@ namespace utils {
 	template<typename T>
 	void SetConVar(ConVarRefAbstract conVar, const T& value, bool replicate, bool notify) {
 		if (conVar.GetType() != TranslateConVarType<T>()) {
-			S2_LOGF(LS_WARNING, "Invalid cvar type for variable '%s'. Expected: '%s', but got: '%s'. Please ensure the type matches the expected type.\n", conVar.GetName(), conVar.TypeTraits()->m_TypeName, GetCvarTypeTraits(TranslateConVarType<T>())->m_TypeName);
+			S2_LOGF(LS_WARNING, "Invalid cvar type for variable '{}'. Expected: '{}', but got: '{}'. Please ensure the type matches the expected type.\n", conVar.GetName(), conVar.TypeTraits()->m_TypeName, GetCvarTypeTraits(TranslateConVarType<T>())->m_TypeName);
 			return;
 		}
 
@@ -125,7 +125,7 @@ namespace utils {
 	template<typename T>
 	void SetConVarValue(ConVarRefAbstract conVar, const plg::string& value) {
 		if (conVar.GetType() != TranslateConVarType<T>()) {
-			S2_LOGF(LS_WARNING, "Invalid cvar type for variable '%s'. Expected: '%s', but got: '%s'. Please ensure the type matches the expected type.\n", conVar.GetName(), conVar.TypeTraits()->m_TypeName, GetCvarTypeTraits(TranslateConVarType<T>())->m_TypeName);
+			S2_LOGF(LS_WARNING, "Invalid cvar type for variable '{}'. Expected: '{}', but got: '{}'. Please ensure the type matches the expected type.\n", conVar.GetName(), conVar.TypeTraits()->m_TypeName, GetCvarTypeTraits(TranslateConVarType<T>())->m_TypeName);
 			return;
 		}
 
@@ -135,7 +135,7 @@ namespace utils {
 	template<typename T>
 	T GetConVarValue(ConVarRefAbstract conVar) {
 		if (conVar.GetType() != TranslateConVarType<T>()) {
-			S2_LOGF(LS_WARNING, "Invalid cvar type for variable '%s'. Expected: '%s', but got: '%s'. Please ensure the type matches the expected type.\n", conVar.GetName(), conVar.TypeTraits()->m_TypeName, GetCvarTypeTraits(TranslateConVarType<T>())->m_TypeName);
+			S2_LOGF(LS_WARNING, "Invalid cvar type for variable '{}'. Expected: '{}', but got: '{}'. Please ensure the type matches the expected type.\n", conVar.GetName(), conVar.TypeTraits()->m_TypeName, GetCvarTypeTraits(TranslateConVarType<T>())->m_TypeName);
 			return {};
 		}
 

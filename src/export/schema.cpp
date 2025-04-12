@@ -320,7 +320,7 @@ extern "C" PLUGIN_API void ChangeEntityState2(CEntityInstance* entity, int offse
 extern "C" PLUGIN_API int64_t GetEntData(int entityHandle, int offset, int size) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
 	if (!pEntity) {
-		S2_LOGF(LS_WARNING, "Cannot get '%d' with invalid entity handle: %d\n", offset, entityHandle);
+		S2_LOGF(LS_WARNING, "Cannot get '{}' with invalid entity handle: {}\n", offset, entityHandle);
 		return {};
 	}
 
@@ -340,7 +340,7 @@ extern "C" PLUGIN_API int64_t GetEntData(int entityHandle, int offset, int size)
 extern "C" PLUGIN_API void SetEntData(int entityHandle, int offset, int64_t value, int size, bool changeState, int chainOffset) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
 	if (!pEntity) {
-		S2_LOGF(LS_WARNING, "Cannot set '%d' with invalid entity handle: %d\n", offset, entityHandle);
+		S2_LOGF(LS_WARNING, "Cannot set '{}' with invalid entity handle: {}\n", offset, entityHandle);
 		return;
 	}
 
@@ -360,7 +360,7 @@ extern "C" PLUGIN_API void SetEntData(int entityHandle, int offset, int64_t valu
 extern "C" PLUGIN_API double GetEntDataFloat(int entityHandle, int offset, int size) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
 	if (!pEntity) {
-		S2_LOGF(LS_WARNING, "Cannot get '%d' with invalid entity handle: %d\n", offset, entityHandle);
+		S2_LOGF(LS_WARNING, "Cannot get '{}' with invalid entity handle: {}\n", offset, entityHandle);
 		return {};
 	}
 
@@ -380,7 +380,7 @@ extern "C" PLUGIN_API double GetEntDataFloat(int entityHandle, int offset, int s
 extern "C" PLUGIN_API void SetEntDataFloat(int entityHandle, int offset, double value, int size, bool changeState, int chainOffset) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
 	if (!pEntity) {
-		S2_LOGF(LS_WARNING, "Cannot set '%d' with invalid entity handle: %d\n", offset, entityHandle);
+		S2_LOGF(LS_WARNING, "Cannot set '{}' with invalid entity handle: {}\n", offset, entityHandle);
 		return;
 	}
 
@@ -399,7 +399,7 @@ extern "C" PLUGIN_API void SetEntDataFloat(int entityHandle, int offset, double 
 extern "C" PLUGIN_API plg::string GetEntDataString(int entityHandle, int offset) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
 	if (!pEntity) {
-		S2_LOGF(LS_WARNING, "Cannot get '%d' with invalid entity handle: %d\n", offset, entityHandle);
+		S2_LOGF(LS_WARNING, "Cannot get '{}' with invalid entity handle: {}\n", offset, entityHandle);
 		return {};
 	}
 
@@ -418,7 +418,7 @@ extern "C" PLUGIN_API plg::string GetEntDataString(int entityHandle, int offset)
 extern "C" PLUGIN_API void SetEntDataString(int entityHandle, int offset, const plg::string& value, bool changeState, int chainOffset) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
 	if (!pEntity) {
-		S2_LOGF(LS_WARNING, "Cannot set '%d' with invalid entity handle: %d\n", offset, entityHandle);
+		S2_LOGF(LS_WARNING, "Cannot set '{}' with invalid entity handle: {}\n", offset, entityHandle);
 		return;
 	}
 
@@ -437,7 +437,7 @@ extern "C" PLUGIN_API void SetEntDataString(int entityHandle, int offset, const 
 extern "C" PLUGIN_API plg::vec3 GetEntDataVector(int entityHandle, int offset) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
 	if (!pEntity) {
-		S2_LOGF(LS_WARNING, "Cannot get '%d' with invalid entity handle: %d\n", offset, entityHandle);
+		S2_LOGF(LS_WARNING, "Cannot get '{}' with invalid entity handle: {}\n", offset, entityHandle);
 		return {};
 	}
 
@@ -456,7 +456,7 @@ extern "C" PLUGIN_API plg::vec3 GetEntDataVector(int entityHandle, int offset) {
 extern "C" PLUGIN_API void SetEntDataVector(int entityHandle, int offset, const plg::vec3& value, bool changeState, int chainOffset) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
 	if (!pEntity) {
-		S2_LOGF(LS_WARNING, "Cannot set '%d' with invalid entity handle: %d\n", offset, entityHandle);
+		S2_LOGF(LS_WARNING, "Cannot set '{}' with invalid entity handle: {}\n", offset, entityHandle);
 		return;
 	}
 
@@ -477,7 +477,7 @@ extern "C" PLUGIN_API void SetEntDataVector(int entityHandle, int offset, const 
 extern "C" PLUGIN_API int GetEntDataEnt(int entityHandle, int offset) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
 	if (!pEntity) {
-		S2_LOGF(LS_WARNING, "Cannot set '%d' with invalid entity handle: %d\n", offset, entityHandle);
+		S2_LOGF(LS_WARNING, "Cannot set '{}' with invalid entity handle: {}\n", offset, entityHandle);
 		return INVALID_EHANDLE_INDEX;
 	}
 
@@ -496,7 +496,7 @@ extern "C" PLUGIN_API int GetEntDataEnt(int entityHandle, int offset) {
 extern "C" PLUGIN_API void SetEntDataEnt(int entityHandle, int offset, int value, bool changeState, int chainOffset) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
 	if (!pEntity) {
-		S2_LOGF(LS_WARNING, "Cannot set '%d' with invalid entity handle: %d\n", offset, entityHandle);
+		S2_LOGF(LS_WARNING, "Cannot set '{}' with invalid entity handle: {}\n", offset, entityHandle);
 		return;
 	}
 
@@ -513,7 +513,7 @@ extern "C" PLUGIN_API void SetEntDataEnt(int entityHandle, int offset, int value
 extern "C" PLUGIN_API void ChangeEntityState(int entityHandle, int offset, int chainOffset) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
 	if (!pEntity) {
-		S2_LOGF(LS_WARNING, "Cannot change state of '%d' with invalid entity handle: %d\n", offset, entityHandle);
+		S2_LOGF(LS_WARNING, "Cannot change state of '{}' with invalid entity handle: {}\n", offset, entityHandle);
 		return;
 	}
 
@@ -535,7 +535,7 @@ extern "C" PLUGIN_API void ChangeEntityState(int entityHandle, int offset, int c
 extern "C" PLUGIN_API int GetEntSchemaArraySize2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName) {
 	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
 	if (offset == 0) {
-		S2_LOGF(LS_WARNING, "Cannot find offset for '%s::%s' with entity pointer: %p\n", className.c_str(), memberName.c_str(), entity);
+		S2_LOGF(LS_WARNING, "Cannot find offset for '{}::{}' with entity pointer: {}\n", className, memberName, (void*) entity);
 		return {};
 	}
 
@@ -566,7 +566,7 @@ extern "C" PLUGIN_API int GetEntSchemaArraySize2(CEntityInstance* entity, const 
 extern "C" PLUGIN_API int64_t GetEntSchema2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int element) {
 	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
 	if (offset == 0) {
-		S2_LOGF(LS_WARNING, "Cannot find offset for '%s::%s' with entity pointer: %p\n", className.c_str(), memberName.c_str(), entity);
+		S2_LOGF(LS_WARNING, "Cannot find offset for '{}::{}' with entity pointer: {}\n", className, memberName, (void*) entity);
 		return {};
 	}
 
@@ -617,7 +617,7 @@ extern "C" PLUGIN_API int64_t GetEntSchema2(CEntityInstance* entity, const plg::
 		case schema::ElementType::Class:
 			return reinterpret_cast<intptr_t>(entity) + offset;
 		default:
-			S2_LOGF(LS_WARNING, "Schema field '%s::%s' is not a integer, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
+			S2_LOGF(LS_WARNING, "Schema field '{}::{}' is not a integer, but '{}'\n", className, memberName, type->m_sTypeName.Get());
 			return 0;
 	}
 }
@@ -637,13 +637,13 @@ extern "C" PLUGIN_API int64_t GetEntSchema2(CEntityInstance* entity, const plg::
  */
 extern "C" PLUGIN_API void SetEntSchema2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int64_t value, bool changeState, int element) {
 	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end()) {
-		S2_LOGF(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		S2_LOGF(LS_WARNING, "Cannot set '{}::{}' with \"FollowCS2ServerGuidelines\" option enabled.\n", className, memberName);
 		return;
 	}
 
 	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
 	if (offset == 0) {
-		S2_LOGF(LS_WARNING, "Cannot find offset for '%s::%s' with entity pointer: %p\n", className.c_str(), memberName.c_str(), entity);
+		S2_LOGF(LS_WARNING, "Cannot find offset for '{}::{}' with entity pointer: {}\n", className, memberName, (void*) entity);
 		return;
 	}
 
@@ -713,7 +713,7 @@ extern "C" PLUGIN_API void SetEntSchema2(CEntityInstance* entity, const plg::str
 			}
 			break;
 		default:
-			S2_LOGF(LS_WARNING, "Schema field '%s::%s' is not a integer, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
+			S2_LOGF(LS_WARNING, "Schema field '{}::{}' is not a integer, but '{}'\n", className, memberName, type->m_sTypeName.Get());
 			break;
 	}
 }
@@ -734,7 +734,7 @@ extern "C" PLUGIN_API void SetEntSchema2(CEntityInstance* entity, const plg::str
 extern "C" PLUGIN_API double GetEntSchemaFloat2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int element) {
 	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
 	if (offset == 0) {
-		S2_LOGF(LS_WARNING, "Cannot find offset for '%s::%s' with entity pointer: %p\n", className.c_str(), memberName.c_str(), entity);
+		S2_LOGF(LS_WARNING, "Cannot find offset for '{}::{}' with entity pointer: {}\n", className, memberName, (void*) entity);
 		return {};
 	}
 
@@ -771,7 +771,7 @@ extern "C" PLUGIN_API double GetEntSchemaFloat2(CEntityInstance* entity, const p
 			}
 			break;
 		default:
-			S2_LOGF(LS_WARNING, "Schema field '%s::%s' is not a float, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
+			S2_LOGF(LS_WARNING, "Schema field '{}::{}' is not a float, but '{}'\n", className, memberName, type->m_sTypeName.Get());
 			return 0;
 	}
 }
@@ -791,13 +791,13 @@ extern "C" PLUGIN_API double GetEntSchemaFloat2(CEntityInstance* entity, const p
  */
 extern "C" PLUGIN_API void SetEntSchemaFloat2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, double value, bool changeState, int element) {
 	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end()) {
-		S2_LOGF(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		S2_LOGF(LS_WARNING, "Cannot set '{}::{}' with \"FollowCS2ServerGuidelines\" option enabled.\n", className, memberName);
 		return;
 	}
 
 	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
 	if (offset == 0) {
-		S2_LOGF(LS_WARNING, "Cannot find offset for '%s::%s' with entity pointer: %p\n", className.c_str(), memberName.c_str(), entity);
+		S2_LOGF(LS_WARNING, "Cannot find offset for '{}::{}' with entity pointer: {}\n", className, memberName, (void*) entity);
 		return;
 	}
 
@@ -849,7 +849,7 @@ extern "C" PLUGIN_API void SetEntSchemaFloat2(CEntityInstance* entity, const plg
 			}
 			break;
 		default:
-			S2_LOGF(LS_WARNING, "Schema field '%s::%s' is not a float, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
+			S2_LOGF(LS_WARNING, "Schema field '{}::{}' is not a float, but '{}'\n", className, memberName, type->m_sTypeName.Get());
 			break;
 	}
 }
@@ -870,7 +870,7 @@ extern "C" PLUGIN_API void SetEntSchemaFloat2(CEntityInstance* entity, const plg
 extern "C" PLUGIN_API plg::string GetEntSchemaString2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int element) {
 	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
 	if (offset == 0) {
-		S2_LOGF(LS_WARNING, "Cannot find offset for '%s::%s' with entity pointer: %p\n", className.c_str(), memberName.c_str(), entity);
+		S2_LOGF(LS_WARNING, "Cannot find offset for '{}::{}' with entity pointer: {}\n", className, memberName, (void*) entity);
 		return {};
 	}
 
@@ -902,7 +902,7 @@ extern "C" PLUGIN_API plg::string GetEntSchemaString2(CEntityInstance* entity, c
 				default:
 					break;
 			}
-			S2_LOGF(LS_WARNING, "Schema field '%s::%s' is not a string, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
+			S2_LOGF(LS_WARNING, "Schema field '{}::{}' is not a string, but '{}'\n", className, memberName, type->m_sTypeName.Get());
 			return {};
 	}
 }
@@ -922,13 +922,13 @@ extern "C" PLUGIN_API plg::string GetEntSchemaString2(CEntityInstance* entity, c
  */
 extern "C" PLUGIN_API void SetEntSchemaString2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, const plg::string& value, bool changeState, int element) {
 	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end()) {
-		S2_LOGF(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		S2_LOGF(LS_WARNING, "Cannot set '{}::{}' with \"FollowCS2ServerGuidelines\" option enabled.\n", className, memberName);
 		return;
 	}
 
 	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
 	if (offset == 0) {
-		S2_LOGF(LS_WARNING, "Cannot find offset for '%s::%s' with entity pointer: %p\n", className.c_str(), memberName.c_str(), entity);
+		S2_LOGF(LS_WARNING, "Cannot find offset for '{}::{}' with entity pointer: {}\n", className, memberName, (void*) entity);
 		return;
 	}
 
@@ -975,7 +975,7 @@ extern "C" PLUGIN_API void SetEntSchemaString2(CEntityInstance* entity, const pl
 				default:
 					break;
 			}
-			S2_LOGF(LS_WARNING, "Schema field '%s::%s' is not a string, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
+			S2_LOGF(LS_WARNING, "Schema field '{}::{}' is not a string, but '{}'\n", className, memberName, type->m_sTypeName.Get());
 			break;
 	}
 }
@@ -996,7 +996,7 @@ extern "C" PLUGIN_API void SetEntSchemaString2(CEntityInstance* entity, const pl
 extern "C" PLUGIN_API plg::vec3 GetEntSchemaVector3D2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int element) {
 	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
 	if (offset == 0) {
-		S2_LOGF(LS_WARNING, "Cannot find offset for '%s::%s' with entity pointer: %p\n", className.c_str(), memberName.c_str(), entity);
+		S2_LOGF(LS_WARNING, "Cannot find offset for '{}::{}' with entity pointer: {}\n", className, memberName, (void*) entity);
 		return {};
 	}
 
@@ -1008,7 +1008,7 @@ extern "C" PLUGIN_API plg::vec3 GetEntSchemaVector3D2(CEntityInstance* entity, c
 		case schema::ElementType::Single:
 			return *reinterpret_cast<plg::vec3*>(reinterpret_cast<intptr_t>(entity) + offset);
 		default:
-			S2_LOGF(LS_WARNING, "Schema field '%s::%s' is not a vector, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
+			S2_LOGF(LS_WARNING, "Schema field '{}::{}' is not a vector, but '{}'\n", className, memberName, type->m_sTypeName.Get());
 			return {};
 	}
 }
@@ -1028,13 +1028,13 @@ extern "C" PLUGIN_API plg::vec3 GetEntSchemaVector3D2(CEntityInstance* entity, c
  */
 extern "C" PLUGIN_API void SetEntSchemaVector3D2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, const plg::vec3& value, bool changeState, int element) {
 	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end()) {
-		S2_LOGF(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		S2_LOGF(LS_WARNING, "Cannot set '{}::{}' with \"FollowCS2ServerGuidelines\" option enabled.\n", className, memberName);
 		return;
 	}
 
 	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
 	if (offset == 0) {
-		S2_LOGF(LS_WARNING, "Cannot find offset for '%s::%s' with entity pointer: %p\n", className.c_str(), memberName.c_str(), entity);
+		S2_LOGF(LS_WARNING, "Cannot find offset for '{}::{}' with entity pointer: {}\n", className, memberName, (void*) entity);
 		return;
 	}
 
@@ -1058,7 +1058,7 @@ extern "C" PLUGIN_API void SetEntSchemaVector3D2(CEntityInstance* entity, const 
 			*reinterpret_cast<plg::vec3*>(reinterpret_cast<intptr_t>(entity) + offset) = value;
 			break;
 		default:
-			S2_LOGF(LS_WARNING, "Schema field '%s::%s' is not a vector, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
+			S2_LOGF(LS_WARNING, "Schema field '{}::{}' is not a vector, but '{}'\n", className, memberName, type->m_sTypeName.Get());
 			break;
 	}
 }
@@ -1079,7 +1079,7 @@ extern "C" PLUGIN_API void SetEntSchemaVector3D2(CEntityInstance* entity, const 
 extern "C" PLUGIN_API plg::vec2 GetEntSchemaVector2D2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int element) {
 	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
 	if (offset == 0) {
-		S2_LOGF(LS_WARNING, "Cannot find offset for '%s::%s' with entity pointer: %p\n", className.c_str(), memberName.c_str(), entity);
+		S2_LOGF(LS_WARNING, "Cannot find offset for '{}::{}' with entity pointer: {}\n", className, memberName, (void*) entity);
 		return {};
 	}
 
@@ -1091,7 +1091,7 @@ extern "C" PLUGIN_API plg::vec2 GetEntSchemaVector2D2(CEntityInstance* entity, c
 		case schema::ElementType::Single:
 			return *reinterpret_cast<plg::vec2*>(reinterpret_cast<intptr_t>(entity) + offset);
 		default:
-			S2_LOGF(LS_WARNING, "Schema field '%s::%s' is not a vector, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
+			S2_LOGF(LS_WARNING, "Schema field '{}::{}' is not a vector, but '{}'\n", className, memberName, type->m_sTypeName.Get());
 			return {};
 	}
 }
@@ -1113,13 +1113,13 @@ extern "C" PLUGIN_API plg::vec2 GetEntSchemaVector2D2(CEntityInstance* entity, c
  */
 extern "C" PLUGIN_API void SetEntSchemaVector2D2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, const plg::vec2& value, bool changeState, int element) {
 	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end()) {
-		S2_LOGF(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		S2_LOGF(LS_WARNING, "Cannot set '{}::{}' with \"FollowCS2ServerGuidelines\" option enabled.\n", className, memberName);
 		return;
 	}
 
 	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
 	if (offset == 0) {
-		S2_LOGF(LS_WARNING, "Cannot find offset for '%s::%s' with entity pointer: %p\n", className.c_str(), memberName.c_str(), entity);
+		S2_LOGF(LS_WARNING, "Cannot find offset for '{}::{}' with entity pointer: {}\n", className, memberName, (void*) entity);
 		return;
 	}
 
@@ -1143,7 +1143,7 @@ extern "C" PLUGIN_API void SetEntSchemaVector2D2(CEntityInstance* entity, const 
 			*reinterpret_cast<plg::vec2*>(reinterpret_cast<intptr_t>(entity) + offset) = value;
 			break;
 		default:
-			S2_LOGF(LS_WARNING, "Schema field '%s::%s' is not a vector, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
+			S2_LOGF(LS_WARNING, "Schema field '{}::{}' is not a vector, but '{}'\n", className, memberName, type->m_sTypeName.Get());
 			break;
 	}
 }
@@ -1164,7 +1164,7 @@ extern "C" PLUGIN_API void SetEntSchemaVector2D2(CEntityInstance* entity, const 
 extern "C" PLUGIN_API plg::vec4 GetEntSchemaVector4D2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int element) {
 	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
 	if (offset == 0) {
-		S2_LOGF(LS_WARNING, "Cannot find offset for '%s::%s' with entity pointer: %p\n", className.c_str(), memberName.c_str(), entity);
+		S2_LOGF(LS_WARNING, "Cannot find offset for '{}::{}' with entity pointer: {}\n", className, memberName, (void*) entity);
 		return {};
 	}
 
@@ -1176,7 +1176,7 @@ extern "C" PLUGIN_API plg::vec4 GetEntSchemaVector4D2(CEntityInstance* entity, c
 		case schema::ElementType::Single:
 			return *reinterpret_cast<plg::vec4*>(reinterpret_cast<intptr_t>(entity) + offset);
 		default:
-			S2_LOGF(LS_WARNING, "Schema field '%s::%s' is not a vector, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
+			S2_LOGF(LS_WARNING, "Schema field '{}::{}' is not a vector, but '{}'\n", className, memberName, type->m_sTypeName.Get());
 			return {};
 	}
 }
@@ -1196,13 +1196,13 @@ extern "C" PLUGIN_API plg::vec4 GetEntSchemaVector4D2(CEntityInstance* entity, c
  */
 extern "C" PLUGIN_API void SetEntSchemaVector4D2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, const plg::vec4& value, bool changeState, int element) {
 	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end()) {
-		S2_LOGF(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		S2_LOGF(LS_WARNING, "Cannot set '{}::{}' with \"FollowCS2ServerGuidelines\" option enabled.\n", className, memberName);
 		return;
 	}
 
 	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
 	if (offset == 0) {
-		S2_LOGF(LS_WARNING, "Cannot find offset for '%s::%s' with entity pointer: %p\n", className.c_str(), memberName.c_str(), entity);
+		S2_LOGF(LS_WARNING, "Cannot find offset for '{}::{}' with entity pointer: {}\n", className, memberName, (void*) entity);
 		return;
 	}
 
@@ -1226,7 +1226,7 @@ extern "C" PLUGIN_API void SetEntSchemaVector4D2(CEntityInstance* entity, const 
 			*reinterpret_cast<plg::vec4*>(reinterpret_cast<intptr_t>(entity) + offset) = value;
 			break;
 		default:
-			S2_LOGF(LS_WARNING, "Schema field '%s::%s' is not a vector, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
+			S2_LOGF(LS_WARNING, "Schema field '{}::{}' is not a vector, but '{}'\n", className, memberName, type->m_sTypeName.Get());
 			break;
 	}
 }
@@ -1249,7 +1249,7 @@ extern "C" PLUGIN_API void SetEntSchemaVector4D2(CEntityInstance* entity, const 
 extern "C" PLUGIN_API int GetEntSchemaEnt2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int element) {
 	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
 	if (offset == 0) {
-		S2_LOGF(LS_WARNING, "Cannot find offset for '%s::%s' with entity pointer: %p\n", className.c_str(), memberName.c_str(), entity);
+		S2_LOGF(LS_WARNING, "Cannot find offset for '{}::{}' with entity pointer: {}\n", className, memberName, (void*) entity);
 		return INVALID_EHANDLE_INDEX;
 	}
 
@@ -1261,7 +1261,7 @@ extern "C" PLUGIN_API int GetEntSchemaEnt2(CEntityInstance* entity, const plg::s
 		case schema::ElementType::Single:
 			return reinterpret_cast<CEntityHandle*>(reinterpret_cast<intptr_t>(entity) + offset)->ToInt();
 		default:
-			S2_LOGF(LS_WARNING, "Schema field '%s::%s' is not a entity handle, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
+			S2_LOGF(LS_WARNING, "Schema field '{}::{}' is not a entity handle, but '{}'\n", className, memberName, type->m_sTypeName.Get());
 			return INVALID_EHANDLE_INDEX;
 	}
 }
@@ -1283,13 +1283,13 @@ extern "C" PLUGIN_API int GetEntSchemaEnt2(CEntityInstance* entity, const plg::s
  */
 extern "C" PLUGIN_API void SetEntSchemaEnt2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int value, bool changeState, int element) {
 	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end()) {
-		S2_LOGF(LS_WARNING, "Cannot set '%s::%s' with \"FollowCS2ServerGuidelines\" option enabled.\n", className.c_str(), memberName.c_str());
+		S2_LOGF(LS_WARNING, "Cannot set '{}::{}' with \"FollowCS2ServerGuidelines\" option enabled.\n", className, memberName);
 		return;
 	}
 
 	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
 	if (offset == 0) {
-		S2_LOGF(LS_WARNING, "Cannot find offset for '%s::%s' with entity pointer: %p\n", className.c_str(), memberName.c_str(), entity);
+		S2_LOGF(LS_WARNING, "Cannot find offset for '{}::{}' with entity pointer: {}\n", className, memberName, (void*) entity);
 		return;
 	}
 
@@ -1313,7 +1313,7 @@ extern "C" PLUGIN_API void SetEntSchemaEnt2(CEntityInstance* entity, const plg::
 			*reinterpret_cast<CEntityHandle*>(reinterpret_cast<intptr_t>(entity) + offset) = CEntityHandle((uint32) value);
 			break;
 		default:
-			S2_LOGF(LS_WARNING, "Schema field '%s::%s' is not a entity handle, but '%s'\n", className.c_str(), memberName.c_str(), type->m_sTypeName.Get());
+			S2_LOGF(LS_WARNING, "Schema field '{}::{}' is not a entity handle, but '{}'\n", className, memberName, type->m_sTypeName.Get());
 			break;
 	}
 }
@@ -1342,7 +1342,7 @@ extern "C" PLUGIN_API void NetworkStateChanged2(CEntityInstance* entity, const p
 			entity->NetworkStateChanged(offset);
 		}
 	} else {
-		S2_LOGF(LS_WARNING, "Field '%s::%s' is not networked, but \"SetStateChanged\" was called on it.", className.c_str(), memberName.c_str());
+		S2_LOGF(LS_WARNING, "Field '{}::{}' is not networked, but \"SetStateChanged\" was called on it.", className, memberName);
 	}
 }
 
@@ -1367,11 +1367,11 @@ extern "C" PLUGIN_API void NetworkStateChanged2(CEntityInstance* entity, const p
 extern "C" PLUGIN_API int GetEntSchemaArraySize(int entityHandle, const plg::string& className, const plg::string& memberName) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
 	if (!pEntity) {
-		S2_LOGF(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		S2_LOGF(LS_WARNING, "Cannot set '{}::{}' with invalid entity handle: {}\n", className, memberName, entityHandle);
 		return {};
 	}
 
-	return GetEntSchemaArraySize2(pEntity, className.c_str(), memberName.c_str());
+	return GetEntSchemaArraySize2(pEntity, className, memberName);
 }
 
 //
@@ -1390,7 +1390,7 @@ extern "C" PLUGIN_API int GetEntSchemaArraySize(int entityHandle, const plg::str
 extern "C" PLUGIN_API int64_t GetEntSchema(int entityHandle, const plg::string& className, const plg::string& memberName, int element) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
 	if (!pEntity) {
-		S2_LOGF(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		S2_LOGF(LS_WARNING, "Cannot set '{}::{}' with invalid entity handle: {}\n", className, memberName, entityHandle);
 		return {};
 	}
 
@@ -1413,7 +1413,7 @@ extern "C" PLUGIN_API int64_t GetEntSchema(int entityHandle, const plg::string& 
 extern "C" PLUGIN_API void SetEntSchema(int entityHandle, const plg::string& className, const plg::string& memberName, int64_t value, bool changeState, int element) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
 	if (!pEntity) {
-		S2_LOGF(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		S2_LOGF(LS_WARNING, "Cannot set '{}::{}' with invalid entity handle: {}\n", className, memberName, entityHandle);
 		return;
 	}
 
@@ -1436,7 +1436,7 @@ extern "C" PLUGIN_API void SetEntSchema(int entityHandle, const plg::string& cla
 extern "C" PLUGIN_API double GetEntSchemaFloat(int entityHandle, const plg::string& className, const plg::string& memberName, int element) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
 	if (!pEntity) {
-		S2_LOGF(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		S2_LOGF(LS_WARNING, "Cannot set '{}::{}' with invalid entity handle: {}\n", className, memberName, entityHandle);
 		return {};
 	}
 
@@ -1459,7 +1459,7 @@ extern "C" PLUGIN_API double GetEntSchemaFloat(int entityHandle, const plg::stri
 extern "C" PLUGIN_API void SetEntSchemaFloat(int entityHandle, const plg::string& className, const plg::string& memberName, double value, bool changeState, int element) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
 	if (!pEntity) {
-		S2_LOGF(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		S2_LOGF(LS_WARNING, "Cannot set '{}::{}' with invalid entity handle: {}\n", className, memberName, entityHandle);
 		return;
 	}
 
@@ -1482,7 +1482,7 @@ extern "C" PLUGIN_API void SetEntSchemaFloat(int entityHandle, const plg::string
 extern "C" PLUGIN_API plg::string GetEntSchemaString(int entityHandle, const plg::string& className, const plg::string& memberName, int element) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
 	if (!pEntity) {
-		S2_LOGF(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		S2_LOGF(LS_WARNING, "Cannot set '{}::{}' with invalid entity handle: {}\n", className, memberName, entityHandle);
 		return {};
 	}
 
@@ -1505,7 +1505,7 @@ extern "C" PLUGIN_API plg::string GetEntSchemaString(int entityHandle, const plg
 extern "C" PLUGIN_API void SetEntSchemaString(int entityHandle, const plg::string& className, const plg::string& memberName, const plg::string& value, bool changeState, int element) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
 	if (!pEntity) {
-		S2_LOGF(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		S2_LOGF(LS_WARNING, "Cannot set '{}::{}' with invalid entity handle: {}\n", className, memberName, entityHandle);
 		return;
 	}
 
@@ -1528,7 +1528,7 @@ extern "C" PLUGIN_API void SetEntSchemaString(int entityHandle, const plg::strin
 extern "C" PLUGIN_API plg::vec3 GetEntSchemaVector3D(int entityHandle, const plg::string& className, const plg::string& memberName, int element) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
 	if (!pEntity) {
-		S2_LOGF(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		S2_LOGF(LS_WARNING, "Cannot set '{}::{}' with invalid entity handle: {}\n", className, memberName, entityHandle);
 		return {};
 	}
 
@@ -1551,7 +1551,7 @@ extern "C" PLUGIN_API plg::vec3 GetEntSchemaVector3D(int entityHandle, const plg
 extern "C" PLUGIN_API void SetEntSchemaVector3D(int entityHandle, const plg::string& className, const plg::string& memberName, const plg::vec3& value, bool changeState, int element) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
 	if (!pEntity) {
-		S2_LOGF(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		S2_LOGF(LS_WARNING, "Cannot set '{}::{}' with invalid entity handle: {}\n", className, memberName, entityHandle);
 		return;
 	}
 
@@ -1574,7 +1574,7 @@ extern "C" PLUGIN_API void SetEntSchemaVector3D(int entityHandle, const plg::str
 extern "C" PLUGIN_API plg::vec2 GetEntSchemaVector2D(int entityHandle, const plg::string& className, const plg::string& memberName, int element) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
 	if (!pEntity) {
-		S2_LOGF(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		S2_LOGF(LS_WARNING, "Cannot set '{}::{}' with invalid entity handle: {}\n", className, memberName, entityHandle);
 		return {};
 	}
 
@@ -1597,7 +1597,7 @@ extern "C" PLUGIN_API plg::vec2 GetEntSchemaVector2D(int entityHandle, const plg
 extern "C" PLUGIN_API void SetEntSchemaVector2D(int entityHandle, const plg::string& className, const plg::string& memberName, const plg::vec2& value, bool changeState, int element) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
 	if (!pEntity) {
-		S2_LOGF(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		S2_LOGF(LS_WARNING, "Cannot set '{}::{}' with invalid entity handle: {}\n", className, memberName, entityHandle);
 		return;
 	}
 
@@ -1620,7 +1620,7 @@ extern "C" PLUGIN_API void SetEntSchemaVector2D(int entityHandle, const plg::str
 extern "C" PLUGIN_API plg::vec4 GetEntSchemaVector4D(int entityHandle, const plg::string& className, const plg::string& memberName, int element) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
 	if (!pEntity) {
-		S2_LOGF(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		S2_LOGF(LS_WARNING, "Cannot set '{}::{}' with invalid entity handle: {}\n", className, memberName, entityHandle);
 		return {};
 	}
 
@@ -1643,7 +1643,7 @@ extern "C" PLUGIN_API plg::vec4 GetEntSchemaVector4D(int entityHandle, const plg
 extern "C" PLUGIN_API void SetEntSchemaVector4D(int entityHandle, const plg::string& className, const plg::string& memberName, const plg::vec4& value, bool changeState, int element) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
 	if (!pEntity) {
-		S2_LOGF(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		S2_LOGF(LS_WARNING, "Cannot set '{}::{}' with invalid entity handle: {}\n", className, memberName, entityHandle);
 		return;
 	}
 
@@ -1668,7 +1668,7 @@ extern "C" PLUGIN_API void SetEntSchemaVector4D(int entityHandle, const plg::str
 extern "C" PLUGIN_API int GetEntSchemaEnt(int entityHandle, const plg::string& className, const plg::string& memberName, int element) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
 	if (!pEntity) {
-		S2_LOGF(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		S2_LOGF(LS_WARNING, "Cannot set '{}::{}' with invalid entity handle: {}\n", className, memberName, entityHandle);
 		return INVALID_EHANDLE_INDEX;
 	}
 
@@ -1693,7 +1693,7 @@ extern "C" PLUGIN_API int GetEntSchemaEnt(int entityHandle, const plg::string& c
 extern "C" PLUGIN_API void SetEntSchemaEnt(int entityHandle, const plg::string& className, const plg::string& memberName, int value, bool changeState, int element) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
 	if (!pEntity) {
-		S2_LOGF(LS_WARNING, "Cannot set '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		S2_LOGF(LS_WARNING, "Cannot set '{}::{}' with invalid entity handle: {}\n", className, memberName, entityHandle);
 		return;
 	}
 
@@ -1717,11 +1717,11 @@ extern "C" PLUGIN_API void SetEntSchemaEnt(int entityHandle, const plg::string& 
 extern "C" PLUGIN_API void NetworkStateChanged(int entityHandle, const plg::string& className, const plg::string& memberName) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
 	if (!pEntity) {
-		S2_LOGF(LS_WARNING, "Cannot change state of '%s::%s' with invalid entity handle: %d\n", className.c_str(), memberName.c_str(), entityHandle);
+		S2_LOGF(LS_WARNING, "Cannot change state of '{}::{}' with invalid entity handle: {}\n", className, memberName, entityHandle);
 		return;
 	}
 
-	NetworkStateChanged2(pEntity, className.c_str(), memberName.c_str());
+	NetworkStateChanged2(pEntity, className, memberName);
 }
 
 //

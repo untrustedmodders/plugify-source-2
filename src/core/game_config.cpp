@@ -20,7 +20,7 @@ bool GameConfig::Initialize() {
 	}
 	auto config = pcf::ReadConfigs(paths);
 	if (!config) {
-		S2_LOGF(LS_ERROR, "Failed to load configuration file: \"%s\"\n", pcf::GetError().data());
+		S2_LOGF(LS_ERROR, "Failed to load configuration file: \"{}\"\n", pcf::GetError());
 		return false;
 	}
 
@@ -71,7 +71,7 @@ bool GameConfig::Initialize() {
 					if (config->IsObject() && config->JumpFirst()) {
 						auto name = config->GetName();
 						if (conf.lastIsOffset) {
-							S2_LOGF(LS_WARNING, "Error parsing Address \"%s\", 'offset' entry must be the last entry\n", name.c_str());
+							S2_LOGF(LS_WARNING, "Error parsing Address \"{}\", 'offset' entry must be the last entry\n", name);
 							continue;
 						}
 						conf.read.emplace_back(config->GetAsInt32(), name == "read_offs32");
@@ -191,7 +191,7 @@ const Module* GameConfig::GetModule(std::string_view name) const {
 bool GameConfig::IsSymbol(std::string_view name) const {
 	const std::string_view sigOrSymbol = GetSignature(name);
 	if (sigOrSymbol.empty()) {
-		S2_LOGF(LS_WARNING, "Missing signature or symbol: %s\n", name.data());
+		S2_LOGF(LS_WARNING, "Missing signature or symbol: {}\n", name);
 		return false;
 	}
 	return sigOrSymbol[0] == '@';
@@ -201,7 +201,7 @@ std::string_view GameConfig::GetSymbol(std::string_view name) const {
 	const std::string_view symbol = GetSignature(name);
 
 	if (symbol.size() <= 1) {
-		S2_LOGF(LS_WARNING, "Missing symbol: %s\n", name.data());
+		S2_LOGF(LS_WARNING, "Missing symbol: {}\n", name);
 		return {};
 	}
 
@@ -211,7 +211,7 @@ std::string_view GameConfig::GetSymbol(std::string_view name) const {
 Memory GameConfig::ResolveSignature(std::string_view name) const {
 	auto module = GetModule(name);
 	if (!module) {
-		S2_LOGF(LS_WARNING, "Invalid module: %s\n", name.data());
+		S2_LOGF(LS_WARNING, "Invalid module: {}\n", name);
 		return {};
 	}
 
@@ -220,7 +220,7 @@ Memory GameConfig::ResolveSignature(std::string_view name) const {
 	if (IsSymbol(name)) {
 		const std::string_view symbol = GetSymbol(name);
 		if (symbol.empty()) {
-			S2_LOGF(LS_WARNING, "Invalid symbol for %s\n", name.data());
+			S2_LOGF(LS_WARNING, "Invalid symbol for {}\n", name);
 			return {};
 		}
 
@@ -228,7 +228,7 @@ Memory GameConfig::ResolveSignature(std::string_view name) const {
 	} else {
 		const std::string_view signature = GetSignature(name);
 		if (signature.empty()) {
-			S2_LOGF(LS_WARNING, "Failed to find signature for %s\n", name.data());
+			S2_LOGF(LS_WARNING, "Failed to find signature for {}\n", name);
 			return {};
 		}
 
@@ -236,7 +236,7 @@ Memory GameConfig::ResolveSignature(std::string_view name) const {
 	}
 
 	if (!address) {
-		S2_LOGF(LS_WARNING, "Failed to find address for %s\n", name.data());
+		S2_LOGF(LS_WARNING, "Failed to find address for {}\n", name);
 		return {};
 	}
 

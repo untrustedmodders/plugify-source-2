@@ -135,7 +135,7 @@ static bool CheckCommandAccess(CPlayerSlot slot, uint64 flags) {
 }
 
 ResultType ConCommandManager::ExecuteCommandCallbacks(const plg::string& name, const CCommandContext& ctx, const CCommand& args, HookMode mode, CommandCallingContext callingContext) {
-	//S2_LOGF(LS_DEBUG, "[ConCommandManager::ExecuteCommandCallbacks][%s]: %s\n", mode == HookMode::Pre ? "Pre" : "Post", name.c_str());
+	//S2_LOGF(LS_DEBUG, "[ConCommandManager::ExecuteCommandCallbacks][{}]: {}\n", mode == HookMode::Pre ? "Pre" : "Post", name);
 
 	int size = args.ArgC();
 
@@ -199,7 +199,7 @@ ResultType ConCommandManager::DispatchConCommand(const CCommandContext* ctx, con
 
 	const char* arg0 = args->Arg(0);
 
-	//S2_LOGF(LS_DEBUG, "[ConCommandManager::Hook_DispatchConCommand]: %s\n", name.data());
+	//S2_LOGF(LS_DEBUG, "[ConCommandManager::Hook_DispatchConCommand]: {}\n", name);
 
 	static const char sayCommand[] = "say";
 	constexpr size_t sayNullTerminated = sizeof(sayCommand) - 1;

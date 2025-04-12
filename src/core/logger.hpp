@@ -52,6 +52,6 @@ private:
 #define S2_CONCAT_INNER(a, b) a ## b
 #define S2_UNIQUE_NAME(base) S2_CONCAT(base, __COUNTER__)
 #define S2_LOG(...) [[maybe_unused]] auto S2_UNIQUE_NAME(_) = g_Logger.Log(__VA_ARGS__)
-#define S2_LOGF(...) [[maybe_unused]] auto S2_UNIQUE_NAME(_) = g_Logger.LogFormat(__VA_ARGS__)
+#define S2_LOGF(v, ...) [[maybe_unused]] auto S2_UNIQUE_NAME(_) = g_Logger.Log(v, std::format(__VA_ARGS__).c_str())
 
 extern Logger g_Logger;

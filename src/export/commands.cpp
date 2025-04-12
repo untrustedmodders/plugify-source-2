@@ -24,7 +24,7 @@ PLUGIFY_WARN_IGNORE(4190)
  * @return A boolean indicating whether the command was successfully added.
  */
 extern "C" PLUGIN_API bool AddAdminCommand(const plg::string& name, int64_t adminFlags, const plg::string& description, ConVarFlag flags, CommandListenerCallback callback, HookMode mode) {
-	//S2_LOGF(LS_DEBUG, "Adding admin command %s, %d, %s, %d, %p\n", name.c_str(), (int) adminFlags, description.c_str(), flags, (void*) callback);
+	//S2_LOGF(LS_DEBUG, "Adding admin command {}, {}, {}, {}, {}\n", name, (int) adminFlags, description, flags, (void*) callback);
 
 	auto result = g_CommandManager.AddValveCommand(name, description, flags, adminFlags);
 	g_CommandManager.AddCommandListener(name, callback, mode);
@@ -42,7 +42,7 @@ extern "C" PLUGIN_API bool AddAdminCommand(const plg::string& name, int64_t admi
  * @return A boolean indicating whether the command was successfully added.
  */
 extern "C" PLUGIN_API bool AddConsoleCommand(const plg::string& name, const plg::string& description, ConVarFlag flags, CommandListenerCallback callback, HookMode mode) {
-	//S2_LOGF(LS_DEBUG, "Adding command %s, %s, %d, %p\n", name.c_str(), description.c_str(), flags, (void*) callback);
+	//S2_LOGF(LS_DEBUG, "Adding command {}, {}, {}, {}\n", name, description, flags, (void*) callback);
 
 	auto result = g_CommandManager.AddValveCommand(name, description, flags);
 	g_CommandManager.AddCommandListener(name, callback, mode);

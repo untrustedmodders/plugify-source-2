@@ -28,7 +28,7 @@ CCSGameRules* g_pGameRules = nullptr;
 #define RESOLVE_SIG(gameConfig, name, variable) \
 	variable = gameConfig->ResolveSignature(name).RCast<decltype(variable)>(); \
 	if (!variable) { \
-		S2_LOGF(LS_ERROR, "Failed to resolve signature for %s\n", #name); \
+		S2_LOGF(LS_ERROR, "Failed to resolve signature for {}\n", #name); \
 		return; \
 	} \
 
@@ -127,7 +127,7 @@ namespace globals {
 				return module.m_hModule;
 			}
 		}
-		S2_LOGF(LS_ERROR, "Could not find module at \"%s\"\n", name.data());
+		S2_LOGF(LS_ERROR, "Could not find module at \"{}\"\n", name);
 		return {};
 	}
 	
@@ -137,7 +137,7 @@ namespace globals {
 				return system.m_pSystem;
 			}
 		}
-		S2_LOGF(LS_ERROR, "Could not find interface at \"%s\"\n", name.data());
+		S2_LOGF(LS_ERROR, "Could not find interface at \"{}\"\n", name);
 		return {};
 	}
 
@@ -154,7 +154,7 @@ namespace globals {
 			}
 		}
 
-		S2_LOGF(LS_ERROR, "Could not query interface at \"%s\"\n", name.data());
+		S2_LOGF(LS_ERROR, "Could not query interface at \"{}\"\n", name);
 		return {};
 	}
 }// namespace globals
