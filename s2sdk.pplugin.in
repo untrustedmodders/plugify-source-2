@@ -18615,6 +18615,24 @@
       }
     },
     {
+      "name": "GetWeaponVDataFromKey",
+      "group": "Weapons",
+      "description": "Retrieves the weapon VData for a given weapon name.",
+      "funcName": "GetWeaponVDataFromKey",
+      "paramTypes": [
+        {
+          "name": "name",
+          "type": "string",
+          "ref": false,
+          "description": "The name of the weapon."
+        }
+      ],
+      "retType": {
+        "type": "ptr64",
+        "description": "A pointer to the `CCSWeaponBaseVData` if the entity handle is valid and represents a player weapon; otherwise, nullptr."
+      }
+    },
+    {
       "name": "GetWeaponVData",
       "group": "Weapons",
       "description": "Retrieves the weapon VData for a given weapon.",
@@ -18629,7 +18647,7 @@
       ],
       "retType": {
         "type": "ptr64",
-        "description": "The handle of the entity from which to retrieve the weapon VData."
+        "description": "A pointer to the `CCSWeaponBaseVData` if the entity handle is valid and represents a player weapon; otherwise, nullptr."
       }
     },
     {

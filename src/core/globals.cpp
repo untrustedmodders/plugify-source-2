@@ -26,7 +26,11 @@ CGameEntitySystem* g_pGameEntitySystem = nullptr;
 CCSGameRules* g_pGameRules = nullptr;
 
 #define RESOLVE_SIG(gameConfig, name, variable) \
-	( variable = (decltype(variable)) (gameConfig)->ResolveSignature(name).GetPtr() )
+	variable = gameConfig->ResolveSignature(name).RCast<decltype(variable)>(); \
+	if (!variable) { \
+		S2_LOGF(LS_ERROR, "Failed to resolve signature for %s\n", #name); \
+		return; \
+	} \
 
 IMetamodListener* g_pMetamodListener = nullptr;
 std::unique_ptr<CoreConfig> g_pCoreConfig = nullptr;

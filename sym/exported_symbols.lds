@@ -457,6 +457,7 @@ PbGetRepeatedQAngle
 PbSetRepeatedQAngle
 PbAddQAngle
 
+GetWeaponVDataFromKey
 GetWeaponVData
 GetWeaponType
 GetWeaponCategory

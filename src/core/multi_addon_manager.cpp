@@ -87,7 +87,7 @@ bool MultiAddonManager::UnmountAddon(uint64_t addon, bool remove) {
 		return false;
 
 	if (remove) {
-		m_mountedAddons.erase(std::remove(m_mountedAddons.begin(), m_mountedAddons.end(), addon), m_mountedAddons.end());
+		std::erase(m_mountedAddons, addon);
 	}
 
 	S2_LOGF(LS_MESSAGE, "Removing search path: %s\n", path);

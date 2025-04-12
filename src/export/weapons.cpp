@@ -11,6 +11,16 @@ PLUGIFY_WARN_IGNORE(4190)
 #endif
 
 /**
+ * @brief Retrieves the weapon VData for a given weapon name.
+ *
+ * @param name The name of the weapon.
+ * @return A pointer to the `CCSWeaponBaseVData` if found; otherwise, nullptr.
+ */
+extern "C" PLUGIN_API CCSWeaponBaseVData* GetWeaponVDataFromKey(const plg::string& name) {
+	return addresses::GetCSWeaponDataFromKey(-1, name.c_str());
+}
+
+/**
  * @brief Retrieves the weapon VData for a given weapon.
  *
  * @param entityHandle The handle of the entity from which to retrieve the weapon VData.
