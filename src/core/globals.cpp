@@ -21,7 +21,6 @@ CAppSystemDict* g_pCurrentAppSystem = nullptr;
 INetworkGameServer* g_pNetworkGameServer = nullptr;
 CGlobalVars* gpGlobals = nullptr;
 IVEngineServer2* g_pEngineServer2 = nullptr; // TODO
-CSchemaSystem* g_pSchemaSystem2 = nullptr;
 CGameEntitySystem* g_pGameEntitySystem = nullptr;
 CCSGameRules* g_pGameRules = nullptr;
 
@@ -72,7 +71,7 @@ namespace globals {
 		g_pGameEventManager = *p_ppGameEventManager;
 
 		g_pCVar = static_cast<ICvar*>(QueryInterface("tier0", CVAR_INTERFACE_VERSION));
-		g_pSchemaSystem2 = static_cast<CSchemaSystem*>(QueryInterface("schemasystem", SCHEMASYSTEM_INTERFACE_VERSION));
+		g_pSchemaSystem = static_cast<ISchemaSystem*>(QueryInterface("schemasystem", SCHEMASYSTEM_INTERFACE_VERSION));
 		g_pSource2Server = static_cast<ISource2Server*>(QueryInterface("server", SOURCE2SERVER_INTERFACE_VERSION));
 		g_pSource2GameEntities = static_cast<ISource2GameEntities*>(QueryInterface("server", SOURCE2GAMEENTITIES_INTERFACE_VERSION));
 		g_pSource2GameClients = static_cast<ISource2GameClients*>(QueryInterface("server", SOURCE2GAMECLIENTS_INTERFACE_VERSION));

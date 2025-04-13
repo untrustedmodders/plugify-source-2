@@ -1,8 +1,8 @@
 #include <core/core_config.hpp>
 #include <core/sdk/entity/cbaseentity.h>
-#include <core/sdk/entity/cschemasystem.h>
 #include <core/sdk/schema.h>
 #include <core/sdk/utils.h>
+#include <schemasystem/schemasystem.h>
 #include <plugify/cpp_plugin.hpp>
 #include <plugin_export.h>
 #include <tier0/utlstring.h>
@@ -64,8 +64,8 @@ extern "C" PLUGIN_API bool IsSchemaFieldNetworked(const plg::string& className, 
  * @return The size of the class in bytes, or -1 if the class is not found.
  */
 extern "C" PLUGIN_API int GetSchemaClassSize(const plg::string& className) {
-	CSchemaSystemTypeScope2* pType = g_pSchemaSystem2->FindTypeScopeForModule(S2SDK_LIBRARY_PREFIX "server" S2SDK_LIBRARY_SUFFIX);
-	SchemaClassInfoData_t* pClassInfo = pType->FindDeclaredClass(className.c_str());
+	CSchemaSystemTypeScope* pType = g_pSchemaSystem->FindTypeScopeForModule(S2SDK_LIBRARY_PREFIX "server" S2SDK_LIBRARY_SUFFIX);
+	SchemaMetaInfoHandle_t<CSchemaClassInfo> pClassInfo = pType->FindDeclaredClass(className.c_str());
 	if (!pClassInfo) {
 		return -1;
 	}
@@ -636,7 +636,7 @@ extern "C" PLUGIN_API int64_t GetEntSchema2(CEntityInstance* entity, const plg::
  * @return An integer value at the given schema offset.
  */
 extern "C" PLUGIN_API void SetEntSchema2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int64_t value, bool changeState, int element) {
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end()) {
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.contains(memberName)) {
 		S2_LOGF(LS_WARNING, "Cannot set '{}::{}' with \"FollowCS2ServerGuidelines\" option enabled.\n", className, memberName);
 		return;
 	}
@@ -790,7 +790,7 @@ extern "C" PLUGIN_API double GetEntSchemaFloat2(CEntityInstance* entity, const p
  * @return An float value at the given schema offset.
  */
 extern "C" PLUGIN_API void SetEntSchemaFloat2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, double value, bool changeState, int element) {
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end()) {
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.contains(memberName)) {
 		S2_LOGF(LS_WARNING, "Cannot set '{}::{}' with \"FollowCS2ServerGuidelines\" option enabled.\n", className, memberName);
 		return;
 	}
@@ -921,7 +921,7 @@ extern "C" PLUGIN_API plg::string GetEntSchemaString2(CEntityInstance* entity, c
  * @return An string value at the given schema offset.
  */
 extern "C" PLUGIN_API void SetEntSchemaString2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, const plg::string& value, bool changeState, int element) {
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end()) {
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.contains(memberName)) {
 		S2_LOGF(LS_WARNING, "Cannot set '{}::{}' with \"FollowCS2ServerGuidelines\" option enabled.\n", className, memberName);
 		return;
 	}
@@ -1024,10 +1024,10 @@ extern "C" PLUGIN_API plg::vec3 GetEntSchemaVector3D2(CEntityInstance* entity, c
  * @param value The vector value to set.
  * @param changeState If true, change will be sent over the network.
  * @param element Element # (starting from 0) if schema is an array.
- * @return An vector value at the given schema offset.
+ * @return A vector value at the given schema offset.
  */
 extern "C" PLUGIN_API void SetEntSchemaVector3D2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, const plg::vec3& value, bool changeState, int element) {
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end()) {
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.contains(memberName)) {
 		S2_LOGF(LS_WARNING, "Cannot set '{}::{}' with \"FollowCS2ServerGuidelines\" option enabled.\n", className, memberName);
 		return;
 	}
@@ -1109,10 +1109,10 @@ extern "C" PLUGIN_API plg::vec2 GetEntSchemaVector2D2(CEntityInstance* entity, c
  * @param value The vector value to set.
  * @param changeState If true, change will be sent over the network.
  * @param element Element # (starting from 0) if schema is an array.
- * @return An vector value at the given schema offset.
+ * @return A vector value at the given schema offset.
  */
 extern "C" PLUGIN_API void SetEntSchemaVector2D2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, const plg::vec2& value, bool changeState, int element) {
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end()) {
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.contains(memberName)) {
 		S2_LOGF(LS_WARNING, "Cannot set '{}::{}' with \"FollowCS2ServerGuidelines\" option enabled.\n", className, memberName);
 		return;
 	}
@@ -1192,10 +1192,10 @@ extern "C" PLUGIN_API plg::vec4 GetEntSchemaVector4D2(CEntityInstance* entity, c
  * @param value The vector value to set.
  * @param changeState If true, change will be sent over the network.
  * @param element Element # (starting from 0) if schema is an array.
- * @return An vector value at the given schema offset.
+ * @return A vector value at the given schema offset.
  */
 extern "C" PLUGIN_API void SetEntSchemaVector4D2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, const plg::vec4& value, bool changeState, int element) {
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end()) {
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.contains(memberName)) {
 		S2_LOGF(LS_WARNING, "Cannot set '{}::{}' with \"FollowCS2ServerGuidelines\" option enabled.\n", className, memberName);
 		return;
 	}
@@ -1282,7 +1282,7 @@ extern "C" PLUGIN_API int GetEntSchemaEnt2(CEntityInstance* entity, const plg::s
  * @return An entity handle at the given schema offset.
  */
 extern "C" PLUGIN_API void SetEntSchemaEnt2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int value, bool changeState, int element) {
-	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.find(memberName) != schema::CS2BadList.end()) {
+	if (g_pCoreConfig->FollowCS2ServerGuidelines && schema::CS2BadList.contains(memberName)) {
 		S2_LOGF(LS_WARNING, "Cannot set '{}::{}' with \"FollowCS2ServerGuidelines\" option enabled.\n", className, memberName);
 		return;
 	}
@@ -1546,7 +1546,7 @@ extern "C" PLUGIN_API plg::vec3 GetEntSchemaVector3D(int entityHandle, const plg
  * @param value The vector value to set.
  * @param changeState If true, change will be sent over the network.
  * @param element Element # (starting from 0) if schema is an array.
- * @return An vector value at the given schema offset.
+ * @return A vector value at the given schema offset.
  */
 extern "C" PLUGIN_API void SetEntSchemaVector3D(int entityHandle, const plg::string& className, const plg::string& memberName, const plg::vec3& value, bool changeState, int element) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
@@ -1592,7 +1592,7 @@ extern "C" PLUGIN_API plg::vec2 GetEntSchemaVector2D(int entityHandle, const plg
  * @param value The vector value to set.
  * @param changeState If true, change will be sent over the network.
  * @param element Element # (starting from 0) if schema is an array.
- * @return An vector value at the given schema offset.
+ * @return A vector value at the given schema offset.
  */
 extern "C" PLUGIN_API void SetEntSchemaVector2D(int entityHandle, const plg::string& className, const plg::string& memberName, const plg::vec2& value, bool changeState, int element) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
@@ -1638,7 +1638,7 @@ extern "C" PLUGIN_API plg::vec4 GetEntSchemaVector4D(int entityHandle, const plg
  * @param value The vector value to set.
  * @param changeState If true, change will be sent over the network.
  * @param element Element # (starting from 0) if schema is an array.
- * @return An vector value at the given schema offset.
+ * @return A vector value at the given schema offset.
  */
 extern "C" PLUGIN_API void SetEntSchemaVector4D(int entityHandle, const plg::string& className, const plg::string& memberName, const plg::vec4& value, bool changeState, int element) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));

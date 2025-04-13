@@ -19,15 +19,13 @@
 
 #include "schema.h"
 
-#include "entity/cschemasystem.h"
-#include <tier1/utlmap.h>
+#include <schemasystem/schemasystem.h>
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include <tier0/memdbgon.h>
 
 #include "utils.h"
 
-extern CSchemaSystem* g_pSchemaSystem2;
 extern CGlobalVars* gpGlobals;
 
 using SchemaKeyValueMap = std::unordered_map<plg::string, SchemaKey, utils::string_hash, std::equal_to<>>;
@@ -45,11 +43,11 @@ namespace {
 	}
 
 	bool InitSchemaFieldsForClass(SchemaTableMap& tableMap, std::string_view className) {
-		CSchemaSystemTypeScope2* pType = g_pSchemaSystem2->FindTypeScopeForModule(S2SDK_LIBRARY_PREFIX "server" S2SDK_LIBRARY_SUFFIX);
+		CSchemaSystemTypeScope* pType = g_pSchemaSystem->FindTypeScopeForModule(S2SDK_LIBRARY_PREFIX "server" S2SDK_LIBRARY_SUFFIX);
 		if (!pType)
 			return false;
 
-		SchemaClassInfoData_t* pClassInfo = pType->FindDeclaredClass(className.data());
+		SchemaMetaInfoHandle_t<CSchemaClassInfo> pClassInfo = pType->FindDeclaredClass(className.data());
 		if (!pClassInfo) {
 			tableMap.emplace(className, SchemaKeyValueMap());
 
