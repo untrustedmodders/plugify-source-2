@@ -73,7 +73,7 @@ extern "C" PLUGIN_API plg::string GetCurrentMap() {
  * @return True if the map is valid, false otherwise.
  */
 extern "C" PLUGIN_API bool IsMapValid(const plg::string& mapname) {
-	return g_pEngineServer2->IsMapValid(mapname.c_str()) != 0;
+	return g_pEngineServer->IsMapValid(mapname.c_str()) != 0;
 }
 
 /**
@@ -148,7 +148,7 @@ extern "C" PLUGIN_API int GetMaxClients() {
  * @return An integer identifier for the generic file.
  */
 extern "C" PLUGIN_API int PrecacheGeneric(const plg::string& model) {
-	return g_pEngineServer2->PrecacheGeneric(model.c_str());
+	return g_pEngineServer->PrecacheGeneric(model.c_str());
 }
 
 /**
@@ -157,7 +157,7 @@ extern "C" PLUGIN_API int PrecacheGeneric(const plg::string& model) {
  * @param model The name of the generic file to check.
  */
 extern "C" PLUGIN_API bool IsGenericPrecache(const plg::string& model) {
-	return g_pEngineServer2->IsGenericPrecached(model.c_str());
+	return g_pEngineServer->IsGenericPrecached(model.c_str());
 }
 
 /**
@@ -167,7 +167,7 @@ extern "C" PLUGIN_API bool IsGenericPrecache(const plg::string& model) {
  * @return An integer identifier for the model.
  */
 extern "C" PLUGIN_API int PrecacheModel(const plg::string& model) {
-	return g_pEngineServer2->PrecacheGeneric(model.c_str());
+	return g_pEngineServer->PrecacheGeneric(model.c_str());
 }
 
 /**
@@ -176,7 +176,7 @@ extern "C" PLUGIN_API int PrecacheModel(const plg::string& model) {
  * @param model The name of the model to check.
  */
 extern "C" PLUGIN_API bool IsModelPrecache(const plg::string& model) {
-	return g_pEngineServer2->IsGenericPrecached(model.c_str());
+	return g_pEngineServer->IsGenericPrecached(model.c_str());
 }
 
 /**
@@ -208,7 +208,7 @@ extern "C" PLUGIN_API bool IsSoundPrecached(const plg::string& sound) {
  * @return An integer identifier for the decal.
  */
 extern "C" PLUGIN_API int PrecacheDecal(const plg::string& decal, bool preload) {
-	return g_pEngineServer2->PrecacheDecal(decal.c_str(), preload);
+	return g_pEngineServer->PrecacheDecal(decal.c_str(), preload);
 }
 
 /**
@@ -218,7 +218,7 @@ extern "C" PLUGIN_API int PrecacheDecal(const plg::string& decal, bool preload) 
  * @return True if the decal is precached, false otherwise.
  */
 extern "C" PLUGIN_API bool IsDecalPrecached(const plg::string& decal) {
-	return g_pEngineServer2->IsDecalPrecached(decal.c_str());
+	return g_pEngineServer->IsDecalPrecached(decal.c_str());
 }
 
 /**

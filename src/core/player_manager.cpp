@@ -44,7 +44,7 @@ CServerSideClientBase* Player::GetClient() const {
 
 bool Player::IsAuthenticated() const {
 	auto client = GetClient();
-	return client && client->IsConnected() && !client->IsFakeClient() && g_pEngineServer2->IsClientFullyAuthenticated(GetPlayerSlot());
+	return client && client->IsConnected() && !client->IsFakeClient() && g_pEngineServer->IsClientFullyAuthenticated(GetPlayerSlot());
 }
 
 bool Player::IsConnected() const {
@@ -111,7 +111,7 @@ CSteamID Player::GetSteamId(bool validated) const {
 }
 
 INetChannelInfo* Player::GetNetInfo() const {
-	return g_pEngineServer2->GetPlayerNetInfo(m_iSlot);
+	return g_pEngineServer->GetPlayerNetInfo(m_iSlot);
 }
 
 float Player::GetTimeConnected() const {
@@ -127,7 +127,7 @@ float Player::GetLatency() const {
 }
 
 void Player::Kick(const char* internalReason, ENetworkDisconnectionReason reason) const {
-	g_pEngineServer2->KickClient(GetPlayerSlot(), internalReason, reason);
+	g_pEngineServer->KickClient(GetPlayerSlot(), internalReason, reason);
 }
 
 void PlayerManager::OnSteamAPIActivated() {
@@ -280,7 +280,7 @@ Player* PlayerManager::ToPlayer(CEntityIndex entIndex) const {
 
 Player* PlayerManager::ToPlayer(CPlayerUserId userID) const {
 	for (int slot = 0; slot < MaxClients(); slot++) {
-		if (g_pEngineServer2->GetPlayerUserId(slot) == userID) {
+		if (g_pEngineServer->GetPlayerUserId(slot) == userID) {
 			return ToPlayer(CPlayerSlot(slot));
 		}
 	}

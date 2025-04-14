@@ -525,7 +525,7 @@ extern "C" PLUGIN_API void ForcePlayerSuicide(int playerSlot, bool explode, bool
  * @param playerSlot The index of the player's slot to be kicked.
  */
 extern "C" PLUGIN_API void KickClient(int playerSlot) {
-	g_pEngineServer2->DisconnectClient(playerSlot, NETWORK_DISCONNECT_KICKED);
+	g_pEngineServer->DisconnectClient(playerSlot, NETWORK_DISCONNECT_KICKED);
 }
 
 /**
@@ -536,7 +536,7 @@ extern "C" PLUGIN_API void KickClient(int playerSlot) {
  * @param kick If true, the client will be kicked immediately after being banned.
  */
 extern "C" PLUGIN_API void BanClient(int playerSlot, float duration, bool kick) {
-	g_pEngineServer2->BanClient(CPlayerSlot(playerSlot), duration, kick);
+	g_pEngineServer->BanClient(CPlayerSlot(playerSlot), duration, kick);
 }
 
 /**
@@ -547,7 +547,7 @@ extern "C" PLUGIN_API void BanClient(int playerSlot, float duration, bool kick) 
  * @param kick If true, the client will be kicked immediately after being banned.
  */
 extern "C" PLUGIN_API void BanIdentity(uint64_t steamId, float duration, bool kick) {
-	g_pEngineServer2->BanClient(CSteamID(static_cast<uint64>(steamId)), duration, kick);
+	g_pEngineServer->BanClient(CSteamID(static_cast<uint64>(steamId)), duration, kick);
 }
 
 /**

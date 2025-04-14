@@ -198,7 +198,7 @@ void MultiAddonManager::ReloadMap() {
 	else
 		cmd = std::format("host_workshop_map {}", m_currentWorkshopMap);
 
-	g_pEngineServer2->ServerCommand(cmd.c_str());
+	g_pEngineServer->ServerCommand(cmd.c_str());
 }
 
 void MultiAddonManager::OnAddonDownloaded(DownloadItemResult_t* result) {

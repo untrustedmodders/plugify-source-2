@@ -20,13 +20,12 @@ IGameEventManager2* g_pGameEventManager = nullptr;
 CAppSystemDict* g_pCurrentAppSystem = nullptr;
 INetworkGameServer* g_pNetworkGameServer = nullptr;
 CGlobalVars* gpGlobals = nullptr;
-IVEngineServer2* g_pEngineServer2 = nullptr; // TODO
 CGameEntitySystem* g_pGameEntitySystem = nullptr;
 CCSGameRules* g_pGameRules = nullptr;
 
 #define RESOLVE_SIG(gameConfig, name, variable) \
-	variable = gameConfig->ResolveSignature(name).RCast<decltype(variable)>(); \
-	if (!variable) { \
+	variable = (gameConfig)->ResolveSignature(name).RCast<decltype(variable)>(); \
+	if (!(variable)) { \
 		S2_LOGF(LS_ERROR, "Failed to resolve signature for {}\n", #name); \
 		return; \
 	} \
@@ -78,7 +77,7 @@ namespace globals {
 		g_pGameResourceServiceServer = static_cast<IGameResourceService*>(QueryInterface("engine2", GAMERESOURCESERVICESERVER_INTERFACE_VERSION));
 		g_pEngineServiceMgr = static_cast<IEngineServiceMgr*>(QueryInterface("engine2", ENGINESERVICEMGR_INTERFACE_VERSION));
 
-		g_pEngineServer2 = static_cast<IVEngineServer2*>(QueryInterface("engine2", SOURCE2ENGINETOSERVER_INTERFACE_VERSION));
+		g_pEngineServer = static_cast<IVEngineServer2*>(QueryInterface("engine2", SOURCE2ENGINETOSERVER_INTERFACE_VERSION));
 		g_pFullFileSystem = static_cast<IFileSystem*>(QueryInterface("filesystem", FILESYSTEM_INTERFACE_VERSION));
 		g_pGameEventSystem = static_cast<IGameEventSystem*>(QueryInterface("engine2", GAMEEVENTSYSTEM_INTERFACE_VERSION));
 		g_pNetworkServerService = static_cast<INetworkServerService*>(QueryInterface("engine", NETWORKSERVERSERVICE_INTERFACE_VERSION));

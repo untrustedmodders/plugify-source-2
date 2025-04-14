@@ -1139,7 +1139,7 @@ extern "C" PLUGIN_API plg::string GetClientConVarValue(int playerSlot, const plg
 		return {};
 	}
 
-	return g_pEngineServer2->GetClientConVarValue(playerSlot, convarName.c_str());
+	return g_pEngineServer->GetClientConVarValue(playerSlot, convarName.c_str());
 }
 
 /**
@@ -1155,7 +1155,7 @@ extern "C" PLUGIN_API void SetFakeClientConVarValue(int playerSlot, const plg::s
 		return;
 	}
 
-	g_pEngineServer2->SetFakeClientConVarValue(playerSlot, convarName.c_str(), convarValue.c_str());
+	g_pEngineServer->SetFakeClientConVarValue(playerSlot, convarName.c_str(), convarValue.c_str());
 }
 
 PLUGIFY_WARN_POP()

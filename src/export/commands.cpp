@@ -93,7 +93,7 @@ extern "C" PLUGIN_API bool RemoveCommandListener(const plg::string& name, Comman
 extern "C" PLUGIN_API void ServerCommand(const plg::string& command) {
 	auto cleanCommand = command;
 	cleanCommand.append("\n\0");
-	g_pEngineServer2->ServerCommand(command.c_str());
+	g_pEngineServer->ServerCommand(command.c_str());
 }
 /**
  * @brief Executes a server command as if it were on the server console (or RCON) and stores the printed text into buffer.
@@ -107,11 +107,11 @@ extern "C" PLUGIN_API plg::string ServerCommandEx(const plg::string& command) {
 
 	if (!g_ShouldCatchSpew) {
 		g_ShouldCatchSpew = true;
-		g_pEngineServer2->ServerCommand("s2_conhook_start\n");
-		g_pEngineServer2->ServerCommand(cleanCommand.c_str());
-		g_pEngineServer2->ServerCommand("s2_conhook_stop\n");
+		g_pEngineServer->ServerCommand("s2_conhook_start\n");
+		g_pEngineServer->ServerCommand(cleanCommand.c_str());
+		g_pEngineServer->ServerCommand("s2_conhook_stop\n");
 	} else {
-		g_pEngineServer2->ServerCommand(cleanCommand.c_str());
+		g_pEngineServer->ServerCommand(cleanCommand.c_str());
 	}
 
 	return g_ServerCommandBuffer;
@@ -127,7 +127,7 @@ extern "C" PLUGIN_API plg::string ServerCommandEx(const plg::string& command) {
 extern "C" PLUGIN_API void ClientCommand(int playerSlot, const plg::string& command) {
 	auto cleanCommand = command;
 	cleanCommand.append("\n\0");
-	g_pEngineServer2->ClientCommand(playerSlot, "%s", cleanCommand.c_str());
+	g_pEngineServer->ClientCommand(playerSlot, "%s", cleanCommand.c_str());
 }
 
 /**
