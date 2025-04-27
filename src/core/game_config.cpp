@@ -136,7 +136,7 @@ std::string_view GameConfig::GetLibrary(std::string_view name) const {
 }
 
 // memory addresses below 0x10000 are automatically considered invalid for dereferencing
-#define VALID_MINIMUM_MEMORY_ADDRESS ((void*) 0x10000)
+#define VALID_MINIMUM_MEMORY_ADDRESS ((ptrdiff_t) 0x10000)
 
 Memory GameConfig::GetAddress(std::string_view name) const {
 	auto it = m_addresses.find(name);
@@ -145,37 +145,39 @@ Memory GameConfig::GetAddress(std::string_view name) const {
 
 	const auto& addrConf = std::get<AddressConf>(*it);
 
-	Memory addr = ResolveSignature(addrConf.signature);
-	if (!addr)
+	auto memaddr = ResolveSignature(addrConf.signature);
+	if (!memaddr)
 		return {};
 
 	size_t readCount = addrConf.read.size();
 	for (size_t i = 0; i < readCount; ++i) {
 		const auto& [offset, rel] = addrConf.read[i];
 
+		auto addr = memaddr.GetAddr();
+
 		// NULLs in the middle of an indirection chain are bad, end NULL is ok
 		if (!addr || addr < VALID_MINIMUM_MEMORY_ADDRESS)
 			return nullptr;
 
 		if (rel) {
-			auto target = addr.Offset(offset);
-			if (!target || target < VALID_MINIMUM_MEMORY_ADDRESS)
+			auto targetaddr = memaddr.Offset(offset).GetAddr();
+			if (!targetaddr || targetaddr < VALID_MINIMUM_MEMORY_ADDRESS)
 				return nullptr;
 
-			addr.OffsetSelf(offset)
+			memaddr.OffsetSelf(offset)
 					.OffsetSelf(sizeof(int32_t))
-					.OffsetSelf(target.GetValue<int32_t>());
+					.OffsetSelf(targetaddr);
 		} else {
-			addr.OffsetSelf(offset);
+			memaddr.OffsetSelf(offset);
 
 			// If lastIsOffset is set and this is the last iteration of the loop, don't deref
 			if (!addrConf.lastIsOffset || i != readCount - 1) {
-				addr.DerefSelf();
+				memaddr.DerefSelf();
 			}
 		}
 	}
 
-	return addr;
+	return memaddr;
 }
 
 const Module* GameConfig::GetModule(std::string_view name) const {
@@ -230,7 +232,7 @@ Memory GameConfig::ResolveSignature(std::string_view name) const {
 			return {};
 		}
 
-		address = module->FindPattern(signature);
+		address = module->FindPattern(DynLibUtils::ParsePattern(signature));
 	}
 
 	if (!address) {

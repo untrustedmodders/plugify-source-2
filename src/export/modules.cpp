@@ -30,7 +30,7 @@ extern "C" PLUGIN_API void* GetModule(const plg::string& name) {
  * @return A pointer to the virtual table.
  */
 extern "C" PLUGIN_API void* GetModuleVirtualTableByName(Module* module, const plg::string& tableName, bool decorated) {
-	return module->GetVirtualTableByName(tableName, decorated);
+	return module->GetVirtualTableByName(tableName, decorated).GetPtr();
 }
 
 /**
@@ -41,7 +41,7 @@ extern "C" PLUGIN_API void* GetModuleVirtualTableByName(Module* module, const pl
  * @return A pointer to the function.
  */
 extern "C" PLUGIN_API void* GetModuleFunctionByName(Module* module, const plg::string& functionName) {
-	return module->GetFunctionByName(functionName);
+	return module->GetFunctionByName(functionName).GetPtr();
 }
 
 /**
@@ -52,7 +52,14 @@ extern "C" PLUGIN_API void* GetModuleFunctionByName(Module* module, const plg::s
  * @return The name of the section as a string.
  */
 extern "C" PLUGIN_API plg::string GetModuleSectionNameByName(Module* module, const plg::string& sectionName) {
-	return module->GetSectionByName(sectionName).m_svSectionName;
+	auto section = module->GetSectionByName(sectionName);
+
+	if (!section || !section->IsValid()) {
+		S2_LOGF(LS_WARNING, "Failed to get the module section by '%s' name.\n", sectionName.c_str());
+		return 0;
+	}
+
+	return section->m_svSectionName;
 }
 
 /**
@@ -63,7 +70,14 @@ extern "C" PLUGIN_API plg::string GetModuleSectionNameByName(Module* module, con
  * @return A pointer to the base address of the section.
  */
 extern "C" PLUGIN_API void* GetModuleSectionBaseByName(Module* module, const plg::string& sectionName) {
-	return module->GetSectionByName(sectionName).m_pSectionBase;
+	auto section = module->GetSectionByName(sectionName);
+
+	if (!section || !section->IsValid()) {
+		S2_LOGF(LS_WARNING, "Failed to get the module section base by '%s' name.\n", sectionName.c_str());
+		return nullptr;
+	}
+
+	return section->m_pBase.GetPtr();
 }
 
 /**
@@ -74,7 +88,14 @@ extern "C" PLUGIN_API void* GetModuleSectionBaseByName(Module* module, const plg
  * @return The size of the section as a 64-bit unsigned integer.
  */
 extern "C" PLUGIN_API uint64_t GetModuleSectionSizeByName(Module* module, const plg::string& sectionName) {
-	return static_cast<uint64_t>(module->GetSectionByName(sectionName).m_nSectionSize);
+	auto section = module->GetSectionByName(sectionName);
+
+	if (!section || !section->IsValid()) {
+		S2_LOGF(LS_WARNING, "Failed to get the module section size by '%s' name.\n", sectionName.c_str());
+		return 0;
+	}
+
+	return static_cast<uint64_t>(section->m_nSectionSize);
 }
 
 /**
@@ -94,7 +115,7 @@ extern "C" PLUGIN_API void* GetModuleHandle(Module* module) {
  * @return A pointer to the module base address.
  */
 extern "C" PLUGIN_API void* GetModuleBase(Module* module) {
-	return module->GetBase();
+	return module->GetBase().GetPtr();
 }
 
 /**

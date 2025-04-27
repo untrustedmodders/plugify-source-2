@@ -26,7 +26,7 @@ CGameEntitySystem* g_pGameEntitySystem = nullptr;
 CCSGameRules* g_pGameRules = nullptr;
 
 #define RESOLVE_SIG(gameConfig, name, variable) \
-	variable = (decltype(variable)) (void*) (gameConfig)->ResolveSignature(name)
+	( variable = (decltype(variable)) (gameConfig)->ResolveSignature(name).GetPtr() )
 
 IMetamodListener* g_pMetamodListener = nullptr;
 std::unique_ptr<CoreConfig> g_pCoreConfig = nullptr;

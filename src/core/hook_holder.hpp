@@ -50,7 +50,7 @@ public:
 			return true;
 		}
 
-		auto addr = g_pGameConfig->ResolveSignature(name);
+		auto addr = g_pGameConfig->ResolveSignature(name).GetPtr();
 		if (!addr) {
 			S2_LOGF(LS_WARNING, "Could not hook detour function \"%s\".\n", name.data());
 			return false;
