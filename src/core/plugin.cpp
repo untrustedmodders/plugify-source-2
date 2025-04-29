@@ -45,7 +45,7 @@ class CEntityListener : public IEntityListener {
 	void OnEntityCreated(CEntityInstance* pEntity) override {
 		std::string_view name(pEntity->GetClassname());
 		if (name == "cs_gamerules")
-			g_pGameRules = ((CCSGameRulesProxy*) pEntity)->m_pGameRules;
+			g_pGameRules = static_cast<CCSGameRulesProxy *>(pEntity)->m_pGameRules;
 		GetOnEntityCreatedListenerManager().Notify(pEntity->GetRefEHandle().ToInt());
 	}
 	void OnEntityDeleted(CEntityInstance* pEntity) override {
