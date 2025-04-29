@@ -145,39 +145,40 @@ Memory GameConfig::GetAddress(std::string_view name) const {
 
 	const auto& addrConf = std::get<AddressConf>(*it);
 
-	auto memaddr = ResolveSignature(addrConf.signature);
-	if (!memaddr)
+	auto memory = ResolveSignature(addrConf.signature);
+	if (!memory)
 		return {};
 
 	size_t readCount = addrConf.read.size();
 	for (size_t i = 0; i < readCount; ++i) {
 		const auto& [offset, rel] = addrConf.read[i];
 
-		auto addr = memaddr.GetAddr();
-
 		// NULLs in the middle of an indirection chain are bad, end NULL is ok
+		auto addr = memory.GetAddr();
 		if (!addr || addr < VALID_MINIMUM_MEMORY_ADDRESS)
 			return nullptr;
 
 		if (rel) {
-			auto targetaddr = memaddr.Offset(offset).GetAddr();
-			if (!targetaddr || targetaddr < VALID_MINIMUM_MEMORY_ADDRESS)
+			auto target = memory.Offset(offset);
+
+			auto taddr = target.GetAddr();
+			if (!taddr || taddr < VALID_MINIMUM_MEMORY_ADDRESS)
 				return nullptr;
 
-			memaddr.OffsetSelf(offset)
+			memory.OffsetSelf(offset)
 					.OffsetSelf(sizeof(int32_t))
-					.OffsetSelf(targetaddr);
+					.OffsetSelf(target.Get<int32_t>());
 		} else {
-			memaddr.OffsetSelf(offset);
+			memory.OffsetSelf(offset);
 
 			// If lastIsOffset is set and this is the last iteration of the loop, don't deref
 			if (!addrConf.lastIsOffset || i != readCount - 1) {
-				memaddr.DerefSelf();
+				memory.DerefSelf();
 			}
 		}
 	}
 
-	return memaddr;
+	return memory;
 }
 
 const Module* GameConfig::GetModule(std::string_view name) const {
