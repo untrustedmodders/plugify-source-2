@@ -34,6 +34,7 @@ DEFINE_MANAGER_ACCESSOR(OnEntityParentChanged, void, int, int)
 
 DEFINE_MANAGER_ACCESSOR(OnServerStartup, void)
 DEFINE_MANAGER_ACCESSOR(OnServerActivate, void)
+DEFINE_MANAGER_ACCESSOR(OnChangeLevel, void)
 DEFINE_MANAGER_ACCESSOR(OnGameFrame, void, bool, bool, bool)
 //DEFINE_MANAGER_ACCESSOR(OnServerHibernationUpdate, void, bool)
 //DEFINE_MANAGER_ACCESSOR(OnGameServerSteamAPIActivated, void)

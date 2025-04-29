@@ -464,5 +464,8 @@
         GetWeaponCategory;
         GetWeaponGearSlot;
         GetWeaponDefIndex;
+
+        *_Register;
+        *_Unregister;
     local: *;
 };

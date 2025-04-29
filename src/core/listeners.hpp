@@ -28,6 +28,7 @@ DEFINE_MANAGER_CREATOR(OnEntityParentChanged, void, int, int)
 
 DEFINE_MANAGER_CREATOR(OnServerStartup, void)
 DEFINE_MANAGER_CREATOR(OnServerActivate, void)
+DEFINE_MANAGER_CREATOR(OnChangeLevel, void)
 DEFINE_MANAGER_CREATOR(OnGameFrame, void, bool, bool, bool)
 //DEFINE_MANAGER_CREATOR(OnServerHibernationUpdate, void, bool)
 //DEFINE_MANAGER_CREATOR(OnGameServerSteamAPIActivated, void)

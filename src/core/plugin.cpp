@@ -80,9 +80,6 @@ void Source2SDK::OnPluginStart() {
 	if (g_pMetamodListener != nullptr) {
 		g_PH.AddHookMemFunc(&IMetamodListener::OnLevelInit, g_pMetamodListener, Hook_OnLevelInit, Post);
 		g_PH.AddHookMemFunc(&IMetamodListener::OnLevelShutdown, g_pMetamodListener, Hook_OnLevelShutdown, Post);
-	} else {
-		g_PH.AddHookMemFunc(&IEngineServiceMgr::RegisterLoopMode, g_pEngineServiceMgr, Hook_RegisterLoopMode, Post);
-		g_PH.AddHookMemFunc(&IEngineServiceMgr::UnregisterLoopMode, g_pEngineServiceMgr, Hook_UnregisterLoopMode, Post);
 	}
 
 	g_PH.AddHookMemFunc(&IServerGameClients::ClientCommand, g_pSource2GameClients, Hook_ClientCommand, Pre);
@@ -121,7 +118,7 @@ void Source2SDK::OnPluginStart() {
 	g_PH.AddHookDetourFunc<SendNetMessage>(pServerSideClientVTable[iSendNetMessageOffset], Hook_SendNetMessage, Pre);
 
 #if S2SDK_PLATFORM_WINDOWS
-	using PreloadLibrary = void(*)(void* const);
+	using PreloadLibrary = void(*)(void*);
 	g_PH.AddHookDetourFunc<PreloadLibrary>("PreloadLibrary", Hook_PreloadLibrary, Pre);
 #endif
 
@@ -142,12 +139,14 @@ void Source2SDK::OnPluginEnd() {
 void Source2SDK::OnServerStartup() {
 	if (g_pNetworkGameServer != nullptr) {
 		g_PH.RemoveHookMemFunc(&INetworkGameServer::ActivateServer, g_pNetworkGameServer);
+		g_PH.RemoveHookMemFunc(&INetworkGameServer::FinishChangeLevel, g_pNetworkGameServer);
 	}
 
 	g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
 	if (g_pNetworkGameServer != nullptr) {
 		gpGlobals = g_pNetworkGameServer->GetGlobals();
 		g_PH.AddHookMemFunc(&INetworkGameServer::ActivateServer, g_pNetworkGameServer, Hook_ActivateServer, poly::CallbackType::Post);
+		g_PH.AddHookMemFunc(&INetworkGameServer::FinishChangeLevel, g_pNetworkGameServer, Hook_ChangeLevel, poly::CallbackType::Post);
 	}
 
 	g_pGameEntitySystem = GameEntitySystem();
@@ -181,6 +180,14 @@ poly::ReturnAction Source2SDK::Hook_ActivateServer(poly::IHook& hook, poly::Para
 	//S2_LOGF(LS_DEBUG, "[ActivateServer]\n");
 
 	GetOnServerActivateListenerManager().Notify();
+
+	return poly::ReturnAction::Ignored;
+}
+
+poly::ReturnAction Source2SDK::Hook_ChangeLevel(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
+	//S2_LOGF(LS_DEBUG, "[FinishChangeLevel]\n");
+
+	GetOnChangeLevelListenerManager().Notify();
 
 	return poly::ReturnAction::Ignored;
 }
@@ -235,34 +242,6 @@ poly::ReturnAction Source2SDK::Hook_OnLevelShutdown(poly::IHook& hook, poly::Par
 	GetOnLevelShutdownListenerManager().Notify();
 	return poly::ReturnAction::Ignored;
 };
-
-poly::ReturnAction Source2SDK::Hook_RegisterLoopMode(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
-	auto pszLoopModeName = poly::GetArgument<const char*>(params, 1);
-	auto pLoopModeFactory = poly::GetArgument<ILoopModeFactory*>(params, 2);
-
-	S2_LOG(LS_DEBUG, "[RegisterLoopMode]\n");
-
-	if (!strcmp(pszLoopModeName, "game")) {
-		g_PH.AddHookMemFunc(&ILoopMode::LoopInit, pLoopModeFactory, Hook_OnLevelInit, poly::CallbackType::Post);
-		g_PH.AddHookMemFunc(&ILoopMode::LoopShutdown, pLoopModeFactory, Hook_OnLevelShutdown, poly::CallbackType::Post);
-	}
-
-	return poly::ReturnAction::Ignored;
-}
-
-poly::ReturnAction Source2SDK::Hook_UnregisterLoopMode(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
-	auto pszLoopModeName = poly::GetArgument<const char*>(params, 1);
-	auto pLoopModeFactory = poly::GetArgument<ILoopModeFactory*>(params, 2);
-
-	S2_LOG(LS_DEBUG, "[UnregisterLoopMode]\n");
-
-	if (!strcmp(pszLoopModeName, "game")) {
-		g_PH.RemoveHookMemFunc(&ILoopMode::LoopShutdown, pLoopModeFactory);
-		g_PH.RemoveHookMemFunc(&ILoopMode::LoopInit, pLoopModeFactory);
-	}
-
-	return poly::ReturnAction::Ignored;
-}
 
 poly::ReturnAction Source2SDK::Hook_GameFrame(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	// bool simulating, bool bFirstTick, bool bLastTick

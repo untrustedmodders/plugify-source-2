@@ -15125,6 +15125,60 @@
       }
     },
     {
+      "name": "OnChangeLevel_Register",
+      "group": "Listeners",
+      "description": "Register callback to event.",
+      "funcName": "OnChangeLevel_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnChangeLevelCallback",
+            "funcName": "OnChangeLevelCallback",
+            "description": "Called on every level change.",
+            "paramTypes": [],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnChangeLevel_Unregister",
+      "group": "Listeners",
+      "description": "Unregister callback to event.",
+      "funcName": "OnChangeLevel_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "ref": false,
+          "description": "Function callback.",
+          "prototype": {
+            "name": "OnChangeLevelCallback",
+            "funcName": "OnChangeLevelCallback",
+            "description": "Called on every level change.",
+            "paramTypes": [],
+            "retType": {
+              "type": "void",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
       "name": "OnGameFrame_Register",
       "group": "Listeners",
       "description": "Register callback to event.",
