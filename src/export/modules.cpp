@@ -56,7 +56,7 @@ extern "C" PLUGIN_API plg::string GetModuleSectionNameByName(Module* module, con
 
 	if (!section || !section->IsValid()) {
 		S2_LOGF(LS_WARNING, "Failed to get the module section by '{}' name.\n", sectionName);
-		return 0;
+		return {};
 	}
 
 	return section->m_svSectionName;
