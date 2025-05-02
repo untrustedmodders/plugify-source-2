@@ -38,7 +38,7 @@ public:
 	static double GetTickedTime();
 	static double GetTickedInterval();
 
-	uint32_t CreateTimer(double delay, TimerCallback callback, TimerFlag flags, const plg::vector<plg::any>&);
+	uint32_t CreateTimer(double delay, TimerCallback callback, TimerFlag flags = Default, const plg::vector<plg::any>& userData = {});
 	void KillTimer(uint32_t id);
 	void RescheduleTimer(uint32_t id, double newDelay);
 

@@ -195,7 +195,7 @@ void PlayerManager::OnClientPutInServer(CPlayerSlot slot, char const* name) {
 	Player* player = ToPlayer(slot);
 	if (player) {
 		// For bots only
-		if (player->GetPlayerSlot() == CPlayerSlot{-1}) {
+		if (player->GetPlayerSlot() == INVALID_PLAYER_SLOT) {
 			player->Init(slot, 0);
 		}
 

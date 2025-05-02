@@ -7,8 +7,8 @@ using TaskCallback = void (*)(const plg::vector<plg::any>&);
 
 class ServerManager {
 public:
-	void AddTaskForNextWorldUpdate(TaskCallback task, const plg::vector<plg::any>& userData);
-	void AddTaskForNextFrame(TaskCallback task, const plg::vector<plg::any>& userData);
+	void AddTaskForNextWorldUpdate(TaskCallback task, const plg::vector<plg::any>& userData = {});
+	void AddTaskForNextFrame(TaskCallback task, const plg::vector<plg::any>& userData = {});
 
 	void OnGameFrame();
 	void OnPreWorldUpdate();
