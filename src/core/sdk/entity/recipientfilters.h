@@ -92,6 +92,8 @@ public:
 	}
 
 	void AddRecipientsFromMask(uint64 mask) {
+		m_Recipients.RemoveAll();
+
 		for (int i = 0; i < PlayerManager::MaxClients(); ++i) {
 			if (mask & static_cast<uint64>(1 << i)) {
 				AddRecipient(CPlayerSlot(i));

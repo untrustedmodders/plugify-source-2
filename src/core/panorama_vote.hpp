@@ -63,18 +63,6 @@ public:
 	 */
 	bool SendYesNoVote(double duration, int caller, const plg::string& voteTitle, const plg::string& detailStr, IRecipientFilter* filter, YesNoVoteResult result, YesNoVoteHandler handler);
 
-	/**
-	 * @brief Start a new Yes/No vote with all players included
-	 *
-	 *  @param duration			Maximum time to leave vote active for
-	 *  @param caller			Player slot of the vote caller. Use VOTE_CALLER_SERVER for 'Server'.
-	 *  @param voteTitle		Translation string to use as the vote message. (Only '#SFUI_vote' or '#Panorama_vote' strings)
-	 *  @param detailStr		Extra string used in some vote translation strings.
-	 *  @param result			Called when a menu action is completed.
-	 *  @param handler			Called when the vote has finished.
-	 */
-	bool SendYesNoVoteToAll(double duration, int caller, const plg::string& voteTitle, const plg::string& detailStr, YesNoVoteResult result, YesNoVoteHandler handler);
-
 private:
 	CHandle<CVoteController> m_voteController;
 	bool m_voteInProgress{};

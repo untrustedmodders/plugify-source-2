@@ -161,15 +161,6 @@ bool CPanoramaVoteHandler::SendYesNoVote(double duration, int caller, const plg:
 	return true;
 }
 
-bool CPanoramaVoteHandler::SendYesNoVoteToAll(double duration, int caller, const plg::string& voteTitle,
-                                              const plg::string& detailStr, YesNoVoteResult result,
-                                              YesNoVoteHandler handler = nullptr) {
-	CRecipientFilter filter;
-	filter.AddAllPlayers();
-
-	return SendYesNoVote(duration, caller, voteTitle, detailStr, &filter, result, handler);
-}
-
 void CPanoramaVoteHandler::SendVoteStartUM(IRecipientFilter* filter) {
 	INetworkMessageInternal *pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("VoteStart");
 	auto data = pNetMsg->AllocateMessage()->ToPB<CCSUsrMsg_VoteStart>();
@@ -187,6 +178,7 @@ void CPanoramaVoteHandler::SendVoteStartUM(IRecipientFilter* filter) {
 void CPanoramaVoteHandler::InitVoters(IRecipientFilter* filter) {
 	// Clear any old info
 	m_voterCount = 0;
+
 	for (int i = 0; i < MAXPLAYERS; ++i) {
 		m_voters[i] = -1;
 		m_voteController->m_nVotesCast[i] = VOTE_UNCAST;
