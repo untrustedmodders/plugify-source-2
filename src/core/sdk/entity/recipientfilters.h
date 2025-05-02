@@ -93,7 +93,7 @@ public:
 
 	void AddRecipientsFromMask(uint64 mask) {
 		for (int i = 0; i < PlayerManager::MaxClients(); ++i) {
-			if (mask & (uint64)(1 << i)) {
+			if (mask & static_cast<uint64>(1 << i)) {
 				AddRecipient(CPlayerSlot(i));
 			}
 		}

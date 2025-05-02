@@ -111,7 +111,7 @@ CSteamID Player::GetSteamId(bool validated) const {
 }
 
 INetChannelInfo* Player::GetNetInfo() const {
-	return g_pEngineServer->GetPlayerNetInfo(m_iSlot);
+	return g_pEngineServer->GetPlayerNetInfo(m_slot);
 }
 
 float Player::GetTimeConnected() const {

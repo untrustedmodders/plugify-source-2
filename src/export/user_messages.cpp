@@ -86,7 +86,7 @@ extern "C" PLUGIN_API void UserMessageDestroy(UserMessage* userMessage) {
 extern "C" PLUGIN_API void UserMessageSend(UserMessage* userMessage) {
 	CRecipientFilter filter;
 	filter.AddRecipientsFromMask(userMessage->GetRecipientMask() ? *userMessage->GetRecipientMask() : 0);
-	g_pGameEventSystem->PostEventAbstract(0, false, &filter, userMessage->GetSerializableMessage(), userMessage->GetProtobufMessage(), 0);
+	g_pGameEventSystem->PostEventAbstract(-1, false, &filter, userMessage->GetSerializableMessage(), userMessage->GetProtobufMessage(), 0);
 }
 
 /**

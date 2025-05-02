@@ -90,9 +90,9 @@ public:
 private:
 	INetworkMessageInternal* m_msgSerializable{};
 	CNetMessagePB<pb::Message>* m_msg{};
-	int m_recipientCount{};
-	bool m_manuallyAllocated{};
 	uint64_t* m_recipientMask{};
+	bool m_manuallyAllocated{};
+	int m_recipientCount{};
 
 public:
 	bool HasField(const char* fieldName) {

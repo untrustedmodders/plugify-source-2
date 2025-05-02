@@ -29,12 +29,12 @@ public:
 	~Player() = default;
 
 	void Init(int slot, uint64 xuid) {
-		m_iSlot = slot;
+		m_slot = slot;
 		m_unauthenticatedSteamID = CSteamID(xuid);
 	}
 
 	void Reset() {
-		m_iSlot = -1;
+		m_slot = -1;
 		m_unauthenticatedSteamID = k_steamIDNil;
 	}
 
@@ -66,15 +66,15 @@ public:
 	}
 
 	CPlayerSlot GetPlayerSlot() const {
-		return m_iSlot;
+		return m_slot;
 	}
 
 	CEntityIndex GetEntityIndex() const {
-		return m_iSlot + 1;
+		return m_slot + 1;
 	}
 
 private:
-	int m_iSlot{-1};
+	int m_slot{-1};
 	CSteamID m_unauthenticatedSteamID{k_steamIDNil};
 };
 
