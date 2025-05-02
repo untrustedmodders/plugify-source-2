@@ -287,6 +287,15 @@
         LogFull;
         LogFullColored;
 
+        PanoramaSendYesNoVote;
+        PanoramaSendYesNoVoteToAll;
+        PanoramaRemovePlayerFromVote;
+        PanoramaIsPlayerInVotePool;
+        PanoramaHasPlayerVoted;
+        PanoramaRedrawVoteToClient;
+        PanoramaIsVoteInProgress;
+        PanoramaEndVote;
+
         GetSchemaOffset;
         GetSchemaChainOffset;
         IsSchemaFieldNetworked;

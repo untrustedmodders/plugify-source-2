@@ -12,11 +12,13 @@
 #include "core_config.hpp"
 #include "con_command_manager.hpp"
 #include "con_var_manager.hpp"
+#include "event_listener.hpp"
 #include "event_manager.hpp"
 #include "hook_holder.hpp"
 #include "listeners.hpp"
 #include "multi_addon_manager.hpp"
 #include "output_manager.hpp"
+#include "panorama_vote.hpp"
 #include "player_manager.hpp"
 #include "server_manager.hpp"
 #include "timer_system.hpp"
@@ -34,7 +36,7 @@ CSteamGameServerAPIContext g_SteamAPI;
 
 CGameEntitySystem* GameEntitySystem() {
 	static int offset = g_pGameConfig->GetOffset("GameEntitySystem");
-	return *reinterpret_cast<CGameEntitySystem**>((uintptr_t) (g_pGameResourceServiceServer) + offset);
+	return *reinterpret_cast<CGameEntitySystem**>(reinterpret_cast<uintptr_t>(g_pGameResourceServiceServer) + offset);
 }
 
 CEntityInstance* CEntityHandle::Get() const {
@@ -128,6 +130,7 @@ void Source2SDK::OnPluginStart() {
 void Source2SDK::OnPluginEnd() {
 	globals::Terminate();
 	g_PH.UnhookAll();
+	UnregisterEventListeners();
 
 	if (g_pGameEntitySystem != nullptr) {
 		g_pGameEntitySystem->RemoveListenerEntity(&g_pEntityListener);
@@ -157,6 +160,8 @@ void Source2SDK::OnServerStartup() {
 	}
 
 	g_MultiAddonManager.OnStartupServer();
+
+	RegisterEventListeners();
 }
 
 poly::ReturnAction Source2SDK::Hook_StartupServer(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
@@ -296,6 +301,7 @@ poly::ReturnAction Source2SDK::Hook_ClientDisconnect(poly::IHook& hook, poly::Pa
 		g_PlayerManager.OnClientDisconnect(slot, reason);
 	} else {
 		g_PlayerManager.OnClientDisconnect_Post(slot, reason);
+		g_PanoramaVoteHandler.RemovePlayerFromVote(slot);
 	}
 
 	return poly::ReturnAction::Ignored;

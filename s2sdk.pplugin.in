@@ -11627,6 +11627,354 @@
       }
     },
     {
+      "name": "PanoramaSendYesNoVote",
+      "group": "Panarama",
+      "description": "Start a new Yes/No vote",
+      "funcName": "PanoramaSendYesNoVote",
+      "paramTypes": [
+        {
+          "name": "duration",
+          "type": "double",
+          "ref": false,
+          "description": "Maximum time to leave vote active for"
+        },
+        {
+          "name": "caller",
+          "type": "int32",
+          "ref": false,
+          "description": "Player slot of the vote caller. Use VOTE_CALLER_SERVER for 'Server'."
+        },
+        {
+          "name": "voteTitle",
+          "type": "string",
+          "ref": false,
+          "description": "Translation string to use as the vote message. (Only '#SFUI_vote' or '#Panorama_vote' strings)"
+        },
+        {
+          "name": "detailStr",
+          "type": "string",
+          "ref": false,
+          "description": "Extra string used in some vote translation strings."
+        },
+        {
+          "name": "filter",
+          "type": "ptr64",
+          "ref": false,
+          "description": "Recipient filter with all the clients who are allowed to participate in the vote."
+        },
+        {
+          "name": "result",
+          "type": "function",
+          "ref": false,
+          "description": "Called when a menu action is completed.",
+          "prototype": {
+            "name": "YesNoVoteResult",
+            "funcName": "YesNoVoteResult",
+            "description": "Handles the final result of a Yes/No vote. This function is called when a vote concludes, and is responsible for determining whether the vote passed based on the number of 'yes' and 'no' votes. Also receives context about the clients who participated in the vote.",
+            "paramTypes": [
+              {
+                "name": "numVotes",
+                "type": "int32",
+                "description": "Total number of votes submitted (yes + no)."
+              },
+              {
+                "name": "yesVotes",
+                "type": "int32",
+                "description": "Number of 'yes' votes cast."
+              },
+              {
+                "name": "noVotes",
+                "type": "int32",
+                "description": "Number of 'no' votes cast."
+              },
+              {
+                "name": "numClients",
+                "type": "int32",
+                "description": "Total number of clients eligible to vote."
+              },
+              {
+                "name": "clientInfoSlot",
+                "type": "int32[]",
+                "description": "List of player slot indices representing voting clients."
+              },
+              {
+                "name": "clientInfoItem",
+                "type": "int32[]",
+                "description": "List of contextual data associated with each client (e.g., vote weight or custom info)."
+              }
+            ],
+            "retType": {
+              "type": "bool",
+              "description": "Returns true if the vote passes; false if the vote fails."
+            }
+          }
+        },
+        {
+          "name": "handler",
+          "type": "function",
+          "ref": false,
+          "description": "Called when the vote has finished.",
+          "prototype": {
+            "name": "YesNoVoteHandler",
+            "funcName": "YesNoVoteHandler",
+            "description": "",
+            "paramTypes": [
+              {
+                "name": "action",
+                "type": "int32",
+                "description": "The action type from VoteAction enum.",
+                "enum": {
+                  "name": "VoteAction",
+                  "description": "Enum representing the possible types of a vote actions.",
+                  "values": [
+                    {
+                      "value": 0,
+                      "name": "Start",
+                      "description": "Triggered when the vote begins. No additional parameters are used."
+                    },
+                    {
+                      "value": 1,
+                      "name": "Vote",
+                      "description": "Triggered when a player casts a vote. 'clientSlot' holds the voter's slot and 'choice' is the selected option (e.g., VOTE_OPTION1 for yes, VOTE_OPTION2 for no)."
+                    },
+                    {
+                      "value": 2,
+                      "name": "End",
+                      "description": "Triggered when the vote concludes. 'clientSlot' is typically -1. 'choice' contains the reason the vote ended (from YesNoVoteEndReason)."
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "clientSlot",
+                "type": "int32",
+                "description": "For Vote actions, this is the slot of the client who voted. For Start/End, typically -1."
+              },
+              {
+                "name": "choice",
+                "type": "int32",
+                "description": "For Vote actions, the vote choice (VOTE_OPTION1=yes, VOTE_OPTION2=no). For End, the YesNoVoteEndReason value."
+              }
+            ],
+            "retType": {
+              "type": "void"
+            }
+          }
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "PanoramaSendYesNoVoteToAll",
+      "group": "Panarama",
+      "description": "Start a new Yes/No vote with all players included",
+      "funcName": "PanoramaSendYesNoVoteToAll",
+      "paramTypes": [
+        {
+          "name": "duration",
+          "type": "double",
+          "ref": false,
+          "description": "Maximum time to leave vote active for"
+        },
+        {
+          "name": "caller",
+          "type": "int32",
+          "ref": false,
+          "description": "Player slot of the vote caller. Use VOTE_CALLER_SERVER for 'Server'."
+        },
+        {
+          "name": "voteTitle",
+          "type": "string",
+          "ref": false,
+          "description": "Translation string to use as the vote message. (Only '#SFUI_vote' or '#Panorama_vote' strings)"
+        },
+        {
+          "name": "detailStr",
+          "type": "string",
+          "ref": false,
+          "description": "Extra string used in some vote translation strings."
+        },
+        {
+          "name": "result",
+          "type": "function",
+          "ref": false,
+          "description": "Called when a menu action is completed.",
+          "prototype": {
+            "name": "YesNoVoteResult",
+            "funcName": "YesNoVoteResult",
+            "description": "Handles the final result of a Yes/No vote. This function is called when a vote concludes, and is responsible for determining whether the vote passed based on the number of 'yes' and 'no' votes. Also receives context about the clients who participated in the vote.",
+            "paramTypes": [
+              {
+                "name": "numVotes",
+                "type": "int32",
+                "description": "Total number of votes submitted (yes + no)."
+              },
+              {
+                "name": "yesVotes",
+                "type": "int32",
+                "description": "Number of 'yes' votes cast."
+              },
+              {
+                "name": "noVotes",
+                "type": "int32",
+                "description": "Number of 'no' votes cast."
+              },
+              {
+                "name": "numClients",
+                "type": "int32",
+                "description": "Total number of clients eligible to vote."
+              },
+              {
+                "name": "clientInfoSlot",
+                "type": "int32[]",
+                "description": "List of player slot indices representing voting clients."
+              },
+              {
+                "name": "clientInfoItem",
+                "type": "int32[]",
+                "description": "List of contextual data associated with each client (e.g., vote weight or custom info)."
+              }
+            ],
+            "retType": {
+              "type": "bool",
+              "description": "Returns true if the vote passes; false if the vote fails."
+            }
+          }
+        },
+        {
+          "name": "handler",
+          "type": "?",
+          "ref": false,
+          "description": "Called when the vote has finished."
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "PanoramaRemovePlayerFromVote",
+      "group": "Panarama",
+      "description": "Removes a player from the current vote.",
+      "funcName": "PanoramaRemovePlayerFromVote",
+      "paramTypes": [
+        {
+          "name": "playerSlot",
+          "type": "int32",
+          "ref": false,
+          "description": "The slot/index of the player to remove from the vote."
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "PanoramaIsPlayerInVotePool",
+      "group": "Panarama",
+      "description": "Checks if a player is in the vote pool.",
+      "funcName": "PanoramaIsPlayerInVotePool",
+      "paramTypes": [
+        {
+          "name": "playerSlot",
+          "type": "int32",
+          "ref": false,
+          "description": "The slot/index of the player to check."
+        }
+      ],
+      "retType": {
+        "type": "bool",
+        "description": "true if the player is in the vote pool, false otherwise."
+      }
+    },
+    {
+      "name": "PanoramaHasPlayerVoted",
+      "group": "Panarama",
+      "description": "Checks if a player has already voted.",
+      "funcName": "PanoramaHasPlayerVoted",
+      "paramTypes": [
+        {
+          "name": "playerSlot",
+          "type": "int32",
+          "ref": false,
+          "description": "The slot/index of the player to check."
+        }
+      ],
+      "retType": {
+        "type": "bool",
+        "description": "true if the player has voted, false otherwise."
+      }
+    },
+    {
+      "name": "PanoramaRedrawVoteToClient",
+      "group": "Panarama",
+      "description": "Redraws the vote UI to a specific player client.",
+      "funcName": "PanoramaRedrawVoteToClient",
+      "paramTypes": [
+        {
+          "name": "playerSlot",
+          "type": "int32",
+          "ref": false,
+          "description": "The slot/index of the player to update."
+        }
+      ],
+      "retType": {
+        "type": "bool",
+        "description": "true if the vote UI was successfully redrawn, false otherwise."
+      }
+    },
+    {
+      "name": "PanoramaIsVoteInProgress",
+      "group": "Panarama",
+      "description": "Checks if a vote is currently in progress.",
+      "funcName": "PanoramaIsVoteInProgress",
+      "paramTypes": [],
+      "retType": {
+        "type": "bool",
+        "description": "true if a vote is active, false otherwise."
+      }
+    },
+    {
+      "name": "PanoramaEndVote",
+      "group": "Panarama",
+      "description": "Ends the current vote with a specified reason.",
+      "funcName": "PanoramaEndVote",
+      "paramTypes": [
+        {
+          "name": "reason",
+          "type": "int32",
+          "ref": false,
+          "description": "The reason for ending the vote.",
+          "enum": {
+            "name": "VoteEndReason",
+            "description": "Enum representing the possible types of a vote.",
+            "values": [
+              {
+                "value": 0,
+                "name": "AllVotes",
+                "description": "All possible votes were cast."
+              },
+              {
+                "value": 1,
+                "name": "TimeUp",
+                "description": "Time ran out."
+              },
+              {
+                "value": 2,
+                "name": "Cancelled",
+                "description": "The vote got cancelled."
+              }
+            ]
+          }
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
         "name": "GetSchemaOffset",
         "group": "Schema",
         "description": "Get the offset of a member in a given schema class.",
