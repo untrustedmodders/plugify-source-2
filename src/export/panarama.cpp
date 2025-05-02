@@ -13,7 +13,7 @@
  * @param handler		Called when the vote has finished.
  */
 extern "C" PLUGIN_API bool PanoramaSendYesNoVote(double duration, int caller, const plg::string& voteTitle, const plg::string& detailStr, IRecipientFilter* filter, YesNoVoteResult result, YesNoVoteHandler handler) {
-    g_PanoramaVoteHandler.SendYesNoVote(duration, caller, voteTitle, detailStr, filter, result, handler);
+    return g_PanoramaVoteHandler.SendYesNoVote(duration, caller, voteTitle, detailStr, filter, result, handler);
 }
 
 /**
@@ -27,7 +27,7 @@ extern "C" PLUGIN_API bool PanoramaSendYesNoVote(double duration, int caller, co
  * @param handler		Called when the vote has finished.
  */
 extern "C" PLUGIN_API bool PanoramaSendYesNoVoteToAll(double duration, int caller, const plg::string& voteTitle, const plg::string& detailStr, YesNoVoteResult result, YesNoVoteHandler handler) {
-    g_PanoramaVoteHandler.SendYesNoVoteToAll(duration, caller, voteTitle, detailStr, result, handler);
+    return g_PanoramaVoteHandler.SendYesNoVoteToAll(duration, caller, voteTitle, detailStr, result, handler);
 }
 
 /**

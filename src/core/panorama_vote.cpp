@@ -275,7 +275,7 @@ void CPanoramaVoteHandler::EndVote(VoteEndReason reason) {
 		clientInfoItem.emplace_back(m_voteController->m_nVotesCast[m_voters[i]]);
 	}
 
-	bool passed = (m_voteResult)(numVotes, yesVotes, noVotes, numClients, clientInfoSlot, clientInfoItem);
+	bool passed = m_voteResult(numVotes, yesVotes, noVotes, numClients, clientInfoSlot, clientInfoItem);
 	if (passed) {
 		SendVotePassed();
 	} else {
