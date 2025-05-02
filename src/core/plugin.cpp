@@ -139,6 +139,7 @@ void Source2SDK::OnPluginEnd() {
 void Source2SDK::OnServerStartup() {
 	if (g_pNetworkGameServer != nullptr) {
 		g_PH.RemoveHookMemFunc(&INetworkGameServer::ActivateServer, g_pNetworkGameServer);
+		g_PH.RemoveHookMemFunc(&INetworkGameServer::SpawnServer, g_pNetworkGameServer);
 		g_PH.RemoveHookMemFunc(&INetworkGameServer::FinishChangeLevel, g_pNetworkGameServer);
 	}
 
@@ -146,6 +147,7 @@ void Source2SDK::OnServerStartup() {
 	if (g_pNetworkGameServer != nullptr) {
 		gpGlobals = g_pNetworkGameServer->GetGlobals();
 		g_PH.AddHookMemFunc(&INetworkGameServer::ActivateServer, g_pNetworkGameServer, Hook_ActivateServer, poly::CallbackType::Post);
+		g_PH.AddHookMemFunc(&INetworkGameServer::SpawnServer, g_pNetworkGameServer, Hook_SpawnServer, poly::CallbackType::Post);
 		g_PH.AddHookMemFunc(&INetworkGameServer::FinishChangeLevel, g_pNetworkGameServer, Hook_ChangeLevel, poly::CallbackType::Post);
 	}
 
@@ -180,6 +182,14 @@ poly::ReturnAction Source2SDK::Hook_ActivateServer(poly::IHook& hook, poly::Para
 	//S2_LOGF(LS_DEBUG, "[ActivateServer]\n");
 
 	GetOnServerActivateListenerManager().Notify();
+
+	return poly::ReturnAction::Ignored;
+}
+
+poly::ReturnAction Source2SDK::Hook_SpawnServer(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
+	//S2_LOGF(LS_DEBUG, "[SpawnServer]\n");
+
+	GetOnServerSpawnListenerManager().Notify();
 
 	return poly::ReturnAction::Ignored;
 }
