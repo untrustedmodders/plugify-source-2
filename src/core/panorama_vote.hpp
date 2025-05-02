@@ -42,7 +42,6 @@ public:
 
 	void RemovePlayerFromVote(CPlayerSlot slot);
 	bool IsPlayerInVotePool(CPlayerSlot slot) const;
-	bool HasPlayerVoted(CPlayerSlot slot);
 	// Removes a client's vote and redraws the vote
 	// True if client was in the vote, false if no ongoing vote
 	bool RedrawVoteToClient(CPlayerSlot slot);

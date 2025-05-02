@@ -50,16 +50,6 @@ extern "C" PLUGIN_API bool PanoramaIsPlayerInVotePool(int playerSlot) {
 }
 
 /**
- * @brief Checks if a player has already voted.
- *
- * @param playerSlot The slot/index of the player to check.
- * @return true if the player has voted, false otherwise.
- */
-extern "C" PLUGIN_API bool PanoramaHasPlayerVoted(int playerSlot) {
-    return g_PanoramaVoteHandler.HasPlayerVoted(playerSlot);
-}
-
-/**
  * @brief Redraws the vote UI to a specific player client.
  *
  * @param playerSlot The slot/index of the player to update.

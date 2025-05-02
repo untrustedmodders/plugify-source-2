@@ -291,7 +291,6 @@
         PanoramaSendYesNoVoteToAll;
         PanoramaRemovePlayerFromVote;
         PanoramaIsPlayerInVotePool;
-        PanoramaHasPlayerVoted;
         PanoramaRedrawVoteToClient;
         PanoramaIsVoteInProgress;
         PanoramaEndVote;

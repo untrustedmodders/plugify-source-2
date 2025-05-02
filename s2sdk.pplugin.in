@@ -11890,24 +11890,6 @@
       }
     },
     {
-      "name": "PanoramaHasPlayerVoted",
-      "group": "Panarama",
-      "description": "Checks if a player has already voted.",
-      "funcName": "PanoramaHasPlayerVoted",
-      "paramTypes": [
-        {
-          "name": "playerSlot",
-          "type": "int32",
-          "ref": false,
-          "description": "The slot/index of the player to check."
-        }
-      ],
-      "retType": {
-        "type": "bool",
-        "description": "true if the player has voted, false otherwise."
-      }
-    },
-    {
       "name": "PanoramaRedrawVoteToClient",
       "group": "Panarama",
       "description": "Redraws the vote UI to a specific player client.",
