@@ -143,7 +143,7 @@ extern "C" PLUGIN_API int GetGameConfigOffset(uint32_t id, const plg::string& na
  */
 extern "C" PLUGIN_API void* GetGameConfigAddress(uint32_t id, const plg::string& name) {
 	if (auto gameConfig = g_GameConfigManager.GetGameConfig(id)) {
-		return gameConfig->GetAddress(name).GetPtr();
+		return gameConfig->GetAddress(name);
 	}
 	return nullptr;
 }
@@ -159,7 +159,7 @@ extern "C" PLUGIN_API void* GetGameConfigAddress(uint32_t id, const plg::string&
  */
 extern "C" PLUGIN_API void* GetGameConfigMemSig(uint32_t id, const plg::string& name) {
 	if (auto gameConfig = g_GameConfigManager.GetGameConfig(id)) {
-		return gameConfig->ResolveSignature(name).GetPtr();
+		return gameConfig->ResolveSignature(name);
 	}
 	return nullptr;
 }

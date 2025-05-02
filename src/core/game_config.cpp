@@ -145,8 +145,8 @@ Memory GameConfig::GetAddress(std::string_view name) const {
 
 	const auto& addrConf = std::get<AddressConf>(*it);
 
-	auto memory = ResolveSignature(addrConf.signature);
-	if (!memory)
+	auto addr = ResolveSignature(addrConf.signature);
+	if (!addr)
 		return {};
 
 	size_t readCount = addrConf.read.size();
@@ -154,31 +154,28 @@ Memory GameConfig::GetAddress(std::string_view name) const {
 		const auto& [offset, rel] = addrConf.read[i];
 
 		// NULLs in the middle of an indirection chain are bad, end NULL is ok
-		auto addr = memory.GetAddr();
 		if (!addr || addr < VALID_MINIMUM_MEMORY_ADDRESS)
 			return nullptr;
 
 		if (rel) {
-			auto target = memory.Offset(offset);
-
-			auto taddr = target.GetAddr();
-			if (!taddr || taddr < VALID_MINIMUM_MEMORY_ADDRESS)
+			auto target = addr.Offset(offset);
+			if (!target || target < VALID_MINIMUM_MEMORY_ADDRESS)
 				return nullptr;
 
-			memory.OffsetSelf(offset)
+			addr.OffsetSelf(offset)
 					.OffsetSelf(sizeof(int32_t))
-					.OffsetSelf(target.Get<int32_t>());
+					.OffsetSelf(target.GetValue<int32_t>());
 		} else {
-			memory.OffsetSelf(offset);
+			addr.OffsetSelf(offset);
 
 			// If lastIsOffset is set and this is the last iteration of the loop, don't deref
 			if (!addrConf.lastIsOffset || i != readCount - 1) {
-				memory.DerefSelf();
+				addr.DerefSelf();
 			}
 		}
 	}
 
-	return memory;
+	return addr;
 }
 
 const Module* GameConfig::GetModule(std::string_view name) const {
@@ -233,7 +230,7 @@ Memory GameConfig::ResolveSignature(std::string_view name) const {
 			return {};
 		}
 
-		address = module->FindPattern(DynLibUtils::ParsePattern(signature));
+		address = module->FindPattern(signature);
 	}
 
 	if (!address) {
