@@ -232,10 +232,7 @@ void CPanoramaVoteHandler::EndVote(VoteEndReason reason) {
 	}
 
 	// Cycle global vote counter
-	if (m_voteCount == 99)
-		m_voteCount = 0;
-	else
-		++m_voteCount;
+	++m_voteCount;
 
 	if (m_voteHandler != nullptr)
 		m_voteHandler(VoteAction::End, -1, static_cast<int>(reason));

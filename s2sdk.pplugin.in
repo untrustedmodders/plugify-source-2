@@ -11845,9 +11845,55 @@
         },
         {
           "name": "handler",
-          "type": "?",
+          "type": "function",
           "ref": false,
-          "description": "Called when the vote has finished."
+          "description": "Called when the vote has finished.",
+          "prototype": {
+            "name": "YesNoVoteHandler",
+            "funcName": "YesNoVoteHandler",
+            "description": "",
+            "paramTypes": [
+              {
+                "name": "action",
+                "type": "int32",
+                "description": "The action type from VoteAction enum.",
+                "enum": {
+                  "name": "VoteAction",
+                  "description": "Enum representing the possible types of a vote actions.",
+                  "values": [
+                    {
+                      "value": 0,
+                      "name": "Start",
+                      "description": "Triggered when the vote begins. No additional parameters are used."
+                    },
+                    {
+                      "value": 1,
+                      "name": "Vote",
+                      "description": "Triggered when a player casts a vote. 'clientSlot' holds the voter's slot and 'choice' is the selected option (e.g., VOTE_OPTION1 for yes, VOTE_OPTION2 for no)."
+                    },
+                    {
+                      "value": 2,
+                      "name": "End",
+                      "description": "Triggered when the vote concludes. 'clientSlot' is typically -1. 'choice' contains the reason the vote ended (from YesNoVoteEndReason)."
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "clientSlot",
+                "type": "int32",
+                "description": "For Vote actions, this is the slot of the client who voted. For Start/End, typically -1."
+              },
+              {
+                "name": "choice",
+                "type": "int32",
+                "description": "For Vote actions, the vote choice (VOTE_OPTION1=yes, VOTE_OPTION2=no). For End, the YesNoVoteEndReason value."
+              }
+            ],
+            "retType": {
+              "type": "void"
+            }
+          }
         }
       ],
       "retType": {

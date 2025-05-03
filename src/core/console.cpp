@@ -2,7 +2,7 @@
 #include <convar.h>
 
 plg::string g_ServerCommandBuffer; // TODO: need to be thread_local ?
-bool g_ShouldCatchSpew = false;
+std::atomic<bool> g_ShouldCatchSpew = false;
 
 class LoggingListener final : public ILoggingListener {
 public:

@@ -63,6 +63,14 @@ public:
 	 */
 	bool SendYesNoVote(double duration, int caller, const plg::string& voteTitle, const plg::string& detailStr, IRecipientFilter* filter, YesNoVoteResult result, YesNoVoteHandler handler);
 
+protected:
+	void CheckForEarlyVoteClose() const;
+	void InitVoters(IRecipientFilter* filter);
+	void SendVoteStartUM(IRecipientFilter* filter);
+	void UpdateVoteCounts() const;
+	static void SendVoteFailed();
+	static void SendVotePassed();
+
 private:
 	CHandle<CVoteController> m_voteController;
 	bool m_voteInProgress{};
@@ -74,13 +82,6 @@ private:
 	std::string m_currentVoteTitle;
 	std::string m_currentVoteDetailStr;
 	std::array<CPlayerSlot, MAXPLAYERS> m_voters = {};
-
-	void CheckForEarlyVoteClose() const;
-	void InitVoters(IRecipientFilter* filter);
-	void SendVoteStartUM(IRecipientFilter* filter);
-	void UpdateVoteCounts() const;
-	static void SendVoteFailed();
-	static void SendVotePassed();
 };
 
 extern CPanoramaVoteHandler g_PanoramaVoteHandler;

@@ -1,4 +1,4 @@
 #pragma once
 
 extern plg::string g_ServerCommandBuffer;
-extern bool g_ShouldCatchSpew;
+extern std::atomic<bool> g_ShouldCatchSpew;

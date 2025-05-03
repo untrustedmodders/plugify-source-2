@@ -20,7 +20,7 @@ PLUGIFY_WARN_IGNORE(4190)
  * @param callback The function to be called when the timer expires.
  * @param flags Flags that modify the behavior of the timer (e.g., no-map change, repeating).
  * @param userData An array intended to hold user-related data, allowing for elements of any type.
- * @return A handle of the newly created CTimer object, or -1 if the timer could not be created.
+ * @return An id of the newly created CTimer object, or -1 if the timer could not be created.
  */
 extern "C" PLUGIN_API uint32_t CreateTimer(double delay, TimerCallback callback, TimerFlag flags, const plg::vector<plg::any>& userData) {
 	return g_TimerSystem.CreateTimer(delay, callback, flags, userData);
@@ -32,7 +32,7 @@ extern "C" PLUGIN_API uint32_t CreateTimer(double delay, TimerCallback callback,
  * This function terminates the specified timer, preventing it from calling
  * its callback function. Once killed, the timer cannot be reused.
  *
- * @param handle A handle of the CTimer object to be stopped and removed.
+ * @param id An id of the CTimer object to be stopped and removed.
  */
 extern "C" PLUGIN_API void KillsTimer(uint32_t id) {
 	g_TimerSystem.KillTimer(id);
@@ -44,7 +44,7 @@ extern "C" PLUGIN_API void KillsTimer(uint32_t id) {
  * This function changes the delay of the specified timer to the new value.
  * The timer will continue to execute its callback function at the new delay.
  *
- * @param id A handle of the CTimer object to be rescheduled.
+ * @param id An id of the CTimer object to be rescheduled.
  * @param newDelay The new delay in seconds between each callback execution.
  */
 extern "C" PLUGIN_API void RescheduleTimer(uint32_t id, double newDelay) {

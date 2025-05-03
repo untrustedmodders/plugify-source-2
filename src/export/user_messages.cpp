@@ -147,8 +147,7 @@ extern "C" PLUGIN_API void* UserMessageGetSerializableMessage(UserMessage* userM
  * @return The ID of the message, or 0 if the message was not found.
  */
 extern "C" PLUGIN_API uint16_t UserMessageFindMessageIdByName(const plg::string& messageName) {
-	auto message = g_pNetworkMessages->FindNetworkMessagePartial(messageName.c_str());
-	if (message) {
+	if (auto message = g_pNetworkMessages->FindNetworkMessagePartial(messageName.c_str())) {
 		return message->GetNetMessageInfo()->m_MessageId;
 	}
 	S2_LOGF(LS_WARNING, "Could not find user message: {}", messageName);
@@ -159,7 +158,7 @@ extern "C" PLUGIN_API uint16_t UserMessageFindMessageIdByName(const plg::string&
  * @brief Gets the recipient mask for the UserMessage.
  *
  * @param userMessage The UserMessage instance.
- * @return A the recipient mask.
+ * @return The recipient mask.
  */
 extern "C" PLUGIN_API uint64_t UserMessageGetRecipientMask(UserMessage* userMessage) {
 	return userMessage->GetRecipientMask() ? *userMessage->GetRecipientMask() : 0;
@@ -396,7 +395,7 @@ extern "C" PLUGIN_API float PbReadFloat(UserMessage* userMessage, const plg::str
 			return 0;
 		}
 	}
-	return static_cast<float>(returnValue);
+	return returnValue;
 }
 
 /**
