@@ -11628,7 +11628,7 @@
     },
     {
       "name": "PanoramaSendYesNoVote",
-      "group": "Panarama",
+      "group": "Panorama",
       "description": "Start a new Yes/No vote",
       "funcName": "PanoramaSendYesNoVote",
       "paramTypes": [
@@ -11768,7 +11768,7 @@
     },
     {
       "name": "PanoramaSendYesNoVoteToAll",
-      "group": "Panarama",
+      "group": "Panorama",
       "description": "Start a new Yes/No vote with all players included",
       "funcName": "PanoramaSendYesNoVoteToAll",
       "paramTypes": [
@@ -11902,7 +11902,7 @@
     },
     {
       "name": "PanoramaRemovePlayerFromVote",
-      "group": "Panarama",
+      "group": "Panorama",
       "description": "Removes a player from the current vote.",
       "funcName": "PanoramaRemovePlayerFromVote",
       "paramTypes": [
@@ -11919,7 +11919,7 @@
     },
     {
       "name": "PanoramaIsPlayerInVotePool",
-      "group": "Panarama",
+      "group": "Panorama",
       "description": "Checks if a player is in the vote pool.",
       "funcName": "PanoramaIsPlayerInVotePool",
       "paramTypes": [
@@ -11937,7 +11937,7 @@
     },
     {
       "name": "PanoramaRedrawVoteToClient",
-      "group": "Panarama",
+      "group": "Panorama",
       "description": "Redraws the vote UI to a specific player client.",
       "funcName": "PanoramaRedrawVoteToClient",
       "paramTypes": [
@@ -11955,7 +11955,7 @@
     },
     {
       "name": "PanoramaIsVoteInProgress",
-      "group": "Panarama",
+      "group": "Panorama",
       "description": "Checks if a vote is currently in progress.",
       "funcName": "PanoramaIsVoteInProgress",
       "paramTypes": [],
@@ -11966,7 +11966,7 @@
     },
     {
       "name": "PanoramaEndVote",
-      "group": "Panarama",
+      "group": "Panorama",
       "description": "Ends the current vote with a specified reason.",
       "funcName": "PanoramaEndVote",
       "paramTypes": [
