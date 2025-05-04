@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/untrustedmodders/plugify-source-2/compare/v1.2.0...v1.2.1) (2025-05-04)
+
+
+### Bug Fixes
+
+* **GitHub workflows:** fix gamedata filename ([79d0a77](https://github.com/untrustedmodders/plugify-source-2/commit/79d0a779d169b30ae239459a0471bf5378eb35c2))
+
 ## [1.2.0](https://github.com/untrustedmodders/plugify-source-2/compare/v1.1.15...v1.2.0) (2025-05-04)
 
 
