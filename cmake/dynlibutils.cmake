@@ -2,15 +2,16 @@
 # Copyright (C) 2023-2025 untrustedmodders
 # Licensed under the MIT license. See LICENSE file in the project root for details.
 
-include(FetchContent)
+if(NOT DYNLIBUTILS_DIR)
+	message(FATAL_ERROR "DYNLIBUTILS_DIR is empty")
+endif()
 
-message(STATUS "Pulling and configuring DynLibUtils")
+set(DYNLIBUTILS_BINARY_DIR "cpp-memory_utils")
 
-FetchContent_Declare(
-		dynlibutils
-		GIT_REPOSITORY https://github.com/Wend4r/cpp-memory_utils.git
-		GIT_TAG dfda1d93e12945f3373a6309629572a3b1a37156
-		GIT_SHALLOW TRUE
+set(DYNLIBUTILS_INCLUDE_DIRS
+	${DYNLIBUTILS_INCLUDE_DIRS}
+
+	${DYNLIBUTILS_DIR}/include
 )
 
-FetchContent_MakeAvailable(dynlibutils)
+add_subdirectory(${DYNLIBUTILS_DIR} ${DYNLIBUTILS_BINARY_DIR})

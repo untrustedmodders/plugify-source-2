@@ -1,12 +1,17 @@
-include(FetchContent)
+# plugify-source-2
+# Copyright (C) 2023-2025 untrustedmodders
+# Licensed under the MIT license. See LICENSE file in the project root for details.
 
-message(STATUS "Pulling and configuring plugify-configs")
+if(NOT PLUGIFY_CONFIGS_DIR)
+	message(FATAL_ERROR "PLUGIFY_CONFIGS_DIR is empty")
+endif()
 
-FetchContent_Declare(
-        plugify-configs
-        GIT_REPOSITORY https://github.com/untrustedmodders/plugify-configs.git
-		GIT_TAG 6c5bfceab8fd907fb3379fd9f4543cbc84db08f7
-		GIT_SHALLOW TRUE
+set(PLUGIFY_CONFIGS_BINARY_DIR "plugify-configs")
+
+set(PLUGIFY_CONFIGS_INCLUDE_DIRS
+	${PLUGIFY_CONFIGS_INCLUDE_DIRS}
+
+	${PLUGIFY_CONFIGS_DIR}/include
 )
 
-FetchContent_MakeAvailable(plugify-configs)
+add_subdirectory(${PLUGIFY_CONFIGS_DIR} ${PLUGIFY_CONFIGS_BINARY_DIR})
