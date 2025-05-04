@@ -1,5 +1,44 @@
 # Changelog
 
+## [1.2.0](https://github.com/untrustedmodders/plugify-source-2/compare/v1.1.15...v1.2.0) (2025-05-04)
+
+
+### Features
+
+* **Dependencies:** update submodule staff ([47e20fe](https://github.com/untrustedmodders/plugify-source-2/commit/47e20fe13d57fb557517eefd1bbc13aa25dda277))
+
+
+### Bug Fixes
+
+* add change level hook ([c52f465](https://github.com/untrustedmodders/plugify-source-2/commit/c52f465089e558d894ee1bff83beab5e300e4425))
+* add console cleaner ([064eec4](https://github.com/untrustedmodders/plugify-source-2/commit/064eec4eb92a6b8da099a236baad904ad2787170))
+* add console cleaner and addon manager ([7371001](https://github.com/untrustedmodders/plugify-source-2/commit/7371001841b86c7838929a54e788eac0ca3dd2c4))
+* add detour by address ([a0be065](https://github.com/untrustedmodders/plugify-source-2/commit/a0be065e2a3afb11571771f97f1b1ff2de6fccbe))
+* add GetCSWeaponDataFromKey ([932ae5f](https://github.com/untrustedmodders/plugify-source-2/commit/932ae5f9c0bc270d479d63b4c1ecc7e62dc71ede))
+* add panarama vote ([277667c](https://github.com/untrustedmodders/plugify-source-2/commit/277667c84ff3c09384b6c5faa47aa15b56a59880))
+* build warnings ([613d30a](https://github.com/untrustedmodders/plugify-source-2/commit/613d30ac5d8a315428a0c89bd4c48318770e38e6))
+* **CMake:** move fetch content hashes to Git submodules ([92483be](https://github.com/untrustedmodders/plugify-source-2/commit/92483be96810f0484603be3ca727aadd638fd66f))
+* configs linkage errors on Linux ([85a84cf](https://github.com/untrustedmodders/plugify-source-2/commit/85a84cf9aa1a28ec6a53ce9da6f5e1e225b12780))
+* g_pGameRules static cast ([0c3b511](https://github.com/untrustedmodders/plugify-source-2/commit/0c3b5118f5b4df5a2360fd93ffea9dbd22277c7a))
+* GameConfig::GetAddress wrong deref ([6e02669](https://github.com/untrustedmodders/plugify-source-2/commit/6e0266982519868e0cdad1ebc4c7a33463e2605b))
+* **Git:** downgrade DynLibUtils module ([13c1492](https://github.com/untrustedmodders/plugify-source-2/commit/13c1492851ecf8952b415d713f517c4035e7e699))
+* invalid function return ([73fd77c](https://github.com/untrustedmodders/plugify-source-2/commit/73fd77c69ee09accf8464396a1accd071b1bd547))
+* missing s2sdk ([77c8a13](https://github.com/untrustedmodders/plugify-source-2/commit/77c8a1323262c3c83fb41ebc9ea80d2097cef915))
+* more formating ([253c14b](https://github.com/untrustedmodders/plugify-source-2/commit/253c14be92ec65f2afd03e388635936a188febf9))
+* more improvements ([be26473](https://github.com/untrustedmodders/plugify-source-2/commit/be26473515b3a7e8ab65238c1671c482c61e8f9d))
+* remove unused function ([c7af37a](https://github.com/untrustedmodders/plugify-source-2/commit/c7af37a26ec42812cd3177764cc6f2dc37828b1f))
+* rename commands ([be17844](https://github.com/untrustedmodders/plugify-source-2/commit/be17844b298ac01e4f42d5c75748552273bff920))
+* revent dynlibutils ([c83ff8b](https://github.com/untrustedmodders/plugify-source-2/commit/c83ff8bef754d3b1532735baa84f2f642c960c45))
+* rework format to std::format ([c852bb4](https://github.com/untrustedmodders/plugify-source-2/commit/c852bb4bed4266c0abd1da31e92041b3dc31a54c))
+* rework schemasystem ([ae0a058](https://github.com/untrustedmodders/plugify-source-2/commit/ae0a058be9faf676b7eba23ffd96d2503ebe3d0b))
+* small refactor of IVEngineServer2 ([720915e](https://github.com/untrustedmodders/plugify-source-2/commit/720915e793abd69062f34147100eb98da712a98a))
+* some recipient changes ([0b05488](https://github.com/untrustedmodders/plugify-source-2/commit/0b054887da81af20c933964965bdc32b315cd5aa))
+* **Source SDK:** update submodule ([690947c](https://github.com/untrustedmodders/plugify-source-2/commit/690947c37612f588f7e861ddd1617d9fb2271015))
+* **Source SDK:** update submodule ([bf4a3ed](https://github.com/untrustedmodders/plugify-source-2/commit/bf4a3ed7c5ae2ce32575ed6fb2c7a97b13aabb5b))
+* update clang tools ([f229969](https://github.com/untrustedmodders/plugify-source-2/commit/f22996970763a12520ddfe1ffaa6ee3633c6e1be))
+* update configs ([083486f](https://github.com/untrustedmodders/plugify-source-2/commit/083486f982a50b56d2fb1a58edb81e40776ef4fd))
+* update configs again ([f871641](https://github.com/untrustedmodders/plugify-source-2/commit/f8716415d852dbc918e0de5530809e33614cf010))
+
 ## [1.1.15](https://github.com/untrustedmodders/plugify-source-2/compare/v1.1.14...v1.1.15) (2025-03-31)
 
 
