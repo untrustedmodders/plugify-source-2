@@ -73,8 +73,7 @@ jobs:
           New-Item -ItemType Directory -Force -Path build/output/configs
           New-Item -ItemType Directory -Force -Path build/output/gamedata
           New-Item -ItemType Directory -Force -Path build/output/bin
-          Move-Item -Force -Path build/core.txt -Destination build/output/configs
-          Move-Item -Force -Path build/s2sdk.games.txt -Destination build/output/gamedata
+          Move-Item -Force -Path build/gamedata.jsonc -Destination build/output/gamedata
           Move-Item -Force -Path build/${{ env.BUILD_TYPE }}/s2sdk.dll -Destination build/output/bin
           Move-Item -Force -Path build/s2sdk.pplugin -Destination build/output
 
@@ -115,8 +114,7 @@ jobs:
           mkdir -p build/output/configs
           mkdir -p build/output/gamedata
           mkdir -p build/output/bin
-          mv build/core.txt build/output/configs
-          mv build/s2sdk.games.txt build/output/gamedata
+          mv build/gamedata.jsonc build/output/gamedata
           mv build/libs2sdk.so build/output/bin
           mv build/s2sdk.pplugin build/output
 
