@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.2](https://github.com/untrustedmodders/plugify-source-2/compare/v1.2.1...v1.2.2) (2025-05-09)
+
+
+### Bug Fixes
+
+* update `AppSystemCreateInterfaceFn` signature ([df3d6fd](https://github.com/untrustedmodders/plugify-source-2/commit/df3d6fd84791bd057d426645081f0a5aec26fbdf))
+
 ## [1.2.1](https://github.com/untrustedmodders/plugify-source-2/compare/v1.2.0...v1.2.1) (2025-05-04)
 
 
