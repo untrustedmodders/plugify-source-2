@@ -26,7 +26,7 @@ CCSGameRules* g_pGameRules = nullptr;
 #define RESOLVE_SIG(gameConfig, name, variable) \
 	variable = (gameConfig)->ResolveSignature(name).RCast<decltype(variable)>(); \
 	if (!(variable)) { \
-		S2_LOGF(LS_ERROR, "Failed to resolve signature for {}\n", #name); \
+		S2_LOGF(LS_WARNING, "Failed to resolve signature for {}\n", #name); \
 		return; \
 	} \
 
@@ -42,7 +42,7 @@ namespace globals {
 				(paths["data"] / "settings.jsonc").generic_string()
 		});
 		if (!g_pCoreConfig->Initialize()) {
-			S2_LOG(LS_ERROR, "Failed to load settings configuration!");
+			S2_LOG(LS_WARNING, "Failed to load settings configuration!");
 			return;
 		}
 		g_pGameConfig = std::make_unique<GameConfig>("csgo", plg::vector<plg::string>{
@@ -51,20 +51,20 @@ namespace globals {
 				(paths["data"] / "gamedata.jsonc").generic_string()
 		});
 		if (!g_pGameConfig->Initialize()) {
-			S2_LOG(LS_ERROR, "Failed to load gamedata configuration!");
+			S2_LOG(LS_WARNING, "Failed to load gamedata configuration!");
 			return;
 		}
 
 		CAppSystemDict** p_ppCurrentAppSystem = g_pGameConfig->GetAddress("&s_pCurrentAppSystem").RCast<CAppSystemDict**>();
 		if (!p_ppCurrentAppSystem) {
-			S2_LOG(LS_ERROR, "s_pCurrentAppSystem not found!");
+			S2_LOG(LS_WARNING, "s_pCurrentAppSystem not found!");
 			return;
 		}
 		g_pCurrentAppSystem = *p_ppCurrentAppSystem;
 
 		IGameEventManager2** p_ppGameEventManager = g_pGameConfig->GetAddress("&s_GameEventManager").RCast<IGameEventManager2**>();
 		if (!p_ppGameEventManager) {
-			S2_LOG(LS_ERROR, "s_GameEventManager not found!");
+			S2_LOG(LS_WARNING, "s_GameEventManager not found!");
 			return;
 		}
 		g_pGameEventManager = *p_ppGameEventManager;
@@ -125,7 +125,7 @@ namespace globals {
 				return module.m_hModule;
 			}
 		}
-		S2_LOGF(LS_ERROR, "Could not find module at \"{}\"\n", name);
+		S2_LOGF(LS_WARNING, "Could not find module at \"{}\"\n", name);
 		return {};
 	}
 	
@@ -135,7 +135,7 @@ namespace globals {
 				return system.m_pSystem;
 			}
 		}
-		S2_LOGF(LS_ERROR, "Could not find interface at \"{}\"\n", name);
+		S2_LOGF(LS_WARNING, "Could not find interface at \"{}\"\n", name);
 		return {};
 	}
 
@@ -152,7 +152,7 @@ namespace globals {
 			}
 		}
 
-		S2_LOGF(LS_ERROR, "Could not query interface at \"{}\"\n", name);
+		S2_LOGF(LS_WARNING, "Could not query interface at \"{}\"\n", name);
 		return {};
 	}
 }// namespace globals

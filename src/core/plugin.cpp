@@ -174,7 +174,7 @@ poly::ReturnAction Source2SDK::Hook_StartupServer(poly::IHook& hook, poly::Param
 	OnServerStartup();
 
 	if (gpGlobals == nullptr) {
-		S2_LOG(LS_ERROR, "Failed to lookup gpGlobals\n");
+		S2_LOG(LS_WARNING, "Failed to lookup gpGlobals\n");
 		return poly::ReturnAction::Ignored;
 	}
 
