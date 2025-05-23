@@ -51,7 +51,7 @@ namespace {
 		if (!pClassInfo) {
 			tableMap.emplace(className, SchemaKeyValueMap());
 
-			S2_LOGF(LS_WARNING, "InitSchemaFieldsForClass(): '{}' was not found!\n", className);
+			S2_LOGF(LS_ERROR, "InitSchemaFieldsForClass(): '{}' was not found!\n", className);
 			return false;
 		}
 

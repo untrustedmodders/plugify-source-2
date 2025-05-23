@@ -121,7 +121,7 @@ void MultiAddonManager::PrintDownloadProgress() const {
 // Internally, downloads are queued up and processed one at a time
 bool MultiAddonManager::DownloadAddon(uint64_t addon, bool important, bool force) {
 	if (!g_SteamAPI.SteamUGC()) {
-		S2_LOGF(LS_WARNING, "{}: Cannot download addons as the Steam API is not initialized\n", __func__);
+		S2_LOGF(LS_ERROR, "{}: Cannot download addons as the Steam API is not initialized\n", __func__);
 		return false;
 	}
 

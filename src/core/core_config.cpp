@@ -21,7 +21,7 @@ bool CoreConfig::Initialize() {
 	}
 	auto config = pcf::ReadConfigs(paths);
 	if (!config) {
-		S2_LOGF(LS_WARNING, "Failed to load configuration file: \"{}\"\n", pcf::GetError());
+		S2_LOGF(LS_ERROR, "Failed to load configuration file: \"{}\"\n", pcf::GetError());
 		return false;
 	}
 
