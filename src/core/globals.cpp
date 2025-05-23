@@ -42,7 +42,7 @@ namespace globals {
 				(paths["data"] / "settings.jsonc").generic_string()
 		});
 		if (!g_pCoreConfig->Initialize()) {
-			S2_LOG(LS_ERROR, "Failed to load settings configuration!");
+			S2_LOG(LS_ERROR, "Failed to load settings configuration!\n");
 			return;
 		}
 		g_pGameConfig = std::make_unique<GameConfig>("csgo", plg::vector<plg::string>{
@@ -51,20 +51,20 @@ namespace globals {
 				(paths["data"] / "gamedata.jsonc").generic_string()
 		});
 		if (!g_pGameConfig->Initialize()) {
-			S2_LOG(LS_ERROR, "Failed to load gamedata configuration!");
+			S2_LOG(LS_ERROR, "Failed to load gamedata configuration!\n");
 			return;
 		}
 
 		CAppSystemDict** p_ppCurrentAppSystem = g_pGameConfig->GetAddress("&s_pCurrentAppSystem").RCast<CAppSystemDict**>();
 		if (!p_ppCurrentAppSystem) {
-			S2_LOG(LS_ERROR, "s_pCurrentAppSystem not found!");
+			S2_LOG(LS_ERROR, "s_pCurrentAppSystem not found!\n");
 			return;
 		}
 		g_pCurrentAppSystem = *p_ppCurrentAppSystem;
 
 		IGameEventManager2** p_ppGameEventManager = g_pGameConfig->GetAddress("&s_GameEventManager").RCast<IGameEventManager2**>();
 		if (!p_ppGameEventManager) {
-			S2_LOG(LS_ERROR, "s_GameEventManager not found!");
+			S2_LOG(LS_ERROR, "s_GameEventManager not found!\n");
 			return;
 		}
 		g_pGameEventManager = *p_ppGameEventManager;
