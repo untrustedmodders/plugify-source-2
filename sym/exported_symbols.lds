@@ -63,6 +63,7 @@ RemoveCommand
 AddCommandListener
 RemoveCommandListener
 ServerCommand
+ServerCommandEx
 ClientCommand
 FakeClientCommand
 
@@ -105,6 +106,7 @@ RemoveConVarFlags
 GetConVarFlags
 GetConVarBounds
 SetConVarBounds
+GetConVar
 GetConVarDefault
 GetConVarValue
 GetConVarBool
@@ -122,6 +124,7 @@ GetConVarVector2
 GetConVarVector
 GetConVarVector4
 GetConVarQAngle
+SetConVar
 SetConVarValue
 SetConVarBool
 SetConVarInt16
@@ -185,6 +188,7 @@ FindEntityByClassname
 FindEntityByName
 CreateEntityByName
 DispatchSpawn
+DispatchSpawn2
 RemoveEntity
 GetEntityClassname
 GetEntityName

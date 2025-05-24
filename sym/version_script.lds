@@ -3,7 +3,7 @@
         CreateInterface;
         Plugify_*;
 
-        GetClientIndexFromEntityPointer;
+        GetPlayerSlotFromEntityPointer;
         GetEntityPointerFromPlayerSlot;
         GetClientBaseFromPlayerSlot;
         GetPlayerSlotFromClientBase;
@@ -65,6 +65,7 @@
         AddCommandListener;
         RemoveCommandListener;
         ServerCommand;
+        ServerCommandEx;
         ClientCommand;
         FakeClientCommand;
 
@@ -98,6 +99,7 @@
         CreateConVarVector4;
         CreateConVarQAngle;
         FindConVar;
+        FindConVar2;
         HookConVarChange;
         UnhookConVarChange;
         IsConVarFlagSet;
@@ -106,6 +108,7 @@
         GetConVarFlags;
         GetConVarBounds;
         SetConVarBounds;
+        GetConVar;
         GetConVarDefault;
         GetConVarValue;
         GetConVarBool;
@@ -123,6 +126,7 @@
         GetConVarVector;
         GetConVarVector4;
         GetConVarQAngle;
+        SetConVar;
         SetConVarValue;
         SetConVarBool;
         SetConVarInt16;
@@ -186,6 +190,7 @@
         FindEntityByName;
         CreateEntityByName;
         DispatchSpawn;
+        DispatchSpawn2;
         RemoveEntity;
         GetEntityClassname;
         GetEntityName;
