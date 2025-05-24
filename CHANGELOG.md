@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.2.2](https://github.com/untrustedmodders/plugify-source-2/compare/v1.2.1...v1.2.2) (2025-05-24)
+
+
+### Bug Fixes
+
+* add export symbols ([3ee3868](https://github.com/untrustedmodders/plugify-source-2/commit/3ee3868e5ca22e16b5370286f18eee17c131f7d5))
+* add missing param to QueryInterface ([42e1ba4](https://github.com/untrustedmodders/plugify-source-2/commit/42e1ba4348a8dd4e4b519db9d6c427e3f06ff703))
+* add missing symbols ([5d51b0b](https://github.com/untrustedmodders/plugify-source-2/commit/5d51b0ba0e46a81cbd42d69fa1ed262e8d32a6f9))
+* move fatal logs to warning level ([09ad23a](https://github.com/untrustedmodders/plugify-source-2/commit/09ad23abd912388a4c0b68b58052ea697dda4171))
+* update `AppSystemCreateInterfaceFn` signature ([df3d6fd](https://github.com/untrustedmodders/plugify-source-2/commit/df3d6fd84791bd057d426645081f0a5aec26fbdf))
+
 ## [1.2.1](https://github.com/untrustedmodders/plugify-source-2/compare/v1.2.0...v1.2.1) (2025-05-04)
 
 
