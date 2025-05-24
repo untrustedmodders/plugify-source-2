@@ -146,6 +146,12 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDE_DIRS} ${DYNLIBUTILS
 
 target_link_libraries(${PROJECT_NAME} PRIVATE cpp-memory_utils ${RE2_LINK_LIBRARIES} ${PLUGIFY_LINK_LIBRARIES} ${PLUGIFY_CONFIGS_BINARY_DIR} ${SOURCESDK_BINARY_DIR})
 
+if(APPLE)
+    target_link_libraries(${PROJECT_NAME} PRIVATE "-Wl,-exported_symbols_list,${CMAKE_CURRENT_SOURCE_DIR}/sym/exported_symbols.lds")
+elseif(UNIX)
+    target_link_libraries(${PROJECT_NAME} PRIVATE "-Wl,--version-script,${CMAKE_CURRENT_SOURCE_DIR}/sym/version_script.lds")
+endif()
+
 configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/s2sdk.pplugin.in
     ${CMAKE_CURRENT_BINARY_DIR}/s2sdk.pplugin
