@@ -35,14 +35,20 @@ class CEntityInstance;
 class CBasePlayerController;
 class CCSPlayerController;
 class CBaseEntity;
+class CCSGameRulesProxy;
+class CHostStateMgr;
+class CHostStateRequest;
 
-extern IGameEventSystem* g_pGameEventSystem;
-extern IGameEventManager2* g_pGameEventManager;
-extern CAppSystemDict* g_pCurrentAppSystem;
-extern INetworkGameServer* g_pNetworkGameServer;
-extern CGlobalVars* gpGlobals;
-extern CGameEntitySystem* g_pGameEntitySystem;
-extern CSteamGameServerAPIContext g_SteamAPI;
+inline IGameEventSystem* g_pGameEventSystem = nullptr;
+inline IGameEventManager2* g_pGameEventManager = nullptr;
+inline CAppSystemDict* g_pCurrentAppSystem = nullptr;
+inline INetworkGameServer* g_pNetworkGameServer = nullptr;
+inline CGlobalVars* gpGlobals = nullptr;
+inline CGameEntitySystem* g_pGameEntitySystem = nullptr;
+inline CCSGameRules* g_pGameRules = nullptr;
+inline CCSGameRulesProxy* g_pGameRulesProxy = nullptr;
+//inline ISteamHTTP* g_http = nullptr;
+inline CSteamGameServerAPIContext g_SteamAPI = {};
 
 class CoreConfig;
 class GameConfig;
@@ -87,6 +93,9 @@ class CTakeDamageInfo;
 class INetworkStringTable;
 class CBasePlayerPawn;
 class CBasePlayerWeapon;
+class CServerSideClient;
+class CServerSideClientBase;
+class CNetMessage;
 
 namespace addresses {
 	inline IGameEventListener2* (*GetLegacyGameEventListener)(CPlayerSlot slot);
@@ -137,3 +146,11 @@ namespace addresses {
 
 	//inline void (*TracePlayerBBox)(const Vector& start, const Vector& end, const bbox_t& bounds, CTraceFilterS2* filter, trace_t_s2& pm);
 }// namespace addresses
+
+using HostStateRequestFn = void* (*)(CHostStateMgr *pMgrDoNotUse, CHostStateRequest* pRequest);
+using ReplyConnectionFn = void (*)(INetworkGameServer *server, CServerSideClient* client);
+using SendNetMessageFn = void* (*)(const CServerSideClientBase*, const CNetMessage* data, uint8 bufType);
+
+inline HostStateRequestFn g_pfnSetPendingHostStateRequest;
+inline ReplyConnectionFn g_pfnReplyConnection;
+inline SendNetMessageFn g_pfnSendNetMessage;

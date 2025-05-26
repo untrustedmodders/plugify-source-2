@@ -60,26 +60,6 @@ bool CoreConfig::Initialize() {
 	}
 
 	ServerLanguage = config->GetString("ServerLanguage", "en");
-
-	ExtraAddons.clear();
-	if (config->JumpKey("ExtraAddons")) {
-		if (config->IsArray() && config->JumpFirst()) {
-			do {
-				uint64_t value = static_cast<uint64_t>(config->GetAsInt64());
-				if (std::find(ExtraAddons.begin(), ExtraAddons.end(), value) == ExtraAddons.end()) {
-					ExtraAddons.emplace_back(value);
-				}
-			} while (config->JumpNext());
-			config->JumpBack();
-		}
-		config->JumpBack();
-	}
-
-	RejoinTimeout = config->GetDouble("RejoinTimeout", 10.0);
-	AddonMountDownload = config->GetBool("AddonMountDownload", false);
-	CacheClientsWithAddons = config->GetBool("CacheClientsWithAddons", false);
-	BlockDisconnectMessages = config->GetBool("BlockDisconnectMessages", false);
-
 	FollowCS2ServerGuidelines = config->GetBool("FollowCS2ServerGuidelines", true);
 
 	return true;

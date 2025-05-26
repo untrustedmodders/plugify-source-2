@@ -153,10 +153,10 @@ void PlayerManager::OnValidateAuthTicket(ValidateAuthTicketResponse_t* pResponse
 
 thread_local bool s_refuseConnection;
 
-bool PlayerManager::OnClientConnect(CPlayerSlot slot, const char* name, uint64 xuid, const char* networkID) {
+bool PlayerManager::OnClientConnect(CPlayerSlot slot, const char* name, uint64 steamID64, const char* networkID) {
 	Player* player = ToPlayer(slot);
 	if (player) {
-		player->Init(slot, xuid);
+		player->Init(slot, steamID64);
 
 		s_refuseConnection = false;
 
@@ -216,8 +216,8 @@ void PlayerManager::OnClientDisconnect_Post(CPlayerSlot slot, ENetworkDisconnect
 	}
 }
 
-void PlayerManager::OnClientActive(CPlayerSlot slot, bool bLoadGame) const {
-	GetOnClientActiveListenerManager().Notify(slot, bLoadGame);
+void PlayerManager::OnClientActive(CPlayerSlot slot, bool loadGame) const {
+	GetOnClientActiveListenerManager().Notify(slot, loadGame);
 }
 
 int PlayerManager::MaxClients() {

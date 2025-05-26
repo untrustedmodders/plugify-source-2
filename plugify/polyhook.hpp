@@ -174,7 +174,7 @@ namespace poly
 		{
 			using GetCallbackAddrFn = void* (*)(IHook*);
 			static GetCallbackAddrFn func = nullptr;
-			if (func == nullptr) plg::GetMethodPtr2("polyhook.GetCallbackAddr", reinterpret_cast<void**>(&func));
+			if (func == nullptr) plg::GetMethodPtr2("polyhook.GetOriginalAddr", reinterpret_cast<void**>(&func));
 			return func(m_hook);
 		}
 
@@ -195,6 +195,14 @@ namespace poly
 
 	template <class T>
 	inline constexpr bool always_false_v = std::is_same_v<std::decay_t<T>, std::add_cv_t<std::decay_t<T>>>;
+
+	inline void* GetAddress(IHook* hook)
+	{
+		using GetCallbackAddrFn = void* (*)(IHook*);
+		static GetCallbackAddrFn func = nullptr;
+		if (func == nullptr) plg::GetMethodPtr2("polyhook.GetOriginalAddr", reinterpret_cast<void**>(&func));
+		return func(hook);
+	}
 
 	template <typename T> requires (std::is_pointer_v<T>)
 	inline T GetArgument(Params& params, size_t index)

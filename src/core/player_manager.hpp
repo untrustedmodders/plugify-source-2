@@ -28,9 +28,9 @@ public:
 	Player() = default;
 	~Player() = default;
 
-	void Init(int slot, uint64 xuid) {
+	void Init(int slot, uint64 steamID64) {
 		m_slot = slot;
-		m_unauthenticatedSteamID = CSteamID(xuid);
+		m_unauthenticatedSteamID = CSteamID(steamID64);
 	}
 
 	void Reset() {
@@ -93,13 +93,13 @@ public:
 	Player* ToPlayer(CSteamID steamid, bool validate = false) const;
 
 	void OnSteamAPIActivated();
-	bool OnClientConnect(CPlayerSlot slot, const char* name, uint64 xuid, const char* networkID);
+	bool OnClientConnect(CPlayerSlot slot, const char* name, uint64 steamID64, const char* networkID);
 	bool OnClientConnect_Post(CPlayerSlot slot, bool origRet);
 	void OnClientConnected(CPlayerSlot slot);
 	void OnClientPutInServer(CPlayerSlot slot, char const* name);
 	void OnClientDisconnect(CPlayerSlot slot, ENetworkDisconnectionReason reason);
 	void OnClientDisconnect_Post(CPlayerSlot slot, ENetworkDisconnectionReason reason);
-	void OnClientActive(CPlayerSlot slot, bool bLoadGame) const;
+	void OnClientActive(CPlayerSlot slot, bool loadGame) const;
 
 	STEAM_GAMESERVER_CALLBACK_MANUAL(PlayerManager, OnValidateAuthTicket, ValidateAuthTicketResponse_t, m_CallbackValidateAuthTicketResponse);
 

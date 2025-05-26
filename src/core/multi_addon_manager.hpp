@@ -25,19 +25,29 @@ public:
 	uint64_t GetCurrentWorkshopMap() const { return m_currentWorkshopMap; }
 	void SetCurrentWorkshopMap(uint64_t workshopID) { m_currentWorkshopMap = workshopID; }
 	void ClearCurrentWorkshopMap() { m_currentWorkshopMap = k_PublishedFileIdInvalid; }
-	
+
+	static bool HasUGCConnection();
+	void AddClientAddon(uint64_t addon, uint64 steamID64 = 0, bool refresh = false);
+	void RemoveClientAddon(uint64_t addon, uint64 steamID64 = 0);
+	void ClearClientAddons(uint64 steamID64 = 0);
+	std::vector<uint64_t> GetClientAddons(uint64 steamID64 = 0);
+
 public:
 	void OnSteamAPIActivated();
 	void OnStartupServer();
-	void OnClientConnect(CPlayerSlot slot, const char* name, uint64 xuid, const char* networkID);
+	void OnClientConnect(CPlayerSlot slot, const char* name, uint64 steamID64, const char* networkID);
+	void OnClientDisconnect(CPlayerSlot slot, const char* name, uint64 steamID64, const char* networkID);
+	void OnClientActive(CPlayerSlot slot, bool loadGame, const char* name, uint64 steamID64);
 	void OnGameFrame();
 	void OnPostEvent(INetworkMessageInternal* message, CNetMessage* data, uint64_t* clients);
-	bool OnSendNetMessage(CServerSideClient* client, CNetMessage* data, NetChannelBufType_t bufType);
-	bool OnHostStateRequest(CUtlString* addonString);
+	void* OnSendNetMessage(CServerSideClient* client, CNetMessage* data, NetChannelBufType_t bufType);
+	void OnHostStateRequest(CHostStateMgr* pMgrDoNotUse, CHostStateRequest* pRequest);
+	void OnReplyConnection(INetworkGameServer* server, CServerSideClient* client);
 
 public:
 	std::vector<uint64_t> m_extraAddons;
 	std::vector<uint64_t> m_mountedAddons;
+	std::vector<uint64_t> m_globalClientAddons;
 
 private:
 	CUtlVector<uint64_t> m_importantDownloads; // Important addon downloads that will trigger a map reload when finished

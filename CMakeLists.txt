@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
 if(POLICY CMP0091)
     cmake_policy(SET CMP0091 NEW)
 endif()
@@ -152,10 +154,7 @@ elseif(UNIX)
     target_link_libraries(${PROJECT_NAME} PRIVATE "-Wl,--version-script,${CMAKE_CURRENT_SOURCE_DIR}/sym/version_script.lds")
 endif()
 
-configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/s2sdk.pplugin.in
-    ${CMAKE_CURRENT_BINARY_DIR}/s2sdk.pplugin
-)
-
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/s2sdk.pplugin.in ${CMAKE_CURRENT_BINARY_DIR}/s2sdk.pplugin)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/assets/gamedata.jsonc ${CMAKE_CURRENT_BINARY_DIR}/gamedata.jsonc COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/assets/settings.jsonc ${CMAKE_CURRENT_BINARY_DIR}/settings.jsonc COPYONLY)
+

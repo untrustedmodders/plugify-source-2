@@ -30,6 +30,12 @@
         "win64": "48 89 74 24 10 57 48 83 EC 30 33 F6 48 8B FA",
         "linuxsteamrt64": "55 48 89 E5 41 56 41 55 41 54 49 89 F4 53 48 83 7F"
       },
+      // String: "Sending S2C_CONNECTION to %s [addons:'%s']\n"
+      "ReplyConnection": {
+        "library": "engine2",
+        "win64": "48 8B C4 55 41 54 41 55 41 57",
+        "linuxsteamrt64": "55 B9 00 01 00 00"
+      },
       // Called from Host_Say
       "UTIL_SayText2Filter": {
         "library": "server",
@@ -219,6 +225,10 @@
       }
     },
     "Offsets": {
+      "ServerAddons": {
+        "win64": 328,
+        "linuxsteamrt64": 328
+      },
       // Player slot offset for quiet operations
       "QuietPlayerSlot": {
         "win64": 584,

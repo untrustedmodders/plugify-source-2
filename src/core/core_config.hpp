@@ -23,11 +23,6 @@ public:
 	std::vector<plg::string> SilentChatTrigger{"/"};
 	std::vector<std::regex> FilterConsoleCleaner{};
 	plg::string ServerLanguage{"en"};
-	std::vector<uint64_t> ExtraAddons{};
-	double RejoinTimeout{10.0};
-	bool AddonMountDownload{};
-	bool CacheClientsWithAddons{};
-	bool BlockDisconnectMessages{};
 	bool FollowCS2ServerGuidelines{true};
 
 private:

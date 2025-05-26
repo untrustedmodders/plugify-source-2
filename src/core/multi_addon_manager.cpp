@@ -9,18 +9,41 @@
 #include <gameevents.pb.h>
 #include <steam/steam_gameserver.h>
 #include <iserver.h>
+#include <hoststate.h>
 
 #include "core_config.hpp"
+#include "game_config.hpp"
 #include "sdk/utils.h"
 
-struct ClientJoinInfo {
-	uint64 xuid;
-	double timestamp;
-	size_t addon;
+CConVar<bool> s2_addon_mount_download("s2_addon_mount_download", FCVAR_NONE, "Whether to download an addon upon mounting even if it's installed", false);
+CConVar<bool> s2_block_disconnect_messages("s2_block_disconnect_messages", FCVAR_NONE, "Whether to block \"loop shutdown\" disconnect messages", false);
+CConVar<bool> s2_cache_clients_with_addons("s2_cache_clients_with_addons", FCVAR_NONE, "Whether to cache clients addon download list, this will prevent reconnects on mapchange/rejoin", false);
+CConVar<double> s2_cache_clients_duration("s2_cache_clients_duration", FCVAR_NONE, "How long to cache clients' downloaded addons list in seconds, pass 0 for forever.", 0.0);
+CConVar<double> s2_extra_addons_timeout("s2_extra_addons_timeout", FCVAR_NONE, "How long until clients are timed out in between connects for extra addons in seconds, requires s2_extra_addons to be used", 10.0);
+
+struct ClientAddonInfo {
+	uint64 steamID64;
+	double lastActiveTime;
+	std::vector<uint64_t> addonsToLoad;
+	std::vector<uint64_t> downloadedAddons;
+	uint64_t currentPendingAddon;
 };
 
-std::vector<ClientJoinInfo> g_ClientsPendingAddon; // List of clients who are still downloading addons
-std::unordered_set<uint64> g_ClientsWithAddons; // List of clients who already downloaded everything so they don't get reconnects on mapchange/rejoin
+std::unordered_map<uint64, ClientAddonInfo> g_ClientAddons;
+
+CConVar<CUtlString> s2_extra_addons("s2_extra_addons", FCVAR_NONE, "The workshop IDs of extra addons separated by commas, addons will be downloaded (if not present) and mounted", CUtlString(""),
+	[](CConVar<CUtlString> *cvar, CSplitScreenSlot slot, const CUtlString *new_val, const CUtlString *old_val)
+	{
+		g_MultiAddonManager.m_extraAddons = utils::string_to_vector<uint64_t>(new_val->Get());
+		g_MultiAddonManager.RefreshAddons();
+	});
+
+
+CConVar<CUtlString> s2_client_extra_addons("s2_client_extra_addons", FCVAR_NONE, "The workshop IDs of extra client addons that will be applied to all clients, separated by commas", CUtlString(""),
+	[](CConVar<CUtlString> *cvar, CSplitScreenSlot slot, const CUtlString *new_val, const CUtlString *old_val)
+	{
+		g_MultiAddonManager.m_globalClientAddons = utils::string_to_vector<uint64_t>(new_val->Get());
+	});
 
 std::string MultiAddonManager::BuildAddonPath(uint64_t addon) {
     // The workshop on a dedicated server is stored relative to the working directory for whatever reason
@@ -34,7 +57,17 @@ bool MultiAddonManager::MountAddon(uint64_t addon, bool addToTail) {
 	if (!addon)
 		return false;
 
+	if (addon == m_currentWorkshopMap) {
+		S2_LOGF(LS_MESSAGE, "{}: Addon {} is already mounted by the server\n", __func__, addon);
+		return false;
+	}
+
 	uint32 addonState = g_SteamAPI.SteamUGC()->GetItemState(addon);
+
+	if (addonState & k_EItemStateLegacyItem) {
+		S2_LOGF(LS_MESSAGE, "{}: Addon {} is not compatible with Source 2, skipping\n", __func__, addon);
+		return false;
+	}
 
 	if (!(addonState & k_EItemStateInstalled)) {
 		S2_LOGF(LS_MESSAGE, "{}: Addon {} is not installed, queuing a download\n", __func__, addon);
@@ -42,7 +75,7 @@ bool MultiAddonManager::MountAddon(uint64_t addon, bool addToTail) {
 		return false;
 	}
 
-	if (g_pCoreConfig->AddonMountDownload) {
+	if (s2_addon_mount_download.Get()) {
 		// Queue a download anyway in case the addon got an update and the server desires this, but don't reload the map when done
 		DownloadAddon(addon, false, true);
 	}
@@ -232,7 +265,8 @@ bool MultiAddonManager::AddAddon(uint64_t addon, bool refresh) {
 
 	m_extraAddons.emplace_back(addon);
 
-	g_ClientsWithAddons.clear();
+	// Update the convar to reflect the new addon list, but don't trigger the callback
+	s2_extra_addons.GetConVarData()->Value(0)->m_StringValue = utils::vector_to_string(m_extraAddons).c_str();
 	S2_LOGF(LS_MESSAGE, "Clearing client cache due to addons changing");
 
 	if (refresh) {
@@ -254,7 +288,9 @@ bool MultiAddonManager::RemoveAddon(uint64_t addon, bool refresh) {
 
 	m_extraAddons.erase(it);
 
-	g_ClientsWithAddons.clear();
+	// Update the convar to reflect the new addon list, but don't trigger the callback
+	s2_extra_addons.GetConVarData()->Value(0)->m_StringValue = utils::vector_to_string(m_extraAddons).c_str();
+
 	S2_LOGF(LS_MESSAGE, "Clearing client cache due to addons changing");
 
 	if (refresh) {
@@ -276,9 +312,6 @@ void MultiAddonManager::OnSteamAPIActivated() {
 }
 
 void MultiAddonManager::OnStartupServer() {
-	g_ClientsPendingAddon.clear();
-	g_MultiAddonManager.m_extraAddons = g_pCoreConfig->ExtraAddons;
-
 	// Remove empty paths added when there are 2+ addons, they screw up file writes
 	g_pFullFileSystem->RemoveSearchPath("", "GAME");
 	g_pFullFileSystem->RemoveSearchPath("", "DEFAULT_WRITE_PATH");
@@ -289,19 +322,168 @@ void MultiAddonManager::OnStartupServer() {
 	RefreshAddons();
 }
 
-CON_COMMAND_F(s2_extra_addons, "The workshop IDs of extra addons separated by commas, addons will be downloaded (if not present) and mounted",  FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY) {
+CNetMessagePB<CNETMsg_SignonState>* GetAddonSignonStateMessage(uint64_t addon) {
+	if (!gpGlobals)
+		return nullptr;
+
+	INetworkMessageInternal *pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("SignonState");
+	CNetMessagePB<CNETMsg_SignonState> *pMsg = pNetMsg->AllocateMessage()->ToPB<CNETMsg_SignonState>();
+	pMsg->set_spawn_count(gpGlobals->serverCount);
+	pMsg->set_signon_state(SIGNONSTATE_CHANGELEVEL);
+	pMsg->set_addons(addon ? std::to_string(addon) : "");
+	CUtlVector<CServerSideClientBase*>& clients = *utils::GetClientList();
+	pMsg->set_num_server_players(clients.Count());
+	for (int i = 0; i < clients.Count(); i++) {
+		auto client = clients.Element(i);
+		char const *szNetworkId = g_pEngineServer->GetPlayerNetworkIDString(client->GetPlayerSlot());
+		pMsg->add_players_networkids(szNetworkId);
+	}
+
+	return pMsg;
+}
+
+bool MultiAddonManager::HasUGCConnection() {
+	return g_SteamAPI.SteamUGC() != nullptr;
+}
+
+void MultiAddonManager::AddClientAddon(uint64_t addon, uint64 steamID64, bool refresh) {
+	if (!steamID64) {
+		if (std::find(m_globalClientAddons.begin(), m_globalClientAddons.end(), addon) != m_globalClientAddons.end()) {
+			S2_LOGF(LS_WARNING, "Addon {} is already in the list!\n", addon);
+			return;
+		}
+
+		m_globalClientAddons.emplace_back(addon);
+		s2_client_extra_addons.GetConVarData()->Value(0)->m_StringValue = utils::vector_to_string(m_globalClientAddons).c_str();
+	} else {
+		ClientAddonInfo& clientInfo = g_ClientAddons[steamID64];
+
+		if (std::find(clientInfo.addonsToLoad.begin(), clientInfo.addonsToLoad.end(), addon) != clientInfo.addonsToLoad.end()) {
+			S2_LOGF(LS_WARNING, "Addon {} is already in the list!\n", addon);
+			return;
+		}
+
+		clientInfo.addonsToLoad.emplace_back(addon);
+	}
+
+	if (refresh) {
+		CUtlVector<CServerSideClientBase*>& clients = *utils::GetClientList();
+		auto pMsg = GetAddonSignonStateMessage(addon);
+		if (!pMsg) {
+			S2_LOGF(LS_WARNING, "Failed to create signon state message for {}\n", addon);
+			return;
+		}
+		FOR_EACH_VEC(clients, i) {
+			CServerSideClientBase* client = clients[i];
+			if (steamID64 == 0 || client->GetClientSteamID().ConvertToUint64() == steamID64) {
+				// Client is already loading, telling them to reload now will actually just disconnect them. ("Received signon %i when at %i\n" in client console)
+				if (client->GetSignonState() == SIGNONSTATE_CHANGELEVEL)
+					break;
+				// Client still has addons to load anyway, they don't need to be told to reload
+				if (g_ClientAddons[steamID64].currentPendingAddon != 0)
+					break;
+
+				ClientAddonInfo& clientInfo = g_ClientAddons[steamID64];
+
+				std::vector<uint64_t> addons = GetClientAddons(steamID64);
+
+				for (const auto& downloadedAddon : clientInfo.downloadedAddons) {
+					if (auto it = std::find(addons.begin(), addons.end(), downloadedAddon); it != addons.end()) {
+						addons.erase(it);
+					}
+				}
+
+				if (addons.empty())
+					break;
+
+				clientInfo.currentPendingAddon = addons.front();
+
+				client->GetNetChannel()->SendNetMessage(pMsg, BUF_RELIABLE);
+
+				if (steamID64)
+					break;
+			}
+		}
+		delete pMsg;
+	}
+}
+
+void MultiAddonManager::RemoveClientAddon(uint64_t addon, uint64 steamID64) {
+	if (!steamID64) {
+		auto it = std::find(m_globalClientAddons.begin(), m_globalClientAddons.end(), addon);
+		if (it != m_globalClientAddons.end()) {
+			m_globalClientAddons.erase(it);
+		}
+		s2_client_extra_addons.GetConVarData()->Value(0)->m_StringValue = utils::vector_to_string(m_globalClientAddons).c_str();
+	} else {
+		ClientAddonInfo& clientInfo = g_ClientAddons[steamID64];
+		auto it = std::find(clientInfo.addonsToLoad.begin(), clientInfo.addonsToLoad.end(), addon);
+		if (it != clientInfo.addonsToLoad.end()) {
+			clientInfo.addonsToLoad.erase(it);
+		}
+	}
+}
+
+void MultiAddonManager::ClearClientAddons(uint64 steamID64) {
+	if (!steamID64) {
+		m_globalClientAddons.clear();
+		s2_client_extra_addons.GetConVarData()->Value(0)->m_StringValue = utils::vector_to_string(m_globalClientAddons).c_str();
+	} else {
+		ClientAddonInfo& clientInfo = g_ClientAddons[steamID64];
+		clientInfo.addonsToLoad.clear();
+	}
+}
+
+std::vector<uint64_t> MultiAddonManager::GetClientAddons(uint64 steamID64) {
+	// The list of mounted addons should never contain the workshop map.
+	auto addons = m_mountedAddons;
+
+	if (!m_currentWorkshopMap) {
+		addons.insert(addons.begin(), m_currentWorkshopMap);
+	}
+
+	// Also make sure we don't have duplicates.
+	for (const auto& addon : m_globalClientAddons) {
+		if (std::find(addons.begin(), addons.end(), addon) == addons.end()) {
+			addons.emplace_back(addon);
+		}
+	}
+
+	// If we specify a client steamID64, check for the addons exclusive to this client as well.
+	if (steamID64) {
+		auto& addonsToLoad = g_ClientAddons[steamID64].addonsToLoad;
+		for (const auto& addon : addonsToLoad) {
+			if (std::find(addonsToLoad.begin(), addonsToLoad.end(), addon) == addonsToLoad.end()) {
+				addonsToLoad.emplace_back(addon);
+			}
+		}
+	}
+
+	return addons;
+}
+
+CON_COMMAND_F(s2_add_client_addon, "Add a workshop ID to the global client-only addon list", FCVAR_SPONLY) {
 	if (args.ArgC() < 2) {
-		S2_LOGF(LS_WARNING, "{} {}\n", args[0], utils::vector_to_string(g_MultiAddonManager.m_extraAddons));
+		S2_LOGF(LS_WARNING, "Usage: {} <ID>\n", args[0]);
 		return;
 	}
 
-	g_ClientsWithAddons.clear();
-	S2_LOGF(LS_MESSAGE, "Clearing client cache due to addons changing");
-
-	g_MultiAddonManager.m_extraAddons = utils::string_to_vector<uint64_t>(args[1]);
-
-	g_MultiAddonManager.RefreshAddons();
+	if (auto addon = utils::string_to_int<uint64_t>(args[1])) {
+		g_MultiAddonManager.AddClientAddon(*addon);
+	}
 }
+
+CON_COMMAND_F(s2_remove_client_addon, "Remove a workshop ID from the global client-only addon list", FCVAR_SPONLY) {
+	if (args.ArgC() < 2) {
+		S2_LOGF(LS_WARNING, "Usage: {} <ID>\n", args[0]);
+		return;
+	}
+
+	if (auto addon = utils::string_to_int<uint64_t>(args[1])) {
+		g_MultiAddonManager.RemoveClientAddon(*addon);
+	}
+}
+
 
 CON_COMMAND_F(s2_add_addon, "Add a workshop ID to the extra addon list", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY) {
 	if (args.ArgC() < 2) {
@@ -344,67 +526,147 @@ CON_COMMAND_F(s2_print_searchpaths_client, "Print search paths client-side, only
 	g_pFullFileSystem->PrintSearchPaths();
 }
 
-bool MultiAddonManager::OnHostStateRequest(CUtlString* addonString) {
-	if (m_extraAddons.empty())
-		return false;
+void MultiAddonManager::OnHostStateRequest(CHostStateMgr* mgrDoNotUse, CHostStateRequest* request) {
+	// When IVEngineServer::ChangeLevel is called by the plugin or the server code,
+	// (which happens at the end of a map), the server-defined addon does not change.
+	// Also, host state requests coming from that function will always have "ChangeLevel" in its KV's name.
+	// We can use this information to always be aware of what the original addon is.
 
-	auto vecAddons = utils::string_to_vector<uint64_t>(addonString->Get());
-
-	// Clear the string just in case it wasn't somehow, like when reloading the map
-	addonString->Clear();
-
-	plg::string extraAddonString = utils::vector_to_string(m_extraAddons);
-
-	// If it's empty or the first addon in the string is ours, it means we're on a default map
-	if (vecAddons.empty() || std::find(m_extraAddons.begin(), m_extraAddons.end(), vecAddons[0]) != m_extraAddons.end()) {
-		S2_LOGF(LS_MESSAGE, "{}: setting addon string to \"{}\"\n", __func__, extraAddonString);
-		addonString->Set(extraAddonString.c_str());
-		ClearCurrentWorkshopMap();
+	if (!request->m_pKV) {
+		m_currentWorkshopMap = 0;
 	} else {
-		S2_LOGF(LS_MESSAGE, "{}: appending \"{}\" to addon string \"{}\"\n", __func__, extraAddonString, vecAddons[0]);
-		addonString->Set(std::format("{},{}", vecAddons[0], extraAddonString).c_str());
-		SetCurrentWorkshopMap(vecAddons[0]);
+		std::string_view name = request->m_pKV->GetName();
+		if (name == "ChangeLevel") {
+			if (name == "map_workshop") {
+				if (auto addon = utils::string_to_int<uint64_t>(request->m_pKV->GetString("customgamemode", ""))) {
+					m_currentWorkshopMap = *addon;
+				}
+			} else {
+				m_currentWorkshopMap = 0;
+			}
+		}
 	}
 
-	return true;
+	if (g_MultiAddonManager.m_extraAddons.empty()) {
+		g_pfnSetPendingHostStateRequest(mgrDoNotUse, request);
+		return;
+	}
+
+	// Rebuild the addon list. We always start with the original addon.
+	if (m_currentWorkshopMap == 0) {
+		request->m_Addons = utils::vector_to_string(g_MultiAddonManager.m_extraAddons).c_str();
+	} else {
+		// Don't add the same addon twice. Hopefully no server owner is diabolical enough to do things like `map de_dust2 customgamemode=1234,5678`.
+		std::vector<uint64_t> newAddons = g_MultiAddonManager.m_extraAddons;
+		auto it = std::find(newAddons.begin(), newAddons.end(), m_currentWorkshopMap);
+
+		// If the element is found and is not already at the end
+		if (it != newAddons.end() && it != newAddons.begin() + static_cast<ptrdiff_t>(newAddons.size() - 1)) {
+			// Rotate the elements such that the found element moves to the end
+			std::rotate(it, it + 1, newAddons.end());
+		}
+
+		request->m_Addons = utils::vector_to_string(newAddons).c_str();
+	}
+
+	g_pfnSetPendingHostStateRequest(mgrDoNotUse, request);
 }
 
-bool MultiAddonManager::OnSendNetMessage(CServerSideClient* client, CNetMessage* data, NetChannelBufType_t bufType) {
-	NetMessageInfo_t* info = data->GetNetMessage()->GetNetMessageInfo();
+void MultiAddonManager::OnReplyConnection(INetworkGameServer* server, CServerSideClient* client) {
+	uint64 steamID64 = client->GetClientSteamID().ConvertToUint64();
 
-	// 7 for signon messages
-	if (info->m_MessageId != net_SignonState || m_extraAddons.empty())
-		return false;
+	// Clear cache if necessary.
+	ClientAddonInfo& clientInfo = g_ClientAddons[steamID64];
+	if (s2_cache_clients_with_addons.Get() && s2_cache_clients_duration.Get() != 0 && Plat_FloatTime() - clientInfo.lastActiveTime > s2_cache_clients_duration.Get()) {
+		S2_LOGF(LS_MESSAGE, "{}: Client {} has not connected for a while, clearing the cache\n", __func__, steamID64);
+		clientInfo.currentPendingAddon = 0;
+		clientInfo.downloadedAddons.clear();
+	}
+	clientInfo.lastActiveTime = Plat_FloatTime();
 
-	auto msg = data->ToPB<CNETMsg_SignonState>();
+	// Server copies the CUtlString from CNetworkGameServer to this client.
+	static int offset = g_pGameConfig->GetOffset("ServerAddons");
+	CUtlString* addons = reinterpret_cast<CUtlString*>(reinterpret_cast<uintptr_t>(server) + offset);
+	CUtlString originalAddons = *addons;
 
-	// If the server is changing maps then we don't want to send all addons in this message
-	// Because for SOME reason, this can put the client in a state of limbo after the 25/07/2024 update
-	// Also we send the workshop map here because the client MUST have it in order to remain in the server
-	// This is what prompts clients to download the next map after all
-	uint64_t map = GetCurrentWorkshopMap();
-
-	if (msg->signon_state() == SIGNONSTATE_CHANGELEVEL)
-		msg->set_addons(std::to_string(map == k_PublishedFileIdInvalid ? m_extraAddons[k_PublishedFileIdInvalid] : map));
-
-	// If we're on a default map send the first addon
-	auto xuid = client->GetClientSteamID().ConvertToUint64();
-	auto it = std::find_if(g_ClientsPendingAddon.begin(), g_ClientsPendingAddon.end(), [xuid](const ClientJoinInfo& client) {
-		return client.xuid == xuid;
-	});
-
-	if (it != g_ClientsPendingAddon.end()) {
-		// This only happens after the client connects, therefore the signon message is for SIGNONSTATE_PRESPAWN
-		// and we can proceed to send addons as usual
-		S2_LOGF(LS_MESSAGE, "{}: Sending addon {} to client {}\n", __func__, m_extraAddons[it->addon], it->xuid);
-
-		msg->set_addons(std::to_string(m_extraAddons[it->addon]));
-		msg->set_signon_state(SIGNONSTATE_CHANGELEVEL);
-
-		it->timestamp = Plat_FloatTime();
+	// Figure out which addons the client should be loading.
+	std::vector<uint64_t> clientAddons = g_MultiAddonManager.GetClientAddons(steamID64);
+	if (clientAddons.empty()) {
+		// No addons to send. This means the list of original addons is empty as well.
+		assert(originalAddons.IsEmpty());
+		g_pfnReplyConnection(server, client);
+		return;
 	}
 
-	return true;
+	auto& downloadedAddons = clientInfo.downloadedAddons;
+
+	// Handle the first addon here. The rest should be handled in the SendNetMessage hook.
+	if (std::find(downloadedAddons.begin(), downloadedAddons.end(), clientAddons[0]) == downloadedAddons.end()) {
+		clientInfo.currentPendingAddon = clientAddons[0];
+	}
+
+	*addons = utils::vector_to_string<uint64_t>(clientAddons).c_str();
+
+	S2_LOGF(LS_MESSAGE, "{}: Sending addons {} to steamID64 {}\n", __func__, addons->Get(), steamID64);
+	g_pfnReplyConnection(server, client);
+
+	*addons = originalAddons;
+}
+
+void* MultiAddonManager::OnSendNetMessage(CServerSideClient* client, CNetMessage* data, NetChannelBufType_t bufType) {
+	NetMessageInfo_t* info = data->GetNetMessage()->GetNetMessageInfo();
+
+	uint64 steamID64 = client->GetClientSteamID().ConvertToUint64();
+	ClientAddonInfo& clientInfo = g_ClientAddons[steamID64];
+
+	// If we are sending a message to the client, that means the client is still active.
+	clientInfo.lastActiveTime = Plat_FloatTime();
+
+	if (info->m_MessageId != net_SignonState) {
+		return g_pfnSendNetMessage(client, data, bufType);
+	}
+
+	auto pMsg = data->ToPB<CNETMsg_SignonState>();
+
+	std::vector<uint64_t> addons = g_MultiAddonManager.GetClientAddons(steamID64);
+
+	if (pMsg->signon_state() == SIGNONSTATE_CHANGELEVEL) {
+		// When switching to another map, the signon message might contain more than 1 addon.
+		// This puts the client in limbo because client doesn't know how to handle multiple addons at the same time.
+		std::vector<uint64_t> addonsList = utils::string_to_vector<uint64_t>(pMsg->addons());
+		if (addonsList.size() > 1) {
+			// If there's more than one addon, ensure that it takes the first addon (which should be the workshop map or the first custom addon)
+			pMsg->set_addons(std::to_string(addonsList.front()));
+			// Since the client will download the addon contained inside this messsage, we might as well add it to the list of client's downloaded addons.
+			clientInfo.currentPendingAddon = addonsList.front();
+		} else if (addonsList.size() == 1) {
+			// Nothing to do here, the rest of the required addons can be sent later.
+			if (auto addon = utils::string_to_int<uint64_t>(pMsg->addons())) {
+				clientInfo.currentPendingAddon = *addon;
+			}
+		}
+
+		return g_pfnSendNetMessage(client, data, bufType);
+	}
+
+	for (const auto& downloadedAddon : clientInfo.downloadedAddons) {
+		if (auto it = std::find(addons.begin(), addons.end(), downloadedAddon); it != addons.end()) {
+			addons.erase(it);
+		}
+	}
+
+	// Check if client has downloaded everything.
+	if (addons.empty()) {
+		return g_pfnSendNetMessage(client, data, bufType);
+	}
+
+	// Otherwise, send the next addon to the client.
+	S2_LOGF(LS_MESSAGE, "{}: Number of addons remaining to download for {}: {}\n", __func__, steamID64, addons.size());
+	clientInfo.currentPendingAddon = addons.front();
+	pMsg->set_addons(std::to_string(addons.front()));
+	pMsg->set_signon_state(SIGNONSTATE_CHANGELEVEL);
+
+	return g_pfnSendNetMessage(client, data, bufType);
 }
 
 void MultiAddonManager::OnGameFrame() {
@@ -419,66 +681,53 @@ void MultiAddonManager::OnGameFrame() {
 }
 
 void MultiAddonManager::OnPostEvent(INetworkMessageInternal* message, CNetMessage* data, uint64_t* clients) {
-	if (g_pCoreConfig->BlockDisconnectMessages && message->GetNetMessageInfo()->m_MessageId == GE_Source1LegacyGameEvent) {
-		auto msg = data->ToPB<CMsgSource1LegacyGameEvent>();
+	if (s2_block_disconnect_messages.Get() && message->GetNetMessageInfo()->m_MessageId == GE_Source1LegacyGameEvent) {
+		auto pMsg = data->ToPB<CMsgSource1LegacyGameEvent>();
 
-		static int DisconnectId = g_pGameEventManager->LookupEventId("player_disconnect");
-		if (msg->eventid() == DisconnectId) {
-			IGameEvent* event = g_pGameEventManager->UnserializeEvent(*msg);
+		static int sDisconnectId = g_pGameEventManager->LookupEventId("player_disconnect");
+
+		if (pMsg->eventid() == sDisconnectId) {
+			IGameEvent* pEvent = g_pGameEventManager->UnserializeEvent(*pMsg);
 
 			// This will prevent "loop shutdown" messages in the chat when clients reconnect
 			// As far as we're aware, there are no other cases where this reason is used
-			if (event->GetInt("reason") == NETWORK_DISCONNECT_LOOPSHUTDOWN) {
-				*clients = 0;
+			if (pEvent->GetInt("reason") == NETWORK_DISCONNECT_LOOPSHUTDOWN) {
+				*reinterpret_cast<uint64*>(clients) = 0;
 			}
 		}
 	}
 }
 
-void MultiAddonManager::OnClientConnect(CPlayerSlot slot, const char* name, uint64 xuid, const char* networkID) {
+void MultiAddonManager::OnClientConnect(CPlayerSlot slot, const char* name, uint64 steamID64, const char* networkID) {
+	std::vector<uint64_t> addons = GetClientAddons(steamID64);
 	// We don't have an extra addon set so do nothing here, also don't do anything if we're a listenserver
-	if (m_extraAddons.empty())
+	if (addons.empty())
 		return;
 
-	// If we're on a default map and we have only 1 addon, no need to do any of this
-	// The client will be prompted to download upon receiving C2S_CONNECTION with an addon
-	if (m_extraAddons.size() == 1 && m_currentWorkshopMap == k_PublishedFileIdInvalid)
-		return;
+	ClientAddonInfo& clientInfo = g_ClientAddons[steamID64];
 
-	S2_LOGF(LS_MESSAGE, "Client {} ({}) connected:\n", name, xuid);
-
-	if (g_pCoreConfig->CacheClientsWithAddons && g_ClientsWithAddons.contains(xuid)) {
-		S2_LOGF(LS_MESSAGE, "new connection but client was cached earlier so allowing immediately\n");
-		return;
-	}
-
-	// Store the client's ID temporarily as they will get reconnected once an extra addon is sent
-	// This gets checked for in SendNetMessage so we don't repeatedly send the changelevel signon state for the same addon
-	// The only caveat to this is that there's no way for us to verify if the client has actually downloaded the extra addon
-	// as they're fully disconnected while downloading it, so the best we can do is use a timeout interval
-	auto it = std::find_if(g_ClientsPendingAddon.begin(), g_ClientsPendingAddon.end(), [xuid](const ClientJoinInfo& client) {
-		return client.xuid == xuid;
-	});
-
-	if (it == g_ClientsPendingAddon.end()) {
-		// Client joined for the first time or after a timeout
-		S2_LOGF(LS_MESSAGE, "first connection, sending addon {}\n", m_extraAddons[k_PublishedFileIdInvalid]);
-		g_ClientsPendingAddon.emplace_back(xuid, 0.0, k_PublishedFileIdInvalid);
-	} else if (Plat_FloatTime() - it->timestamp < g_pCoreConfig->RejoinTimeout) {
-		// Client reconnected within the timeout interval
-		// If they already have the addon this happens almost instantly after receiving the signon message with the addon
-		if (++it->addon < m_extraAddons.size()) {
-			S2_LOGF(LS_MESSAGE, "reconnected within the interval, sending next addon {}\n", m_extraAddons[it->addon]);
+	if (clientInfo.currentPendingAddon != 0) {
+		if (Plat_FloatTime() - clientInfo.lastActiveTime > s2_extra_addons_timeout.Get()) {
+			S2_LOGF(LS_MESSAGE, "{}: Client {} has reconnected after the timeout or did not receive the addon message, will not add addon {} to the downloaded list\n", __func__, steamID64, clientInfo.currentPendingAddon);
 		} else {
-			S2_LOG(LS_MESSAGE, "reconnected within the interval and has all addons, allowing\n");
-			g_ClientsPendingAddon.erase(it);
-
-			if (g_pCoreConfig->CacheClientsWithAddons) {
-				g_ClientsWithAddons.insert(xuid);
-			}
+			S2_LOGF(LS_MESSAGE, "{}: Client {} has connected within the interval with the pending addon {}, will send next addon in SendNetMessage hook\n", __func__, steamID64, clientInfo.currentPendingAddon);
+			clientInfo.downloadedAddons.emplace_back(clientInfo.currentPendingAddon);
 		}
-	} else {
-		S2_LOGF(LS_MESSAGE, "reconnected after the timeout or did not receive the addon message, will resend addon {}\n", m_extraAddons[it->addon]);
+		// Reset the current pending addon anyway, SendNetMessage tells us which addon to download next.
+		clientInfo.currentPendingAddon = 0;
+	}
+	g_ClientAddons[steamID64].lastActiveTime = Plat_FloatTime();
+}
+
+void MultiAddonManager::OnClientDisconnect(CPlayerSlot slot, const char* name, uint64 steamID64, const char* networkID) {
+	// Mark the disconnection time for caching purposes.
+	g_ClientAddons[steamID64].lastActiveTime = Plat_FloatTime();
+}
+
+void MultiAddonManager::OnClientActive(CPlayerSlot slot, bool loadGame, const char* name, uint64 steamID64) {
+	// When the client reaches this stage, they should already have all the necessary addons downloaded, so we can safely remove the downloaded addons list here.
+	if (!s2_cache_clients_with_addons.Get()) {
+		g_ClientAddons[steamID64].downloadedAddons.clear();
 	}
 }
 

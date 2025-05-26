@@ -22,18 +22,5 @@
   // Blck modifications of protected schema fields
   "FollowCS2ServerGuidelines": true,
   // The server language
-  "ServerLanguage": "en",
-  // The workshop IDs of extra addons, separated by commas (e.g. 3090239773, 3070231528)
-  "ExtraAddons": [
-    //3090239773,
-    //3070231528
-  ],
-  // How long until clients are timed out in between connects for extra addons, requires ExtraAddons to be used
-  "RejoinTimeout": 30.0,
-  // Whether to download an addon upon mounting even if it's installed
-  "AddonMountDownload": 0,
-  // Whether to cache clients who downloaded all addons, this will prevent reconnects on mapchange/rejoin
-  "CacheClientsWithAddons": 0,
-  // Whether to block "loop shutdown" disconnect messages
-  "BlockDisconnectMessages": 0
+  "ServerLanguage": "en"
 }
