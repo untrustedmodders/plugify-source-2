@@ -110,11 +110,7 @@ extern "C" PLUGIN_API int64_t GetEntData2(CEntityInstance* entity, int offset, i
  */
 extern "C" PLUGIN_API void SetEntData2(CEntityInstance* entity, int offset, int64_t value, int size, bool changeState, int chainOffset) {
 	if (changeState) {
-		if (chainOffset != 0) {
-			schema::NetworkStateChanged(reinterpret_cast<intptr_t>(entity) + chainOffset, offset);
-		} else {
-			entity->NetworkStateChanged(offset);
-		}
+		entity->NetworkStateChanged(offset);
 	}
 
 	switch (size) {
@@ -168,11 +164,7 @@ extern "C" PLUGIN_API double GetEntDataFloat2(CEntityInstance* entity, int offse
  */
 extern "C" PLUGIN_API void SetEntDataFloat2(CEntityInstance* entity, int offset, double value, int size, bool changeState, int chainOffset) {
 	if (changeState) {
-		if (chainOffset != 0) {
-			schema::NetworkStateChanged(reinterpret_cast<intptr_t>(entity) + chainOffset, offset);
-		} else {
-			entity->NetworkStateChanged(offset);
-		}
+		entity->NetworkStateChanged(offset);
 	}
 
 	switch (size) {
@@ -211,11 +203,7 @@ extern "C" PLUGIN_API plg::string GetEntDataString2(CEntityInstance* entity, int
  */
 extern "C" PLUGIN_API void SetEntDataString2(CEntityInstance* entity, int offset, const plg::string& value, bool changeState, int chainOffset) {
 	if (changeState) {
-		if (chainOffset != 0) {
-			schema::NetworkStateChanged(reinterpret_cast<intptr_t>(entity) + chainOffset, offset);
-		} else {
-			entity->NetworkStateChanged(offset);
-		}
+		entity->NetworkStateChanged(offset);
 	}
 
 	*reinterpret_cast<CUtlString*>(reinterpret_cast<intptr_t>(entity) + offset) = value.c_str();
@@ -245,11 +233,7 @@ extern "C" PLUGIN_API plg::vec3 GetEntDataVector2(CEntityInstance* entity, int o
  */
 extern "C" PLUGIN_API void SetEntDataVector2(CEntityInstance* entity, int offset, const plg::vec3& value, bool changeState, int chainOffset) {
 	if (changeState) {
-		if (chainOffset != 0) {
-			schema::NetworkStateChanged(reinterpret_cast<intptr_t>(entity) + chainOffset, offset);
-		} else {
-			entity->NetworkStateChanged(offset);
-		}
+		entity->NetworkStateChanged(offset);
 	}
 
 	*reinterpret_cast<plg::vec3*>(reinterpret_cast<intptr_t>(entity) + offset) = value;
@@ -281,11 +265,7 @@ extern "C" PLUGIN_API int GetEntDataEnt2(CEntityInstance* entity, int offset) {
  */
 extern "C" PLUGIN_API void SetEntDataEnt2(CEntityInstance* entity, int offset, int value, bool changeState, int chainOffset) {
 	if (changeState) {
-		if (chainOffset != 0) {
-			schema::NetworkStateChanged(reinterpret_cast<intptr_t>(entity) + chainOffset, offset);
-		} else {
-			entity->NetworkStateChanged(offset);
-		}
+		entity->NetworkStateChanged(offset);
 	}
 
 	*reinterpret_cast<CEntityHandle*>(reinterpret_cast<intptr_t>(entity) + offset) = CEntityHandle((uint32) value);
@@ -299,11 +279,7 @@ extern "C" PLUGIN_API void SetEntDataEnt2(CEntityInstance* entity, int offset, i
  * @param chainOffset The offset of the chain entity in the class.
  */
 extern "C" PLUGIN_API void ChangeEntityState2(CEntityInstance* entity, int offset, int chainOffset) {
-	if (chainOffset != 0) {
-		schema::NetworkStateChanged((reinterpret_cast<intptr_t>(entity) + chainOffset), offset);
-	} else {
-		entity->NetworkStateChanged(offset);
-	}
+	entity->NetworkStateChanged(offset);
 }
 
 //
@@ -647,13 +623,8 @@ extern "C" PLUGIN_API void SetEntSchema2(CEntityInstance* entity, const plg::str
 		return;
 	}
 
-	if (changeState && networked) {
-		int chainOffset = schema::FindChainOffset(className);
-		if (chainOffset != 0) {
-			schema::NetworkStateChanged((reinterpret_cast<intptr_t>(entity) + chainOffset), offset);
-		} else {
-			entity->NetworkStateChanged(offset);
-		}
+	if (changeState) {
+		entity->NetworkStateChanged(offset);
 	}
 
 	const auto [elementType, elementSize] = schema::IsIntType(type);
@@ -801,13 +772,8 @@ extern "C" PLUGIN_API void SetEntSchemaFloat2(CEntityInstance* entity, const plg
 		return;
 	}
 
-	if (changeState && networked) {
-		int chainOffset = schema::FindChainOffset(className);
-		if (chainOffset != 0) {
-			schema::NetworkStateChanged((reinterpret_cast<intptr_t>(entity) + chainOffset), offset);
-		} else {
-			entity->NetworkStateChanged(offset);
-		}
+	if (changeState) {
+		entity->NetworkStateChanged(offset);
 	}
 
 	const auto [elementType, elementSize] = schema::IsFloatType(type);
@@ -932,13 +898,8 @@ extern "C" PLUGIN_API void SetEntSchemaString2(CEntityInstance* entity, const pl
 		return;
 	}
 
-	if (changeState && networked) {
-		int chainOffset = schema::FindChainOffset(className);
-		if (chainOffset != 0) {
-			schema::NetworkStateChanged((reinterpret_cast<intptr_t>(entity) + chainOffset), offset);
-		} else {
-			entity->NetworkStateChanged(offset);
-		}
+	if (changeState) {
+		entity->NetworkStateChanged(offset);
 	}
 
 	switch (schema::IsPlainType(type, sizeof(CUtlString))) {
@@ -1038,13 +999,8 @@ extern "C" PLUGIN_API void SetEntSchemaVector3D2(CEntityInstance* entity, const 
 		return;
 	}
 
-	if (changeState && networked) {
-		int chainOffset = schema::FindChainOffset(className);
-		if (chainOffset != 0) {
-			schema::NetworkStateChanged((reinterpret_cast<intptr_t>(entity) + chainOffset), offset);
-		} else {
-			entity->NetworkStateChanged(offset);
-		}
+	if (changeState) {
+		entity->NetworkStateChanged(offset);
 	}
 
 	switch (schema::IsPlainType(type, sizeof(Vector))) {
@@ -1123,13 +1079,8 @@ extern "C" PLUGIN_API void SetEntSchemaVector2D2(CEntityInstance* entity, const 
 		return;
 	}
 
-	if (changeState && networked) {
-		int chainOffset = schema::FindChainOffset(className);
-		if (chainOffset != 0) {
-			schema::NetworkStateChanged((reinterpret_cast<intptr_t>(entity) + chainOffset), offset);
-		} else {
-			entity->NetworkStateChanged(offset);
-		}
+	if (changeState) {
+		entity->NetworkStateChanged(offset);
 	}
 
 	switch (schema::IsPlainType(type, sizeof(Vector2D))) {
@@ -1206,13 +1157,8 @@ extern "C" PLUGIN_API void SetEntSchemaVector4D2(CEntityInstance* entity, const 
 		return;
 	}
 
-	if (changeState && networked) {
-		int chainOffset = schema::FindChainOffset(className);
-		if (chainOffset != 0) {
-			schema::NetworkStateChanged((reinterpret_cast<intptr_t>(entity) + chainOffset), offset);
-		} else {
-			entity->NetworkStateChanged(offset);
-		}
+	if (changeState) {
+		entity->NetworkStateChanged(offset);
 	}
 
 	switch (schema::IsPlainType(type, sizeof(Vector4D))) {
@@ -1293,13 +1239,8 @@ extern "C" PLUGIN_API void SetEntSchemaEnt2(CEntityInstance* entity, const plg::
 		return;
 	}
 
-	if (changeState && networked) {
-		int chainOffset = schema::FindChainOffset(className);
-		if (chainOffset != 0) {
-			schema::NetworkStateChanged((reinterpret_cast<intptr_t>(entity) + chainOffset), offset);
-		} else {
-			entity->NetworkStateChanged(offset);
-		}
+	if (changeState) {
+		entity->NetworkStateChanged(offset);
 	}
 
 	switch (schema::IsAtomicType(type, sizeof(CEntityHandle))) {
@@ -1335,12 +1276,7 @@ extern "C" PLUGIN_API void SetEntSchemaEnt2(CEntityInstance* entity, const plg::
 extern "C" PLUGIN_API void NetworkStateChanged2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName) {
 	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
 	if (networked) {
-		int chainOffset = schema::FindChainOffset(className);
-		if (chainOffset != 0) {
-			schema::NetworkStateChanged((reinterpret_cast<intptr_t>(entity) + chainOffset), offset);
-		} else {
-			entity->NetworkStateChanged(offset);
-		}
+		entity->NetworkStateChanged(offset);
 	} else {
 		S2_LOGF(LS_WARNING, "Field '{}::{}' is not networked, but \"SetStateChanged\" was called on it.", className, memberName);
 	}
