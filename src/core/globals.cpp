@@ -15,12 +15,15 @@
 #include <igameevents.h>
 #include <igamesystemfactory.h>
 
+class CCSGameRulesProxy;
+
 IGameEventSystem* g_pGameEventSystem = nullptr;
 IGameEventManager2* g_pGameEventManager = nullptr;
 CAppSystemDict* g_pCurrentAppSystem = nullptr;
 INetworkGameServer* g_pNetworkGameServer = nullptr;
 CGlobalVars* gpGlobals = nullptr;
 CGameEntitySystem* g_pGameEntitySystem = nullptr;
+CCSGameRulesProxy* g_pGameRulesProxy = nullptr;
 CCSGameRules* g_pGameRules = nullptr;
 
 #define RESOLVE_SIG(gameConfig, name, variable) \

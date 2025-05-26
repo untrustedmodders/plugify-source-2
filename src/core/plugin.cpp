@@ -34,6 +34,9 @@ EXPOSE_PLUGIN(PLUGIN_API, Source2SDK, &g_sdk)
 //ISteamHTTP* g_http = nullptr;
 CSteamGameServerAPIContext g_SteamAPI;
 
+extern CCSGameRulesProxy* g_pGameRulesProxy;
+extern CCSGameRules* g_pGameRules;
+
 CGameEntitySystem* GameEntitySystem() {
 	static int offset = g_pGameConfig->GetOffset("GameEntitySystem");
 	return *reinterpret_cast<CGameEntitySystem**>(reinterpret_cast<uintptr_t>(g_pGameResourceServiceServer) + offset);
@@ -46,14 +49,18 @@ CEntityInstance* CEntityHandle::Get() const {
 class CEntityListener : public IEntityListener {
 	void OnEntityCreated(CEntityInstance* pEntity) override {
 		std::string_view name(pEntity->GetClassname());
-		if (name == "cs_gamerules")
-			g_pGameRules = static_cast<CCSGameRulesProxy *>(pEntity)->m_pGameRules;
+		if (name == "cs_gamerules") {
+			g_pGameRulesProxy = static_cast<CCSGameRulesProxy *>(pEntity);
+			g_pGameRules = g_pGameRulesProxy->m_pGameRules;
+		}
 		GetOnEntityCreatedListenerManager().Notify(pEntity->GetRefEHandle().ToInt());
 	}
 	void OnEntityDeleted(CEntityInstance* pEntity) override {
 		std::string_view name(pEntity->GetClassname());
-		if (name == "cs_gamerules")
+		if (name == "cs_gamerules") {
+			g_pGameRulesProxy = nullptr;
 			g_pGameRules = nullptr;
+		}
 		GetOnEntityDeletedListenerManager().Notify(pEntity->GetRefEHandle().ToInt());
 	}
 	void OnEntitySpawned(CEntityInstance* pEntity) override {

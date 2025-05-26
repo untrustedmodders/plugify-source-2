@@ -9,7 +9,21 @@ PLUGIFY_WARN_IGNORE("-Wreturn-type-c-linkage")
 PLUGIFY_WARN_IGNORE(4190)
 #endif
 
+extern CCSGameRulesProxy* g_pGameRulesProxy;
 extern CCSGameRules* g_pGameRules;
+
+/**
+ * @brief Retrieves the pointer to the current game rules proxy entity instance.
+ *
+ * This function provides access to the global game rules object,
+ * which contains various methods and properties defining the
+ * rules and logic for the game.
+ *
+ * @return A pointer to the game rules proxy entity instance.
+ */
+extern "C" PLUGIN_API void* GetGameRulesProxy() {
+	return g_pGameRulesProxy;
+}
 
 /**
  * @brief Retrieves the pointer to the current game rules instance.

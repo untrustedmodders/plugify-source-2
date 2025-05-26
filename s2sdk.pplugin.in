@@ -15778,6 +15778,17 @@
       }
     },
     {
+      "name": "GetGameRulesProxy",
+      "group": "Gamerules",
+      "description": "Retrieves the pointer to the current game rules proxy instance.",
+      "funcName": "GetGameRulesProxy",
+      "paramTypes": [],
+      "retType": {
+        "type": "ptr64",
+        "description": "A pointer to the game rules entity instance."
+      }
+    },
+    {
       "name": "GetGameRules",
       "group": "Gamerules",
       "description": "Retrieves the pointer to the current game rules instance.",

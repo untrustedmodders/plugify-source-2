@@ -42,7 +42,6 @@ extern CAppSystemDict* g_pCurrentAppSystem;
 extern INetworkGameServer* g_pNetworkGameServer;
 extern CGlobalVars* gpGlobals;
 extern CGameEntitySystem* g_pGameEntitySystem;
-extern CCSGameRules* g_pGameRules;
 extern CSteamGameServerAPIContext g_SteamAPI;
 
 class CoreConfig;
