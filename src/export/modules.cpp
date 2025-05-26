@@ -30,7 +30,7 @@ extern "C" PLUGIN_API void* GetModule(const plg::string& name) {
  * @return A pointer to the virtual table.
  */
 extern "C" PLUGIN_API void* GetModuleVirtualTableByName(Module* module, const plg::string& tableName, bool decorated) {
-	return module->GetVirtualTableByName(tableName, decorated);
+	return module->GetVirtualTableByName(tableName, decorated).GetPtr();
 }
 
 /**
@@ -41,7 +41,7 @@ extern "C" PLUGIN_API void* GetModuleVirtualTableByName(Module* module, const pl
  * @return A pointer to the function.
  */
 extern "C" PLUGIN_API void* GetModuleFunctionByName(Module* module, const plg::string& functionName) {
-	return module->GetFunctionByName(functionName);
+	return module->GetFunctionByName(functionName).GetPtr();
 }
 
 /**
@@ -54,12 +54,12 @@ extern "C" PLUGIN_API void* GetModuleFunctionByName(Module* module, const plg::s
 extern "C" PLUGIN_API plg::string GetModuleSectionNameByName(Module* module, const plg::string& sectionName) {
 	auto section = module->GetSectionByName(sectionName);
 
-	if (!section.IsSectionValid()) {
+	if (!section || !section->IsValid()) {
 		S2_LOGF(LS_WARNING, "Failed to get the module section by '{}' name.\n", sectionName);
 		return {};
 	}
 
-	return section.m_svSectionName;
+	return section->m_svSectionName;
 }
 
 /**
@@ -72,12 +72,12 @@ extern "C" PLUGIN_API plg::string GetModuleSectionNameByName(Module* module, con
 extern "C" PLUGIN_API void* GetModuleSectionBaseByName(Module* module, const plg::string& sectionName) {
 	auto section = module->GetSectionByName(sectionName);
 
-	if (!section.IsSectionValid()) {
+	if (!section || !section->IsValid()) {
 		S2_LOGF(LS_WARNING, "Failed to get the module section base by '{}' name.\n", sectionName);
 		return nullptr;
 	}
 
-	return section.m_pSectionBase;
+	return section->m_pBase.GetPtr();
 }
 
 /**
@@ -90,12 +90,12 @@ extern "C" PLUGIN_API void* GetModuleSectionBaseByName(Module* module, const plg
 extern "C" PLUGIN_API uint64_t GetModuleSectionSizeByName(Module* module, const plg::string& sectionName) {
 	auto section = module->GetSectionByName(sectionName);
 
-	if (!section.IsSectionValid()) {
+	if (!section || !section->IsValid()) {
 		S2_LOGF(LS_WARNING, "Failed to get the module section size by '{}' name.\n", sectionName);
 		return 0;
 	}
 
-	return section.m_nSectionSize;
+	return static_cast<uint64_t>(section->m_nSectionSize);
 }
 
 /**
@@ -115,7 +115,7 @@ extern "C" PLUGIN_API void* GetModuleHandle(Module* module) {
  * @return A pointer to the module base address.
  */
 extern "C" PLUGIN_API void* GetModuleBase(Module* module) {
-	return module->GetBase();
+	return module->GetBase().GetPtr();
 }
 
 /**
