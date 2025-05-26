@@ -269,6 +269,7 @@ GetGameConfigOffset
 GetGameConfigAddress
 GetGameConfigMemSig
 
+GetGameRulesProxy
 GetGameRules
 TerminateRound
 

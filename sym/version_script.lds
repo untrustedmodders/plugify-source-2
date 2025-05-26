@@ -271,6 +271,7 @@
         GetGameConfigAddress;
         GetGameConfigMemSig;
 
+        GetGameRulesProxy;
         GetGameRules;
         TerminateRound;
 
