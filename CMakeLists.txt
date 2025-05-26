@@ -101,7 +101,7 @@ elseif(LINUX)
             ${COMPILE_DEFINITIONS}
             S2SDK_PLATFORM="linuxsteamrt64"
             S2SDK_ROOT_BINARY="/bin/linuxsteamrt64/"
-            S2SDK_GAME_BINARY="/bin/linuxsteamrt64/../../csgo/bin/linuxsteamrt64//" # Metamod hack
+            S2SDK_GAME_BINARY="/bin/linuxsteamrt64/../../csgo/bin/linuxsteamrt64/" # Metamod hack
     )
 endif()
 
