@@ -184,7 +184,7 @@ Memory GameConfig::GetAddress(std::string_view name) const {
 const Module* GameConfig::GetModule(std::string_view name) const {
 	const std::string_view library = GetLibrary(name);
 	if (library.empty())
-		return {};
+		return nullptr;
 
 	return g_GameConfigManager.GetModule(library);
 }
