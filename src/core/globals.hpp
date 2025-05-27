@@ -37,7 +37,7 @@ class CCSPlayerController;
 class CBaseEntity;
 class CCSGameRulesProxy;
 class CHostStateMgr;
-class CHostStateRequest;
+struct CHostStateRequest;
 
 inline IGameEventSystem* g_pGameEventSystem = nullptr;
 inline IGameEventManager2* g_pGameEventManager = nullptr;
