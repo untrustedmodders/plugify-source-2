@@ -1,5 +1,33 @@
 # Changelog
 
+## [1.3.0](https://github.com/untrustedmodders/plugify-source-2/compare/v1.2.1...v1.3.0) (2025-05-27)
+
+
+### Features
+
+* add `GetGameRulesProxy` method ([b65b162](https://github.com/untrustedmodders/plugify-source-2/commit/b65b162ea9f859c7bde3b6a9c52b3c330807541a))
+
+
+### Bug Fixes
+
+* add `GetGameRulesProxy` method to export maps ([6e55fbb](https://github.com/untrustedmodders/plugify-source-2/commit/6e55fbbd7476dba8f7708d0ac718f597b9c89610))
+* add export symbols ([3ee3868](https://github.com/untrustedmodders/plugify-source-2/commit/3ee3868e5ca22e16b5370286f18eee17c131f7d5))
+* add missing param to QueryInterface ([42e1ba4](https://github.com/untrustedmodders/plugify-source-2/commit/42e1ba4348a8dd4e4b519db9d6c427e3f06ff703))
+* add missing symbols ([5d51b0b](https://github.com/untrustedmodders/plugify-source-2/commit/5d51b0ba0e46a81cbd42d69fa1ed262e8d32a6f9))
+* **CMake - Linux:** update `S2SDK_GAME_BINARY` value ([3ac3624](https://github.com/untrustedmodders/plugify-source-2/commit/3ac3624ea8237bdc89eee4ea31f5b656eebf14cd))
+* declare `CHostStateRequest` as sturcture ([ceed97d](https://github.com/untrustedmodders/plugify-source-2/commit/ceed97de5a866901053d8792a2d209533ab7363c))
+* fix multi-addon and more ([47d5b2e](https://github.com/untrustedmodders/plugify-source-2/commit/47d5b2e531929cdbd768f5bdd71bdce0b5d4e54e))
+* **GameData - Linux:** update `CSource2Server::Init` signature ([bf56349](https://github.com/untrustedmodders/plugify-source-2/commit/bf563493020b3beac98df3c6e935196690abd190))
+* just mark the entity as state changed without chain offset ([c67a436](https://github.com/untrustedmodders/plugify-source-2/commit/c67a436e0288306cc908b18a7851d34513154b62))
+* **Linux:** update DynLibUtils module ([59a4de5](https://github.com/untrustedmodders/plugify-source-2/commit/59a4de5b2c7bc45ca55623713e3aefd0b8465f68))
+* move fatal logs to warning level ([09ad23a](https://github.com/untrustedmodders/plugify-source-2/commit/09ad23abd912388a4c0b68b58052ea697dda4171))
+* update `AppSystemCreateInterfaceFn` signature ([df3d6fd](https://github.com/untrustedmodders/plugify-source-2/commit/df3d6fd84791bd057d426645081f0a5aec26fbdf))
+* update `GameConfig::GetModule` default return value ([7b73784](https://github.com/untrustedmodders/plugify-source-2/commit/7b737849fcf047d2387df12a785d4c279de96140))
+* update DynLibUtils module ([1b4ed31](https://github.com/untrustedmodders/plugify-source-2/commit/1b4ed3190dac73c53c569a2cf27cee18e89cab19))
+* update DynLibUtils module (2) ([e11f613](https://github.com/untrustedmodders/plugify-source-2/commit/e11f613aa5d744959f98ee49b985e735c2453db2))
+* **Windows:** correct `CModule::InitFromName` method ([9a1106a](https://github.com/untrustedmodders/plugify-source-2/commit/9a1106ab83702f21e48cff1d367dfc016fcbb00a))
+* **Windows:** fix `GetVirtualTableByName` method ([510e9ba](https://github.com/untrustedmodders/plugify-source-2/commit/510e9baf41d692cf9917dc3b7e0030ccec97760c))
+
 ## [1.2.1](https://github.com/untrustedmodders/plugify-source-2/compare/v1.2.0...v1.2.1) (2025-05-04)
 
 
