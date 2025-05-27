@@ -77,7 +77,7 @@ extern "C" PLUGIN_API void* GetModuleSectionBaseByName(Module* module, const plg
 		return nullptr;
 	}
 
-	return section->m_pBase.GetPtr();
+	return section->GetPtr();
 }
 
 /**
