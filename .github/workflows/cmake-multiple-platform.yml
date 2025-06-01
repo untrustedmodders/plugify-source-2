@@ -70,12 +70,11 @@ jobs:
       - name: Clean build directory
         shell: pwsh
         run: |
-          New-Item -ItemType Directory -Force -Path build/output/configs
-          New-Item -ItemType Directory -Force -Path build/output/gamedata
           New-Item -ItemType Directory -Force -Path build/output/bin
-          Move-Item -Force -Path build/gamedata.jsonc -Destination build/output/gamedata
           Move-Item -Force -Path build/${{ env.BUILD_TYPE }}/s2sdk.dll -Destination build/output/bin
           Move-Item -Force -Path build/s2sdk.pplugin -Destination build/output
+          Move-Item -Force -Path build/gamedata.jsonc -Destination build/output
+          Move-Item -Force -Path build/settings.jsonc -Destination build/output
 
       - uses: actions/upload-artifact@v4
         with:
@@ -111,12 +110,11 @@ jobs:
 
       - name: Clean build directory
         run: |
-          mkdir -p build/output/configs
-          mkdir -p build/output/gamedata
           mkdir -p build/output/bin
-          mv build/gamedata.jsonc build/output/gamedata
           mv build/libs2sdk.so build/output/bin
           mv build/s2sdk.pplugin build/output
+          mv build/gamedata.jsonc build/output/
+          mv build/settings.jsonc build/output/
 
       - uses: actions/upload-artifact@v4
         with:
