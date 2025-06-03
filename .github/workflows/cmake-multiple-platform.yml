@@ -249,8 +249,8 @@ jobs:
                 return data
             
             data = load_json_from_url(json_url)
-            data = append_new_version(data, version_tag, checksum_windows, package_name, "windows")
-            data = append_new_version(data, version_tag, checksum_linux, package_name, "linux")
+            data = append_new_version(data, version_tag, checksum_windows, package_name, "windows-x64")
+            data = append_new_version(data, version_tag, checksum_linux, package_name, "steamrt-x64")
             save_json('build/repo/s2sdk.json', data)
 
       - name: Upload artifact
