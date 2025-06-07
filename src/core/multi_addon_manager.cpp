@@ -267,7 +267,7 @@ bool MultiAddonManager::AddAddon(uint64_t addon, bool refresh) {
 	m_extraAddons.emplace_back(addon);
 
 	// Update the convar to reflect the new addon list, but don't trigger the callback
-	//s2_extra_addons.GetConVarData()->Value(0)->m_StringValue = utils::vector_to_string(m_extraAddons).c_str();
+	s2_extra_addons.GetConVarData()->Value(0)->m_StringValue = utils::vector_to_string(m_extraAddons).c_str();
 	S2_LOGF(LS_MESSAGE, "Clearing client cache due to addons changing");
 
 	if (refresh) {
@@ -290,7 +290,7 @@ bool MultiAddonManager::RemoveAddon(uint64_t addon, bool refresh) {
 	m_extraAddons.erase(it);
 
 	// Update the convar to reflect the new addon list, but don't trigger the callback
-	//s2_extra_addons.GetConVarData()->Value(0)->m_StringValue = utils::vector_to_string(m_extraAddons).c_str();
+	s2_extra_addons.GetConVarData()->Value(0)->m_StringValue = utils::vector_to_string(m_extraAddons).c_str();
 
 	S2_LOGF(LS_MESSAGE, "Clearing client cache due to addons changing");
 
@@ -355,7 +355,7 @@ void MultiAddonManager::AddClientAddon(uint64_t addon, uint64 steamID64, bool re
 		}
 
 		m_globalClientAddons.emplace_back(addon);
-		//s2_client_extra_addons.GetConVarData()->Value(0)->m_StringValue = utils::vector_to_string(m_globalClientAddons).c_str();
+		s2_client_extra_addons.GetConVarData()->Value(0)->m_StringValue = utils::vector_to_string(m_globalClientAddons).c_str();
 	} else {
 		ClientAddonInfo& clientInfo = g_ClientAddons[steamID64];
 
@@ -415,7 +415,7 @@ void MultiAddonManager::RemoveClientAddon(uint64_t addon, uint64 steamID64) {
 		if (it != m_globalClientAddons.end()) {
 			m_globalClientAddons.erase(it);
 		}
-		//s2_client_extra_addons.GetConVarData()->Value(0)->m_StringValue = utils::vector_to_string(m_globalClientAddons).c_str();
+		s2_client_extra_addons.GetConVarData()->Value(0)->m_StringValue = utils::vector_to_string(m_globalClientAddons).c_str();
 	} else {
 		ClientAddonInfo& clientInfo = g_ClientAddons[steamID64];
 		auto it = std::find(clientInfo.addonsToLoad.begin(), clientInfo.addonsToLoad.end(), addon);
@@ -428,7 +428,7 @@ void MultiAddonManager::RemoveClientAddon(uint64_t addon, uint64 steamID64) {
 void MultiAddonManager::ClearClientAddons(uint64 steamID64) {
 	if (!steamID64) {
 		m_globalClientAddons.clear();
-		//s2_client_extra_addons.GetConVarData()->Value(0)->m_StringValue = utils::vector_to_string(m_globalClientAddons).c_str();
+		s2_client_extra_addons.GetConVarData()->Value(0)->m_StringValue = utils::vector_to_string(m_globalClientAddons).c_str();
 	} else {
 		ClientAddonInfo& clientInfo = g_ClientAddons[steamID64];
 		clientInfo.addonsToLoad.clear();
