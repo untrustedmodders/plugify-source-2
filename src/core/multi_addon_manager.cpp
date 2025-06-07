@@ -447,7 +447,7 @@ std::vector<uint64_t> MultiAddonManager::GetClientAddons(uint64 steamID64) {
 	// The list of mounted addons should never contain the workshop map.
 	auto addons = m_mountedAddons;
 
-	if (!m_currentWorkshopMap) {
+	if (m_currentWorkshopMap) {
 		addons.insert(addons.begin(), m_currentWorkshopMap);
 	}
 
