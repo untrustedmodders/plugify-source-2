@@ -6,7 +6,7 @@ double universalTime = 0.0f;
 double timerNextThink = 0.0f;
 const double engineFixedTickInterval = 0.015625;
 
-void TimerSystem::OnLevelShutdown() {
+void TimerSystem::OnChangeLevel() {
 	RemoveMapChangeTimers();
 
 	m_hasMapSimulated = false;

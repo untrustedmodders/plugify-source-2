@@ -1,11 +1,8 @@
 #pragma once
 
 #include <core/sdk/utils.h>
-#include <dynlibutils/memaddr.hpp>
-#include <dynlibutils/module.hpp>
-
-using Memory = DynLibUtils::CMemory;
-using Module = DynLibUtils::CModule;
+#include <plugify/assembly.hpp>
+#include <plugify/mem_addr.hpp>
 
 class GameConfig {
 	friend class GameConfigManager;
@@ -22,10 +19,10 @@ public:
 	std::string_view GetSymbol(std::string_view name) const;
 	std::string_view GetPatch(std::string_view name) const;
 	int32_t GetOffset(std::string_view name) const;
-	Memory GetAddress(std::string_view name) const;
-	const Module* GetModule(std::string_view name) const;
+	plugify::MemAddr GetAddress(std::string_view name) const;
+	const plugify::Assembly* GetModule(std::string_view name) const;
 	bool IsSymbol(std::string_view name) const;
-	Memory ResolveSignature(std::string_view name) const;
+	plugify::MemAddr ResolveSignature(std::string_view name) const;
 
 private:
 	struct AddressConf {
@@ -53,11 +50,11 @@ public:
 	uint32_t LoadGameConfigFile(plg::vector<plg::string> paths);
 	void CloseGameConfigFile(uint32_t id);
 	GameConfig* GetGameConfig(uint32_t id);
-	Module* GetModule(std::string_view name);
+	plugify::Assembly* GetModule(std::string_view name);
 
 private:
 	std::unordered_map<uint32_t, GameConfig> m_configs;
-	std::unordered_map<plg::string, Module, utils::string_hash, std::equal_to<>> m_modules;
+	std::unordered_map<plg::string, plugify::Assembly, utils::string_hash, std::equal_to<>> m_modules;
 	static inline uint32_t s_nextId = static_cast<uint32_t>(-1);
 };
 

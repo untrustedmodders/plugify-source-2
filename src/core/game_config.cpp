@@ -3,9 +3,8 @@
 #include <core/sdk/utils.h>
 #include <plugify-configs/plugify-configs.hpp>
 
-#if S2SDK_PLATFORM_LINUX
-#include <link.h>
-#endif
+static plugify::LoadFlag defaultFlags = plugify::LoadFlag::Noload | plugify::LoadFlag::Lazy | plugify::LoadFlag::DontResolveDllReferences;
+static plugify::Assembly::SearchDirs noDirs{};
 
 GameConfig::GameConfig(plg::string game, plg::vector<plg::string> paths) : m_gameDir(std::move(game)), m_paths(std::move(paths)) {
 }
@@ -136,9 +135,9 @@ std::string_view GameConfig::GetLibrary(std::string_view name) const {
 }
 
 // memory addresses below 0x10000 are automatically considered invalid for dereferencing
-#define VALID_MINIMUM_MEMORY_ADDRESS Memory(0x10000)
+constexpr plugify::MemAddr VALID_MINIMUM_MEMORY_ADDRESS(0x10000);
 
-Memory GameConfig::GetAddress(std::string_view name) const {
+plugify::MemAddr GameConfig::GetAddress(std::string_view name) const {
 	auto it = m_addresses.find(name);
 	if (it == m_addresses.end())
 		return {};
@@ -164,7 +163,7 @@ Memory GameConfig::GetAddress(std::string_view name) const {
 
 			addr.OffsetSelf(offset)
 					.OffsetSelf(sizeof(int32_t))
-					.OffsetSelf(target.Get<int32_t>());
+					.OffsetSelf(target.GetValue<int32_t>());
 		} else {
 			addr.OffsetSelf(offset);
 
@@ -178,7 +177,7 @@ Memory GameConfig::GetAddress(std::string_view name) const {
 	return addr;
 }
 
-const Module* GameConfig::GetModule(std::string_view name) const {
+const plugify::Assembly* GameConfig::GetModule(std::string_view name) const {
 	const std::string_view library = GetLibrary(name);
 	if (library.empty())
 		return nullptr;
@@ -206,14 +205,14 @@ std::string_view GameConfig::GetSymbol(std::string_view name) const {
 	return symbol.substr(1);
 }
 
-Memory GameConfig::ResolveSignature(std::string_view name) const {
+plugify::MemAddr GameConfig::ResolveSignature(std::string_view name) const {
 	auto module = GetModule(name);
 	if (!module) {
 		S2_LOGF(LS_WARNING, "Invalid module: {}\n", name);
 		return {};
 	}
 
-	Memory address;
+	plugify::MemAddr address;
 
 	if (IsSymbol(name)) {
 		const std::string_view symbol = GetSymbol(name);
@@ -230,7 +229,7 @@ Memory GameConfig::ResolveSignature(std::string_view name) const {
 			return {};
 		}
 
-		address = module->FindPattern(DynLibUtils::ParsePattern(signature));
+		address = module->FindPattern(signature);
 	}
 
 	if (!address) {
@@ -243,12 +242,12 @@ Memory GameConfig::ResolveSignature(std::string_view name) const {
 
 GameConfigManager::GameConfigManager() {
 	// metamod workaround
-	if (Module("metamod.2.cs2").GetHandle() != nullptr) {
-		m_modules.emplace("engine2", Module(utils::GameDirectory() + S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "engine2"));
-		m_modules.emplace("server", Module(utils::GameDirectory() + S2SDK_GAME_BINARY S2SDK_LIBRARY_PREFIX "server"));
+	if (plugify::Assembly("metamod.2.cs2").GetHandle() != nullptr) {
+		m_modules.try_emplace("engine2", utils::GameDirectory() + S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "engine2", defaultFlags, noDirs, true);
+		m_modules.try_emplace("server",  utils::GameDirectory() + S2SDK_GAME_BINARY S2SDK_LIBRARY_PREFIX "server", defaultFlags, noDirs, true);
 	} else {
-		m_modules.emplace("engine2", Module("engine2"));
-		m_modules.emplace("server", Module("server"));
+		m_modules.try_emplace("engine2", "engine2", defaultFlags, noDirs, true);
+		m_modules.try_emplace("server", "server", defaultFlags, noDirs, true);
 	}
 	// add more for preload
 }
@@ -289,19 +288,15 @@ GameConfig* GameConfigManager::GetGameConfig(uint32_t id) {
 	return nullptr;
 }
 
-Module* GameConfigManager::GetModule(std::string_view name) {
+plugify::Assembly* GameConfigManager::GetModule(std::string_view name) {
 	auto it = m_modules.find(name);
 	if (it != m_modules.end()) {
-		return &std::get<Module>(*it);
+		return &std::get<plugify::Assembly>(*it);
 	}
 
 	auto system = globals::FindModule(name);
 	if (system != nullptr) {
-#if S2SDK_PLATFORM_LINUX
-		return &m_modules.emplace(name, Module(reinterpret_cast<link_map*>(system)->l_addr)).first->second;
-#else
-		return &m_modules.emplace(name, Module(system)).first->second;
-#endif
+		return &m_modules.try_emplace(name, plugify::Assembly::Handle{system}, defaultFlags, noDirs, true).first->second;
 	}
 
 	return nullptr;

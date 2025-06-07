@@ -7,10 +7,7 @@
 #include <core/sdk/utils.h>
 #include <core/sdk/virtual.h>
 
-#include <dynlibutils/module.hpp>
-
 #include <IEngineSound.h>
-#include <ISmmPlugin.h>
 #include <engine/igameeventsystem.h>
 #include <igameevents.h>
 #include <igamesystemfactory.h>
@@ -22,7 +19,6 @@
 		return; \
 	} \
 
-IMetamodListener* g_pMetamodListener = nullptr;
 std::unique_ptr<CoreConfig> g_pCoreConfig = nullptr;
 std::unique_ptr<GameConfig> g_pGameConfig = nullptr;
 
@@ -76,14 +72,6 @@ namespace globals {
 		g_pNetworkMessages = static_cast<INetworkMessages*>(QueryInterface("networksystem", NETWORKMESSAGES_INTERFACE_VERSION));
 
 		ConVar_Register(FCVAR_RELEASE | FCVAR_SERVER_CAN_EXECUTE | FCVAR_GAMEDLL);
-
-		Module plugify("plugify");
-
-		using IMetamodListenerFn = IMetamodListener* (*) ();
-		auto Plugify_ImmListener = plugify.GetFunctionByName("Plugify_ImmListener");
-		if (Plugify_ImmListener) {
-			g_pMetamodListener = Plugify_ImmListener.CCast<IMetamodListenerFn>()();
-		}
 
 		// load more if needed
 		RESOLVE_SIG(g_pGameConfig, "LegacyGameEventListener", addresses::GetLegacyGameEventListener);

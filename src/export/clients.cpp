@@ -34,7 +34,7 @@ extern "C" PLUGIN_API int GetPlayerSlotFromEntityPointer(CBaseEntity* entity) {
 }
 
 extern "C" PLUGIN_API CEntityInstance* GetEntityPointerFromPlayerSlot(int playerSlot) {
-	CUtlVector<CServerSideClientBase *>* pClients = utils::GetClientList();
+	CUtlClientVector* pClients = utils::GetClientList();
 	if (!pClients || !(0 <= playerSlot && playerSlot < pClients->Count())) {
 		return nullptr;
 	}
@@ -52,7 +52,7 @@ extern "C" PLUGIN_API CEntityInstance* GetEntityPointerFromPlayerSlot(int player
  * @return A pointer to the client object if found, otherwise nullptr.
  */
 extern "C" PLUGIN_API void* GetClientBaseFromPlayerSlot(int playerSlot) {
-	CUtlVector<CServerSideClientBase *>* pClients = utils::GetClientList();
+	CUtlClientVector* pClients = utils::GetClientList();
 	if (!pClients || !(0 <= playerSlot && playerSlot < pClients->Count())) {
 		return nullptr;
 	}
@@ -70,12 +70,12 @@ extern "C" PLUGIN_API void* GetClientBaseFromPlayerSlot(int playerSlot) {
  * @return The player slot if found, otherwise -1.
  */
 extern "C" PLUGIN_API int GetPlayerSlotFromClientBase(CServerSideClient* client) {
-	CUtlVector<CServerSideClientBase *>* pClients = utils::GetClientList();
+	CUtlClientVector* pClients = utils::GetClientList();
 	if (!pClients) {
 		return -1;
 	}
 	
-	if (pClients->Find(client) != -1) {
+	if (pClients->Find(client) != INVALID_PLAYER_SLOT) {
 		return client->GetPlayerSlot();
 	}
 
@@ -83,7 +83,7 @@ extern "C" PLUGIN_API int GetPlayerSlotFromClientBase(CServerSideClient* client)
 }
 
 extern "C" PLUGIN_API int GetClientIndexFromPlayerSlot(int playerSlot) {
-	CUtlVector<CServerSideClientBase *>* pClients = utils::GetClientList();
+	CUtlClientVector* pClients = utils::GetClientList();
 	if (!pClients || !(0 <= playerSlot && playerSlot < pClients->Count())) {
 		return 0;
 	}

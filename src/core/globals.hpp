@@ -79,14 +79,6 @@ namespace globals {
 	void* QueryInterface(std::string_view module, std::string_view name);
 }// namespace globals
 
-namespace DynLibUtils {
-	class CMemory;
-	class CModule;
-}// namespace DynLibUtils
-
-using Memory = DynLibUtils::CMemory;
-using Module = DynLibUtils::CModule;
-
 class CPlayer_WeaponServices;
 class IEntityFindFilter;
 class IRecipientFilter;

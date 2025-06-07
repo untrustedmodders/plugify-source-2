@@ -7,8 +7,6 @@
 #include <iserver.h>
 #include <steam_gameserver.h>
 
-#include <ISmmPlugin.h>
-
 #include "core_config.hpp"
 #include "con_command_manager.hpp"
 #include "con_var_manager.hpp"
@@ -79,11 +77,6 @@ void Source2SDK::OnPluginStart() {
 	g_PH.AddHookMemFunc(&IGameEventManager2::FireEvent, g_pGameEventManager, Hook_FireEvent, Pre, Post);
 	using PostEventAbstract = void(IGameEventSystem::*)(CSplitScreenSlot nSlot, bool bLocalOnly, IRecipientFilter *pFilter, INetworkMessageInternal *pEvent, const CNetMessage *pData, unsigned long nSize);
 	g_PH.AddHookMemFunc<PostEventAbstract>(&IGameEventSystem::PostEventAbstract, g_pGameEventSystem, Hook_PostEvent, Pre, Post);
-
-	if (g_pMetamodListener != nullptr) {
-		g_PH.AddHookMemFunc(&IMetamodListener::OnLevelInit, g_pMetamodListener, Hook_OnLevelInit, Post);
-		g_PH.AddHookMemFunc(&IMetamodListener::OnLevelShutdown, g_pMetamodListener, Hook_OnLevelShutdown, Post);
-	}
 
 	g_PH.AddHookMemFunc(&IServerGameClients::ClientCommand, g_pSource2GameClients, Hook_ClientCommand, Pre);
 	g_PH.AddHookMemFunc(&IServerGameClients::ClientActive, g_pSource2GameClients, Hook_ClientActive, Post);
@@ -201,6 +194,7 @@ poly::ReturnAction Source2SDK::Hook_SpawnServer(poly::IHook& hook, poly::Params&
 
 poly::ReturnAction Source2SDK::Hook_ChangeLevel(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	//S2_LOGF(LS_DEBUG, "[FinishChangeLevel]\n");
+	g_TimerSystem.OnChangeLevel();
 
 	GetOnChangeLevelListenerManager().Notify();
 
@@ -242,21 +236,6 @@ poly::ReturnAction Source2SDK::Hook_PostEvent(poly::IHook& hook, poly::Params& p
 
 	return poly::ReturnAction::Ignored;
 }
-
-poly::ReturnAction Source2SDK::Hook_OnLevelInit(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
-	auto pMapName = poly::GetArgument<const char*>(params, 1);
-	auto pMapEntities = poly::GetArgument<const char*>(params, 2);
-	//S2_LOGF(LS_DEBUG, "[OnLevelInit] = {}\n", pMapName);
-	GetOnLevelInitListenerManager().Notify(pMapName, pMapEntities);
-	return poly::ReturnAction::Ignored;
-};
-
-poly::ReturnAction Source2SDK::Hook_OnLevelShutdown(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
-	S2_LOG(LS_DEBUG, "[OnLevelShutdown]\n");
-	g_TimerSystem.OnLevelShutdown();
-	GetOnLevelShutdownListenerManager().Notify();
-	return poly::ReturnAction::Ignored;
-};
 
 poly::ReturnAction Source2SDK::Hook_GameFrame(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	// bool simulating, bool bFirstTick, bool bLastTick
