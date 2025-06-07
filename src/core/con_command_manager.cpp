@@ -3,7 +3,6 @@
 #include "core_config.hpp"
 
 #include <core/sdk/entity/cbaseplayercontroller.h>
-#include <core/sdk/entity/ccsplayercontroller.h>
 #include <core/sdk/utils.h>
 
 #include <icvar.h>

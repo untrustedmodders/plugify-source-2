@@ -258,10 +258,6 @@ public:
 		addresses::CBaseEntity_SetMoveType(this, nMoveType, m_MoveCollide);
 	}
 
-	void SetGroundEntity(CBaseEntity* pGround) {
-		addresses::SetGroundEntity(this, pGround, nullptr);
-	}
-
 	const char* GetName() const { return m_pEntity->m_name.String(); }
 };
 

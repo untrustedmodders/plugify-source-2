@@ -28,16 +28,25 @@ class INetworkGameServer;
 class CGlobalVars;
 class CGameEntitySystem;
 class IGameEventListener2;
-class CCSGameRules;
 class CEntitySystem;
 
 class CEntityInstance;
 class CBasePlayerController;
-class CCSPlayerController;
 class CBaseEntity;
-class CCSGameRulesProxy;
 class CHostStateMgr;
 struct CHostStateRequest;
+class CGameRules;
+#if defined(CS2)
+class CCSGameRules;
+class CCSGameRulesProxy;
+using CBaseGameRules = CCSGameRules;
+using CBaseGameRulesProxy = CCSGameRulesProxy;
+#elif defined(DEADLOCK)
+class CCitadelGameRules;
+class CCitadelGameRulesProxy;
+using CBaseGameRules = CCitadelGameRules;
+using CBaseGameRulesProxy = CCitadelGameRulesProxy;
+#endif
 
 inline IGameEventSystem* g_pGameEventSystem = nullptr;
 inline IGameEventManager2* g_pGameEventManager = nullptr;
@@ -45,8 +54,8 @@ inline CAppSystemDict* g_pCurrentAppSystem = nullptr;
 inline INetworkGameServer* g_pNetworkGameServer = nullptr;
 inline CGlobalVars* gpGlobals = nullptr;
 inline CGameEntitySystem* g_pGameEntitySystem = nullptr;
-inline CCSGameRules* g_pGameRules = nullptr;
-inline CCSGameRulesProxy* g_pGameRulesProxy = nullptr;
+inline CBaseGameRules* g_pGameRules = nullptr;
+inline CBaseGameRulesProxy* g_pGameRulesProxy = nullptr;
 //inline ISteamHTTP* g_http = nullptr;
 inline CSteamGameServerAPIContext g_SteamAPI = {};
 
@@ -79,16 +88,12 @@ using Memory = DynLibUtils::CMemory;
 using Module = DynLibUtils::CModule;
 
 class CPlayer_WeaponServices;
-class CCSWeaponBaseVData;
 class IEntityFindFilter;
-class CEntitySystem;
-class CCSPlayerPawn;
 class IRecipientFilter;
 struct EmitSound_t;
 struct SndOpEventGuid_t;
 class CEntityKeyValues;
 class CBaseModelEntity;
-class CGameRules;
 class CTakeDamageInfo;
 class INetworkStringTable;
 class CBasePlayerPawn;
@@ -96,19 +101,12 @@ class CBasePlayerWeapon;
 class CServerSideClient;
 class CServerSideClientBase;
 class CNetMessage;
+class CCSWeaponBaseVData;
 
 namespace addresses {
 	inline IGameEventListener2* (*GetLegacyGameEventListener)(CPlayerSlot slot);
 
-	//inline void (*TracePlayerBBox)(const Vector& start, const Vector& end, const bbox_t& bounds, CTraceFilterS2* filter, trace_t_s2& pm);
-
-	inline void (*CCSPlayer_WeaponServices_RemoveItem)(CPlayer_WeaponServices* player, CBasePlayerWeapon* weapon);
-
-	inline CCSWeaponBaseVData* (*GetCSWeaponDataFromKey)(int, const char*);
-
-	inline void (*CCSPlayerController_SwitchTeam)(CCSPlayerController* controller, int team);
-
-	inline void (*CBasePlayerController_SetPawn)(CBasePlayerController* controller, CCSPlayerPawn* pawn, bool, bool);
+	inline void (*CBasePlayerController_SetPawn)(CBasePlayerController* controller, CBasePlayerPawn* pawn, bool, bool);
 
 	inline CEntityInstance* (*CGameEntitySystem_FindEntityByClassName)(CEntitySystem* pEntitySystem, CEntityInstance* pStartEntity, const char* szName);
 
@@ -118,17 +116,11 @@ namespace addresses {
 
 	inline void (*DispatchSpawn)(CEntityInstance* pEntity, CEntityKeyValues* pEntityKeyValues);
 
-	inline void (*SetGroundEntity)(CBaseEntity* ent, CBaseEntity* ground, CBaseEntity* unk3);
-
 	inline void (*CBaseModelEntity_SetModel)(CBaseModelEntity* pModel, const char* szModel);
 
 	inline void (*UTIL_Remove)(CEntityInstance*);
 
-	inline void (*CEntitySystem_AddEntityIOEvent)(CEntitySystem* pEntitySystem, CEntityInstance* pTarget, const char* pszInput, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, float flDelay, int outputID);
-
 	inline void (*CEntityInstance_AcceptInput)(CEntityInstance* pThis, const char* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID);
-
-	inline void (*CGameRules_TerminateRound)(CGameRules* pGameRules, float delay, unsigned int reason, int64 a4, unsigned int a5);
 
 	inline void (*CEntityIdentity_SetEntityName)(CEntityIdentity* pEntity, const char* pName);
 
@@ -144,7 +136,16 @@ namespace addresses {
 
 	inline void (*CNetworkStringTable_DeleteAllStrings)(INetworkStringTable* pThis);
 
-	//inline void (*TracePlayerBBox)(const Vector& start, const Vector& end, const bbox_t& bounds, CTraceFilterS2* filter, trace_t_s2& pm);
+	// cs go
+
+	inline void (*CCSPlayer_WeaponServices_RemoveItem)(CPlayer_WeaponServices* player, CBasePlayerWeapon* weapon);
+
+	inline void (*CCSPlayerController_SwitchTeam)(CBasePlayerController* controller, int team);
+
+	inline void (*CGameRules_TerminateRound)(CGameRules* pGameRules, float delay, unsigned int reason, int64 a4, unsigned int a5);
+
+	inline CCSWeaponBaseVData* (*GetCSWeaponDataFromKey)(int, const char*);
+
 }// namespace addresses
 
 using HostStateRequestFn = void* (*)(CHostStateMgr *pMgrDoNotUse, CHostStateRequest* pRequest);

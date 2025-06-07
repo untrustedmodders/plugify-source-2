@@ -8,8 +8,8 @@
 
 #include "event_listener.hpp"
 #include "server_manager.hpp"
-#include "sdk/entity/ccsplayercontroller.h"
-#include "sdk/entity/recipientfilters.h"
+#include <core/sdk/entity/cplayercontroller.h>
+#include <core/sdk/entity/recipientfilters.h>
 
 void CPanoramaVoteHandler::Reset() {
 	m_voteInProgress = false;
@@ -36,7 +36,7 @@ void CPanoramaVoteHandler::VoteCast(IGameEvent *event) {
 		return;
 
 	if (m_voteHandler != nullptr) {
-		CCSPlayerController* controller = static_cast<CCSPlayerController*>(event->GetPlayerController("userid"));
+		CPlayerController* controller = static_cast<CPlayerController*>(event->GetPlayerController("userid"));
 		if (!controller)
 			return;
 

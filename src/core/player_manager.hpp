@@ -38,10 +38,10 @@ public:
 		m_unauthenticatedSteamID = k_steamIDNil;
 	}
 
-	CCSPlayerController* GetController() const;
+	CBasePlayerController* GetController() const;
 	CBasePlayerPawn* GetCurrentPawn() const;
-	CCSPlayerPawn* GetPlayerPawn() const;
-	CCSObserverPawn* GetObserverPawn() const;
+	CBasePlayerPawn* GetPlayerPawn() const;
+	CBasePlayerPawn* GetObserverPawn() const;
 	CServerSideClientBase* GetClient() const;
 
 	// Returns true if this client has been fully authenticated by Steam

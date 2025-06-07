@@ -1,10 +1,12 @@
 #include <core/player_manager.hpp>
 #include <core/sdk/entity/cbaseentity.h>
 #include <core/sdk/entity/cbaseplayercontroller.h>
-#include <core/sdk/entity/ccsplayercontroller.h>
+#include <core/sdk/entity/cplayercontroller.h>
 #include <core/sdk/utils.h>
 #include <plugify/cpp_plugin.hpp>
 #include <plugin_export.h>
+
+#include <core/sdk/entity/cplayerpawn.h>
 
 PLUGIFY_WARN_PUSH()
 
@@ -433,7 +435,7 @@ extern "C" PLUGIN_API plg::vec3 GetClientEyeAngles(int playerSlot) {
 		return {};
 	}
 
-	const QAngle& ang = static_cast<CCSPlayerPawn*>(pController->GetCurrentPawn())->m_angEyeAngles();
+	const QAngle& ang = static_cast<CPlayerPawn*>(pController->GetCurrentPawn())->m_angEyeAngles();
 	return *reinterpret_cast<const plg::vec3*>(&ang);
 }
 
@@ -457,7 +459,7 @@ extern "C" PLUGIN_API plg::vector<int> ProcessTargetString(int caller, const plg
  * @param team The team index to assign the client to.
  */
 extern "C" PLUGIN_API void ChangeClientTeam(int playerSlot, int team) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
+	auto pController = static_cast<CPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
 		S2_LOGF(LS_WARNING, "Cannot execute 'ChangeClientTeam' on invalid player slot: {}\n", playerSlot);
 		return;
@@ -473,7 +475,7 @@ extern "C" PLUGIN_API void ChangeClientTeam(int playerSlot, int team) {
  * @param team The team index to switch the client to.
  */
 extern "C" PLUGIN_API void SwitchClientTeam(int playerSlot, int team) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
+	auto pController = static_cast<CPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
 		S2_LOGF(LS_WARNING, "Cannot execute 'SwitchClientTeam' on invalid player slot: {}\n", playerSlot);
 		return;
@@ -496,9 +498,9 @@ extern "C" PLUGIN_API void RespawnClient(int playerSlot) {
 
 	if (pController->GetCurrentPawn()->IsAlive()) {
 		// TODO: Fix players spawning under spawn positions
-		static_cast<CCSPlayerPawn*>(pController->GetCurrentPawn())->Respawn();
+		static_cast<CPlayerPawn*>(pController->GetCurrentPawn())->Respawn();
 	} else {
-		static_cast<CCSPlayerController*>(pController)->Respawn();
+		static_cast<CPlayerController*>(pController)->Respawn();
 	}
 }
 
@@ -557,7 +559,7 @@ extern "C" PLUGIN_API void BanIdentity(uint64_t steamId, float duration, bool ki
  * @return The entity handle of the active weapon, or INVALID_EHANDLE_INDEX if the client is invalid or has no active weapon.
  */
 extern "C" PLUGIN_API int GetClientActiveWeapon(int playerSlot) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
+	auto pController = static_cast<CPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
 		S2_LOGF(LS_WARNING, "Cannot execute 'GetClientActiveWeapon' on invalid player slot: {}\n", playerSlot);
 		return INVALID_EHANDLE_INDEX;
@@ -578,7 +580,7 @@ extern "C" PLUGIN_API int GetClientActiveWeapon(int playerSlot) {
  * @return A vector of entity handles for the client's weapons, or an empty vector if the client is invalid or has no weapons.
  */
 extern "C" PLUGIN_API plg::vector<int> GetClientWeapons(int playerSlot) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
+	auto pController = static_cast<CPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
 		S2_LOGF(LS_WARNING, "Cannot execute 'GetClientWeapons' on invalid player slot: {}\n", playerSlot);
 		return {};
@@ -608,7 +610,7 @@ extern "C" PLUGIN_API plg::vector<int> GetClientWeapons(int playerSlot) {
  * @param removeSuit A boolean indicating whether to also remove the client's suit.
  */
 extern "C" PLUGIN_API void StripWeapons(int playerSlot, bool removeSuit) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
+	auto pController = static_cast<CPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
 		S2_LOGF(LS_WARNING, "Cannot execute 'StripWeapons' on invalid player slot: {}\n", playerSlot);
 		return;
@@ -631,7 +633,7 @@ extern "C" PLUGIN_API void StripWeapons(int playerSlot, bool removeSuit) {
  * @param velocity Velocity to toss weapon or zero to just drop weapon.
  */
 extern "C" PLUGIN_API void DropWeapon(int playerSlot, int weaponHandle, const plg::vec3& target, const plg::vec3& velocity) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
+	auto pController = static_cast<CPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
 		S2_LOGF(LS_WARNING, "Cannot execute 'DropWeapon' on invalid player slot: {}\n", playerSlot);
 		return;
@@ -658,7 +660,7 @@ extern "C" PLUGIN_API void DropWeapon(int playerSlot, int weaponHandle, const pl
  * @param weaponHandle The handle of weapon to bump.
  */
 extern "C" PLUGIN_API void BumpWeapon(int playerSlot, int weaponHandle) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
+	auto pController = static_cast<CPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
 		S2_LOGF(LS_WARNING, "Cannot execute 'SwitchWeapon' on invalid player slot: {}\n", playerSlot);
 		return;
@@ -685,7 +687,7 @@ extern "C" PLUGIN_API void BumpWeapon(int playerSlot, int weaponHandle) {
  * @param weaponHandle The handle of weapon to switch.
  */
 extern "C" PLUGIN_API void SwitchWeapon(int playerSlot, int weaponHandle) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
+	auto pController = static_cast<CPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
 		S2_LOGF(LS_WARNING, "Cannot execute 'SwitchWeapon' on invalid player slot: {}\n", playerSlot);
 		return;
@@ -740,7 +742,7 @@ extern "C" PLUGIN_API void RemoveWeapon(int playerSlot, int weaponHandle) {
  * @return The entity handle of the created item, or INVALID_EHANDLE_INDEX if the client or item is invalid.
  */
 extern "C" PLUGIN_API int GiveNamedItem(int playerSlot, const plg::string& itemName) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
+	auto pController = static_cast<CPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
 		S2_LOGF(LS_WARNING, "Cannot execute 'GiveNamedItem' on invalid player slot: {}\n", playerSlot);
 		return INVALID_EHANDLE_INDEX;
@@ -768,7 +770,7 @@ extern "C" PLUGIN_API int GiveNamedItem(int playerSlot, const plg::string& itemN
  * @return uint64_t The state of the specified button, or 0 if the client or button index is invalid.
  */
 extern "C" PLUGIN_API uint64_t GetClientButtons(int playerSlot, int buttonIndex) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
+	auto pController = static_cast<CPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
 		S2_LOGF(LS_WARNING, "Cannot execute 'GetClientButtons' on invalid player slot: {}\n", playerSlot);
 		return 0;
@@ -794,7 +796,7 @@ extern "C" PLUGIN_API uint64_t GetClientButtons(int playerSlot, int buttonIndex)
  * @return The amount of money the client has, or 0 if the player slot is invalid.
  */
 extern "C" PLUGIN_API int GetClientMoney(int playerSlot) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
+	auto pController = static_cast<CPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
 		S2_LOGF(LS_WARNING, "Cannot execute 'GetClientMoney' on invalid player slot: {}\n", playerSlot);
 		return 0;
@@ -815,7 +817,7 @@ extern "C" PLUGIN_API int GetClientMoney(int playerSlot) {
  * @param money The amount of money to set.
  */
 extern "C" PLUGIN_API void SetClientMoney(int playerSlot, int money) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
+	auto pController = static_cast<CPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
 		S2_LOGF(LS_WARNING, "Cannot execute 'SetClientMoney' on invalid player slot: {}\n", playerSlot);
 		return;
@@ -836,7 +838,7 @@ extern "C" PLUGIN_API void SetClientMoney(int playerSlot, int money) {
  * @return The number of kills the client has, or 0 if the player slot is invalid.
  */
 extern "C" PLUGIN_API int GetClientKills(int playerSlot) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
+	auto pController = static_cast<CPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
 		S2_LOGF(LS_WARNING, "Cannot execute 'GetClientKills' on invalid player slot: {}\n", playerSlot);
 		return 0;
@@ -857,7 +859,7 @@ extern "C" PLUGIN_API int GetClientKills(int playerSlot) {
  * @param kills The number of kills to set.
  */
 extern "C" PLUGIN_API void SetClientKills(int playerSlot, int kills) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
+	auto pController = static_cast<CPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
 		S2_LOGF(LS_WARNING, "Cannot execute 'SetClientKills' on invalid player slot: {}\n", playerSlot);
 		return;
@@ -878,7 +880,7 @@ extern "C" PLUGIN_API void SetClientKills(int playerSlot, int kills) {
  * @return The number of deaths the client has, or 0 if the player slot is invalid.
  */
 extern "C" PLUGIN_API int GetClientDeaths(int playerSlot) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
+	auto pController = static_cast<CPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
 		S2_LOGF(LS_WARNING, "Cannot execute 'GetClientDeaths' on invalid player slot: {}\n", playerSlot);
 		return 0;
@@ -899,7 +901,7 @@ extern "C" PLUGIN_API int GetClientDeaths(int playerSlot) {
  * @param deaths The number of deaths to set.
  */
 extern "C" PLUGIN_API void SetClientDeaths(int playerSlot, int deaths) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
+	auto pController = static_cast<CPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
 		S2_LOGF(LS_WARNING, "Cannot execute 'SetClientDeaths' on invalid player slot: {}\n", playerSlot);
 		return;
@@ -920,7 +922,7 @@ extern "C" PLUGIN_API void SetClientDeaths(int playerSlot, int deaths) {
  * @return The number of assists the client has, or 0 if the player slot is invalid.
  */
 extern "C" PLUGIN_API int GetClientAssists(int playerSlot) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
+	auto pController = static_cast<CPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
 		S2_LOGF(LS_WARNING, "Cannot execute 'GetClientAssists' on invalid player slot: {}\n", playerSlot);
 		return 0;
@@ -941,7 +943,7 @@ extern "C" PLUGIN_API int GetClientAssists(int playerSlot) {
  * @param assists The number of assists to set.
  */
 extern "C" PLUGIN_API void SetClientAssists(int playerSlot, int assists) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
+	auto pController = static_cast<CPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
 		S2_LOGF(LS_WARNING, "Cannot execute 'SetClientAssists' on invalid player slot: {}\n", playerSlot);
 		return;
@@ -962,7 +964,7 @@ extern "C" PLUGIN_API void SetClientAssists(int playerSlot, int assists) {
  * @return The total damage dealt by the client, or 0 if the player slot is invalid.
  */
 extern "C" PLUGIN_API int GetClientDamage(int playerSlot) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
+	auto pController = static_cast<CPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
 		S2_LOGF(LS_WARNING, "Cannot execute 'GetClientDamage' on invalid player slot: {}\n", playerSlot);
 		return 0;
@@ -983,7 +985,7 @@ extern "C" PLUGIN_API int GetClientDamage(int playerSlot) {
  * @param damage The amount of damage to set.
  */
 extern "C" PLUGIN_API void SetClientDamage(int playerSlot, int damage) {
-	auto pController = static_cast<CCSPlayerController*>(utils::GetController(playerSlot));
+	auto pController = static_cast<CPlayerController*>(utils::GetController(playerSlot));
 	if (!pController) {
 		S2_LOGF(LS_WARNING, "Cannot execute 'SetClientDamage' on invalid player slot: {}\n", playerSlot);
 		return;

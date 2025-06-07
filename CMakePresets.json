@@ -1,44 +1,96 @@
 {
-  "version": 3,
-  "cmakeMinimumRequired": {
-    "major": 3,
-    "minor": 14,
-    "patch": 0
-  },
-  "configurePresets": [
-    {
-      "name": "default",
-      "displayName": "Default Config",
-      "description": "Default build using Ninja generator",
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build/${hostSystemName}/${presetName}",
-      "hidden": true
-    },
-    {
-      "name": "Debug",
-      "displayName": "Debug",
-      "inherits": "default",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
-      }
-    },
-    {
-      "name": "Release",
-      "displayName": "Release",
-      "inherits": "default",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
-      }
-    }
-  ],
-  "buildPresets": [
-    {
-      "name": "Debug",
-      "configurePreset": "Debug"
-    },
-    {
-      "name": "Release",
-      "configurePreset": "Release"
-    }
-  ]
+	"version": 3,
+	"cmakeMinimumRequired": {
+		"major": 3,
+		"minor": 14,
+		"patch": 0
+	},
+	"configurePresets": [
+		{
+			"name": "default",
+			"displayName": "Default Config",
+			"description": "Default build using Ninja generator",
+			"generator": "Ninja",
+			"hidden": true
+		},
+
+		{
+			"name": "cs2-base",
+			"hidden": true,
+			"binaryDir": "${sourceDir}/build/${hostSystemName}/CS2/${presetName}",
+			"inherits": "default",
+			"cacheVariables": {
+				"S2SDK_GAME_NAME": "csgo",
+				"SOURCESDK_GAME_TARGET": "cs2"
+			}
+		},
+		{
+			"name": "deadlock-base",
+			"hidden": true,
+			"binaryDir": "${sourceDir}/build/${hostSystemName}/Deadlock/${presetName}",
+			"inherits": "default",
+			"condition": {
+				"type": "equals",
+				"lhs": "${hostSystemName}",
+				"rhs": "Windows"
+			},
+			"cacheVariables": {
+				"S2SDK_GAME_NAME": "citadel",
+				"SOURCESDK_GAME_TARGET": "deadlock"
+			}
+		},
+
+		{
+			"name": "Debug-CS2",
+			"displayName": "Debug (CS2)",
+			"inherits": "cs2-base",
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Debug"
+			}
+		},
+		{
+			"name": "Release-CS2",
+			"displayName": "Release (CS2)",
+			"inherits": "cs2-base",
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "RelWithDebInfo"
+			}
+		},
+
+		{
+			"name": "Debug-Deadlock",
+			"displayName": "Debug (Deadlock)",
+			"inherits": "deadlock-base",
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Debug"
+			}
+		},
+		{
+			"name": "Release-Deadlock",
+			"displayName": "Release (Deadlock)",
+			"inherits": "deadlock-base",
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "RelWithDebInfo"
+			}
+		}
+	],
+
+	"buildPresets": [
+		{
+			"name": "Debug (CS2)",
+			"configurePreset": "Debug-CS2"
+		},
+		{
+			"name": "Release (CS2)",
+			"configurePreset": "Release-CS2"
+		},
+		{
+			"name": "Debug (Deadlock)",
+			"configurePreset": "Debug-Deadlock"
+		},
+		{
+			"name": "Release (Deadlock)",
+			"configurePreset": "Release-Deadlock"
+		}
+	]
 }

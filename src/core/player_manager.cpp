@@ -1,26 +1,26 @@
 #include "player_manager.hpp"
 #include "listeners.hpp"
-#include "timer_system.hpp"
 
 #include <core/sdk/entity/cbaseplayercontroller.h>
-#include <core/sdk/entity/ccsplayercontroller.h>
+#include <core/sdk/entity/cplayercontroller.h>
+#include <core/sdk/entity/cplayerpawn.h>
 #include <core/sdk/utils.h>
 
 #include <eiface.h>
-#include <game/server/iplayerinfo.h>
 #include <inetchannelinfo.h>
 #include <iserver.h>
 
+
 PlayerManager g_PlayerManager;
 
-CCSPlayerController* Player::GetController() const {
+CBasePlayerController* Player::GetController() const {
 	auto entIndex = GetEntityIndex();
 	CBaseEntity* ent = static_cast<CBaseEntity*>(g_pGameEntitySystem->GetEntityInstance(entIndex));
 	if (!ent) {
 		return nullptr;
 	}
 
-	return ent->IsController() ? static_cast<CCSPlayerController*>(ent) : nullptr;
+	return ent->IsController() ? static_cast<CPlayerController*>(ent) : nullptr;
 }
 
 CBasePlayerPawn* Player::GetCurrentPawn() const {
@@ -28,14 +28,14 @@ CBasePlayerPawn* Player::GetCurrentPawn() const {
 	return controller ? controller->GetCurrentPawn() : nullptr;
 }
 
-CCSPlayerPawn* Player::GetPlayerPawn() const {
+CBasePlayerPawn* Player::GetPlayerPawn() const {
 	auto controller = GetController();
-	return controller ? controller->GetPlayerPawn() : nullptr;
+	return controller ? reinterpret_cast<CPlayerController*>(controller)->GetPlayerPawn() : nullptr;
 }
 
-CCSObserverPawn* Player::GetObserverPawn() const {
+CBasePlayerPawn* Player::GetObserverPawn() const {
 	auto controller = GetController();
-	return controller ? reinterpret_cast<CCSObserverPawn*>(controller->GetObserverPawn()) : nullptr;
+	return controller ? reinterpret_cast<CPlayerController*>(controller)->GetObserverPawn() : nullptr;
 }
 
 CServerSideClientBase* Player::GetClient() const {

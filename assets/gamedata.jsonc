@@ -36,29 +36,10 @@
         "win64": "48 8B C4 55 41 54 41 55 41 57",
         "linuxsteamrt64": "55 B9 00 01 00 00"
       },
-      // Called from Host_Say
-      "UTIL_SayText2Filter": {
-        "library": "server",
-        "win64": "48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 45 33 FF 48 89 4D ? 41 0F B6 F0",
-        "linuxsteamrt64": "55 48 8D 05 ? ? ? ? 48 89 E5 41 57 4C 8D 7D 80"
-      },
       "CBasePlayerController_SetPawn": {
         "library": "server",
         "win64": "48 89 74 24 ? 55 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 4C 8B F9",
         "linuxsteamrt64": "55 48 89 E5 41 57 41 56 41 55 49 89 FD 41 54 45 89 C4"
-      },
-      // Function with 5 arguments next to sv_walkable_normal references
-      "TracePlayerBBox": {
-        "library": "server",
-        "win64": "4C 89 44 24 18 55 53 57 41 55 41 56",
-        "linuxsteamrt64": "55 48 89 E5 41 57 49 89 FF 41 56 49 89 F6 41 55 49 89 CD"
-      },
-      // Search for "land_%s", this is called after that string is referenced (the one with 4 parameters).
-      // (function that calls it also contains "T_Default.SuitLand").
-      "EmitSound": {
-        "library": "server",
-        "win64": "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 48 89 7C 24 20 41 56 48 83 EC 30 48 8B F9",
-        "linuxsteamrt64": "55 48 89 E5 41 57 41 56 49 89 D6 41 55 41 89 F5 41 54 49 89 FC 53 48 83 EC ? 48"
       },
       // String: "CSource2GameClients::StartHLTVServer: game event %s not found.\n"Function right before the first virtual function call
       "LegacyGameEventListener": {
@@ -81,35 +62,13 @@
         "win64": "40 57 48 83 EC 20 48 83 3D ? ? ? ? ? 74 07 33 C9 E8 ? ? ? ? FF 15",
         "linuxsteamrt64": "55 48 89 E5 41 55 41 54 53 48 83 EC ? 48 8D 05 ? ? ? ? 48 83 38"
       },
-      // String: "%s:  IGameSystem::LoopInitAllSystems(start)\n", "SV"
-      //         "%s:  IGameSystem::LoopInitAllSystems(finish)\n", "SV"
-      "IGameSystem::LoopInitAllSystems": {
-        "library": "server",
-        "win64": "48 8B C4 48 89 50 10 48 89 48 08 53 48 83 EC 70",
-        "linuxsteamrt64": "55 31 C0 48 89 E5 41 57 41 56 41 55 41 54 53 31 DB"
-      },
-      // String: "Game System %s is defined twice!\n"
-      //          "System %s failed to init\n"
-      //          "IGameSystem::Init( %-80s ) %8.3f msec"
-      //          "IGameSystem::PostInit( %-80s ) %8.3f msec"
-      "IGameSystem::InitAllSystems": {
-        "library": "server",
-        "win64": "40 53 56 57 41 55 48 83 EC 68",
-        "linuxsteamrt64": "55 48 8D 05 ? ? ? ? 48 89 E5 41 57 41 56 41 55 41 BD 00 00 00 80"
-      },
       // Called right after "Removed %s(%s)\n"
       "UTIL_Remove": {
         "library": "server",
         "win64": "48 85 C9 74 ? 48 8B D1 48 8B 0D ? ? ? ?",
         "linuxsteamrt64": "48 89 FE 48 85 FF 74 ? 48 8D 05 ? ? ? ? 48"
       },
-      // "SetPosition"is passed to this
-      "CEntitySystem_AddEntityIOEvent": {
-        "library": "server",
-        "win64": "48 89 5C 24 08 48 89 74 24 18 57 48 83 EC 40 49 8B F1",
-        "linuxsteamrt64": "55 41 BA FF FF FF FF"
-      },
-      // "Explode"is passed to this
+      // "InPass" is passed to this
       "CEntityInstance_AcceptInput": {
         "library": "server",
         "win64": "48 89 5C 24 10 48 89 74 24 18 57 48 83 EC 40 49 8B F0",
@@ -121,37 +80,31 @@
         "win64": "4C 89 4C 24 20 53 55 57 41 54 41 56 48 81 EC",
         "linuxsteamrt64": "55 48 89 E5 41 57 41 56 41 55 41 54 49 89 D4 53 48 89 F3 48 83 EC 58"
       },
-      // this is called in CTriggerPush::Touch, using IDA pseudocode look in an `if ( ( v & 0x80 ) != 0 )` and then `if ( v > 0.0 ) SetGroundEntity()`
-      "SetGroundEntity": {
-        "library": "server",
-        "win64": "48 89 5C 24 10 48 89 6C 24 18 56 57 41 55 41 56 41 57 48 83 EC 20 33 ED",
-        "linuxsteamrt64": "55 48 89 E5 41 57 41 56 49 89 D6 41 55 49 89 F5 41 54 49 89 FC 53 48 83 EC 18 8B 97 B4 06 00 00"
-      },
-      // Search "Changes's player's model", look for a function containing 'models/%s.vmdl'. Below V_snprintf is the one
-      // This matches 2 functions on linuxsteamrt64, however they're literally identical
+      // String: "%s at (%.3f, %.3f, %.3f) has no model name!\n"
       "CBaseModelEntity_SetModel": {
         "library": "server",
         "win64": "48 89 5C 24 ? 48 89 7C 24 ? 55 48 8B EC 48 83 EC 50 48 8B F9 4C 8B C2",
         "linuxsteamrt64": "55 48 89 F2 48 89 E5 41 54 49 89 FC 48 8D 7D E0 48 83 EC ? 48 8D 05 ? ? ? ? 48 8B 30 48 8B 06"
       },
+      // String: "TerminateRound"
       "CGameRules_TerminateRound": {
         "library": "server",
         "win64": "48 8B C4 4C 89 48 ? 48 89 48 ? 55 41 55",
         "linuxsteamrt64": "55 48 89 E5 41 57 41 56 41 55 41 54 49 89 FC 53 48 81 EC 88 00 00 00 48 8D 05 ? ? ? ?"
       },
-      // "chicken"is passed to this
+      // "chicken" is passed to this
       "CreateEntityByName": {
         "library": "server",
         "win64": "48 83 EC 48 C6 44 24 30 00",
         "linuxsteamrt64": "48 8D 05 ? ? ? ? 55 48 89 FA"
       },
-      // "multi_manager"is passed to this
+      // "multi_manager" is passed to this
       "CGameEntitySystem_FindEntityByClassName": {
         "library": "server",
         "win64": "48 83 EC 68 45 33 C9",
         "linuxsteamrt64": "55 45 31 C0 31 C9 48 89 E5 41 54"
       },
-      // "commentary_semaphore"is passed to this
+      // "commentary_semaphore" is passed to this
       "CGameEntitySystem_FindEntityByName": {
         "library": "server",
         "win64": "48 81 EC 88 ? ? ? 4D 85 C0",
@@ -191,33 +144,18 @@
         "win64": "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 48 89 7C 24 20 41 56 48 83 EC 30 48 8B EA",
         "linuxsteamrt64": "55 48 89 E5 41 56 49 89 D6 41 55 41 89 F5 41 54 48 8D 35 ? ? ? ?"
       },
-      // "env_shake %s with...", in either xref there will be a call to SetMoveType(a1, 0, 0) at the top
+      // "models/dev/error.vmdl", SetMoveType(a1, v4, 0) at the bottom
       "CBaseEntity_SetMoveType": {
         "library": "server",
         "win64": "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 41 0F B6 F0",
         "linuxsteamrt64": "55 48 89 E5 41 57 41 56 41 55 41 89 D5 41 54 49 89 FC 53 48 83 EC"
-      },
-      "CTakeDamageInfo": {
-        "library": "server",
-        "win64": "40 53 48 83 EC 60 48 C7 41 38 FF FF FF FF",
-        "linuxsteamrt64": "55 48 89 E5 48 83 EC 10 4C 8D 15 ? ? ? ?"
-      },
-      "CCSPlayer_ItemServices_CanAcquire": {
-        "library": "server",
-        "win64": "44 89 44 24 ? 48 89 54 24 ? 48 89 4C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8B EC",
-        "linuxsteamrt64": "55 48 89 E5 41 57 41 56 41 55 49 89 CD 41 54 53 48 83 EC"
       },
       "CCSPlayer_WeaponServices_RemoveItem": {
         "library": "server",
         "win64": "48 ? ? 0F 84 ? ? ? ? 48 89 5C 24 ? 57 48 ? ? ? 48 ? ? 48 ? ? E8",
         "linuxsteamrt64": "55 48 89 ? 41 ? 49 89 ? 41 ? 49 89 ? E8 ? ? ? ? 49 39"
       },
-      // search for "item_pickup", right before the function with 2 parameters and empty string inside
-      "CCSPlayer_WeaponServices::Weapon_Equip": {
-        "library": "server",
-        "linuxsteamrt64": "55 48 89 E5 41 55 41 54 49 89 F4 53 48 89 FB 48 83 EC 08 48 8B 77 30",
-        "win64": "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC 20 48 8B DA 48 8B F9 48 8B 51"
-      },
+      // String: "Error parsing KV3 data in '%s' for entity subclass '%s' vdata class %s\nErrors: %s\n"
       "GetCSWeaponDataFromKey": {
         "library": "server",
         "win64": "48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B FA 8B F1 48 85 D2 0F 84",
@@ -229,11 +167,6 @@
         "win64": 328,
         "linuxsteamrt64": 328
       },
-      // Player slot offset for quiet operations
-      "QuietPlayerSlot": {
-        "win64": 584,
-        "linuxsteamrt64": 584
-      },
       // Game event manager virtual table offset
       "GameEventManager": {
         "win64": 93,
@@ -243,11 +176,6 @@
       "GameEntitySystem": {
         "win64": 88,
         "linuxsteamrt64": 80
-      },
-      // 5 functions after one with "Physics_SimulateEntity""Server Game"
-      "CBaseEntity_Teleport": {
-        "win64": 157,
-        "linuxsteamrt64": 156
       },
       // 5 functions after one with "targethealthfrac"
       "CollisionRulesChanged": {
@@ -259,48 +187,15 @@
         "win64": 153,
         "linuxsteamrt64": 152
       },
-      // Right after IsEntityPawn
-      "IsEntityController": {
-        "win64": 154,
-        "linuxsteamrt64": 153
-      },
       // String: "%s<%i><%s><%s>"ChangeTeam() CTMDBG..."
       "ControllerChangeTeam": {
         "win64": 93,
         "linuxsteamrt64": 92
       },
-      // Look for the kill command, go through its callback and you should find a call like this, with v9 being a pawn pointer:
-      // return (*(*v9 + 2832LL))(v9, v27, 0LL);
-      // 2832 (354 * 8) is the offset
-      "CBasePlayerPawn_CommitSuicide": {
-        "win64": 380,
-        "linuxsteamrt64": 380
-      },
       // Player controller respawn function offset
       "ControllerRespawn": {
         "win64": 244,
         "linuxsteamrt64": 246
-      },
-      // "Player.Respawn" vfunc offset
-      "CCSPlayerController_Respawn": {
-        "win64": 257,
-        "linuxsteamrt64": 259
-      },
-      // Check sv_fullupdate
-      "ClientOffset": {
-        "win64": 624,
-        "linuxsteamrt64": 640
-      },
-      // Check "Received acknowledgement tick" string
-      "ACKOffset": {
-        "win64": 316,
-        "linuxsteamrt64": 348
-      },
-      // Check ProcessUsercmds
-      // Note: the pointer points to an array of 150 usercmds, but I don't know why there are 64 bytes after the usercmd struct itself.
-      "UsercmdOffset": {
-        "win64": 64,
-        "linuxsteamrt64": 56
       },
       // teleport_trigger_debug cvar
       "StartTouch": {
@@ -319,7 +214,7 @@
       }
     },
     "Addresses": {
-      // Signature-based address for game event manager
+      // Signature-based address for game event manager after "gameeventmanager->Init()"
       "&s_GameEventManager": {
         "signature": "CSource2Server::Init",
         "win64": [
@@ -330,6 +225,227 @@
         "linuxsteamrt64": [
           {
             "read_offs32": 106
+          }
+        ]
+      },
+      "&s_pCurrentAppSystem": {
+        // Can be found inside Source2Main
+        "signature": "AppSystemCreateInterfaceFn",
+        "win64": [
+          {
+            "read_offs32": 15
+          }
+        ],
+        "linuxsteamrt64": [
+          {
+            "read_offs32": 29
+          }
+        ]
+      }
+    }
+  },
+  "citadel": {
+    "Signatures": {
+      // PreloadLibrary signature for engine2
+      "PreloadLibrary": {
+        "library": "engine2",
+        "win64": "48 89 4C 24 08 53 56 57 48 83 EC 60"
+      },
+      "AppSystemCreateInterfaceFn": {
+        "library": "engine2",
+        "win64": "40 53 48 83 EC ? 48 8B DA 48 8B D1 48 8B 0D",
+        "linuxsteamrt64": "55 48 89 E5 41 55 41 54 49 89 FC 53 48 8D 7D DE"
+      },
+      // String: "VALVE_TEST_MONITOR_PROCESS"
+      "LogDirect": {
+        "library": "tier0",
+        "win64": "4C 89 4C 24 20 44 89 44 24 18 89 54 24 10 55",
+        "linuxsteamrt64": "55 89 D0 48 89 E5 41 57 41 56 41 55"
+      },
+      // String: "Discarding pending request '%s, %u'\n"
+      "HostStateRequest": {
+        "library": "engine2",
+        "win64": "48 89 74 24 10 57 48 83 EC 30 33 F6 48 8B FA",
+        "linuxsteamrt64": "55 48 89 E5 41 56 41 55 41 54 49 89 F4 53 48 83 7F"
+      },
+      // String: "Sending S2C_CONNECTION to %s [addons:'%s']\n"
+      "ReplyConnection": {
+        "library": "engine2",
+        "win64": "48 8B C4 55 41 55 41 56",
+        "linuxsteamrt64": "TODO"
+      },
+      "CBasePlayerController_SetPawn": {
+        "library": "server",
+        "win64": "",
+        "linuxsteamrt64": ""
+      },
+      // String: "CSource2GameClients::StartHLTVServer: game event %s not found.\n" Function right before the first virtual function call
+      "LegacyGameEventListener": {
+        "library": "server",
+        "win64": "48 8B 15 91 1E 90 01 ",
+        "linuxsteamrt64": "TODO"
+      },
+      // String: "-pressdemo",
+      //          "MathLib_Init",
+      //          "gameeventmanager->Init()",
+      //          "CEngineServiceRegistry::RegisterEngineServices()",
+      //          "CLoopModeRegistry::RegisterLoopModes()",
+      //          "g_pGameSaveRestoreBlockSet",
+      //          "InitGameSystems - Start",
+      //          "InitGameSystems - Finish",
+      //          "[STARTUP] {%.3f} server module init %s\n",
+      //          "ok"
+      "CSource2Server::Init": {
+        "library": "server",
+        "win64": "48 83 EC 28 48 83 3D 14 92 90 01 00",
+        "linuxsteamrt64": "TODO"
+      },
+      // Called right after "Removed %s(%s)\n"
+      "UTIL_Remove": {
+        "library": "server",
+        "win64": "48 85 C9 74 ? 48 8B D1 48 8B 0D ? ? ? ?",
+        "linuxsteamrt64": "48 89 FE 48 85 FF 74 ? 48 8D 05 ? ? ? ? 48"
+      },
+      // "InPass" is passed to this
+      "CEntityInstance_AcceptInput": {
+        "library": "server",
+        "win64": "48 89 5C 24 10 48 89 74 24 18 57 48 83 EC 50 49 8B F0",
+        "linuxsteamrt64": "TODO"
+      },
+      // String: "Multisource %s enabled (%d inputs)\n"
+      "CEntityIOOutput_FireOutputInternal": {
+        "library": "server",
+        "win64": "4C 89 4C 24 20 48 89 4C 24 08 53 56 57 41 55",
+        "linuxsteamrt64": "TODO"
+      },
+      // String: "%s at (%.3f, %.3f, %.3f) has no model name!\n"
+      "CBaseModelEntity_SetModel": {
+        "library": "server",
+        "win64": "48 89 5C 24 10 48 89 74 24 18 48 89 7C 24 20 41 56 48 83 EC 50 48 8B 99 A8 05 00 00",
+        "linuxsteamrt64": "TODO"
+      },
+      // String: "Attempted to create unknown entity classname" inside
+      "CreateEntityByName": {
+        "library": "server",
+        "win64": "48 83 EC 48 48 8B 0D 2D C4 97 01",
+        "linuxsteamrt64": "TODO"
+      },
+      // "multi_manager" is passed to this
+      "CGameEntitySystem_FindEntityByClassName": {
+        "library": "server",
+        "win64": "48 83 EC 68 45 33 C9",
+        "linuxsteamrt64": "55 45 31 C0 31 C9 48 89 E5 41 54"
+      },
+      // "commentary_semaphore" is passed to this
+      "CGameEntitySystem_FindEntityByName": {
+        "library": "server",
+        "win64": "48 81 EC 88 ? ? ? 4D 85 C0",
+        "linuxsteamrt64": "48 85 D2 74 ? 55 48 89 E5 41 54"
+      },
+      // String: "Inconsistent treatment of '%s' (existing key is %s)!\n"
+      "DispatchSpawn": {
+        "library": "server",
+        "win64": "48 89 5C 24 08 57 48 83 EC 60 48 8B F9 0F 29 74 24 50 48 8D 4C 24 40 41 B0 01 0F 28 F2 48 8B DA E8 ? ? ? ? 8B 44 24 40 48 8D 54 24 40 48 8B CF 89 44 24 40 C7 44 24 44 FF FF FF FF 48 89 5C 24 48 E8 ? ? ? ? 48 8B D8 48 85 C0 74 ? 33 C0 C6 44 24 30 00 89 44 24 28 45 33 C9 41 B0 18",
+        "linuxsteamrt64": "TODO"
+      },
+      // Look for "SetEntityName", that will be the vscript binding definition
+      // Scroll a bit down and you'll find something like this (note the offset): *(_QWORD *)(v453 + 64) = sub_1807B0350;
+      // that function is just a jump to the one we want
+      "CEntityIdentity_SetEntityName": {
+        "library": "server",
+        "win64": "48 89 5C 24 10 57 48 83 EC 20 48 8B D9 4C 8B C2",
+        "linuxsteamrt64": "55 48 89 F2 48 89 E5 41 54 49 89 FC 48 8D 7D E0 48 83 EC 18 48 8D 05 ? ? ? ? 48 8B 30 E8 ? ? ? ? 48 8B 45 E0"
+      },
+      // next to "soundname", in win64 it's the last referenced sub while in linuxsteamrt64 it's right after
+      // this is a vscript binding though so it may be removed in the future?
+      "CBaseEntity_EmitSoundParams": {
+        "library": "server",
+        "win64": "48 89 5C 24 08 48 89 74 24 10 48 89 7C 24 18 4C 89 74 24 20 55 48 8D 6C 24 90 48 81 EC 70 01 00 00 45 33 F6",
+        "linuxsteamrt64": ""
+      },
+      // Called right after this in win64 "Entity %s(%s) is ambiguously parented to..."
+      "CBaseEntity_SetParent": {
+        "library": "server",
+        "win64": "4D 8B D9 48 85 D2 74 ?",
+        "linuxsteamrt64": "48 85 F6 74 ? 48 8B 47 10 F6 40 31 02 75 ? 48 8B 46 10 F6 40 31 02 75 ? B8 ? ? ? ?"
+      },
+      // search for "land_%s", this is called after that string is referenced (the one with 4 parameters).
+      // (function that calls it also contains "T_Default.SuitLand").
+      "CBaseEntity_EmitSoundFilter": {
+        "library": "server",
+        "win64": "4C 8B DC 49 89 5B 08 49 89 6B 10 49 89 73 18 49 89 7B 20 41 56 48 83 EC 70 49 C7 43 C0 7E 01 00 00",
+        "linuxsteamrt64": "TODO"
+      },
+      // "models/dev/error.vmdl", SetMoveType(a1, v4, 0) at the bottom
+      "CBaseEntity_SetMoveType": {
+        "library": "server",
+        "win64": "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 48 89 7C 24 20 41 56 48 83 EC 20 41 0F B6 F0",
+        "linuxsteamrt64": "TODO"
+      }
+    },
+    "Offsets": {
+      "ServerAddons": {
+        "win64": 328,
+        "linuxsteamrt64": 328
+      },
+      // Game event manager virtual table offset
+      "GameEventManager": {
+        "win64": 93,
+        "linuxsteamrt64": 93
+      },
+      // Game entity system virtual table offset
+      "GameEntitySystem": {
+        "win64": 88,
+        "linuxsteamrt64": 80
+      },
+      // 5 functions after one with "targethealthfrac"
+      "CollisionRulesChanged": {
+        "win64": 174,
+        "linuxsteamrt64": 173
+      },
+      // 9 functions after one with "Physics_SimulateEntity""Server Game"
+      "IsEntityPawn": {
+        "win64": 153,
+        "linuxsteamrt64": 152
+      },
+      // String: "%s<%i><%s><%s>"ChangeTeam() CTMDBG..."
+      "ControllerChangeTeam": {
+        "win64": 93,
+        "linuxsteamrt64": 92
+      },
+      // Player controller respawn function offset
+      "ControllerRespawn": {
+        "win64": 244,
+        "linuxsteamrt64": 246
+      },
+      // teleport_trigger_debug cvar
+      "StartTouch": {
+        "win64": 135,
+        "linuxsteamrt64": 134
+      },
+      // Entity touch function offset
+      "Touch": {
+        "win64": 136,
+        "linuxsteamrt64": 135
+      },
+      // Entity end touch function offset
+      "EndTouch": {
+        "win64": 137,
+        "linuxsteamrt64": 136
+      }
+    },
+    "Addresses": {
+      // Signature-based address for game event manager "gameeventmanager->Init()"
+      "&s_GameEventManager": {
+        "signature": "CSource2Server::Init",
+        "win64": [
+          {
+            "read_offs32": 99
+          }
+        ],
+        "linuxsteamrt64": [
+          {
+            "read_offs32": 0 // TODO
           }
         ]
       },

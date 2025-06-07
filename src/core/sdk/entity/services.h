@@ -53,9 +53,9 @@ class CPlayerPawnComponent {
 public:
 	DECLARE_SCHEMA_CLASS(CPlayerPawnComponent);
 
-	SCHEMA_FIELD(CCSPlayerPawn*, __m_pChainEntity)
+	SCHEMA_FIELD(CBasePlayerPawn*, __m_pChainEntity)
 
-	CCSPlayerPawn* GetPawn() { return __m_pChainEntity; }
+	CBasePlayerPawn* GetPawn() { return __m_pChainEntity; }
 };
 
 class CPlayer_MovementServices : public CPlayerPawnComponent {

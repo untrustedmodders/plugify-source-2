@@ -20,10 +20,8 @@
 #pragma once
 
 #include "cbaseentity.h"
-#include "ccsplayerpawn.h"
+#include "cbaseplayerpawn.h"
 #include <ehandle.h>
-
-class CCSPlayerPawn;
 
 enum class PlayerConnectedState : uint32_t {
 	PlayerNeverConnected = 0xFFFFFFFF,
@@ -40,7 +38,7 @@ public:
 	DECLARE_SCHEMA_CLASS(CBasePlayerController);
 
 	SCHEMA_FIELD(uint64, m_steamID)
-	SCHEMA_FIELD(CHandle<CCSPlayerPawn>, m_hPawn)
+	SCHEMA_FIELD(CHandle<CBasePlayerPawn>, m_hPawn)
 	SCHEMA_FIELD_POINTER(char, m_iszPlayerName)
 	SCHEMA_FIELD(PlayerConnectedState, m_iConnected)
 	SCHEMA_FIELD(bool, m_bIsHLTV)
@@ -51,7 +49,7 @@ public:
 	int GetPlayerSlot() { return entindex() - 1; }
 	bool IsConnected() { return m_iConnected() == PlayerConnectedState::PlayerConnected; }
 
-	void SetPawn(CCSPlayerPawn* pawn) {
+	void SetPawn(CBasePlayerPawn* pawn) {
 		addresses::CBasePlayerController_SetPawn(this, pawn, true, false);
 	}
 };

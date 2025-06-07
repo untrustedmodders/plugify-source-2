@@ -64,7 +64,7 @@ jobs:
         run: |
           mkdir -p build
           cd build
-          cmake -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DS2SDK_VERSION="${{ needs.setup.outputs.tag_name }}" -DS2SDK_PACKAGE="s2sdk-build-${{ needs.setup.outputs.tag_name }}-windows-${{ env.GITHUB_SHA_SHORT }}" ..
+          cmake -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DS2SDK_VERSION="${{ needs.setup.outputs.tag_name }}" -DS2SDK_PACKAGE="s2sdk-build-${{ needs.setup.outputs.tag_name }}-windows-${{ env.GITHUB_SHA_SHORT }}" -DS2SDK_GAME_NAME="csgo" -DSOURCESDK_GAME_TARGET="cs2" ..
           cmake --build . --target plugify-source-2 --config ${{ env.BUILD_TYPE }} -- /m
 
       - name: Clean build directory
@@ -105,7 +105,7 @@ jobs:
         run: |
           mkdir -p build
           cd build
-          cmake -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DS2SDK_VERSION="${{ needs.setup.outputs.tag_name }}" -DS2SDK_PACKAGE="s2sdk-build-${{ needs.setup.outputs.tag_name }}-linux-${{ env.GITHUB_SHA_SHORT }}" ..
+          cmake -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DS2SDK_VERSION="${{ needs.setup.outputs.tag_name }}" -DS2SDK_PACKAGE="s2sdk-build-${{ needs.setup.outputs.tag_name }}-linux-${{ env.GITHUB_SHA_SHORT }}" -DS2SDK_GAME_NAME="csgo" -DSOURCESDK_GAME_TARGET="cs2" ..
           cmake --build . --target plugify-source-2 --config ${{ env.BUILD_TYPE }} -- -j
 
       - name: Clean build directory

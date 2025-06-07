@@ -261,7 +261,7 @@ uint32_t GameConfigManager::LoadGameConfigFile(plg::vector<plg::string> paths) {
 		}
 	}
 
-	GameConfig gameConfig("csgo", std::move(paths));
+	GameConfig gameConfig(S2SDK_GAME_NAME, std::move(paths));
 	if (!gameConfig.Initialize()) {
 		return static_cast<uint32_t>(-1);
 	}

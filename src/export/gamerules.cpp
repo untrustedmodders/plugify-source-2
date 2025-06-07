@@ -1,5 +1,6 @@
-#include "core/sdk/entity/cgamerules.h"
 #include <plugin_export.h>
+
+#include <core/sdk/entity/cgamerules.h>
 
 PLUGIFY_WARN_PUSH()
 
@@ -9,8 +10,8 @@ PLUGIFY_WARN_IGNORE("-Wreturn-type-c-linkage")
 PLUGIFY_WARN_IGNORE(4190)
 #endif
 
-extern CCSGameRulesProxy* g_pGameRulesProxy;
-extern CCSGameRules* g_pGameRules;
+extern CBaseGameRulesProxy* g_pGameRulesProxy;
+extern CBaseGameRules* g_pGameRules;
 
 /**
  * @brief Retrieves the pointer to the current game rules proxy entity instance.

@@ -20,6 +20,7 @@
 #pragma once
 
 #include "cbaseplayercontroller.h"
+#include "ccsplayerpawn.h"
 #include <sharedInterface.h>
 
 class CCSPlayerController : public CBasePlayerController {

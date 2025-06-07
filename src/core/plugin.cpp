@@ -24,7 +24,7 @@
 #include "timer_system.hpp"
 #include "user_message_manager.hpp"
 
-#include "sdk/entity/cgamerules.h"
+#include <core/sdk/entity/cgamerules.h>
 
 #undef FindResource
 
@@ -44,7 +44,7 @@ class CEntityListener : public IEntityListener {
 	void OnEntityCreated(CEntityInstance* pEntity) override {
 		std::string_view name(pEntity->GetClassname());
 		if (name == "cs_gamerules") {
-			g_pGameRulesProxy = static_cast<CCSGameRulesProxy *>(pEntity);
+			g_pGameRulesProxy = static_cast<CBaseGameRulesProxy *>(pEntity);
 			g_pGameRules = g_pGameRulesProxy->m_pGameRules;
 		}
 		GetOnEntityCreatedListenerManager().Notify(pEntity->GetRefEHandle().ToInt());

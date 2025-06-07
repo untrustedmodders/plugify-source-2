@@ -37,7 +37,7 @@ namespace globals {
 			S2_LOG(LS_ERROR, "Failed to load settings configuration!\n");
 			return;
 		}
-		g_pGameConfig = std::make_unique<GameConfig>("csgo", plg::vector<plg::string>{
+		g_pGameConfig = std::make_unique<GameConfig>(S2SDK_GAME_NAME, plg::vector<plg::string>{
 				(paths["base"] / "gamedata.jsonc").generic_string(),
 				(paths["configs"] / "gamedata.jsonc").generic_string(),
 				(paths["data"] / "gamedata.jsonc").generic_string()
@@ -87,9 +87,6 @@ namespace globals {
 
 		// load more if needed
 		RESOLVE_SIG(g_pGameConfig, "LegacyGameEventListener", addresses::GetLegacyGameEventListener);
-		RESOLVE_SIG(g_pGameConfig, "CCSPlayer_WeaponServices_RemoveItem", addresses::CCSPlayer_WeaponServices_RemoveItem);
-		//RESOLVE_SIG(g_pGameConfig, "GetCSWeaponDataFromKey", addresses::GetCSWeaponDataFromKey);
-		RESOLVE_SIG(g_pGameConfig, "CCSPlayerController_SwitchTeam", addresses::CCSPlayerController_SwitchTeam);
 		RESOLVE_SIG(g_pGameConfig, "CBasePlayerController_SetPawn", addresses::CBasePlayerController_SetPawn);
 		RESOLVE_SIG(g_pGameConfig, "CBaseModelEntity_SetModel", addresses::CBaseModelEntity_SetModel);
 		RESOLVE_SIG(g_pGameConfig, "CGameEntitySystem_FindEntityByClassName", addresses::CGameEntitySystem_FindEntityByClassName);
@@ -98,12 +95,18 @@ namespace globals {
 		RESOLVE_SIG(g_pGameConfig, "DispatchSpawn", addresses::DispatchSpawn);
 		RESOLVE_SIG(g_pGameConfig, "UTIL_Remove", addresses::UTIL_Remove);
 		RESOLVE_SIG(g_pGameConfig, "CEntityInstance_AcceptInput", addresses::CEntityInstance_AcceptInput);
-		RESOLVE_SIG(g_pGameConfig, "CGameRules_TerminateRound", addresses::CGameRules_TerminateRound);
 		RESOLVE_SIG(g_pGameConfig, "CEntityIdentity_SetEntityName", addresses::CEntityIdentity_SetEntityName);
 		RESOLVE_SIG(g_pGameConfig, "CBaseEntity_EmitSoundParams", addresses::CBaseEntity_EmitSoundParams);
 		RESOLVE_SIG(g_pGameConfig, "CBaseEntity_SetParent", addresses::CBaseEntity_SetParent);
 		RESOLVE_SIG(g_pGameConfig, "CBaseEntity_EmitSoundFilter", addresses::CBaseEntity_EmitSoundFilter);
 		RESOLVE_SIG(g_pGameConfig, "CBaseEntity_SetMoveType", addresses::CBaseEntity_SetMoveType);
+
+#if defined (CS2)
+		RESOLVE_SIG(g_pGameConfig, "CCSPlayer_WeaponServices_RemoveItem", addresses::CCSPlayer_WeaponServices_RemoveItem);
+		RESOLVE_SIG(g_pGameConfig, "CCSPlayerController_SwitchTeam", addresses::CCSPlayerController_SwitchTeam);
+		RESOLVE_SIG(g_pGameConfig, "CGameRules_TerminateRound", addresses::CGameRules_TerminateRound);
+		RESOLVE_SIG(g_pGameConfig, "GetCSWeaponDataFromKey", addresses::GetCSWeaponDataFromKey);
+#endif
 	}
 
 	void Terminate() {
