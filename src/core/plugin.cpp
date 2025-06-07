@@ -76,7 +76,7 @@ void Source2SDK::OnPluginStart() {
 
 	g_PH.AddHookMemFunc(&IGameEventManager2::FireEvent, g_pGameEventManager, Hook_FireEvent, Pre, Post);
 	using PostEventAbstract = void(IGameEventSystem::*)(CSplitScreenSlot nSlot, bool bLocalOnly, IRecipientFilter *pFilter, INetworkMessageInternal *pEvent, const CNetMessage *pData, unsigned long nSize);
-	g_PH.AddHookMemFunc<PostEventAbstract>(&IGameEventSystem::PostEventAbstract, g_pGameEventSystem, Hook_PostEvent, Pre, Post);
+	//g_PH.AddHookMemFunc<PostEventAbstract>(&IGameEventSystem::PostEventAbstract, g_pGameEventSystem, Hook_PostEvent, Pre, Post);
 
 	g_PH.AddHookMemFunc(&IServerGameClients::ClientCommand, g_pSource2GameClients, Hook_ClientCommand, Pre);
 	g_PH.AddHookMemFunc(&IServerGameClients::ClientActive, g_pSource2GameClients, Hook_ClientActive, Post);
