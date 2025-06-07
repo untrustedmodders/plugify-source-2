@@ -1,5 +1,5 @@
 #pragma once
-
+/*
 #include <igameevents.h>
 #include <utlqueue.h>
 #include <utlvector.h>
@@ -60,4 +60,4 @@ private:
 	bool m_callbackRegistered{};
 };
 
-extern MultiAddonManager g_MultiAddonManager;
+extern MultiAddonManager g_MultiAddonManager;*/

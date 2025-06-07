@@ -76,7 +76,7 @@ void Source2SDK::OnPluginStart() {
 
 	g_PH.AddHookMemFunc(&IGameEventManager2::FireEvent, g_pGameEventManager, Hook_FireEvent, Pre, Post);
 	using PostEventAbstract = void(IGameEventSystem::*)(CSplitScreenSlot nSlot, bool bLocalOnly, IRecipientFilter *pFilter, INetworkMessageInternal *pEvent, const CNetMessage *pData, unsigned long nSize);
-	g_PH.AddHookMemFunc<PostEventAbstract>(&IGameEventSystem::PostEventAbstract, g_pGameEventSystem, Hook_PostEvent, Pre, Post);
+	//g_PH.AddHookMemFunc<PostEventAbstract>(&IGameEventSystem::PostEventAbstract, g_pGameEventSystem, Hook_PostEvent, Pre, Post);
 
 	g_PH.AddHookMemFunc(&IServerGameClients::ClientCommand, g_pSource2GameClients, Hook_ClientCommand, Pre);
 	g_PH.AddHookMemFunc(&IServerGameClients::ClientActive, g_pSource2GameClients, Hook_ClientActive, Post);
@@ -103,14 +103,14 @@ void Source2SDK::OnPluginStart() {
 	//using LogDirect = LoggingResponse_t (*)(void* loggingSystem, LoggingChannelID_t channel, LoggingSeverity_t severity, LeafCodeInfo_t*, LoggingMetaData_t*, Color, char const*, va_list*);
 	//g_PH.AddHookDetourFunc<LogDirect>("LogDirect", Hook_LogDirect, Pre);
 
-	g_pfnSetPendingHostStateRequest = reinterpret_cast<HostStateRequestFn>(g_PH.AddHookDetourFunc<HostStateRequestFn>("HostStateRequest", Hook_HostStateRequest, Pre));
-	g_pfnReplyConnection = reinterpret_cast<ReplyConnectionFn>(g_PH.AddHookDetourFunc<ReplyConnectionFn>("ReplyConnection", Hook_ReplyConnection, Pre));
+	//g_pfnSetPendingHostStateRequest = reinterpret_cast<HostStateRequestFn>(g_PH.AddHookDetourFunc<HostStateRequestFn>("HostStateRequest", Hook_HostStateRequest, Pre));
+	//g_pfnReplyConnection = reinterpret_cast<ReplyConnectionFn>(g_PH.AddHookDetourFunc<ReplyConnectionFn>("ReplyConnection", Hook_ReplyConnection, Pre));
 
 	// We're using funchook even though it's a virtual function because it can be called on a different thread and SourceHook isn't thread-safe
-	auto pServerSideClientVTable = g_GameConfigManager.GetModule("engine2")->GetVirtualTableByName("CServerSideClient").CCast<uintptr_t*>();
-	auto fSendNetMessage = &CServerSideClientBase::SendNetMessage;
-	int iSendNetMessageOffset = poly::GetVTableIndex((void*&) fSendNetMessage);
-	g_pfnSendNetMessage = reinterpret_cast<SendNetMessageFn>(g_PH.AddHookDetourFunc<SendNetMessageFn>(pServerSideClientVTable[iSendNetMessageOffset], Hook_SendNetMessage, Pre));
+	//auto pServerSideClientVTable = g_GameConfigManager.GetModule("engine2")->GetVirtualTableByName("CServerSideClient").CCast<uintptr_t*>();
+	//auto fSendNetMessage = &CServerSideClientBase::SendNetMessage;
+	//int iSendNetMessageOffset = poly::GetVTableIndex((void*&) fSendNetMessage);
+	//g_pfnSendNetMessage = reinterpret_cast<SendNetMessageFn>(g_PH.AddHookDetourFunc<SendNetMessageFn>(pServerSideClientVTable[iSendNetMessageOffset], Hook_SendNetMessage, Pre));
 
 #if S2SDK_PLATFORM_WINDOWS
 	using PreloadLibrary = void(*)(void*);
@@ -152,7 +152,7 @@ void Source2SDK::OnServerStartup() {
 		g_pGameEntitySystem->AddListenerEntity(&g_pEntityListener);
 	}
 
-	g_MultiAddonManager.OnStartupServer();
+	//g_MultiAddonManager.OnStartupServer();
 
 	RegisterEventListeners();
 }
@@ -226,7 +226,7 @@ poly::ReturnAction Source2SDK::Hook_PostEvent(poly::IHook& hook, poly::Params& p
 	auto pData = poly::GetArgument<CNetMessage*>(params, 6);
 
 	if (type == poly::CallbackType::Pre) {
-		g_MultiAddonManager.OnPostEvent(message, pData, clients);
+		//g_MultiAddonManager.OnPostEvent(message, pData, clients);
 	}
 
 	auto result = g_UserMessageManager.ExecuteMessageCallbacks(message, pData, clientCount, clients, static_cast<HookMode>(type));
@@ -243,7 +243,7 @@ poly::ReturnAction Source2SDK::Hook_GameFrame(poly::IHook& hook, poly::Params& p
 	auto bFirstTick = poly::GetArgument<bool>(params, 2);
 	auto bLastTick = poly::GetArgument<bool>(params, 3);
 
-	g_MultiAddonManager.OnGameFrame();
+	//g_MultiAddonManager.OnGameFrame();
 	g_ServerManager.OnGameFrame();
 	g_TimerSystem.OnGameFrame(simulating);
 
@@ -260,7 +260,7 @@ poly::ReturnAction Source2SDK::Hook_ClientActive(poly::IHook& hook, poly::Params
 
 	//S2_LOGF(LS_DEBUG, "[OnClientActive] = {}, \"{}\", {}\n", slot, name, steamID64);
 
-	g_MultiAddonManager.OnClientActive(slot, bLoadGame, name, steamID64);
+	//g_MultiAddonManager.OnClientActive(slot, bLoadGame, name, steamID64);
 	g_PlayerManager.OnClientActive(slot, bLoadGame);
 
 	GetOnClientActiveListenerManager().Notify(slot, bLoadGame);
@@ -278,7 +278,7 @@ poly::ReturnAction Source2SDK::Hook_ClientDisconnect(poly::IHook& hook, poly::Pa
 	//S2_LOGF(LS_DEBUG, "[ClientDisconnect] = {}, {}, \"{}\", {}, \"{}\"\n", slot, reason, name, steamID64, networkID);
 
 	if (type == poly::CallbackType::Pre) {
-		g_MultiAddonManager.OnClientDisconnect(slot, name, steamID64, networkID);
+		//g_MultiAddonManager.OnClientDisconnect(slot, name, steamID64, networkID);
 		g_PlayerManager.OnClientDisconnect(slot, reason);
 	} else {
 		g_PlayerManager.OnClientDisconnect_Post(slot, reason);
@@ -348,7 +348,7 @@ poly::ReturnAction Source2SDK::Hook_ClientConnect(poly::IHook& hook, poly::Param
 	//S2_LOGF(LS_DEBUG, "[ClientConnect] = {}, \"{}\", {}, \"{}\", {}, \"{}\" \n", slot, name, steamID64, networkID, unk1, pRejectReason->Get());
 
 	if (type == poly::CallbackType::Pre) {
-		g_MultiAddonManager.OnClientConnect(slot, name, steamID64, networkID);
+		//g_MultiAddonManager.OnClientConnect(slot, name, steamID64, networkID);
 		g_PlayerManager.OnClientConnect(slot, name, steamID64, networkID);
 	} else {
 		bool origRet = poly::GetReturn<bool>(ret);
@@ -389,7 +389,7 @@ poly::ReturnAction Source2SDK::Hook_GameServerSteamAPIActivated(poly::IHook& hoo
 	//g_http = g_steamAPI.SteamHTTP();
 
 	g_PlayerManager.OnSteamAPIActivated();
-	g_MultiAddonManager.OnSteamAPIActivated();
+	//g_MultiAddonManager.OnSteamAPIActivated();
 
 	//GetOnGameServerSteamAPIActivatedListenerManager().Notify();
 	return poly::ReturnAction::Ignored;
@@ -452,7 +452,7 @@ poly::ReturnAction Source2SDK::Hook_DispatchConCommand(poly::IHook& hook, poly::
 	return poly::ReturnAction::Ignored;
 }
 
-poly::ReturnAction Source2SDK::Hook_LogDirect(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
+//poly::ReturnAction Source2SDK::Hook_LogDirect(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	/*volatile auto loggingSystem = poly::GetArgument<void*>(params, 0);
 	volatile auto channel = (LoggingChannelID_t) poly::GetArgument<int32_t>(params, 1);
 	volatile auto severity = (LoggingSeverity_t) poly::GetArgument<int32_t>(params, 2);
@@ -495,14 +495,14 @@ poly::ReturnAction Source2SDK::Hook_LogDirect(poly::IHook& hook, poly::Params& p
 		return poly::ReturnAction::Supercede;
 	}*/
 
-	return poly::ReturnAction::Ignored;
-}
+	//return poly::ReturnAction::Ignored;
+//}
 
-poly::ReturnAction Source2SDK::Hook_HostStateRequest(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
+/*poly::ReturnAction Source2SDK::Hook_HostStateRequest(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	auto pMgrDoNotUse = poly::GetArgument<CHostStateMgr*>(params, 0);
 	auto pRequest = poly::GetArgument<CHostStateRequest*>(params, 1);
 
-	g_MultiAddonManager.OnHostStateRequest(pMgrDoNotUse, pRequest);
+	//g_MultiAddonManager.OnHostStateRequest(pMgrDoNotUse, pRequest);
 	return poly::ReturnAction::Supercede;
 }
 
@@ -510,7 +510,7 @@ poly::ReturnAction Source2SDK::Hook_ReplyConnection(poly::IHook& hook, poly::Par
 	auto server = poly::GetArgument<INetworkGameServer*>(params, 0);
 	auto client = poly::GetArgument<CServerSideClient*>(params, 1);
 
-	g_MultiAddonManager.OnReplyConnection(server, client);
+	//g_MultiAddonManager.OnReplyConnection(server, client);
 	return poly::ReturnAction::Supercede;
 }
 
@@ -524,7 +524,7 @@ poly::ReturnAction Source2SDK::Hook_SendNetMessage(poly::IHook& hook, poly::Para
 	return poly::ReturnAction::Supercede;
 }
 
-/*poly::ReturnAction Source2SDK::Hook_HostSay(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
+poly::ReturnAction Source2SDK::Hook_HostSay(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	return g_ChatManager.Hook_HostSay(hook, params, count, ret, static_cast<HookMode>(type));
 }*/
 

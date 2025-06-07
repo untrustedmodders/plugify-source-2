@@ -1,3 +1,4 @@
+/*
 #include "multi_addon_manager.hpp"
 
 #include <netmessages.h>
@@ -16,17 +17,11 @@
 #include "game_config.hpp"
 #include "sdk/utils.h"
 
-/*CConVar<bool> s2_addon_mount_download("s2_addon_mount_download", FCVAR_NONE, "Whether to download an addon upon mounting even if it's installed", false);
+CConVar<bool> s2_addon_mount_download("s2_addon_mount_download", FCVAR_NONE, "Whether to download an addon upon mounting even if it's installed", false);
 CConVar<bool> s2_block_disconnect_messages("s2_block_disconnect_messages", FCVAR_NONE, "Whether to block \"loop shutdown\" disconnect messages", false);
 CConVar<bool> s2_cache_clients_with_addons("s2_cache_clients_with_addons", FCVAR_NONE, "Whether to cache clients addon download list, this will prevent reconnects on mapchange/rejoin", false);
 CConVar<double> s2_cache_clients_duration("s2_cache_clients_duration", FCVAR_NONE, "How long to cache clients' downloaded addons list in seconds, pass 0 for forever.", 0.0);
 CConVar<double> s2_extra_addons_timeout("s2_extra_addons_timeout", FCVAR_NONE, "How long until clients are timed out in between connects for extra addons in seconds, requires s2_extra_addons to be used", 10.0);
-*/
-CPlayerSlot s2_addon_mount_download;
-CPlayerSlot s2_block_disconnect_messages;
-CPlayerSlot s2_cache_clients_with_addons;
-CPlayerSlot s2_cache_clients_duration;
-CPlayerSlot s2_extra_addons_timeout;
 
 struct ClientAddonInfo {
 	uint64 steamID64;
@@ -38,7 +33,7 @@ struct ClientAddonInfo {
 
 std::unordered_map<uint64, ClientAddonInfo> g_ClientAddons;
 
-/*CConVar<CUtlString> s2_extra_addons("s2_extra_addons", FCVAR_NONE, "The workshop IDs of extra addons separated by commas, addons will be downloaded (if not present) and mounted", CUtlString(""),
+CConVar<CUtlString> s2_extra_addons("s2_extra_addons", FCVAR_NONE, "The workshop IDs of extra addons separated by commas, addons will be downloaded (if not present) and mounted", CUtlString(""),
 	[](CConVar<CUtlString> *cvar, CSplitScreenSlot slot, const CUtlString *new_val, const CUtlString *old_val)
 	{
 		g_MultiAddonManager.m_extraAddons = utils::string_to_vector<uint64_t>(new_val->Get());
@@ -50,9 +45,7 @@ CConVar<CUtlString> s2_client_extra_addons("s2_client_extra_addons", FCVAR_NONE,
 	[](CConVar<CUtlString> *cvar, CSplitScreenSlot slot, const CUtlString *new_val, const CUtlString *old_val)
 	{
 		g_MultiAddonManager.m_globalClientAddons = utils::string_to_vector<uint64_t>(new_val->Get());
-	});*/
-
-
+	});
 
 std::string MultiAddonManager::BuildAddonPath(uint64_t addon) {
     // The workshop on a dedicated server is stored relative to the working directory for whatever reason
@@ -740,3 +733,4 @@ void MultiAddonManager::OnClientActive(CPlayerSlot slot, bool loadGame, const ch
 }
 
 MultiAddonManager g_MultiAddonManager;
+*/
