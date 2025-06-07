@@ -35,6 +35,7 @@ enum CSPlayerState {
 };
 
 class CCSPlayer_ViewModelServices;
+class CCSPlayerController;
 
 class CCSPlayerPawnBase : public CBasePlayerPawn {
 public:

@@ -60,7 +60,7 @@
       //          "ok"
       "CSource2Server::Init": {
         "library": "server",
-        "win64": "40 57 48 83 EC 20 48 83 3D ? ? ? ? ? 74 07 33 C9 E8 ? ? ? ? FF 15",
+        "win64": "40 57 48 83 EC 20 48 83 3D BA 5A EC 00 00",
         "linuxsteamrt64": "55 48 89 E5 41 55 41 54 53 48 83 EC ? 48 8D 05 ? ? ? ? 48 83 38"
       },
       // Called right after "Removed %s(%s)\n"
