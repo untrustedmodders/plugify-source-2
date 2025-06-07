@@ -6,6 +6,7 @@
 #include <igameevents.h>
 #include <networksystem/inetworkmessages.h>
 #include <usermessages.pb.h>
+#include <usermessages.h>
 
 #include <tier0/memdbgon.h>
 
@@ -182,7 +183,7 @@ bool utils::CFormat(char* buffer, uint64_t buffer_size, const char* text) {
 
 void utils::ClientPrintFilter(IRecipientFilter* filter, int msg_dest, const char* msg_name) {
 	INetworkMessageInternal* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("TextMsg");
-	auto* msg = pNetMsg->AllocateMessage()->ToPB<CUserMessageTextMsg>();
+	auto* msg = pNetMsg->AllocateMessage()->As<CUserMessageTextMsg_t>();
 
 	msg->set_dest(msg_dest);
 	msg->add_param(msg_name);

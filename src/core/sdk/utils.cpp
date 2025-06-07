@@ -4,6 +4,7 @@
 #include <entity2/entitysystem.h>
 #include <igameevents.h>
 #include <iserver.h>
+#include <netmessages.h>
 #include <networkbasetypes.pb.h>
 #include <networksystem/inetworkmessages.h>
 
@@ -13,6 +14,7 @@
 #include "entity/recipientfilters.h"
 
 #include <tier0/memdbgon.h>
+
 #undef CreateEvent
 
 /*bool utils::TraceLine(const Vector& vecStart, const Vector& vecEnd, CEntityInstance* ignore1, CGameTrace* tr, uint64 traceLayer, uint64 excludeLayer) {
@@ -129,7 +131,7 @@ bool utils::IsPlayerSlot(CPlayerSlot slot) {
 	return iSlot >= 0 && iSlot < gpGlobals->maxClients;
 }
 
-CUtlVector<CServerSideClientBase*>* utils::GetClientList() {
+CUtlClientVector* utils::GetClientList() {
 	if (!g_pNetworkGameServer)
 		return nullptr;
 
@@ -140,7 +142,7 @@ CServerSideClientBase* utils::GetClientBySlot(CPlayerSlot slot) {
 	if (!utils::IsPlayerSlot(slot))
 		return nullptr;
 
-	CUtlVector<CServerSideClientBase*>* clientList = GetClientList();
+	CUtlVector<CServerSideClientBase*, CPlayerSlot>* clientList = GetClientList();
 	return (clientList && GetController(slot)) ? clientList->Element(slot) : nullptr;
 }
 
@@ -199,8 +201,8 @@ void utils::ReplicateConVar(const ConVarRefAbstract& conVar, const char* value) 
 }
 
 void utils::SendConVarValue(CPlayerSlot slot, const char* name, const char* value) {
-	INetworkMessageInternal* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("CNETMsg_SetConVar");
-	auto msg = pNetMsg->AllocateMessage()->ToPB<CNETMsg_SetConVar>();
+	static INetworkMessageInternal* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("CNETMsg_SetConVar");
+	auto msg = pNetMsg->AllocateMessage()->As<CNETMsg_SetConVar_t>();
 	CMsg_CVars_CVar* cvar = msg->mutable_convars()->add_cvars();
 	cvar->set_name(name);
 	cvar->set_value(value);
@@ -210,8 +212,8 @@ void utils::SendConVarValue(CPlayerSlot slot, const char* name, const char* valu
 }
 
 void utils::SendMultipleConVarValues(CPlayerSlot slot, const char** names, const char** value, uint32_t size) {
-	INetworkMessageInternal* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("CNETMsg_SetConVar");
-	auto msg = pNetMsg->AllocateMessage()->ToPB<CNETMsg_SetConVar>();
+	static INetworkMessageInternal* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("CNETMsg_SetConVar");
+	auto msg = pNetMsg->AllocateMessage()->As<CNETMsg_SetConVar_t>();
 	for (uint32_t i = 0; i < size; ++i) {
 		CMsg_CVars_CVar* cvar = msg->mutable_convars()->add_cvars();
 		cvar->set_name(names[i]);

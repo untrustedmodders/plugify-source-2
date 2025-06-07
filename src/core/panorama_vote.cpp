@@ -5,6 +5,7 @@
 #include <cstrike15_usermessages.pb.h>
 #include <engine/igameeventsystem.h>
 #include <networksystem/inetworkmessages.h>
+#include <cstrike15/usermessages.h>
 
 #include "event_listener.hpp"
 #include "server_manager.hpp"
@@ -163,7 +164,7 @@ bool CPanoramaVoteHandler::SendYesNoVote(double duration, int caller, const plg:
 
 void CPanoramaVoteHandler::SendVoteStartUM(IRecipientFilter* filter) {
 	INetworkMessageInternal *pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("VoteStart");
-	auto data = pNetMsg->AllocateMessage()->ToPB<CCSUsrMsg_VoteStart>();
+	auto data = pNetMsg->AllocateMessage()->As<CCSUsrMsg_VoteStart_t>();
 
 	data->set_team(-1);
 	data->set_player_slot(m_currentVoteCaller);
@@ -275,7 +276,7 @@ void CPanoramaVoteHandler::EndVote(VoteEndReason reason) {
 void CPanoramaVoteHandler::SendVoteFailed() {
 	INetworkMessageInternal *pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("VoteFailed");
 
-	auto data = pNetMsg->AllocateMessage()->ToPB<CCSUsrMsg_VoteFailed>();
+	auto data = pNetMsg->AllocateMessage()->As<CCSUsrMsg_VoteFailed_t>();
 
 	data->set_reason(0);
 	data->set_team(-1);
@@ -288,7 +289,7 @@ void CPanoramaVoteHandler::SendVoteFailed() {
 void CPanoramaVoteHandler::SendVotePassed() {
 	INetworkMessageInternal *pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("VotePass");
 
-	auto data = pNetMsg->AllocateMessage()->ToPB<CCSUsrMsg_VotePass>();
+	auto data = pNetMsg->AllocateMessage()->As<CCSUsrMsg_VotePass_t>();
 
 	data->set_team(-1);
 	data->set_vote_type(2);

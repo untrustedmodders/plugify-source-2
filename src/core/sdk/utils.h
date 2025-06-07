@@ -3,6 +3,8 @@
 #include "schema.h"
 #include <convar.h>
 #include <eiface.h>
+#include <iserver.h>
+
 #if S2SDK_PLATFORM_LINUX || S2SDK_PLATFORM_APPLE
 #include <cxxabi.h>
 #endif
@@ -27,7 +29,7 @@ namespace utils {
 	bool IsPlayerSlot(CPlayerSlot slot);
 
 	CPlayerSlot GetEntityPlayerSlot(CBaseEntity* entity);
-	CUtlVector<CServerSideClientBase*>* GetClientList();
+	CUtlClientVector* GetClientList();
 	CServerSideClientBase* GetClientBySlot(CPlayerSlot slot);
 
 	// Normalize the angle between -180 and 180.

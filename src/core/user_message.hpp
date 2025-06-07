@@ -2,6 +2,7 @@
 
 #include <networkbasetypes.pb.h>
 #include <networksystem/inetworkmessages.h>
+#include <networksystem/netmessage.h>
 
 namespace pb = google::protobuf;
 
@@ -53,7 +54,7 @@ namespace google::protobuf {
 class UserMessage {
 public:
 	UserMessage(INetworkMessageInternal* msgSerializable, const CNetMessage* message, int recipientCount, uint64_t* recipientMask)
-		: m_msgSerializable(msgSerializable), m_msg(const_cast<CNetMessage*>(message)->ToPB<pb::Message>()), m_recipientCount(recipientCount),
+		: m_msgSerializable(msgSerializable), m_netMessage(const_cast<CNetMessage*>(message)), m_msg(const_cast<pb::Message*>(message->AsMessage())), m_recipientCount(recipientCount),
 		  m_recipientMask(recipientMask) {
 	}
 
@@ -62,7 +63,8 @@ public:
 		m_msgSerializable = g_pNetworkMessages->FindNetworkMessagePartial(messageName);
 		if (!m_msgSerializable) return;
 
-		m_msg = m_msgSerializable->AllocateMessage()->ToPB<pb::Message>();
+		m_netMessage = m_msgSerializable->AllocateMessage();
+		m_msg = const_cast<pb::Message*>(m_netMessage->AsMessage());
 		m_recipientMask = new uint64_t(0);
 	}
 
@@ -71,7 +73,8 @@ public:
 		m_msgSerializable = g_pNetworkMessages->FindNetworkMessageById(static_cast<int32_t>(messageId));
 		if (!m_msgSerializable) return;
 
-		m_msg = m_msgSerializable->AllocateMessage()->ToPB<pb::Message>();
+		m_netMessage = m_msgSerializable->AllocateMessage();
+		m_msg = const_cast<pb::Message*>(m_netMessage->AsMessage());
 		m_recipientMask = new uint64_t(0);
 	}
 
@@ -79,17 +82,29 @@ public:
 		if (m_manuallyAllocated) delete m_recipientMask;
 	}
 
-	std::string GetMessageName();
-	uint16_t GetMessageID();
-	bool HasField(const std::string& fieldName);
-	const CNetMessagePB<pb::Message>* GetProtobufMessage();
-	INetworkMessageInternal* GetSerializableMessage() { return m_msgSerializable; }
-	uint64_t* GetRecipientMask() { return m_recipientMask; }
+	uint16_t GetMessageID() const { return m_msgSerializable->GetNetMessageInfo()->m_MessageId; }
+	std::string GetMessageName() const { return m_msgSerializable->GetUnscopedName(); }
+	const CNetMessage* GetNetMessage() const { return m_netMessage; }
+	const pb::Message* GetProtobufMessage() const { return m_msg; }
+	INetworkMessageInternal* GetSerializableMessage() const { return m_msgSerializable; }
+	uint64_t* GetRecipientMask() const { return m_recipientMask; }
 	bool IsManuallyAllocated() const { return m_manuallyAllocated; }
+
+	bool HasField(const std::string& fieldName) {
+		const pb::Descriptor* descriptor = m_msg->GetDescriptor();
+		const pb::FieldDescriptor* field = descriptor->FindFieldByName(fieldName);
+
+		if (field == nullptr || (field->label() == pb::FieldDescriptor::LABEL_REPEATED)) {
+			return false;
+		}
+
+		return m_msg->GetReflection()->HasField(*m_msg, field);
+	}
 
 private:
 	INetworkMessageInternal* m_msgSerializable{};
-	CNetMessagePB<pb::Message>* m_msg{};
+	CNetMessage* m_netMessage{};
+	pb::Message* m_msg{};
 	bool m_manuallyAllocated{};
 	int m_recipientCount{};
 	uint64_t* m_recipientMask{};

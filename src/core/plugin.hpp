@@ -20,8 +20,6 @@ public:
 	static poly::ReturnAction Hook_ChangeLevel(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type);
 	static poly::ReturnAction Hook_FireEvent(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type);
 	static poly::ReturnAction Hook_PostEvent(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type);
-	static poly::ReturnAction Hook_OnLevelInit(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type);
-	static poly::ReturnAction Hook_OnLevelShutdown(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type);
 	static poly::ReturnAction Hook_GameFrame(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type);
 	static poly::ReturnAction Hook_ClientActive(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type);
 	static poly::ReturnAction Hook_ClientDisconnect(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type);
