@@ -36,6 +36,7 @@
         "win64": "48 8B C4 55 41 54 41 55 41 57",
         "linuxsteamrt64": "55 B9 00 01 00 00"
       },
+      // String: "controller" (2 occurrences) at bottom func with 5 params (v12, a1, 0LL, 0, 0)
       "CBasePlayerController_SetPawn": {
         "library": "server",
         "win64": "48 89 74 24 ? 55 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 4C 8B F9",
@@ -274,15 +275,16 @@
         "win64": "48 8B C4 55 41 55 41 56",
         "linuxsteamrt64": "TODO"
       },
+      // String: "controller" (2 occurrences) at bottom func with 5 params (v12, a1, 0LL, 0, 0)
       "CBasePlayerController_SetPawn": {
         "library": "server",
-        "win64": "",
-        "linuxsteamrt64": ""
+        "win64": "48 89 5C 24 18 57 41 54 41 55 41 56 41 57 48 83 EC 30",
+        "linuxsteamrt64": "TODO"
       },
       // String: "CSource2GameClients::StartHLTVServer: game event %s not found.\n" Function right before the first virtual function call
       "LegacyGameEventListener": {
         "library": "server",
-        "win64": "48 8B 15 91 1E 90 01 ",
+        "win64": "48 8B 15 11 1D 90 01",
         "linuxsteamrt64": "TODO"
       },
       // String: "-pressdemo",
@@ -297,7 +299,7 @@
       //          "ok"
       "CSource2Server::Init": {
         "library": "server",
-        "win64": "48 83 EC 28 48 83 3D 14 92 90 01 00",
+        "win64": "48 83 EC 28 48 83 3D A4 90 90 01 00",
         "linuxsteamrt64": "TODO"
       },
       // Called right after "Removed %s(%s)\n"
@@ -327,7 +329,7 @@
       // String: "Attempted to create unknown entity classname" inside
       "CreateEntityByName": {
         "library": "server",
-        "win64": "48 83 EC 48 48 8B 0D 2D C4 97 01",
+        "win64": "48 83 EC 48 48 8B 0D AD C2 97 01",
         "linuxsteamrt64": "TODO"
       },
       // "multi_manager" is passed to this
@@ -440,7 +442,7 @@
         "signature": "CSource2Server::Init",
         "win64": [
           {
-            "read_offs32": 99
+            "read_offs32": 98
           }
         ],
         "linuxsteamrt64": [
