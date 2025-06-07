@@ -623,15 +623,14 @@ void MultiAddonManager::OnReplyConnection(INetworkGameServer* server, CServerSid
 }
 
 void* MultiAddonManager::OnSendNetMessage(CServerSideClient* client, CNetMessage* data, NetChannelBufType_t bufType) {
-	NetMessageInfo_t* info = data->GetSerializerPB()->GetNetMessageInfo();
-
 	uint64 steamID64 = client->GetClientSteamID().ConvertToUint64();
 	ClientAddonInfo& clientInfo = g_ClientAddons[steamID64];
 
 	// If we are sending a message to the client, that means the client is still active.
 	clientInfo.lastActiveTime = Plat_FloatTime();
 
-	if (info->m_MessageId != net_SignonState) {
+	INetworkSerializerPB* serializerPB = data->GetSerializerPB();
+	if (!serializerPB || serializerPB->GetNetMessageInfo()->m_MessageId != net_SignonState) {
 		return g_pfnSendNetMessage(client, data, bufType);
 	}
 
