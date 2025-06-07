@@ -1,12 +1,9 @@
-[submodule "DynLibUtils"]
-	path = external/dynlibutils
-	url = https://github.com/Wend4r/cpp-memory_utils.git
-[submodule "external/metamod-source"]
-	path = external/metamod-source
-	url = https://github.com/alliedmodders/metamod-source
 [submodule "Plugify - Configs"]
 	path = external/plugify-configs
 	url = https://github.com/untrustedmodders/plugify-configs.git
 [submodule "Source SDK"]
 	path = external/sourcesdk
 	url = https://github.com/Wend4r/sourcesdk
+[submodule "external/plugify"]
+	path = external/plugify
+	url = https://github.com/untrustedmodders/plugify.git

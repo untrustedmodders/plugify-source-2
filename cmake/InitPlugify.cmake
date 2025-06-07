@@ -2,6 +2,12 @@
 # Copyright (C) 2023-2025 untrustedmodders
 # Licensed under the MIT license. See LICENSE file in the project root for details.
 
+if(NOT PLUGIFY_DIR)
+	message(FATAL_ERROR "PLUGIFY_DIR is empty")
+endif()
+
+set(PLUGIFY_BINARY_DIR "plugify")
+
 set(PLUGIFY_COMPILE_DEFINITIONS
 		${PLUGIFY_COMPILE_DEFINITIONS}
 
@@ -21,5 +27,10 @@ endif()
 #
 # plugify-configs
 #
-include(cmake/plugify-configs.cmake)
+include(InitConfigs)
 list(APPEND PLUGIFY_LINK_LIBRARIES plugify-configs)
+
+#
+# plugify-assembly
+#
+add_subdirectory(${PLUGIFY_DIR} ${SOURCESDK_BINARY_DIR})
