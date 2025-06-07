@@ -1,5 +1,6 @@
 #include "multi_addon_manager.hpp"
 
+#include <netmessages.h>
 #include <networkbasetypes.pb.h>
 #include <networksystem/inetworkserializer.h>
 #include <networksystem/inetworkmessages.h>
@@ -15,11 +16,17 @@
 #include "game_config.hpp"
 #include "sdk/utils.h"
 
-CConVar<bool> s2_addon_mount_download("s2_addon_mount_download", FCVAR_NONE, "Whether to download an addon upon mounting even if it's installed", false);
+/*CConVar<bool> s2_addon_mount_download("s2_addon_mount_download", FCVAR_NONE, "Whether to download an addon upon mounting even if it's installed", false);
 CConVar<bool> s2_block_disconnect_messages("s2_block_disconnect_messages", FCVAR_NONE, "Whether to block \"loop shutdown\" disconnect messages", false);
 CConVar<bool> s2_cache_clients_with_addons("s2_cache_clients_with_addons", FCVAR_NONE, "Whether to cache clients addon download list, this will prevent reconnects on mapchange/rejoin", false);
 CConVar<double> s2_cache_clients_duration("s2_cache_clients_duration", FCVAR_NONE, "How long to cache clients' downloaded addons list in seconds, pass 0 for forever.", 0.0);
 CConVar<double> s2_extra_addons_timeout("s2_extra_addons_timeout", FCVAR_NONE, "How long until clients are timed out in between connects for extra addons in seconds, requires s2_extra_addons to be used", 10.0);
+*/
+CPlayerSlot s2_addon_mount_download;
+CPlayerSlot s2_block_disconnect_messages;
+CPlayerSlot s2_cache_clients_with_addons;
+CPlayerSlot s2_cache_clients_duration;
+CPlayerSlot s2_extra_addons_timeout;
 
 struct ClientAddonInfo {
 	uint64 steamID64;
@@ -31,7 +38,7 @@ struct ClientAddonInfo {
 
 std::unordered_map<uint64, ClientAddonInfo> g_ClientAddons;
 
-CConVar<CUtlString> s2_extra_addons("s2_extra_addons", FCVAR_NONE, "The workshop IDs of extra addons separated by commas, addons will be downloaded (if not present) and mounted", CUtlString(""),
+/*CConVar<CUtlString> s2_extra_addons("s2_extra_addons", FCVAR_NONE, "The workshop IDs of extra addons separated by commas, addons will be downloaded (if not present) and mounted", CUtlString(""),
 	[](CConVar<CUtlString> *cvar, CSplitScreenSlot slot, const CUtlString *new_val, const CUtlString *old_val)
 	{
 		g_MultiAddonManager.m_extraAddons = utils::string_to_vector<uint64_t>(new_val->Get());
@@ -43,7 +50,9 @@ CConVar<CUtlString> s2_client_extra_addons("s2_client_extra_addons", FCVAR_NONE,
 	[](CConVar<CUtlString> *cvar, CSplitScreenSlot slot, const CUtlString *new_val, const CUtlString *old_val)
 	{
 		g_MultiAddonManager.m_globalClientAddons = utils::string_to_vector<uint64_t>(new_val->Get());
-	});
+	});*/
+
+
 
 std::string MultiAddonManager::BuildAddonPath(uint64_t addon) {
     // The workshop on a dedicated server is stored relative to the working directory for whatever reason
@@ -266,7 +275,7 @@ bool MultiAddonManager::AddAddon(uint64_t addon, bool refresh) {
 	m_extraAddons.emplace_back(addon);
 
 	// Update the convar to reflect the new addon list, but don't trigger the callback
-	s2_extra_addons.GetConVarData()->Value(0)->m_StringValue = utils::vector_to_string(m_extraAddons).c_str();
+	//s2_extra_addons.GetConVarData()->Value(0)->m_StringValue = utils::vector_to_string(m_extraAddons).c_str();
 	S2_LOGF(LS_MESSAGE, "Clearing client cache due to addons changing");
 
 	if (refresh) {
@@ -289,7 +298,7 @@ bool MultiAddonManager::RemoveAddon(uint64_t addon, bool refresh) {
 	m_extraAddons.erase(it);
 
 	// Update the convar to reflect the new addon list, but don't trigger the callback
-	s2_extra_addons.GetConVarData()->Value(0)->m_StringValue = utils::vector_to_string(m_extraAddons).c_str();
+	//s2_extra_addons.GetConVarData()->Value(0)->m_StringValue = utils::vector_to_string(m_extraAddons).c_str();
 
 	S2_LOGF(LS_MESSAGE, "Clearing client cache due to addons changing");
 
@@ -322,16 +331,16 @@ void MultiAddonManager::OnStartupServer() {
 	RefreshAddons();
 }
 
-CNetMessagePB<CNETMsg_SignonState>* GetAddonSignonStateMessage(uint64_t addon) {
+CNETMsg_SignonState_t* GetAddonSignonStateMessage(uint64_t addon) {
 	if (!gpGlobals)
 		return nullptr;
 
-	INetworkMessageInternal *pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("SignonState");
-	CNetMessagePB<CNETMsg_SignonState> *pMsg = pNetMsg->AllocateMessage()->ToPB<CNETMsg_SignonState>();
+	INetworkMessageInternal* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("SignonState");
+	CNETMsg_SignonState_t* pMsg = pNetMsg->AllocateMessage()->As<CNETMsg_SignonState_t>();
 	pMsg->set_spawn_count(gpGlobals->serverCount);
 	pMsg->set_signon_state(SIGNONSTATE_CHANGELEVEL);
 	pMsg->set_addons(addon ? std::to_string(addon) : "");
-	CUtlVector<CServerSideClientBase*>& clients = *utils::GetClientList();
+	CUtlClientVector& clients = *utils::GetClientList();
 	pMsg->set_num_server_players(clients.Count());
 	for (int i = 0; i < clients.Count(); i++) {
 		auto client = clients.Element(i);
@@ -354,7 +363,7 @@ void MultiAddonManager::AddClientAddon(uint64_t addon, uint64 steamID64, bool re
 		}
 
 		m_globalClientAddons.emplace_back(addon);
-		s2_client_extra_addons.GetConVarData()->Value(0)->m_StringValue = utils::vector_to_string(m_globalClientAddons).c_str();
+		//s2_client_extra_addons.GetConVarData()->Value(0)->m_StringValue = utils::vector_to_string(m_globalClientAddons).c_str();
 	} else {
 		ClientAddonInfo& clientInfo = g_ClientAddons[steamID64];
 
@@ -367,7 +376,7 @@ void MultiAddonManager::AddClientAddon(uint64_t addon, uint64 steamID64, bool re
 	}
 
 	if (refresh) {
-		CUtlVector<CServerSideClientBase*>& clients = *utils::GetClientList();
+		CUtlClientVector& clients = *utils::GetClientList();
 		auto pMsg = GetAddonSignonStateMessage(addon);
 		if (!pMsg) {
 			S2_LOGF(LS_WARNING, "Failed to create signon state message for {}\n", addon);
@@ -414,7 +423,7 @@ void MultiAddonManager::RemoveClientAddon(uint64_t addon, uint64 steamID64) {
 		if (it != m_globalClientAddons.end()) {
 			m_globalClientAddons.erase(it);
 		}
-		s2_client_extra_addons.GetConVarData()->Value(0)->m_StringValue = utils::vector_to_string(m_globalClientAddons).c_str();
+		//s2_client_extra_addons.GetConVarData()->Value(0)->m_StringValue = utils::vector_to_string(m_globalClientAddons).c_str();
 	} else {
 		ClientAddonInfo& clientInfo = g_ClientAddons[steamID64];
 		auto it = std::find(clientInfo.addonsToLoad.begin(), clientInfo.addonsToLoad.end(), addon);
@@ -427,7 +436,7 @@ void MultiAddonManager::RemoveClientAddon(uint64_t addon, uint64 steamID64) {
 void MultiAddonManager::ClearClientAddons(uint64 steamID64) {
 	if (!steamID64) {
 		m_globalClientAddons.clear();
-		s2_client_extra_addons.GetConVarData()->Value(0)->m_StringValue = utils::vector_to_string(m_globalClientAddons).c_str();
+		//s2_client_extra_addons.GetConVarData()->Value(0)->m_StringValue = utils::vector_to_string(m_globalClientAddons).c_str();
 	} else {
 		ClientAddonInfo& clientInfo = g_ClientAddons[steamID64];
 		clientInfo.addonsToLoad.clear();
@@ -614,7 +623,7 @@ void MultiAddonManager::OnReplyConnection(INetworkGameServer* server, CServerSid
 }
 
 void* MultiAddonManager::OnSendNetMessage(CServerSideClient* client, CNetMessage* data, NetChannelBufType_t bufType) {
-	NetMessageInfo_t* info = data->GetNetMessage()->GetNetMessageInfo();
+	NetMessageInfo_t* info = data->GetSerializerPB()->GetNetMessageInfo();
 
 	uint64 steamID64 = client->GetClientSteamID().ConvertToUint64();
 	ClientAddonInfo& clientInfo = g_ClientAddons[steamID64];
@@ -626,7 +635,7 @@ void* MultiAddonManager::OnSendNetMessage(CServerSideClient* client, CNetMessage
 		return g_pfnSendNetMessage(client, data, bufType);
 	}
 
-	auto pMsg = data->ToPB<CNETMsg_SignonState>();
+	auto pMsg = data->As<CNETMsg_SignonState_t>();
 
 	std::vector<uint64_t> addons = g_MultiAddonManager.GetClientAddons(steamID64);
 
@@ -682,7 +691,7 @@ void MultiAddonManager::OnGameFrame() {
 
 void MultiAddonManager::OnPostEvent(INetworkMessageInternal* message, CNetMessage* data, uint64_t* clients) {
 	if (s2_block_disconnect_messages.Get() && message->GetNetMessageInfo()->m_MessageId == GE_Source1LegacyGameEvent) {
-		auto pMsg = data->ToPB<CMsgSource1LegacyGameEvent>();
+		auto pMsg = data->As<CMsgSource1LegacyGameEvent_t>();
 
 		static int sDisconnectId = g_pGameEventManager->LookupEventId("player_disconnect");
 
