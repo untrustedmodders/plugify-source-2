@@ -182,8 +182,9 @@ bool MultiAddonManager::DownloadAddon(uint64_t addon, bool important, bool force
 		return false;
 	}
 
-	if (important && m_importantDownloads.Find(addon) == -1)
+	if (important && m_importantDownloads.Find(addon) == -1) {
 		m_importantDownloads.AddToTail(addon);
+	}
 
 	m_downloadQueue.Insert(addon);
 

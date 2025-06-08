@@ -76,7 +76,7 @@ void Source2SDK::OnPluginStart() {
 
 	g_PH.AddHookMemFunc(&IGameEventManager2::FireEvent, g_pGameEventManager, Hook_FireEvent, Pre, Post);
 	using PostEventAbstract = void(IGameEventSystem::*)(CSplitScreenSlot nSlot, bool bLocalOnly, IRecipientFilter *pFilter, INetworkMessageInternal *pEvent, const CNetMessage *pData, unsigned long nSize);
-	//g_PH.AddHookMemFunc<PostEventAbstract>(&IGameEventSystem::PostEventAbstract, g_pGameEventSystem, Hook_PostEvent, Pre, Post);
+	g_PH.AddHookMemFunc<PostEventAbstract>(&IGameEventSystem::PostEventAbstract, g_pGameEventSystem, Hook_PostEvent, Pre, Post);
 
 	g_PH.AddHookMemFunc(&IServerGameClients::ClientCommand, g_pSource2GameClients, Hook_ClientCommand, Pre);
 	g_PH.AddHookMemFunc(&IServerGameClients::ClientActive, g_pSource2GameClients, Hook_ClientActive, Post);
@@ -107,9 +107,10 @@ void Source2SDK::OnPluginStart() {
 	g_pfnReplyConnection = reinterpret_cast<ReplyConnectionFn>(g_PH.AddHookDetourFunc<ReplyConnectionFn>("ReplyConnection", Hook_ReplyConnection, Pre));
 
 	// We're using funchook even though it's a virtual function because it can be called on a different thread and SourceHook isn't thread-safe
-	auto pServerSideClientVTable = g_GameConfigManager.GetModule("engine2")->GetVirtualTableByName("CServerSideClient").CCast<uintptr_t*>();
+	auto pServerSideClientVTable = g_GameConfigManager.GetModule("engine2")->GetVirtualTableByName("CServerSideClientBase").CCast<uintptr_t*>();
 	auto fSendNetMessage = &CServerSideClientBase::SendNetMessage;
 	int iSendNetMessageOffset = poly::GetVTableIndex((void*&) fSendNetMessage);
+	S2_LOGF(LS_DEBUG, "[OnPluginEnd] = 0x{:x} 0x{:x}!\n", pServerSideClientVTable[iSendNetMessageOffset], (uintptr_t)&pServerSideClientVTable[iSendNetMessageOffset]);
 	g_pfnSendNetMessage = reinterpret_cast<SendNetMessageFn>(g_PH.AddHookDetourFunc<SendNetMessageFn>(pServerSideClientVTable[iSendNetMessageOffset], Hook_SendNetMessage, Pre));
 
 #if S2SDK_PLATFORM_WINDOWS
@@ -518,6 +519,11 @@ poly::ReturnAction Source2SDK::Hook_SendNetMessage(poly::IHook& hook, poly::Para
 	auto pClient = poly::GetArgument<CServerSideClient*>(params, 0);
 	auto pData = poly::GetArgument<CNetMessage*>(params, 1);
 	auto bufType = (NetChannelBufType_t) poly::GetArgument<int8_t>(params, 2);
+
+	if (pClient->IsFakeClient() || pClient->IsHLTV()) {
+		// Don't send messages to fake clients or replay clients
+		return poly::ReturnAction::Ignored;
+	}
 
 	void* output = g_MultiAddonManager.OnSendNetMessage(pClient, pData, bufType);
 	poly::SetReturn<void*>(ret, output);
