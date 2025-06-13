@@ -53,34 +53,45 @@ public:
 	/**
 	 * @brief Start a new Yes/No vote
 	 *
-	 *  @param duration			Maximum time to leave vote active for
-	 *  @param caller			Player slot of the vote caller. Use VOTE_CALLER_SERVER for 'Server'.
-	 *  @param voteTitle		Translation string to use as the vote message. (Only '#SFUI_vote' or '#Panorama_vote' strings)
-	 *  @param detailStr		Extra string used in some vote translation strings.
-	 *  @param filter			Recipient filter with all the clients who are allowed to participate in the vote.
-	 *  @param result			Called when a menu action is completed.
-	 *  @param handler			Called when the vote has finished.
+	 * @param duration		Maximum time to leave vote active for
+	 * @param caller		Player slot of the vote caller. Use VOTE_CALLER_SERVER for 'Server'.
+	 * @param voteTitle		Translation string to use as the vote message. (Only '#SFUI_vote' or '#Panorama_vote' strings)
+	 * @param detailStr		Extra string used in some vote translation strings.
+	 * @param votePassTitle	Translation string to use as the vote message when the vote passes. (Only '#SFUI_vote' or '#Panorama_vote' strings)
+	 * @param detailPassStr Extra string used in some vote translation strings when the vote passes.
+	 * @param recipientMask	Recipient filter with all the clients who are allowed to participate in the vote.
+	 * @param result		Called when a menu action is completed.
+	 * @param handler		Called when the vote has finished.
 	 */
-	bool SendYesNoVote(double duration, int caller, const plg::string& voteTitle, const plg::string& detailStr, IRecipientFilter* filter, YesNoVoteResult result, YesNoVoteHandler handler);
+	bool SendYesNoVote(
+		double duration, int caller,
+		const plg::string& voteTitle, const plg::string& detailStr,
+		const plg::string& votePassTitle, const plg::string& detailPassStr,
+		int voteFailReason,
+		uint64 recipientMask, YesNoVoteResult result, YesNoVoteHandler handler);
 
 protected:
 	void CheckForEarlyVoteClose() const;
 	void InitVoters(IRecipientFilter* filter);
 	void SendVoteStartUM(IRecipientFilter* filter);
 	void UpdateVoteCounts() const;
-	static void SendVoteFailed();
-	static void SendVotePassed();
+	void SendVoteFailed() const;
+	void SendVotePassed() const;
 
 private:
 	CHandle<CVoteController> m_voteController;
 	bool m_voteInProgress{};
 	YesNoVoteHandler m_voteHandler{};
 	YesNoVoteResult m_voteResult{};
+	uint64 m_recipientMask{static_cast<uint64>(-1)};
 	int m_voterCount{};
 	int m_voteCount{};
 	int m_currentVoteCaller{};
+	int m_currentVoteFailReason{};
 	std::string m_currentVoteTitle;
 	std::string m_currentVoteDetailStr;
+	std::string m_currentVotePassTitle;
+	std::string m_currentVotePassDetailStr;
 	std::array<CPlayerSlot, MAXPLAYERS> m_voters = {};
 };
 

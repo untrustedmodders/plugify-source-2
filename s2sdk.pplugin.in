@@ -11662,6 +11662,205 @@
           "description": "Extra string used in some vote translation strings."
         },
         {
+          "name": "votePassTitle",
+          "type": "string",
+          "ref": false,
+          "description": "Translation string to use as the vote message. (Only '#SFUI_vote' or '#Panorama_vote' strings)"
+        },
+        {
+          "name": "detailPassStr",
+          "type": "string",
+          "ref": false,
+          "description": "Extra string used in some vote translation strings when the vote passes."
+        },
+        {
+          "name": "failReason",
+          "type": "int32",
+          "ref": false,
+          "description": "Reason for the vote to fail, used in some translation strings.",
+          "enum": {
+            "name": "VoteCreateFailed",
+            "description": "Enum representing the possible reasons a vote creation or processing has failed.",
+            "values": [
+              {
+                "value": 0,
+                "name": "Generic",
+                "description": "Generic vote failure."
+              },
+              {
+                "value": 1,
+                "name": "TransitioningPlayers",
+                "description": "Vote failed due to players transitioning."
+              },
+              {
+                "value": 2,
+                "name": "RateExceeded",
+                "description": "Vote failed because vote rate limit was exceeded."
+              },
+              {
+                "value": 3,
+                "name": "YesMustExceedNo",
+                "description": "Vote failed because Yes votes must exceed No votes."
+              },
+              {
+                "value": 4,
+                "name": "QuorumFailure",
+                "description": "Vote failed due to quorum not being met."
+              },
+              {
+                "value": 5,
+                "name": "IssueDisabled",
+                "description": "Vote failed because the issue is disabled."
+              },
+              {
+                "value": 6,
+                "name": "MapNotFound",
+                "description": "Vote failed because the map was not found."
+              },
+              {
+                "value": 7,
+                "name": "MapNameRequired",
+                "description": "Vote failed because map name is required."
+              },
+              {
+                "value": 8,
+                "name": "FailedRecently",
+                "description": "Vote failed because a similar vote failed recently."
+              },
+              {
+                "value": 9,
+                "name": "FailedRecentKick",
+                "description": "Vote to kick failed recently."
+              },
+              {
+                "value": 10,
+                "name": "FailedRecentChangeMap",
+                "description": "Vote to change map failed recently."
+              },
+              {
+                "value": 11,
+                "name": "FailedRecentSwapTeams",
+                "description": "Vote to swap teams failed recently."
+              },
+              {
+                "value": 12,
+                "name": "FailedRecentScrambleTeams",
+                "description": "Vote to scramble teams failed recently."
+              },
+              {
+                "value": 13,
+                "name": "FailedRecentRestart",
+                "description": "Vote to restart failed recently."
+              },
+              {
+                "value": 14,
+                "name": "TeamCantCall",
+                "description": "Team is not allowed to call vote."
+              },
+              {
+                "value": 15,
+                "name": "WaitingForPlayers",
+                "description": "Vote failed because game is waiting for players."
+              },
+              {
+                "value": 16,
+                "name": "PlayerNotFound",
+                "description": "Target player was not found."
+              },
+              {
+                "value": 17,
+                "name": "CannotKickAdmin",
+                "description": "Cannot kick an admin."
+              },
+              {
+                "value": 18,
+                "name": "ScrambleInProgress",
+                "description": "Scramble is currently in progress."
+              },
+              {
+                "value": 19,
+                "name": "SwapInProgress",
+                "description": "Swap is currently in progress."
+              },
+              {
+                "value": 20,
+                "name": "Spectator",
+                "description": "Spectators are not allowed to vote."
+              },
+              {
+                "value": 21,
+                "name": "Disabled",
+                "description": "Voting is disabled."
+              },
+              {
+                "value": 22,
+                "name": "NextLevelSet",
+                "description": "Next level is already set."
+              },
+              {
+                "value": 23,
+                "name": "Rematch",
+                "description": "Rematch vote failed."
+              },
+              {
+                "value": 24,
+                "name": "TooEarlySurrender",
+                "description": "Vote to surrender failed due to being too early."
+              },
+              {
+                "value": 25,
+                "name": "Continue",
+                "description": "Vote to continue failed."
+              },
+              {
+                "value": 26,
+                "name": "MatchPaused",
+                "description": "Vote failed because match is already paused."
+              },
+              {
+                "value": 27,
+                "name": "MatchNotPaused",
+                "description": "Vote failed because match is not paused."
+              },
+              {
+                "value": 28,
+                "name": "NotInWarmup",
+                "description": "Vote failed because game is not in warmup."
+              },
+              {
+                "value": 29,
+                "name": "Not10Players",
+                "description": "Vote failed because there are not 10 players."
+              },
+              {
+                "value": 30,
+                "name": "TimeoutActive",
+                "description": "Vote failed due to an active timeout."
+              },
+              {
+                "value": 31,
+                "name": "TimeoutInactive",
+                "description": "Vote failed because timeout is inactive."
+              },
+              {
+                "value": 32,
+                "name": "TimeoutExhausted",
+                "description": "Vote failed because timeout has been exhausted."
+              },
+              {
+                "value": 33,
+                "name": "CantRoundEnd",
+                "description": "Vote failed because the round can't end now."
+              },
+              {
+                "value": 34,
+                "name": "Max",
+                "description": "Sentinel value. Not a real failure reason."
+              }
+            ]
+          }
+        },
+        {
           "name": "filter",
           "type": "uint64",
           "ref": false,
@@ -11800,6 +11999,205 @@
           "type": "string",
           "ref": false,
           "description": "Extra string used in some vote translation strings."
+        },
+        {
+          "name": "votePassTitle",
+          "type": "string",
+          "ref": false,
+          "description": "Translation string to use as the vote message. (Only '#SFUI_vote' or '#Panorama_vote' strings)"
+        },
+        {
+          "name": "detailPassStr",
+          "type": "string",
+          "ref": false,
+          "description": "Extra string used in some vote translation strings when the vote passes."
+        },
+        {
+          "name": "failReason",
+          "type": "int32",
+          "ref": false,
+          "description": "Reason for the vote to fail, used in some translation strings.",
+          "enum": {
+            "name": "VoteCreateFailed",
+            "description": "Enum representing the possible reasons a vote creation or processing has failed.",
+            "values": [
+              {
+                "value": 0,
+                "name": "Generic",
+                "description": "Generic vote failure."
+              },
+              {
+                "value": 1,
+                "name": "TransitioningPlayers",
+                "description": "Vote failed due to players transitioning."
+              },
+              {
+                "value": 2,
+                "name": "RateExceeded",
+                "description": "Vote failed because vote rate limit was exceeded."
+              },
+              {
+                "value": 3,
+                "name": "YesMustExceedNo",
+                "description": "Vote failed because Yes votes must exceed No votes."
+              },
+              {
+                "value": 4,
+                "name": "QuorumFailure",
+                "description": "Vote failed due to quorum not being met."
+              },
+              {
+                "value": 5,
+                "name": "IssueDisabled",
+                "description": "Vote failed because the issue is disabled."
+              },
+              {
+                "value": 6,
+                "name": "MapNotFound",
+                "description": "Vote failed because the map was not found."
+              },
+              {
+                "value": 7,
+                "name": "MapNameRequired",
+                "description": "Vote failed because map name is required."
+              },
+              {
+                "value": 8,
+                "name": "FailedRecently",
+                "description": "Vote failed because a similar vote failed recently."
+              },
+              {
+                "value": 9,
+                "name": "FailedRecentKick",
+                "description": "Vote to kick failed recently."
+              },
+              {
+                "value": 10,
+                "name": "FailedRecentChangeMap",
+                "description": "Vote to change map failed recently."
+              },
+              {
+                "value": 11,
+                "name": "FailedRecentSwapTeams",
+                "description": "Vote to swap teams failed recently."
+              },
+              {
+                "value": 12,
+                "name": "FailedRecentScrambleTeams",
+                "description": "Vote to scramble teams failed recently."
+              },
+              {
+                "value": 13,
+                "name": "FailedRecentRestart",
+                "description": "Vote to restart failed recently."
+              },
+              {
+                "value": 14,
+                "name": "TeamCantCall",
+                "description": "Team is not allowed to call vote."
+              },
+              {
+                "value": 15,
+                "name": "WaitingForPlayers",
+                "description": "Vote failed because game is waiting for players."
+              },
+              {
+                "value": 16,
+                "name": "PlayerNotFound",
+                "description": "Target player was not found."
+              },
+              {
+                "value": 17,
+                "name": "CannotKickAdmin",
+                "description": "Cannot kick an admin."
+              },
+              {
+                "value": 18,
+                "name": "ScrambleInProgress",
+                "description": "Scramble is currently in progress."
+              },
+              {
+                "value": 19,
+                "name": "SwapInProgress",
+                "description": "Swap is currently in progress."
+              },
+              {
+                "value": 20,
+                "name": "Spectator",
+                "description": "Spectators are not allowed to vote."
+              },
+              {
+                "value": 21,
+                "name": "Disabled",
+                "description": "Voting is disabled."
+              },
+              {
+                "value": 22,
+                "name": "NextLevelSet",
+                "description": "Next level is already set."
+              },
+              {
+                "value": 23,
+                "name": "Rematch",
+                "description": "Rematch vote failed."
+              },
+              {
+                "value": 24,
+                "name": "TooEarlySurrender",
+                "description": "Vote to surrender failed due to being too early."
+              },
+              {
+                "value": 25,
+                "name": "Continue",
+                "description": "Vote to continue failed."
+              },
+              {
+                "value": 26,
+                "name": "MatchPaused",
+                "description": "Vote failed because match is already paused."
+              },
+              {
+                "value": 27,
+                "name": "MatchNotPaused",
+                "description": "Vote failed because match is not paused."
+              },
+              {
+                "value": 28,
+                "name": "NotInWarmup",
+                "description": "Vote failed because game is not in warmup."
+              },
+              {
+                "value": 29,
+                "name": "Not10Players",
+                "description": "Vote failed because there are not 10 players."
+              },
+              {
+                "value": 30,
+                "name": "TimeoutActive",
+                "description": "Vote failed due to an active timeout."
+              },
+              {
+                "value": 31,
+                "name": "TimeoutInactive",
+                "description": "Vote failed because timeout is inactive."
+              },
+              {
+                "value": 32,
+                "name": "TimeoutExhausted",
+                "description": "Vote failed because timeout has been exhausted."
+              },
+              {
+                "value": 33,
+                "name": "CantRoundEnd",
+                "description": "Vote failed because the round can't end now."
+              },
+              {
+                "value": 34,
+                "name": "Max",
+                "description": "Sentinel value. Not a real failure reason."
+              }
+            ]
+          }
         },
         {
           "name": "result",
@@ -16136,14 +16534,8 @@
           "description": "The network message."
         },
         {
-          "name": "nRecipientCount",
-          "type": "int32",
-          "ref": false,
-          "description": "The number of recipients."
-        },
-        {
           "name": "recipientMask",
-          "type": "ptr64",
+          "type": "uint64",
           "ref": false,
           "description": "The recipient mask."
         }

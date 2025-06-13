@@ -9,14 +9,15 @@
  * @param caller		Player slot of the vote caller. Use VOTE_CALLER_SERVER for 'Server'.
  * @param voteTitle		Translation string to use as the vote message. (Only '#SFUI_vote' or '#Panorama_vote' strings)
  * @param detailStr		Extra string used in some vote translation strings.
- * @param recipientMask	Recipient filter with all the clients who are allowed to participate in the vote.
+ * @param voteTitle		Translation string to use as the vote message. (Only '#SFUI_vote' or '#Panorama_vote' strings)
+ * @param votePassTitle	Translation string to use as the vote message when the vote passes. (Only '#SFUI_vote' or '#Panorama_vote' strings)
+ * @param detailPassStr Extra string used in some vote translation strings when the vote passes.
+ * @param failReason	Reason for the vote to fail, used in some translation strings.
  * @param result		Called when a menu action is completed.
  * @param handler		Called when the vote has finished.
  */
-extern "C" PLUGIN_API bool PanoramaSendYesNoVote(double duration, int caller, const plg::string& voteTitle, const plg::string& detailStr, uint64 recipientMask, YesNoVoteResult result, YesNoVoteHandler handler) {
-    CRecipientFilter filter;
-    filter.AddRecipientsFromMask(recipientMask);
-    return g_PanoramaVoteHandler.SendYesNoVote(duration, caller, voteTitle, detailStr, &filter, result, handler);
+extern "C" PLUGIN_API bool PanoramaSendYesNoVote(double duration, int caller, const plg::string& voteTitle, const plg::string& detailStr, const plg::string& votePassTitle, const plg::string& detailPassStr, int failReason, uint64 recipientMask, YesNoVoteResult result, YesNoVoteHandler handler) {
+    return g_PanoramaVoteHandler.SendYesNoVote(duration, caller, voteTitle, detailStr, votePassTitle, detailPassStr, failReason, recipientMask, result, handler);
 }
 
 /**
@@ -26,13 +27,14 @@ extern "C" PLUGIN_API bool PanoramaSendYesNoVote(double duration, int caller, co
  * @param caller		Player slot of the vote caller. Use VOTE_CALLER_SERVER for 'Server'.
  * @param voteTitle		Translation string to use as the vote message. (Only '#SFUI_vote' or '#Panorama_vote' strings)
  * @param detailStr		Extra string used in some vote translation strings.
+ * @param votePassTitle	Translation string to use as the vote message when the vote passes. (Only '#SFUI_vote' or '#Panorama_vote' strings)
+ * @param detailPassStr Extra string used in some vote translation strings when the vote passes.
+ * @param failReason	Reason for the vote to fail, used in some translation strings.
  * @param result		Called when a menu action is completed.
  * @param handler		Called when the vote has finished.
  */
-extern "C" PLUGIN_API bool PanoramaSendYesNoVoteToAll(double duration, int caller, const plg::string& voteTitle, const plg::string& detailStr, YesNoVoteResult result, YesNoVoteHandler handler) {
-    CRecipientFilter filter;
-    filter.AddAllPlayers();
-    return g_PanoramaVoteHandler.SendYesNoVote(duration, caller, voteTitle, detailStr, &filter, result, handler);
+extern "C" PLUGIN_API bool PanoramaSendYesNoVoteToAll(double duration, int caller, const plg::string& voteTitle, const plg::string& detailStr, const plg::string& votePassTitle, const plg::string& detailPassStr, int failReason, YesNoVoteResult result, YesNoVoteHandler handler) {
+    return g_PanoramaVoteHandler.SendYesNoVote(duration, caller, voteTitle, detailStr, votePassTitle, detailPassStr, failReason, static_cast<uint64>(-1), result, handler);
 }
 
 /**

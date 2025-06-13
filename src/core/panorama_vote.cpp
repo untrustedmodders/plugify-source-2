@@ -114,23 +114,33 @@ bool CPanoramaVoteHandler::IsVoteInProgress() const {
 	return m_voteInProgress;
 }
 
-bool CPanoramaVoteHandler::SendYesNoVote(double duration, int caller, const plg::string& voteTitle, const plg::string& detailStr,
-                                         IRecipientFilter *filter, YesNoVoteResult result,
-                                         YesNoVoteHandler handler = nullptr) {
+bool CPanoramaVoteHandler::SendYesNoVote(double duration, int caller,
+	const plg::string& voteTitle, const plg::string& detailStr,
+	const plg::string& votePassTitle, const plg::string& detailPassStr,
+	int voteFailReason, uint64 recipientMask, YesNoVoteResult result,
+	YesNoVoteHandler handler = nullptr) {
 	if (!m_voteController|| m_voteInProgress)
 		return false;
 
-	if (filter->GetRecipientCount() <= 0)
+	CRecipientFilter filter;
+	if (recipientMask == static_cast<uint64>(-1)) {
+		filter.AddAllPlayers();
+	} else {
+		filter.AddRecipientsFromMask(recipientMask);
+	}
+
+	if (filter.GetRecipientCount() <= 0)
 		return false;
 
 	if (result == nullptr)
 		return false;
 
-	S2_LOGF(LS_MESSAGE, "[Vote Start] Starting a new vote [id:{}]. Duration:{} Caller:{} NumClients:{}", m_voteCount, duration, caller, filter->GetRecipientCount());
+	S2_LOGF(LS_MESSAGE, "[Vote Start] Starting a new vote [id:{}]. Duration:{} Caller:{} NumClients:{}", m_voteCount, duration, caller, filter.GetRecipientCount());
 
 	m_voteInProgress = true;
+	m_recipientMask = recipientMask;
 
-	InitVoters(filter);
+	InitVoters(&filter);
 
 	m_voteController->m_nPotentialVotes = m_voterCount;
 	m_voteController->m_bIsYesNoVote = true;
@@ -144,10 +154,13 @@ bool CPanoramaVoteHandler::SendYesNoVote(double duration, int caller, const plg:
 	m_currentVoteCaller = caller;
 	m_currentVoteTitle = voteTitle;
 	m_currentVoteDetailStr = detailStr;
+	m_currentVotePassTitle = votePassTitle;
+	m_currentVotePassDetailStr = detailPassStr;
+	m_currentVoteFailReason = voteFailReason;
 
 	UpdateVoteCounts();
 
-	SendVoteStartUM(filter);
+	SendVoteStartUM(&filter);
 
 	if (m_voteHandler != nullptr)
 		m_voteHandler(VoteAction::Start, -1, VOTE_NOTINCLUDED);
@@ -235,8 +248,9 @@ void CPanoramaVoteHandler::EndVote(VoteEndReason reason) {
 	// Cycle global vote counter
 	++m_voteCount;
 
-	if (m_voteHandler != nullptr)
+	if (m_voteHandler != nullptr) {
 		m_voteHandler(VoteAction::End, -1, static_cast<int>(reason));
+	}
 
 	if (!m_voteController) {
 		SendVoteFailed();
@@ -273,31 +287,39 @@ void CPanoramaVoteHandler::EndVote(VoteEndReason reason) {
 	}
 }
 
-void CPanoramaVoteHandler::SendVoteFailed() {
+void CPanoramaVoteHandler::SendVoteFailed() const {
 	INetworkMessageInternal *pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("VoteFailed");
 
 	auto data = pNetMsg->AllocateMessage()->As<CCSUsrMsg_VoteFailed_t>();
 
-	data->set_reason(0);
+	data->set_reason(m_currentVoteFailReason);
 	data->set_team(-1);
 
 	CRecipientFilter filter;
-	filter.AddAllPlayers();
+	if (m_recipientMask == static_cast<uint64>(-1)) {
+		filter.AddAllPlayers();
+	} else {
+		filter.AddRecipientsFromMask(m_recipientMask);
+	}
 	g_pGameEventSystem->PostEventAbstract(-1, false, &filter, pNetMsg, data, 0);
 }
 
-void CPanoramaVoteHandler::SendVotePassed() {
+void CPanoramaVoteHandler::SendVotePassed() const {
 	INetworkMessageInternal *pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("VotePass");
 
 	auto data = pNetMsg->AllocateMessage()->As<CCSUsrMsg_VotePass_t>();
 
 	data->set_team(-1);
-	data->set_vote_type(2);
-	data->set_disp_str("#SFUI_Vote_None");
-	data->set_details_str("");
+	data->set_vote_type(2); // VOTEISSUE_NEXTLEVEL
+	data->set_disp_str(m_currentVotePassTitle);
+	data->set_details_str(m_currentVotePassDetailStr);
 
 	CRecipientFilter filter;
-	filter.AddAllPlayers();
+	if (m_recipientMask == static_cast<uint64>(-1)) {
+		filter.AddAllPlayers();
+	} else {
+		filter.AddRecipientsFromMask(m_recipientMask);
+	}
 	g_pGameEventSystem->PostEventAbstract(-1, false, &filter, pNetMsg, data, 0);
 }
 
