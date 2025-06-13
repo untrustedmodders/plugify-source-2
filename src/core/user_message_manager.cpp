@@ -34,8 +34,8 @@ bool UserMessageManager::UnhookUserMessage(int16_t messageId, UserMessageCallbac
 	return commandInfo.callbacks[static_cast<size_t>(mode)].Unregister(callback);
 }
 
-ResultType UserMessageManager::ExecuteMessageCallbacks(INetworkMessageInternal* msgSerializable, CNetMessage* msgData, int clientCount, uint64_t* clients, HookMode mode) {
-	UserMessage message(msgSerializable, msgData, clientCount, clients);
+ResultType UserMessageManager::ExecuteMessageCallbacks(INetworkMessageInternal* msgSerializable, const CNetMessage* msgData, uint64_t* clients, HookMode mode) {
+	UserMessage message(msgSerializable, msgData, *clients);
 
 	int16_t messageID = message.GetMessageID();
 	
@@ -44,14 +44,14 @@ ResultType UserMessageManager::ExecuteMessageCallbacks(INetworkMessageInternal* 
 	ResultType result = ResultType::Continue;
 	
 	const auto& globalCallback = m_globalCallbacks[static_cast<size_t>(mode)];
-	
+
 	for (size_t i = 0; i < globalCallback.GetCount(); ++i) {
 		auto thisResult = globalCallback.Notify(i, &message);
 		if (thisResult >= ResultType::Stop) {
 			if (mode == HookMode::Pre) {
+				*clients = message.GetRecipientMask();
 				return ResultType::Stop;
 			}
-			
 			result = thisResult;
 			break;
 		}
@@ -62,22 +62,26 @@ ResultType UserMessageManager::ExecuteMessageCallbacks(INetworkMessageInternal* 
 	}
 	
 	auto it = m_hooksMap.find(messageID);
-	if (it == m_hooksMap.end()) {
-		return result;
-	}
+	if (it != m_hooksMap.end()) {
+		const auto& messageHook = std::get<UserMessageHook>(*it);
+		const auto& callback = messageHook.callbacks[static_cast<size_t>(mode)];
 
-	const auto& messageHook = std::get<UserMessageHook>(*it);
-	const auto& callback = messageHook.callbacks[static_cast<size_t>(mode)];
-
-	for (size_t i = 0; i < callback.GetCount(); ++i) {
-		auto thisResult = callback.Notify(i, &message);
-		if (thisResult >= ResultType::Handled) {
-			return thisResult;
-		} else if (thisResult > result) {
-			result = thisResult;
+		for (size_t i = 0; i < callback.GetCount(); ++i) {
+			auto thisResult = callback.Notify(i, &message);
+			if (thisResult >= ResultType::Handled) {
+				if (mode == HookMode::Pre) {
+					*clients = message.GetRecipientMask();
+				}
+				return thisResult;
+			} else if (thisResult > result) {
+				result = thisResult;
+			}
 		}
 	}
 
+	if (mode == HookMode::Pre) {
+		*clients = message.GetRecipientMask();
+	}
 	return result;
 }
 

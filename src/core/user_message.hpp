@@ -53,33 +53,25 @@ namespace google::protobuf {
 
 class UserMessage {
 public:
-	UserMessage(INetworkMessageInternal* msgSerializable, const CNetMessage* message, int recipientCount, uint64_t* recipientMask)
-		: m_msgSerializable(msgSerializable), m_netMessage(const_cast<CNetMessage*>(message)), m_msg(const_cast<pb::Message*>(message->AsMessage())), m_recipientCount(recipientCount),
+	UserMessage(INetworkMessageInternal* msgSerializable, const CNetMessage* message, uint64_t recipientMask)
+		: m_msgSerializable(msgSerializable), m_netMessage(const_cast<CNetMessage*>(message)), m_msg(const_cast<pb::Message*>(message->AsMessage())),
 		  m_recipientMask(recipientMask) {
 	}
 
 	explicit UserMessage(const char* messageName) {
-		m_manuallyAllocated = true;
 		m_msgSerializable = g_pNetworkMessages->FindNetworkMessagePartial(messageName);
 		if (!m_msgSerializable) return;
 
 		m_netMessage = m_msgSerializable->AllocateMessage();
 		m_msg = const_cast<pb::Message*>(m_netMessage->AsMessage());
-		m_recipientMask = new uint64_t(0);
 	}
 
 	explicit UserMessage(int16_t messageId) {
-		m_manuallyAllocated = true;
 		m_msgSerializable = g_pNetworkMessages->FindNetworkMessageById(messageId);
 		if (!m_msgSerializable) return;
 
 		m_netMessage = m_msgSerializable->AllocateMessage();
 		m_msg = const_cast<pb::Message*>(m_netMessage->AsMessage());
-		m_recipientMask = new uint64_t(0);
-	}
-
-	~UserMessage() {
-		if (m_manuallyAllocated) delete m_recipientMask;
 	}
 
 	int16_t GetMessageID() const { return m_msgSerializable->GetNetMessageInfo()->m_MessageId; }
@@ -87,8 +79,7 @@ public:
 	const CNetMessage* GetNetMessage() const { return m_netMessage; }
 	const pb::Message* GetProtobufMessage() const { return m_msg; }
 	INetworkMessageInternal* GetSerializableMessage() const { return m_msgSerializable; }
-	uint64_t* GetRecipientMask() const { return m_recipientMask; }
-	bool IsManuallyAllocated() const { return m_manuallyAllocated; }
+	uint64_t& GetRecipientMask() { return m_recipientMask; }
 
 	bool HasField(const std::string& fieldName) {
 		const pb::Descriptor* descriptor = m_msg->GetDescriptor();
@@ -105,9 +96,7 @@ private:
 	INetworkMessageInternal* m_msgSerializable{};
 	CNetMessage* m_netMessage{};
 	pb::Message* m_msg{};
-	bool m_manuallyAllocated{};
-	int m_recipientCount{};
-	uint64_t* m_recipientMask{};
+	uint64_t m_recipientMask{};
 
 public:
 	bool HasField(const char* fieldName) {

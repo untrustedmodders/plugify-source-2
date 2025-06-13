@@ -16771,24 +16771,6 @@
       }
     },
     {
-      "name": "UserMessageIsManuallyAllocated",
-      "group": "Protobuf",
-      "description": "Checks if the UserMessage was manually allocated.",
-      "funcName": "UserMessageIsManuallyAllocated",
-      "paramTypes": [
-        {
-          "name": "userMessage",
-          "type": "ptr64",
-          "ref": false,
-          "description": "The UserMessage instance."
-        }
-      ],
-      "retType": {
-        "type": "bool",
-        "description": "True if the message was manually allocated, false otherwise."
-      }
-    },
-    {
       "name": "UserMessageGetMessage",
       "group": "Protobuf",
       "description": "Gets a nested message from a field in the UserMessage.",

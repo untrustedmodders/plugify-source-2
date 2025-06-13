@@ -19,7 +19,7 @@ public:
 	bool HookUserMessage(int16_t messageId, UserMessageCallback callback, HookMode mode);
 	bool UnhookUserMessage(int16_t messageId, UserMessageCallback callback, HookMode mode);
 
-	ResultType ExecuteMessageCallbacks(INetworkMessageInternal* msgSerializable, CNetMessage* msgData, int clientCount, uint64_t* clients, HookMode mode);
+	ResultType ExecuteMessageCallbacks(INetworkMessageInternal* msgSerializable, const CNetMessage* msgData, uint64_t* clients, HookMode mode);
 
 private:
 	std::unordered_map<int16_t, UserMessageHook> m_hooksMap;

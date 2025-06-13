@@ -221,7 +221,7 @@ poly::ReturnAction Source2SDK::Hook_FireEvent(poly::IHook& hook, poly::Params& p
 
 poly::ReturnAction Source2SDK::Hook_PostEvent(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	//S2_LOGF(LS_DEBUG, "[PostEvent] = {}, {}, {}, {}\n", nSlot, bLocalOnly, nClientCount, clients );
-	auto clientCount = poly::GetArgument<int>(params, 3);
+	//auto clientCount = poly::GetArgument<int>(params, 3);
 	auto clients = poly::GetArgument<uint64_t*>(params, 4);
 	auto message = poly::GetArgument<INetworkMessageInternal*>(params, 5);
 	auto pData = poly::GetArgument<CNetMessage*>(params, 6);
@@ -230,7 +230,7 @@ poly::ReturnAction Source2SDK::Hook_PostEvent(poly::IHook& hook, poly::Params& p
 		g_MultiAddonManager.OnPostEvent(message, pData, clients);
 	}
 
-	auto result = g_UserMessageManager.ExecuteMessageCallbacks(message, pData, clientCount, clients, static_cast<HookMode>(type));
+	auto result = g_UserMessageManager.ExecuteMessageCallbacks(message, pData, clients, static_cast<HookMode>(type));
 	if (result >= ResultType::Handled) {
 		return poly::ReturnAction::Supercede;
 	}

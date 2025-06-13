@@ -386,7 +386,6 @@
         UserMessageFindMessageIdByName;
         UserMessageGetRecipientMask;
         UserMessageSetRecipientMask;
-        UserMessageIsManuallyAllocated;
         UserMessageGetMessage;
         UserMessageGetRepeatedMessage;
         UserMessageAddMessage;

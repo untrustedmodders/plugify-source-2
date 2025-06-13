@@ -102,7 +102,7 @@ public:
 	}
 
 private:
+	CUtlVectorFixed<CPlayerSlot, MAXPLAYERS> m_Recipients;
 	NetChannelBufType_t m_nBufType;
 	bool m_bInitMessage;
-	CUtlVectorFixed<CPlayerSlot, MAXPLAYERS> m_Recipients;
 };
