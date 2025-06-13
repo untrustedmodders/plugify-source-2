@@ -167,24 +167,22 @@ ResultType ConCommandManager::ExecuteCommandCallbacks(const plg::string& name, c
 	}
 
 	auto it = m_cmdLookup.find(name);
-	if (it == m_cmdLookup.end()) {
-		return result;
-	}
+	if (it != m_cmdLookup.end()) {
+		const auto& commandInfo = *std::get<CommandInfoPtr>(*it);
 
-	const auto& commandInfo = *std::get<CommandInfoPtr>(*it);
+		if (!CheckCommandAccess(caller, commandInfo.adminFlags)) {
+			return result;
+		}
 
-	if (!CheckCommandAccess(caller, commandInfo.adminFlags)) {
-		return result;
-	}
+		const auto& callback = commandInfo.callbacks[static_cast<size_t>(mode)];
 
-	const auto& callback = commandInfo.callbacks[static_cast<size_t>(mode)];
-
-	for (size_t i = 0; i < callback.GetCount(); ++i) {
-		auto thisResult = callback.Notify(i, caller, callingContext, arguments);
-		if (thisResult >= ResultType::Handled) {
-			return thisResult;
-		} else if (thisResult > result) {
-			result = thisResult;
+		for (size_t i = 0; i < callback.GetCount(); ++i) {
+			auto thisResult = callback.Notify(i, caller, callingContext, arguments);
+			if (thisResult >= ResultType::Handled) {
+				return thisResult;
+			} else if (thisResult > result) {
+				result = thisResult;
+			}
 		}
 	}
 

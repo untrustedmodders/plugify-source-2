@@ -18,14 +18,13 @@ bool ConVarManager::RemoveConVar(const plg::string& name) {
 	std::lock_guard<std::mutex> lock(m_registerCnvLock);
 
 	auto it = m_cnvLookup.find(name);
-	if (it == m_cnvLookup.end()) {
-		return false;
+	if (it != m_cnvLookup.end()) {
+		m_cnvCache.erase(std::get<ConVarInfoPtr>(*it)->conVar.get());
+		m_cnvLookup.erase(it);
+		return true;
 	}
 
-	m_cnvCache.erase(std::get<ConVarInfoPtr>(*it)->conVar.get());
-	m_cnvLookup.erase(it);
-
-	return true;
+	return false;
 }
 
 ConVarRef ConVarManager::FindConVar(const plg::string& name) {
