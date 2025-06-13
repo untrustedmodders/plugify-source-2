@@ -68,9 +68,9 @@ public:
 		m_recipientMask = new uint64_t(0);
 	}
 
-	explicit UserMessage(uint16_t messageId) {
+	explicit UserMessage(int16_t messageId) {
 		m_manuallyAllocated = true;
-		m_msgSerializable = g_pNetworkMessages->FindNetworkMessageById(static_cast<int32_t>(messageId));
+		m_msgSerializable = g_pNetworkMessages->FindNetworkMessageById(messageId);
 		if (!m_msgSerializable) return;
 
 		m_netMessage = m_msgSerializable->AllocateMessage();
@@ -82,7 +82,7 @@ public:
 		if (m_manuallyAllocated) delete m_recipientMask;
 	}
 
-	uint16_t GetMessageID() const { return m_msgSerializable->GetNetMessageInfo()->m_MessageId; }
+	int16_t GetMessageID() const { return m_msgSerializable->GetNetMessageInfo()->m_MessageId; }
 	std::string GetMessageName() const { return m_msgSerializable->GetUnscopedName(); }
 	const CNetMessage* GetNetMessage() const { return m_netMessage; }
 	const pb::Message* GetProtobufMessage() const { return m_msg; }

@@ -20,7 +20,7 @@ PLUGIFY_WARN_IGNORE(4190)
  * @param mode Whether to hook the message in the post mode (after processing) or pre mode (before processing).
  * @return True if the hook was successfully added, false otherwise.
  */
-extern "C" PLUGIN_API bool HookUserMessage(uint16_t messageId, UserMessageCallback callback, HookMode mode) {
+extern "C" PLUGIN_API bool HookUserMessage(int16_t messageId, UserMessageCallback callback, HookMode mode) {
 	return g_UserMessageManager.HookUserMessage(messageId, callback, mode);
 }
 
@@ -32,7 +32,7 @@ extern "C" PLUGIN_API bool HookUserMessage(uint16_t messageId, UserMessageCallba
  * @param mode Whether the hook was in post mode (after processing) or pre mode (before processing).
  * @return True if the hook was successfully removed, false otherwise.
  */
-extern "C" PLUGIN_API bool UnhookUserMessage(uint16_t messageId, UserMessageCallback callback, HookMode mode) {
+extern "C" PLUGIN_API bool UnhookUserMessage(int16_t messageId, UserMessageCallback callback, HookMode mode) {
 	return g_UserMessageManager.UnhookUserMessage(messageId, callback, mode);
 }
 
@@ -65,7 +65,7 @@ extern "C" PLUGIN_API UserMessage* UserMessageCreateFromName(const plg::string& 
  * @param messageId The ID of the message.
  * @return A pointer to the newly created UserMessage.
  */
-extern "C" PLUGIN_API UserMessage* UserMessageCreateFromId(uint16_t messageId) {
+extern "C" PLUGIN_API UserMessage* UserMessageCreateFromId(int16_t messageId) {
 	return new UserMessage(messageId);
 }
 
@@ -105,7 +105,7 @@ extern "C" PLUGIN_API const plg::string UserMessageGetMessageName(UserMessage* u
  * @param userMessage The UserMessage instance.
  * @return The ID of the message.
  */
-extern "C" PLUGIN_API uint16_t UserMessageGetMessageID(UserMessage* userMessage) {
+extern "C" PLUGIN_API int16_t UserMessageGetMessageID(UserMessage* userMessage) {
 	return userMessage->GetMessageID();
 }
 
@@ -146,7 +146,7 @@ extern "C" PLUGIN_API void* UserMessageGetSerializableMessage(UserMessage* userM
  * @param messageName The name of the message.
  * @return The ID of the message, or 0 if the message was not found.
  */
-extern "C" PLUGIN_API uint16_t UserMessageFindMessageIdByName(const plg::string& messageName) {
+extern "C" PLUGIN_API int16_t UserMessageFindMessageIdByName(const plg::string& messageName) {
 	if (auto message = g_pNetworkMessages->FindNetworkMessagePartial(messageName.c_str())) {
 		return message->GetNetMessageInfo()->m_MessageId;
 	}

@@ -15947,7 +15947,7 @@
       "paramTypes": [
         {
           "name": "messageId",
-          "type": "uint16",
+          "type": "int16",
           "ref": false,
           "description": "The ID of the message to hook."
         },
@@ -16036,7 +16036,7 @@
       "paramTypes": [
         {
           "name": "messageId",
-          "type": "uint16",
+          "type": "int16",
           "ref": false,
           "description": "The ID of the message to unhook."
         },
@@ -16179,7 +16179,7 @@
       "paramTypes": [
         {
           "name": "messageId",
-          "type": "uint16",
+          "type": "int16",
           "ref": false,
           "description": "The ID of the message."
         }
@@ -16255,7 +16255,7 @@
         }
       ],
       "retType": {
-        "type": "uint16",
+        "type": "int16",
         "description": "The ID of the message."
       }
     },
@@ -16333,7 +16333,7 @@
         }
       ],
       "retType": {
-        "type": "uint16",
+        "type": "int16",
         "description": "The ID of the message, or 0 if the message was not found."
       }
     },
