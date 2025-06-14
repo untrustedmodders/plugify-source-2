@@ -110,7 +110,6 @@ void Source2SDK::OnPluginStart() {
 	auto pServerSideClientVTable = g_GameConfigManager.GetModule("engine2")->GetVirtualTableByName("CServerSideClientBase").CCast<uintptr_t*>();
 	auto fSendNetMessage = &CServerSideClientBase::SendNetMessage;
 	int iSendNetMessageOffset = poly::GetVTableIndex((void*&) fSendNetMessage);
-	S2_LOGF(LS_DEBUG, "[OnPluginEnd] = 0x{:x} 0x{:x}!\n", pServerSideClientVTable[iSendNetMessageOffset], (uintptr_t)&pServerSideClientVTable[iSendNetMessageOffset]);
 	g_pfnSendNetMessage = reinterpret_cast<SendNetMessageFn>(g_PH.AddHookDetourFunc<SendNetMessageFn>(pServerSideClientVTable[iSendNetMessageOffset], Hook_SendNetMessage, Pre));
 
 #if S2SDK_PLATFORM_WINDOWS
