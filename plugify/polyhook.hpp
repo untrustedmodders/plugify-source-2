@@ -731,7 +731,7 @@ namespace poly
 				return DataType::Pointer;
 			else
 			{
-				if (sizeof(T) > sizeof(int64_t))
+				if constexpr (sizeof(T) > sizeof(int64_t))
 				{
 					return DataType::Pointer;
 				}

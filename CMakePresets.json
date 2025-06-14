@@ -77,19 +77,19 @@
 
 	"buildPresets": [
 		{
-			"name": "Debug (CS2)",
+			"name": "Debug-CS2",
 			"configurePreset": "Debug-CS2"
 		},
 		{
-			"name": "Release (CS2)",
+			"name": "Release-CS2",
 			"configurePreset": "Release-CS2"
 		},
 		{
-			"name": "Debug (Deadlock)",
+			"name": "Debug-Deadlock",
 			"configurePreset": "Debug-Deadlock"
 		},
 		{
-			"name": "Release (Deadlock)",
+			"name": "Release-Deadlock",
 			"configurePreset": "Release-Deadlock"
 		}
 	]
