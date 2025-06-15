@@ -1,9 +1,9 @@
 #pragma once
 
 // Just in case, because we can't ignore some warnings from `-Wpedantic` (about zero size arrays and anonymous structs when gnu extensions are disabled) on gcc
-#if defined(__clang__)
+#if PLUGIFY_COMPILER_CLANG
 #  pragma clang system_header
-#elif defined(__GNUC__)
+#elif PLUGIFY_COMPILER_GCC
 #  pragma GCC system_header
 #endif
 
@@ -41,6 +41,7 @@
 #endif
 
 #include "macro.hpp"
+#include "allocator.hpp"
 
 namespace plg {
 	namespace detail {
@@ -72,7 +73,7 @@ namespace plg {
 
 	// basic_string
 	// based on implementations from libc++, libstdc++ and Microsoft STL
-	template<typename Char, typename Traits = std::char_traits<Char>, typename Allocator = std::allocator<Char>> requires (detail::is_traits_v<Traits> && detail::is_allocator_v<Allocator>)
+	template<typename Char, typename Traits = std::char_traits<Char>, typename Allocator = plg::allocator<Char>> requires (detail::is_traits_v<Traits> && detail::is_allocator_v<Allocator>)
 	class basic_string {
 	private:
 		using allocator_traits = std::allocator_traits<Allocator>;
@@ -102,19 +103,19 @@ namespace plg {
 
 		PLUGIFY_WARN_PUSH()
 
-#if defined(__clang__)
+#if PLUGIFY_COMPILER_CLANG
 		PLUGIFY_WARN_IGNORE("-Wgnu-anonymous-struct")
 		PLUGIFY_WARN_IGNORE("-Wzero-length-array")
-#elif defined(__GNUC__)
+#elif PLUGIFY_COMPILER_GCC
 		PLUGIFY_WARN_IGNORE("-Wpedantic")
-#elif defined(_MSC_VER)
+#elif PLUGIFY_COMPILER_MSVC
 		PLUGIFY_WARN_IGNORE(4201)
 		PLUGIFY_WARN_IGNORE(4200)
 #endif
 
 		template<typename CharT, std::size_t = sizeof(CharT)>
 		struct padding {
-			[[maybe_unused]] uint8_t padding[sizeof(CharT) - 1];
+			[[maybe_unused]] uint8_t pad[sizeof(CharT) - 1];
 		};
 
 		template<typename CharT>
@@ -1411,15 +1412,15 @@ namespace plg {
 		}
 
 		constexpr size_type find_first_not_of(const basic_string& str, size_type pos = 0) const noexcept {
-			return view().find_last_not_of(sview_type(str), pos);
+			return view().find_first_not_of(sview_type(str), pos);
 		}
 
 		constexpr size_type find_first_not_of(const value_type* str, size_type pos, size_type count) const noexcept {
-			return view().find_last_not_of(str, pos, count);
+			return view().find_first_not_of(str, pos, count);
 		}
 
 		constexpr size_type find_first_not_of(const value_type* str, size_type pos = 0) const noexcept {
-			return view().find_last_not_of(str, pos);
+			return view().find_first_not_of(str, pos);
 		}
 
 		constexpr size_type find_first_not_of(value_type ch, size_type pos = 0) const noexcept {
@@ -1607,17 +1608,17 @@ namespace plg {
 	}
 
 	// deduction guides
-	template<typename InputIterator, typename Allocator = std::allocator<typename std::iterator_traits<InputIterator>::value_type>>
+	template<typename InputIterator, typename Allocator = plg::allocator<typename std::iterator_traits<InputIterator>::value_type>>
 	basic_string(InputIterator, InputIterator, Allocator = Allocator()) -> basic_string<typename std::iterator_traits<InputIterator>::value_type, std::char_traits<typename std::iterator_traits<InputIterator>::value_type>, Allocator>;
 
-	template<typename Char, typename Traits, typename Allocator = std::allocator<Char>>
+	template<typename Char, typename Traits, typename Allocator = plg::allocator<Char>>
 	explicit basic_string(std::basic_string_view<Char, Traits>, const Allocator& = Allocator()) -> basic_string<Char, Traits, Allocator>;
 
-	template<typename Char, typename Traits, typename Allocator = std::allocator<Char>>
+	template<typename Char, typename Traits, typename Allocator = plg::allocator<Char>>
 	basic_string(std::basic_string_view<Char, Traits>, typename basic_string<Char, Traits, Allocator>::size_type, typename basic_string<Char, Traits, Allocator>::size_type, const Allocator& = Allocator()) -> basic_string<Char, Traits, Allocator>;
 
 #if PLUGIFY_STRING_CONTAINERS_RANGES
-	template<std::ranges::input_range Range, typename Allocator = std::allocator<std::ranges::range_value_t<Range>>>
+	template<std::ranges::input_range Range, typename Allocator = plg::allocator<std::ranges::range_value_t<Range>>>
 	basic_string(std::from_range_t, Range&&, Allocator = Allocator()) -> basic_string<std::ranges::range_value_t<Range>, std::char_traits<std::ranges::range_value_t<Range>>, Allocator>;
 #endif // PLUGIFY_STRING_CONTAINERS_RANGES
 
@@ -1732,7 +1733,7 @@ namespace plg {
 
 		typedef int (*wide_printf)(wchar_t* __restrict, std::size_t, const wchar_t* __restrict, ...);
 
-#if defined(_MSC_VER)
+#if PLUGIFY_COMPILER_MSVC
 		inline int truncate_snwprintf(wchar_t* __restrict buffer, std::size_t count, const wchar_t* __restrict format, ...) {
 			int r;
 			va_list args;
@@ -1744,7 +1745,7 @@ namespace plg {
 #endif
 
 		PLUGIFY_FORCE_INLINE constexpr wide_printf get_swprintf() noexcept {
-#if defined(_MSC_VER)
+#if PLUGIFY_COMPILER_MSVC
 			return static_cast<int(__cdecl*)(wchar_t* __restrict, std::size_t, const wchar_t* __restrict, ...)>(truncate_snwprintf);
 #else
 			return swprintf;
@@ -1842,11 +1843,11 @@ namespace plg {
 		inline namespace string_literals {
 			PLUGIFY_WARN_PUSH()
 
-#if defined(__clang__)
+#if PLUGIFY_COMPILER_CLANG
 			PLUGIFY_WARN_IGNORE("-Wuser-defined-literals")
-#elif defined(__GNUC__)
+#elif PLUGIFY_COMPILER_GCC
 			PLUGIFY_WARN_IGNORE("-Wliteral-suffix")
-#elif defined(_MSC_VER)
+#elif PLUGIFY_COMPILER_MSVC
 			PLUGIFY_WARN_IGNORE(4455)
 #endif
 			// suffix for basic_string literals
