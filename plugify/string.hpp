@@ -40,8 +40,8 @@
 #  include "compat_format.hpp"
 #endif
 
-#include "macro.hpp"
 #include "allocator.hpp"
+#include "macro.hpp"
 
 namespace plg {
 	namespace detail {

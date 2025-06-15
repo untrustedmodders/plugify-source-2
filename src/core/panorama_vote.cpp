@@ -187,6 +187,8 @@ void CPanoramaVoteHandler::SendVoteStartUM(IRecipientFilter* filter) {
 	data->set_is_yes_no_vote(true);
 
 	g_pGameEventSystem->PostEventAbstract(-1, false, filter, pNetMsg, data, 0);
+
+	delete data;
 }
 
 void CPanoramaVoteHandler::InitVoters(IRecipientFilter* filter) {
@@ -302,6 +304,8 @@ void CPanoramaVoteHandler::SendVoteFailed() const {
 		filter.AddRecipientsFromMask(m_recipientMask);
 	}
 	g_pGameEventSystem->PostEventAbstract(-1, false, &filter, pNetMsg, data, 0);
+
+	delete data;
 }
 
 void CPanoramaVoteHandler::SendVotePassed() const {
@@ -321,6 +325,8 @@ void CPanoramaVoteHandler::SendVotePassed() const {
 		filter.AddRecipientsFromMask(m_recipientMask);
 	}
 	g_pGameEventSystem->PostEventAbstract(-1, false, &filter, pNetMsg, data, 0);
+
+	delete data;
 }
 
 GAME_EVENT_F(vote_cast) {

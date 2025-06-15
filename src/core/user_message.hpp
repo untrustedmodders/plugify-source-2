@@ -64,6 +64,7 @@ public:
 
 		m_netMessage = m_msgSerializable->AllocateMessage();
 		m_msg = const_cast<pb::Message*>(m_netMessage->AsMessage());
+		m_manuallyAllocated = true;
 	}
 
 	explicit UserMessage(int16_t messageId) {
@@ -72,6 +73,13 @@ public:
 
 		m_netMessage = m_msgSerializable->AllocateMessage();
 		m_msg = const_cast<pb::Message*>(m_netMessage->AsMessage());
+		m_manuallyAllocated = true;
+	}
+
+	~UserMessage() {
+		if (m_manuallyAllocated) {
+			delete m_netMessage;
+		}
 	}
 
 	int16_t GetMessageID() const { return m_msgSerializable->GetNetMessageInfo()->m_MessageId; }
@@ -97,6 +105,7 @@ private:
 	CNetMessage* m_netMessage{};
 	pb::Message* m_msg{};
 	uint64_t m_recipientMask{};
+	bool m_manuallyAllocated{};
 
 public:
 	bool HasField(const char* fieldName) {

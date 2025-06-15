@@ -24,6 +24,7 @@
 #  include <ranges>
 #endif
 
+#include "allocator.hpp"
 #include "macro.hpp"
 
 namespace plg {
@@ -243,7 +244,7 @@ namespace plg {
 
 	// vector
 	// based on implementations from libc++, libstdc++ and Microsoft STL
-	template<typename T, typename Allocator = std::allocator<T>>
+	template<typename T, typename Allocator = plg::allocator<T>>
 	class vector {
 		using allocator_traits = std::allocator_traits<Allocator>;
 	public:
@@ -918,18 +919,14 @@ namespace plg {
 			return std::span<T>(data(), size());
 		}
 
-		constexpr std::span<const T> const_span() const noexcept {
-			return std::span<const T>(data(), size());
-		}
-
 		template<size_type Size>
-		constexpr std::span<T, Size> span_size() noexcept {
+		constexpr std::span<T, Size> span_size() {
 			PLUGIFY_ASSERT(size() == Size, "plg::vector::span_size(): const_span_size argument does not match size of vector", std::length_error);
 			return std::span<T, Size>(data(), size());
 		}
 
 		template<size_type Size>
-		constexpr std::span<const T, Size> const_span_size() const noexcept {
+		constexpr std::span<const T, Size> const_span_size() const {
 			PLUGIFY_ASSERT(size() == Size, "plg::vector::const_span_size(): const_span_size argument does not match size of vector", std::length_error);
 			return std::span<const T, Size>(data(), size());
 		}
@@ -940,10 +937,6 @@ namespace plg {
 
 		constexpr std::span<std::byte> byte_span() noexcept {
 			return std::as_writable_bytes(span());
-		}
-
-		constexpr std::span<const std::byte> const_byte_span() const noexcept {
-			return std::as_bytes(span());
 		}
 
 		constexpr bool contains(const T& elem) const {
@@ -1046,7 +1039,7 @@ namespace plg {
 	}
 
 	// deduction guides
-	template<typename InputIterator, typename Allocator = std::allocator<typename std::iterator_traits<InputIterator>::value_type>>
+	template<typename InputIterator, typename Allocator = plg::allocator<typename std::iterator_traits<InputIterator>::value_type>>
 	vector(InputIterator, InputIterator, Allocator = Allocator()) -> vector<typename std::iterator_traits<InputIterator>::value_type, Allocator>;
 
 	namespace pmr {
