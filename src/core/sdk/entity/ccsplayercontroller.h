@@ -27,8 +27,8 @@ class CCSPlayerController : public CBasePlayerController {
 public:
 	DECLARE_SCHEMA_CLASS(CCSPlayerController);
 
-	SCHEMA_FIELD(CCSPlayerController_InGameMoneyServices*, m_pInGameMoneyServices)
-	SCHEMA_FIELD(CCSPlayerController_ActionTrackingServices*, m_pActionTrackingServices)
+	SCHEMA_FIELD_POINTER(CCSPlayerController_InGameMoneyServices, m_pInGameMoneyServices)
+	SCHEMA_FIELD_POINTER(CCSPlayerController_ActionTrackingServices, m_pActionTrackingServices)
 	SCHEMA_FIELD(uint32_t, m_iPing)
 	SCHEMA_FIELD(CUtlSymbolLarge, m_szClan)
 	SCHEMA_FIELD_POINTER(char, m_szClanName)// char m_szClanName[32]
@@ -48,11 +48,11 @@ public:
 
 	// Returns the actual player pawn
 	CCSPlayerPawn* GetPlayerPawn() {
-		return m_hPlayerPawn();
+		return *m_hPlayerPawn;
 	}
 
 	CCSPlayerPawnBase* GetObserverPawn() {
-		return m_hObserverPawn();
+		return *m_hObserverPawn;
 	}
 
 	/*CServerSideClient* GetServerSideClient() {
@@ -60,7 +60,7 @@ public:
 	}*/
 
 	bool IsBot() {
-		return m_fFlags() & FL_CONTROLLER_FAKECLIENT;
+		return *m_fFlags & FL_CONTROLLER_FAKECLIENT;
 	}
 
 	void ChangeTeam(int iTeam) {
@@ -81,12 +81,12 @@ public:
 
 	// Respawns the player if the player is not alive, does nothing otherwise.
 	void Respawn() {
-		CCSPlayerPawn* pawn = m_hPlayerPawn.Get();
+		CCSPlayerPawn* pawn = m_hPlayerPawn->Get();
 		if (!pawn || pawn->IsAlive())
 			return;
 
 		SetPawn(pawn);
-		if (this->m_iTeamNum() != CS_TEAM_CT && this->m_iTeamNum() != CS_TEAM_T) {
+		if (m_iTeamNum != CS_TEAM_CT && m_iTeamNum != CS_TEAM_T) {
 			SwitchTeam(RandomInt(CS_TEAM_T, CS_TEAM_CT));
 		}
 		static int offset = g_pGameConfig->GetOffset("ControllerRespawn");

@@ -459,7 +459,7 @@ extern "C" PLUGIN_API MoveType_t GetEntityMoveType(int entityHandle) {
 		return MOVETYPE_NONE;
 	}
 
-	return pEntity->m_MoveType();
+	return pEntity->m_MoveType;
 }
 
 /**
@@ -497,7 +497,7 @@ extern "C" PLUGIN_API float GetEntityGravity(int entityHandle) {
 		return 0.0f;
 	}
 
-	return pEntity->m_flGravityScale();
+	return pEntity->m_flGravityScale;
 }
 
 /**
@@ -535,7 +535,7 @@ extern "C" PLUGIN_API int GetEntityFlags(int entityHandle) {
 		return 0;
 	}
 
-	return static_cast<int>(pEntity->m_fFlags());
+	return pEntity->m_fFlags;
 }
 
 /**
@@ -573,7 +573,7 @@ extern "C" PLUGIN_API int GetEntityRenderColor(int entityHandle) {
 		return 0;
 	}
 
-	return pEntity->m_clrRender().GetRawColor();
+	return pEntity->m_clrRender->GetRawColor();
 }
 
 /**
@@ -604,14 +604,14 @@ extern "C" PLUGIN_API void SetEntityRenderColor(int entityHandle, int color) {
  * @param entityHandle The handle of the entity whose render mode is to be retrieved.
  * @return The render mode of the entity, or 0 if the entity is invalid.
  */
-extern "C" PLUGIN_API int8_t GetEntityRenderMode(int entityHandle) {
+extern "C" PLUGIN_API uint8_t GetEntityRenderMode(int entityHandle) {
 	CBaseModelEntity* pEntity = static_cast<CBaseModelEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
 	if (!pEntity) {
 		S2_LOGF(LS_WARNING, "Cannot execute 'GetEntityRenderMode' on invalid entity handle: {}\n", entityHandle);
 		return 0;
 	}
 
-	return pEntity->m_nRenderMode();
+	return pEntity->m_nRenderMode;
 }
 
 /**
@@ -623,7 +623,7 @@ extern "C" PLUGIN_API int8_t GetEntityRenderMode(int entityHandle) {
  * @param entityHandle The handle of the entity whose render mode is to be set.
  * @param renderMode The new render mode to set for the entity.
  */
-extern "C" PLUGIN_API void SetEntityRenderMode(int entityHandle, int8_t renderMode) {
+extern "C" PLUGIN_API void SetEntityRenderMode(int entityHandle, uint8_t renderMode) {
 	CBaseModelEntity* pEntity = static_cast<CBaseModelEntity*>(g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle)));
 	if (!pEntity) {
 		S2_LOGF(LS_WARNING, "Cannot execute 'SetEntityRenderMode' on invalid entity handle: {}\n", entityHandle);
@@ -649,7 +649,7 @@ extern "C" PLUGIN_API int GetEntityHealth(int entityHandle) {
 		return 0;
 	}
 
-	return pEntity->m_iHealth();
+	return pEntity->m_iHealth;
 }
 
 /**
@@ -687,7 +687,7 @@ extern "C" PLUGIN_API int GetTeamEntity(int entityHandle) {
 		return 0;
 	}
 
-	return pEntity->m_iTeamNum();
+	return pEntity->m_iTeamNum;
 }
 
 /**
@@ -725,7 +725,7 @@ extern "C" PLUGIN_API int GetEntityOwner(int entityHandle) {
 		return INVALID_EHANDLE_INDEX;
 	}
 
-	return pEntity->m_CBodyComponent->m_pSceneNode->m_pOwner->GetRefEHandle().ToInt();
+	return (*pEntity->m_CBodyComponent->m_pSceneNode->m_pOwner)->GetRefEHandle().ToInt();
 }
 
 /**
@@ -769,7 +769,7 @@ extern "C" PLUGIN_API int GetEntityParent(int entityHandle) {
 		return INVALID_EHANDLE_INDEX;
 	}
 
-	return pEntity->m_CBodyComponent->m_pSceneNode->m_pParent->m_pOwner->GetRefEHandle().ToInt();
+	return (*pEntity->m_CBodyComponent->m_pSceneNode->m_pParent->m_pOwner)->GetRefEHandle().ToInt();
 }
 
 /**
@@ -813,7 +813,7 @@ extern "C" PLUGIN_API plg::vec3 GetEntityAbsOrigin(int entityHandle) {
 		return {};
 	}
 
-	const Vector& vec = pEntity->m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin();
+	const Vector& vec = pEntity->m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin;
 	return *reinterpret_cast<const plg::vec3*>(&vec);
 }
 
@@ -852,7 +852,7 @@ extern "C" PLUGIN_API plg::vec3 GetEntityAngRotation(int entityHandle) {
 		return {};
 	}
 
-	const QAngle& ang = pEntity->m_CBodyComponent->m_pSceneNode->m_angRotation();
+	const QAngle& ang = pEntity->m_CBodyComponent->m_pSceneNode->m_angRotation;
 	return *reinterpret_cast<const plg::vec3*>(&ang);
 }
 
@@ -891,7 +891,7 @@ extern "C" PLUGIN_API plg::vec3 GetEntityAbsVelocity(int entityHandle) {
 		return {};
 	}
 
-	const Vector& vec = pEntity->m_vecAbsVelocity();
+	const Vector& vec = pEntity->m_vecAbsVelocity;
 	return *reinterpret_cast<const plg::vec3*>(&vec);
 }
 
@@ -968,7 +968,7 @@ extern "C" PLUGIN_API float GetEntityWaterLevel(int entityHandle) {
 		return 0.0f;
 	}
 
-	return pEntity->m_flWaterLevel();
+	return pEntity->m_flWaterLevel;
 }
 
 /**
@@ -987,7 +987,7 @@ extern "C" PLUGIN_API int GetEntityGroundEntity(int entityHandle) {
 		return INVALID_EHANDLE_INDEX;
 	}
 
-	return pEntity->m_hGroundEntity->GetRefEHandle().ToInt();
+	return pEntity->m_hGroundEntity->Get()->GetRefEHandle().ToInt();
 }
 
 /**
@@ -1006,7 +1006,7 @@ extern "C" PLUGIN_API int GetEntityEffects(int entityHandle) {
 		return 0;
 	}
 
-	return pEntity->m_fEffects();
+	return pEntity->m_fEffects;
 }
 
 /**

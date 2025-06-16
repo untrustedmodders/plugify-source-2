@@ -73,7 +73,7 @@ CBasePlayerController* utils::GetController(CBaseEntity* entity) {
 	std::string_view name(entity->GetClassname());
 	if (name == "observer") {
 		CBasePlayerPawn* pawn = static_cast<CBasePlayerPawn*>(entity);
-		if (!pawn->m_hController().IsValid() || pawn->m_hController() == nullptr) {
+		if (!pawn->m_hController->IsValid() || *pawn->m_hController == nullptr) {
 			for (int i = 0; i <= gpGlobals->maxClients; ++i) {
 				CPlayerController* controller = static_cast<CPlayerController*>(utils::GetController(CPlayerSlot(i)));
 				if (controller && controller->GetObserverPawn() && controller->GetObserverPawn() == entity) {
@@ -82,11 +82,11 @@ CBasePlayerController* utils::GetController(CBaseEntity* entity) {
 			}
 			return nullptr;
 		}
-		return pawn->m_hController();
+		return *pawn->m_hController;
 	}
 	if (entity->IsPawn()) {
 		CBasePlayerPawn* pawn = static_cast<CBasePlayerPawn*>(entity);
-		if (!pawn->m_hController().IsValid() || pawn->m_hController() == nullptr) {
+		if (!pawn->m_hController->IsValid() || *pawn->m_hController == nullptr) {
 			// Seems like the pawn lost its controller, we can try looping through the controllers to find this pawn instead.
 			for (int i = 0; i <= gpGlobals->maxClients; ++i) {
 				CPlayerController* controller = static_cast<CPlayerController*>(utils::GetController(CPlayerSlot(i)));
@@ -96,7 +96,7 @@ CBasePlayerController* utils::GetController(CBaseEntity* entity) {
 			}
 			return nullptr;
 		}
-		return pawn->m_hController();
+		return *pawn->m_hController;
 	} else if (entity->IsController()) {
 		return static_cast<CBasePlayerController*>(entity);
 	} else {

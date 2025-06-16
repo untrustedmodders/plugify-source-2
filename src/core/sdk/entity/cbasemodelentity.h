@@ -34,7 +34,8 @@ public:
 	}
 
 	const char* GetModelName() {
-		return ((CSkeletonInstance*) m_CBodyComponent->m_pSceneNode.Get())->m_modelState().m_ModelName.Get().String();
+		CGameSceneNode* sceneNode = m_CBodyComponent->m_pSceneNode;
+		return static_cast<CSkeletonInstance*>(sceneNode)->m_modelState->m_ModelName->String();
 	}
 };
 

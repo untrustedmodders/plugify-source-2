@@ -357,7 +357,7 @@ TargetType PlayerManager::TargetPlayerString(int caller, std::string_view target
 			if (!player || !player->IsController() || !player->IsConnected())
 				continue;
 
-			if (player->m_iTeamNum() != (targetType == TargetType::T ? CS_TEAM_T : targetType == TargetType::CT ? CS_TEAM_CT : CS_TEAM_SPECTATOR))
+			if (player->m_iTeamNum != (targetType == TargetType::T ? CS_TEAM_T : targetType == TargetType::CT ? CS_TEAM_CT : CS_TEAM_SPECTATOR))
 				continue;
 
 			clients.emplace_back(i);
@@ -379,7 +379,7 @@ TargetType PlayerManager::TargetPlayerString(int caller, std::string_view target
 			if (!player || !player->IsController() || !player->IsConnected())
 				continue;
 
-			if (targetType >= TargetType::RANDOM_T && (player->m_iTeamNum() != (targetType == TargetType::RANDOM_T ? CS_TEAM_T : CS_TEAM_CT)))
+			if (targetType >= TargetType::RANDOM_T && (player->m_iTeamNum != (targetType == TargetType::RANDOM_T ? CS_TEAM_T : CS_TEAM_CT)))
 				continue;
 
 			clients.emplace_back(i);

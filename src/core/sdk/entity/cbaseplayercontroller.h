@@ -44,10 +44,10 @@ public:
 	SCHEMA_FIELD(bool, m_bIsHLTV)
 	SCHEMA_FIELD(uint, m_iDesiredFOV)
 
-	CBasePlayerPawn* GetCurrentPawn() { return m_hPawn.Get(); }
-	const char* GetPlayerName() { return m_iszPlayerName(); }
+	CBasePlayerPawn* GetCurrentPawn() { return m_hPawn->Get(); }
+	const char* GetPlayerName() { return m_iszPlayerName; }
 	int GetPlayerSlot() { return entindex() - 1; }
-	bool IsConnected() { return m_iConnected() == PlayerConnectedState::PlayerConnected; }
+	bool IsConnected() { return m_iConnected == PlayerConnectedState::PlayerConnected; }
 
 	void SetPawn(CBasePlayerPawn* pawn) {
 		addresses::CBasePlayerController_SetPawn(this, pawn, true, false);

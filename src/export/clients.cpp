@@ -358,7 +358,7 @@ extern "C" PLUGIN_API int GetClientTeam(int playerSlot) {
 		return 0;
 	}
 
-	return pController->m_iTeamNum();
+	return pController->m_iTeamNum;
 }
 
 /**
@@ -373,7 +373,7 @@ extern "C" PLUGIN_API int GetClientHealth(int playerSlot) {
 		return 0;
 	}
 
-	return pController->m_iHealth();
+	return pController->m_iHealth;
 }
 
 /**
@@ -388,7 +388,7 @@ extern "C" PLUGIN_API int GetClientArmor(int playerSlot) {
 		return 0;
 	}
 
-	return pController->GetCurrentPawn()->m_ArmorValue();
+	return pController->GetCurrentPawn()->m_ArmorValue;
 }
 
 /**
@@ -403,7 +403,7 @@ extern "C" PLUGIN_API plg::vec3 GetClientAbsOrigin(int playerSlot) {
 		return {};
 	}
 
-	const Vector& vec = pController->m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin();
+	const Vector& vec = pController->m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin;
 	return *reinterpret_cast<const plg::vec3*>(&vec);
 }
 
@@ -419,7 +419,7 @@ extern "C" PLUGIN_API plg::vec3 GetClientAbsAngles(int playerSlot) {
 		return {};
 	}
 
-	const QAngle& ang = pController->m_CBodyComponent->m_pSceneNode->m_angRotation();
+	const QAngle& ang = pController->m_CBodyComponent->m_pSceneNode->m_angRotation;
 	return *reinterpret_cast<const plg::vec3*>(&ang);
 }
 
@@ -435,7 +435,7 @@ extern "C" PLUGIN_API plg::vec3 GetClientEyeAngles(int playerSlot) {
 		return {};
 	}
 
-	const QAngle& ang = static_cast<CPlayerPawn*>(pController->GetCurrentPawn())->m_angEyeAngles();
+	const QAngle& ang = static_cast<CPlayerPawn*>(pController->GetCurrentPawn())->m_angEyeAngles;
 	return *reinterpret_cast<const plg::vec3*>(&ang);
 }
 
@@ -565,12 +565,12 @@ extern "C" PLUGIN_API int GetClientActiveWeapon(int playerSlot) {
 		return INVALID_EHANDLE_INDEX;
 	}
 
-	auto pWeaponServices = pController->GetCurrentPawn()->m_pWeaponServices();
+	auto pWeaponServices = pController->GetCurrentPawn()->m_pWeaponServices;
 	if (!pWeaponServices) {
 		return INVALID_EHANDLE_INDEX;
 	}
 
-	return pWeaponServices->m_hActiveWeapon().ToInt();
+	return pWeaponServices->m_hActiveWeapon->ToInt();
 }
 
 /**
@@ -586,12 +586,12 @@ extern "C" PLUGIN_API plg::vector<int> GetClientWeapons(int playerSlot) {
 		return {};
 	}
 
-	auto pWeaponServices = pController->GetCurrentPawn()->m_pWeaponServices();
+	auto pWeaponServices = pController->GetCurrentPawn()->m_pWeaponServices;
 	if (!pWeaponServices) {
 		return {};
 	}
 
-	CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponServices->m_hMyWeapons();
+	CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponServices->m_hMyWeapons;
 
 	plg::vector<int> handles;
 	handles.reserve(static_cast<size_t>(weapons->Count()));
@@ -616,7 +616,7 @@ extern "C" PLUGIN_API void StripWeapons(int playerSlot, bool removeSuit) {
 		return;
 	}
 
-	auto pItemServices = pController->GetCurrentPawn()->m_pItemServices();
+	auto pItemServices = pController->GetCurrentPawn()->m_pItemServices;
 	if (!pItemServices) {
 		return;
 	}
@@ -645,7 +645,7 @@ extern "C" PLUGIN_API void DropWeapon(int playerSlot, int weaponHandle, const pl
 		return;
 	}
 
-	auto pWeaponServices = pController->GetCurrentPawn()->m_pWeaponServices();
+	auto pWeaponServices = pController->GetCurrentPawn()->m_pWeaponServices;
 	if (!pWeaponServices) {
 		return;
 	}
@@ -672,7 +672,7 @@ extern "C" PLUGIN_API void BumpWeapon(int playerSlot, int weaponHandle) {
 		return;
 	}
 
-	auto pWeaponServices = pController->GetCurrentPawn()->m_pWeaponServices();
+	auto pWeaponServices = pController->GetCurrentPawn()->m_pWeaponServices;
 	if (!pWeaponServices) {
 		return;
 	}
@@ -699,7 +699,7 @@ extern "C" PLUGIN_API void SwitchWeapon(int playerSlot, int weaponHandle) {
 		return;
 	}
 
-	auto pWeaponServices = pController->GetCurrentPawn()->m_pWeaponServices();
+	auto pWeaponServices = pController->GetCurrentPawn()->m_pWeaponServices;
 	if (!pWeaponServices) {
 		return;
 	}
@@ -726,7 +726,7 @@ extern "C" PLUGIN_API void RemoveWeapon(int playerSlot, int weaponHandle) {
 		return;
 	}
 
-	auto pWeaponServices = pController->GetCurrentPawn()->m_pWeaponServices();
+	auto pWeaponServices = pController->GetCurrentPawn()->m_pWeaponServices;
 	if (!pWeaponServices) {
 		return;
 	}
@@ -748,7 +748,7 @@ extern "C" PLUGIN_API int GiveNamedItem(int playerSlot, const plg::string& itemN
 		return INVALID_EHANDLE_INDEX;
 	}
 
-	auto pItemServices = pController->GetCurrentPawn()->m_pItemServices();
+	auto pItemServices = pController->GetCurrentPawn()->m_pItemServices;
 	if (!pItemServices) {
 		return INVALID_EHANDLE_INDEX;
 	}
@@ -781,12 +781,12 @@ extern "C" PLUGIN_API uint64_t GetClientButtons(int playerSlot, int buttonIndex)
 		return 0;
 	}
 
-	auto pMovementServices = pController->GetCurrentPawn()->m_pMovementServices();
+	auto pMovementServices = pController->GetCurrentPawn()->m_pMovementServices;
 	if (!pMovementServices) {
 		return 0;
 	}
 
-	return pMovementServices->m_nButtons().m_pButtonStates[buttonIndex];
+	return pMovementServices->m_nButtons->m_pButtonStates[buttonIndex];
 }
 
 /**
@@ -802,7 +802,7 @@ extern "C" PLUGIN_API int GetClientMoney(int playerSlot) {
 		return 0;
 	}
 
-	auto pInGameMoneyServices = pController->m_pInGameMoneyServices();
+	auto pInGameMoneyServices = pController->m_pInGameMoneyServices;
 	if (!pInGameMoneyServices) {
 		return 0;
 	}
@@ -823,7 +823,7 @@ extern "C" PLUGIN_API void SetClientMoney(int playerSlot, int money) {
 		return;
 	}
 
-	auto pInGameMoneyServices = pController->m_pInGameMoneyServices();
+	auto pInGameMoneyServices = pController->m_pInGameMoneyServices;
 	if (!pInGameMoneyServices) {
 		return;
 	}
@@ -844,12 +844,12 @@ extern "C" PLUGIN_API int GetClientKills(int playerSlot) {
 		return 0;
 	}
 
-	auto pActionTrackingServices = pController->m_pActionTrackingServices();
+	auto pActionTrackingServices = pController->m_pActionTrackingServices;
 	if (!pActionTrackingServices) {
 		return 0;
 	}
 
-	return pActionTrackingServices->m_matchStats().m_iKills;
+	return pActionTrackingServices->m_matchStats->m_iKills;
 }
 
 /**
@@ -865,12 +865,12 @@ extern "C" PLUGIN_API void SetClientKills(int playerSlot, int kills) {
 		return;
 	}
 
-	auto pActionTrackingServices = pController->m_pActionTrackingServices();
+	auto pActionTrackingServices = pController->m_pActionTrackingServices;
 	if (!pActionTrackingServices) {
 		return;
 	}
 
-	pActionTrackingServices->m_matchStats().m_iKills = kills;
+	pActionTrackingServices->m_matchStats->m_iKills = kills;
 }
 
 /**
@@ -886,12 +886,12 @@ extern "C" PLUGIN_API int GetClientDeaths(int playerSlot) {
 		return 0;
 	}
 
-	auto pActionTrackingServices = pController->m_pActionTrackingServices();
+	auto pActionTrackingServices = pController->m_pActionTrackingServices;
 	if (!pActionTrackingServices) {
 		return 0;
 	}
 
-	return pActionTrackingServices->m_matchStats().m_iDeaths;
+	return pActionTrackingServices->m_matchStats->m_iDeaths;
 }
 
 /**
@@ -907,12 +907,12 @@ extern "C" PLUGIN_API void SetClientDeaths(int playerSlot, int deaths) {
 		return;
 	}
 
-	auto pActionTrackingServices = pController->m_pActionTrackingServices();
+	auto pActionTrackingServices = pController->m_pActionTrackingServices;
 	if (!pActionTrackingServices) {
 		return;
 	}
 
-	pActionTrackingServices->m_matchStats().m_iDeaths = deaths;
+	pActionTrackingServices->m_matchStats->m_iDeaths = deaths;
 }
 
 /**
@@ -928,12 +928,12 @@ extern "C" PLUGIN_API int GetClientAssists(int playerSlot) {
 		return 0;
 	}
 
-	auto pActionTrackingServices = pController->m_pActionTrackingServices();
+	auto pActionTrackingServices = pController->m_pActionTrackingServices;
 	if (!pActionTrackingServices) {
 		return 0;
 	}
 
-	return pActionTrackingServices->m_matchStats().m_iAssists;
+	return pActionTrackingServices->m_matchStats->m_iAssists;
 }
 
 /**
@@ -949,12 +949,12 @@ extern "C" PLUGIN_API void SetClientAssists(int playerSlot, int assists) {
 		return;
 	}
 
-	auto pActionTrackingServices = pController->m_pActionTrackingServices();
+	auto pActionTrackingServices = pController->m_pActionTrackingServices;
 	if (!pActionTrackingServices) {
 		return;
 	}
 
-	pActionTrackingServices->m_matchStats().m_iAssists = assists;
+	pActionTrackingServices->m_matchStats->m_iAssists = assists;
 }
 
 /**
@@ -970,12 +970,12 @@ extern "C" PLUGIN_API int GetClientDamage(int playerSlot) {
 		return 0;
 	}
 
-	auto pActionTrackingServices = pController->m_pActionTrackingServices();
+	auto pActionTrackingServices = pController->m_pActionTrackingServices;
 	if (!pActionTrackingServices) {
 		return 0;
 	}
 
-	return pActionTrackingServices->m_matchStats().m_iDamage;
+	return pActionTrackingServices->m_matchStats->m_iDamage;
 }
 
 /**
@@ -991,10 +991,10 @@ extern "C" PLUGIN_API void SetClientDamage(int playerSlot, int damage) {
 		return;
 	}
 
-	auto pActionTrackingServices = pController->m_pActionTrackingServices();
+	auto pActionTrackingServices = pController->m_pActionTrackingServices;
 	if (!pActionTrackingServices) {
 		return;
 	}
 
-	pActionTrackingServices->m_matchStats().m_iDamage = damage;
+	pActionTrackingServices->m_matchStats->m_iDamage = damage;
 }

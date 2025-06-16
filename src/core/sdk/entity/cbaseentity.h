@@ -35,8 +35,8 @@ public:
 	DECLARE_SCHEMA_CLASS(CGameSceneNode)
 
 	SCHEMA_FIELD(CEntityInstance*, m_pOwner)
-	SCHEMA_FIELD(CGameSceneNode*, m_pParent)
-	SCHEMA_FIELD(CGameSceneNode*, m_pChild)
+	SCHEMA_FIELD_POINTER(CGameSceneNode, m_pParent)
+	SCHEMA_FIELD_POINTER(CGameSceneNode, m_pChild)
 	SCHEMA_FIELD(CNetworkOriginCellCoordQuantizedVector, m_vecOrigin)
 	SCHEMA_FIELD(QAngle, m_angRotation)
 	SCHEMA_FIELD(float, m_flScale)
@@ -51,7 +51,7 @@ public:
 		// issues with this and im tired so hardcoded it
 		// AngleMatrix(this->m_angAbsRotation(), this->m_vecAbsOrigin(), mat);
 
-		QAngle angles = this->m_angAbsRotation();
+		QAngle angles = this->m_angAbsRotation;
 		float sr, sp, sy, cr, cp, cy;
 		SinCos(DEG2RAD(angles[YAW]), &sy, &cy);
 		SinCos(DEG2RAD(angles[PITCH]), &sp, &cp);
@@ -72,7 +72,7 @@ public:
 		mat[1][2] = (sp * crsy - srcy);
 		mat[2][2] = cr * cp;
 
-		Vector pos = this->m_vecAbsOrigin();
+		Vector pos = this->m_vecAbsOrigin;
 		mat[0][3] = pos.x;
 		mat[1][3] = pos.y;
 		mat[2][3] = pos.z;
@@ -85,7 +85,7 @@ class CBodyComponent {
 public:
 	DECLARE_SCHEMA_CLASS(CBodyComponent)
 
-	SCHEMA_FIELD(CGameSceneNode*, m_pSceneNode)
+	SCHEMA_FIELD_POINTER(CGameSceneNode, m_pSceneNode)
 };
 
 class CModelState {
@@ -95,7 +95,7 @@ public:
 	SCHEMA_FIELD(CUtlSymbolLarge, m_ModelName)
 };
 
-class CSkeletonInstance : CGameSceneNode {
+class CSkeletonInstance : public CGameSceneNode {
 public:
 	DECLARE_SCHEMA_CLASS(CSkeletonInstance)
 
@@ -111,7 +111,7 @@ class CBaseEntity : public CEntityInstance {
 public:
 	DECLARE_SCHEMA_CLASS(CBaseEntity)
 
-	SCHEMA_FIELD(CBodyComponent*, m_CBodyComponent)
+	SCHEMA_FIELD_POINTER(CBodyComponent, m_CBodyComponent)
 	SCHEMA_FIELD(CBitVec<64>, m_isSteadyState)
 	SCHEMA_FIELD(float, m_lastNetworkChange)
 	SCHEMA_FIELD_POINTER(CNetworkTransmitComponent, m_NetworkTransmitComponent)
@@ -121,7 +121,7 @@ public:
 	SCHEMA_FIELD(bool, m_bLagCompensate)
 	SCHEMA_FIELD(Vector, m_vecAbsVelocity)
 	SCHEMA_FIELD(Vector, m_vecBaseVelocity)
-	SCHEMA_FIELD(CCollisionProperty*, m_pCollision)
+	SCHEMA_FIELD_POINTER(CCollisionProperty, m_pCollision)
 	SCHEMA_FIELD(MoveCollide_t, m_MoveCollide)
 	SCHEMA_FIELD(MoveType_t, m_MoveType)
 	SCHEMA_FIELD(MoveType_t, m_nActualMoveType)
@@ -150,18 +150,18 @@ public:
 	// TODO: Validate
 	Vector GetAbsOrigin() { return m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin; }
 	QAngle GetAbsRotation() { return m_CBodyComponent->m_pSceneNode->m_angAbsRotation; }
-	void SetAbsOrigin(Vector vecOrigin) { m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin = vecOrigin; }
-	void SetAbsRotation(QAngle angAbsRotation) { m_CBodyComponent->m_pSceneNode->m_angAbsRotation = angAbsRotation; }
+	void SetAbsOrigin(const Vector& vecOrigin) { m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin = vecOrigin; }
+	void SetAbsRotation(const QAngle& angAbsRotation) { m_CBodyComponent->m_pSceneNode->m_angAbsRotation = angAbsRotation; }
 
-	void SetAbsVelocity(Vector vecVelocity) { m_vecAbsVelocity = vecVelocity; }
-	void SetBaseVelocity(Vector vecVelocity) { m_vecBaseVelocity = vecVelocity; }
+	void SetAbsVelocity(const Vector& vecVelocity) { m_vecAbsVelocity = vecVelocity; }
+	void SetBaseVelocity(const Vector& vecVelocity) { m_vecBaseVelocity = vecVelocity; }
 
 	void SetName(const char* pName) {
 		addresses::CEntityIdentity_SetEntityName(m_pEntity, pName);
 	}
 
 	const char* GetName() {
-		return m_iGlobalname.Get().String();
+		return m_iGlobalname->String();
 	}
 
 	/*void TakeDamage(CTakeDamageInfo &info) {
@@ -169,10 +169,10 @@ public:
 	}*/
 
 	void SetCollisionGroup(StandardCollisionGroups_t nCollisionGroup) {
-		if (!m_pCollision())
+		if (!m_pCollision)
 			return;
 
-		m_pCollision->m_collisionAttribute().m_nCollisionGroup = COLLISION_GROUP_DEBRIS;
+		m_pCollision->m_collisionAttribute->m_nCollisionGroup = COLLISION_GROUP_DEBRIS;
 		m_pCollision->m_CollisionGroup = COLLISION_GROUP_DEBRIS;
 		CollisionRulesChanged();
 	}
@@ -188,7 +188,7 @@ public:
 	}
 
 	bool IsAlive() {
-		return this->m_lifeState() == LIFE_ALIVE;
+		return this->m_lifeState == LIFE_ALIVE;
 	}
 
 	void CollisionRulesChanged() {
@@ -217,7 +217,10 @@ public:
 	CHandle<CBaseEntity> GetHandle() { return m_pEntity->m_EHandle; }
 
 	// A double pointer to entity VData is available 4 bytes past m_nSubclassID, if applicable
-	CEntitySubclassVDataBase* GetVData() { return *(CEntitySubclassVDataBase**) ((uint8*) (m_nSubclassID()) + 4); }
+	CEntitySubclassVDataBase* GetVData() {
+		CUtlStringToken* subclassID = m_nSubclassID;
+		return *reinterpret_cast<CEntitySubclassVDataBase**>(reinterpret_cast<uint8*>(subclassID) + 4);
+	}
 
 	void DispatchSpawn(CEntityKeyValues* pEntityKeyValues = nullptr) {
 		addresses::DispatchSpawn(this, pEntityKeyValues);

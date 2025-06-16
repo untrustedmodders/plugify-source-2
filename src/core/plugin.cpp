@@ -292,8 +292,8 @@ poly::ReturnAction Source2SDK::Hook_ClientPutInServer(poly::IHook& hook, poly::P
 	// CPlayerSlot slot, char const *name, int type, uint64 steamID64
 	auto slot = (CPlayerSlot) poly::GetArgument<int>(params, 1);
 	auto name = poly::GetArgument<const char*>(params, 2);
-	auto conType = poly::GetArgument<int>(params, 3);
-	auto steamID64 = poly::GetArgument<uint64_t>(params, 4);
+	//auto conType = poly::GetArgument<int>(params, 3);
+	//auto steamID64 = poly::GetArgument<uint64_t>(params, 4);
 
 	//S2_LOGF(LS_DEBUG, "[ClientPutInServer] = {}, \"{}\", {}, {}, {}\n", slot, name, conType, steamID64);
 
@@ -314,11 +314,11 @@ poly::ReturnAction Source2SDK::Hook_ClientSettingsChanged(poly::IHook& hook, pol
 poly::ReturnAction Source2SDK::Hook_OnClientConnected(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	// CPlayerSlot slot, const cha*r name, uint64 steamID64, const char* networkID, const char* pszAddress, bool bFakePlayer
 	auto slot = (CPlayerSlot) poly::GetArgument<int>(params, 1);
-	auto name = poly::GetArgument<const char*>(params, 2);
+	/*auto name = poly::GetArgument<const char*>(params, 2);
 	auto steamID64 = poly::GetArgument<uint64_t>(params, 3);
 	auto networkID = poly::GetArgument<const char*>(params, 4);
 	auto pszAddress = poly::GetArgument<const char*>(params, 5);
-	auto bFakePlayer = poly::GetArgument<bool>(params, 6);
+	auto bFakePlayer = poly::GetArgument<bool>(params, 6);*/
 
 	//S2_LOGF(LS_DEBUG, "[OnClientConnected] = {}, \"{}\", {}, \"{}\", \"{}\", {}\n", slot, name, steamID64, networkID, pszAddress, bFakePlayer);
 

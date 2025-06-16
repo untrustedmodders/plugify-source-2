@@ -8839,7 +8839,7 @@
         }
       ],
       "retType": {
-        "type": "int8",
+        "type": "uint8",
         "description": "The render mode of the entity, or 0 if the entity is invalid.",
         "enum": {
           "name": "RenderMode",
@@ -8923,7 +8923,7 @@
         },
         {
           "name": "renderMode",
-          "type": "int8",
+          "type": "uint8",
           "ref": false,
           "description": "The new render mode to set for the entity.",
           "enum": {

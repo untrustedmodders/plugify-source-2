@@ -47,14 +47,14 @@ public:
 	SCHEMA_FIELD(float, m_flSlopeDropHeight)
 	SCHEMA_FIELD(float, m_ignoreLadderJumpTime)
 	SCHEMA_FIELD(CHandle<CCSPlayerController>, m_hOriginalController)
-	SCHEMA_FIELD(CCSPlayer_ViewModelServices*, m_pViewModelServices)
+	SCHEMA_FIELD_POINTER(CCSPlayer_ViewModelServices, m_pViewModelServices)
 
 	CCSPlayerController* GetOriginalController() {
-		return m_hOriginalController();
+		return *m_hOriginalController;
 	}
 
 	bool IsBot() {
-		return m_fFlags() & FL_PAWN_FAKECLIENT;
+		return *m_fFlags & FL_PAWN_FAKECLIENT;
 	}
 };
 
@@ -63,7 +63,7 @@ public:
 	DECLARE_SCHEMA_CLASS(CCSPlayerPawn);
 
 	SCHEMA_FIELD(float, m_flVelocityModifier)
-	SCHEMA_FIELD(CCSPlayer_ActionTrackingServices*, m_pActionTrackingServices)
+	SCHEMA_FIELD_POINTER(CCSPlayer_ActionTrackingServices, m_pActionTrackingServices)
 
 	void Respawn() {
 		static int offset = g_pGameConfig->GetOffset("Respawn");

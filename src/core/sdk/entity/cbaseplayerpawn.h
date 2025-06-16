@@ -31,26 +31,26 @@ class CBasePlayerPawn : public CBaseModelEntity {
 public:
 	DECLARE_SCHEMA_CLASS(CBasePlayerPawn);
 
-	SCHEMA_FIELD(CPlayer_MovementServices*, m_pMovementServices)
-	SCHEMA_FIELD(CCSPlayer_WeaponServices*, m_pWeaponServices)
-	SCHEMA_FIELD(CCSPlayer_ItemServices*, m_pItemServices)
-	SCHEMA_FIELD(CPlayer_ObserverServices*, m_pObserverServices)
+	SCHEMA_FIELD_POINTER(CPlayer_MovementServices, m_pMovementServices)
+	SCHEMA_FIELD_POINTER(CCSPlayer_WeaponServices, m_pWeaponServices)
+	SCHEMA_FIELD_POINTER(CCSPlayer_ItemServices, m_pItemServices)
+	SCHEMA_FIELD_POINTER(CPlayer_ObserverServices, m_pObserverServices)
 	SCHEMA_FIELD(CHandle<CBasePlayerController>, m_hController)
 
 	SCHEMA_FIELD(int, m_ArmorValue) // csgo
 
 	void CommitSuicide(bool bExplode, bool bForce) {
-		m_bTakesDamage(true);
+		m_bTakesDamage = true;
 		static int offset = g_pGameConfig->GetOffset("CommitSuicide");
 		CALL_VIRTUAL(void, offset, this, bExplode, bForce);
-		m_bTakesDamage(false);
+		m_bTakesDamage = false;
 	}
 
 	CBasePlayerController* GetController() {
-		return m_hController();
+		return *m_hController;
 	}
 
-	bool IsBot() {
-		return !!(this->m_fFlags() & FL_PAWN_FAKECLIENT);
+	bool IsBot() const {
+		return !!(*m_fFlags & FL_PAWN_FAKECLIENT);
 	}
 };
