@@ -109,7 +109,7 @@ class CBaseEntity;
 
 #define SCHEMA_FIELD_OFFSET(type, varName, extraOffset)                                                                       \
 	PLUGIFY_NO_UNIQUE_ADDRESS class varName##_prop {                                                                          \
-		const type* Ptr() const {                                                                                             \
+		const type* Get() const {                                                                                             \
 			static const auto schemaKey = schema::GetOffset(ThisClassName, #varName);                                         \
 			static const size_t offset = offsetof(ThisClass, varName);                                                        \
 			auto* pThisClass = reinterpret_cast<const ThisClass*>(reinterpret_cast<const byte*>(this) - offset);              \
@@ -140,13 +140,13 @@ class CBaseEntity;
 			*reinterpret_cast<type*>(reinterpret_cast<intptr_t>(pThisClass) + schemaKey.offset + extraOffset) = val;          \
 		}                                                                                                                     \
 	public:                                                                                                                   \
-		operator bool() const { return Ptr(); }                                                                               \
-		operator const type&() const { return *Ptr(); }                                                                       \
-		operator type&() { return *const_cast<type*>(Ptr()); }                                                                \
-		const type* operator->() const { return Ptr(); }                                                                      \
-		type* operator->() { return const_cast<type*>(Ptr()); }                                                               \
-		const type& operator*() const { return *Ptr(); }                                                                      \
-		type& operator*() { return *const_cast<type*>(Ptr()); }                                                               \
+		operator bool() const { return Get(); }                                                                               \
+		operator const type&() const { return *Get(); }                                                                       \
+		operator type&() { return *const_cast<type*>(Get()); }                                                                \
+		const type* operator->() const { return Get(); }                                                                      \
+		type* operator->() { return const_cast<type*>(Get()); }                                                               \
+		const type& operator*() const { return *Get(); }                                                                      \
+		type& operator*() { return *const_cast<type*>(Get()); }                                                               \
 		varName##_prop& operator=(type val) {                                                                                 \
 			Set(val);                                                                                                         \
 			return *this;                                                                                                     \
@@ -155,7 +155,7 @@ class CBaseEntity;
 
 #define SCHEMA_FIELD_POINTER_OFFSET(type, varName, extraOffset)                                                               \
 	PLUGIFY_NO_UNIQUE_ADDRESS class varName##_prop {                                                                          \
-		const type* Ptr() const {                                                                                             \
+		const type* Get() const {                                                                                             \
 			static const auto schemaKey = schema::GetOffset(ThisClassName, #varName);                                         \
 			static const size_t offset = offsetof(ThisClass, varName);                                                        \
 			auto* pThisClass = reinterpret_cast<const ThisClass*>(reinterpret_cast<const byte*>(this) - offset);              \
@@ -163,11 +163,11 @@ class CBaseEntity;
 			return reinterpret_cast<const type*>(reinterpret_cast<intptr_t>(pThisClass) + schemaKey.offset + extraOffset);    \
 		}                                                                                                                     \
 	public:                                                                                                                   \
-		operator bool() const { return Ptr(); }                                                                               \
-		operator const type*() const { return Ptr(); }                                                                        \
-		operator type*() { return const_cast<type*>(Ptr()); }                                                                 \
-		const type* operator->() const { return Ptr(); }                                                                      \
-		type* operator->() { return const_cast<type*>(Ptr()); }                                                               \
+		operator bool() const { return Get(); }                                                                               \
+		operator const type*() const { return Get(); }                                                                        \
+		operator type*() { return const_cast<type*>(Get()); }                                                                 \
+		const type* operator->() const { return Get(); }                                                                      \
+		type* operator->() { return const_cast<type*>(Get()); }                                                               \
 	} varName;
 
 // Use this when you want the member's value itself
