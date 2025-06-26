@@ -1,5 +1,46 @@
 # Changelog
 
+## [1.3.1](https://github.com/untrustedmodders/plugify-source-2/compare/v1.3.0...v1.3.1) (2025-06-26)
+
+
+### Bug Fixes
+
+* add deadlock support ([b17cd53](https://github.com/untrustedmodders/plugify-source-2/commit/b17cd5341c6bd5ce3f78c57b251941841d058b16))
+* add plugify for assembly staff ([f7b8501](https://github.com/untrustedmodders/plugify-source-2/commit/f7b850148a6b4e37798ec1eb7eb6ecdc43ec2f9e))
+* add protobuf destructors ([fad30d8](https://github.com/untrustedmodders/plugify-source-2/commit/fad30d8d7a6effe2560c04e262355cb59516fc77))
+* change build generation ([d551bea](https://github.com/untrustedmodders/plugify-source-2/commit/d551beafe54b2b31298a0237170dfe6cb3f53564))
+* change msg type ([301d231](https://github.com/untrustedmodders/plugify-source-2/commit/301d231c11c54b4fc858510b82246fcb38370d03))
+* cleanup schemas ([f3d4254](https://github.com/untrustedmodders/plugify-source-2/commit/f3d4254a55e69b43907b4cd9fd6473665df76530))
+* fix wrong function hook ([5d3b873](https://github.com/untrustedmodders/plugify-source-2/commit/5d3b873db9ad82ebfaf8a30eb0c290f7ad94b036))
+* improve voting system ([b90ca6e](https://github.com/untrustedmodders/plugify-source-2/commit/b90ca6e04c011d00969923bfd53dd41dfef42808))
+* more unccoment of code ([eb47ed3](https://github.com/untrustedmodders/plugify-source-2/commit/eb47ed3d2edc91ac649c06fd0135899731243924))
+* OnSendNetMessage protobuf ([2401e8f](https://github.com/untrustedmodders/plugify-source-2/commit/2401e8f468fed446df1c0994adc0cfbf6a936cea))
+* refactor cmake ([95fac6e](https://github.com/untrustedmodders/plugify-source-2/commit/95fac6e3ac048311ab6acda33e64143efd242356))
+* remove logging ([607eda4](https://github.com/untrustedmodders/plugify-source-2/commit/607eda42730716017fcabd37db88752c56fa0862))
+* remove metamod and small other fixes ([59f57b0](https://github.com/untrustedmodders/plugify-source-2/commit/59f57b0b5dad0c2f6d536ed2eecc1598b85bc0dc))
+* revert cvars changes ([f48a0e6](https://github.com/untrustedmodders/plugify-source-2/commit/f48a0e63f7e353faa2afb2a0b9ac0590e8f5bb2d))
+* set _GLIBCXX_USE_CXX11_ABI to 0 ([aae1ea7](https://github.com/untrustedmodders/plugify-source-2/commit/aae1ea7db41eba9d0fe945e02a1b654805f77334))
+* set PLUGIFY_USE_ABI0 to ON ([0ee3fe0](https://github.com/untrustedmodders/plugify-source-2/commit/0ee3fe02cb34976f1d5733e8b54eb178fc1c85f8))
+* temp disable addons ([fc524b1](https://github.com/untrustedmodders/plugify-source-2/commit/fc524b1625e85f7781745872b50dabccda037c92))
+* temp remove non working code ([ecd4eab](https://github.com/untrustedmodders/plugify-source-2/commit/ecd4eabf63a8eb897f6f80e0582029b1a0f741b5))
+* typo in GetClientAddons ([43af19a](https://github.com/untrustedmodders/plugify-source-2/commit/43af19a3304d873781d0abe9d95f0893fd19ae7d))
+* update arch tags for action build ([6cad2ca](https://github.com/untrustedmodders/plugify-source-2/commit/6cad2caa54bea10265f315441c1bcf073c9b95e1))
+* update deps ([9584a29](https://github.com/untrustedmodders/plugify-source-2/commit/9584a2903c6567e10c683bafb3268cdd723cd3e4))
+* update plugify ([9f51e1e](https://github.com/untrustedmodders/plugify-source-2/commit/9f51e1e8067ef01a5736e836f5689966c178c2b5))
+* update plugify ([0894fb9](https://github.com/untrustedmodders/plugify-source-2/commit/0894fb922bb6ea62a6486860fe9cc84d55162c2b))
+* update plugify ([82d1120](https://github.com/untrustedmodders/plugify-source-2/commit/82d1120366dec631c146fd01ab0f1fa6d89f5d97))
+* update plugify ([2b67f8f](https://github.com/untrustedmodders/plugify-source-2/commit/2b67f8f7a60687cf5d24f67386206713b8fd0d48))
+* update plugify ([8f46b68](https://github.com/untrustedmodders/plugify-source-2/commit/8f46b6875e86cdce54f21ee208acb7b86ebba05b))
+* update protobufs ([7baee3a](https://github.com/untrustedmodders/plugify-source-2/commit/7baee3a49f00f06d3199efe5d0937b91609bbafc))
+* update sdk ([ec191b2](https://github.com/untrustedmodders/plugify-source-2/commit/ec191b211027252d37347db0db6244918074c70f))
+* update sdk ([ff09aa1](https://github.com/untrustedmodders/plugify-source-2/commit/ff09aa1252b5e99c78e6ea885cde1b5f2632122f))
+* update sdk ([dc85838](https://github.com/untrustedmodders/plugify-source-2/commit/dc85838279e5981e1f2f0ffc18df2b989ef34a05))
+* update sigs for deadlock ([92a770a](https://github.com/untrustedmodders/plugify-source-2/commit/92a770aab4c3ce019335910354f04fe2e833c09e))
+* update some sigs ([3b759a3](https://github.com/untrustedmodders/plugify-source-2/commit/3b759a35254eb570ddac5388ac250ed065025da5))
+* update usermessage things ([36dbf6f](https://github.com/untrustedmodders/plugify-source-2/commit/36dbf6fa93f8f27b8e22475514131843f94a4c92))
+* update userMessageId from uint16 to int16 ([33285f9](https://github.com/untrustedmodders/plugify-source-2/commit/33285f9533a56700745fe2e6a8fdf0e05eb2697a))
+* update version naming ([c483df9](https://github.com/untrustedmodders/plugify-source-2/commit/c483df9cc8d222c122991bf4cbe07c7ef4ba3199))
+
 ## [1.3.0](https://github.com/untrustedmodders/plugify-source-2/compare/v1.2.1...v1.3.0) (2025-05-27)
 
 
