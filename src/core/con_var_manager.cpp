@@ -83,7 +83,7 @@ void ConVarManager::UnhookConVarChange(const plg::string& name, ConVarChangeList
 	}
 }
 
-void ConVarManager::ChangeGlobal(ConVarRefAbstract* ref, CSplitScreenSlot nSlot, const char* pNewValue, const char* pOldValue) {
+void ConVarManager::ChangeGlobal(ConVarRefAbstract* ref, CSplitScreenSlot nSlot, const char* pNewValue, const char* pOldValue, void*) {
 	g_ConVarManager.m_global.Notify(*ref, pNewValue, pOldValue);
 }
 

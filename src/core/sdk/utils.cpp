@@ -7,11 +7,12 @@
 #include <netmessages.h>
 #include <networkbasetypes.pb.h>
 #include <networksystem/inetworkmessages.h>
+#include <recipientfilter.h>
 
 #include "entity/cbaseplayerpawn.h"
 #include "entity/cplayercontroller.h"
 #include "entity/globaltypes.h"
-#include "entity/recipientfilters.h"
+#include "core/player_manager.hpp"
 
 #include <tier0/memdbgon.h>
 
@@ -298,4 +299,16 @@ std::vector<std::string_view> utils::split(std::string_view strv, std::string_vi
 	}
 
 	return output;
+}
+
+void CRecipientFilter::AddAllPlayers() {
+	m_Recipients.ClearAll();
+
+	for (int i = 0; i < PlayerManager::MaxClients(); ++i) {
+		auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(i));
+		if (!pPlayer)
+			continue;
+
+		AddRecipient(i);
+	}
 }

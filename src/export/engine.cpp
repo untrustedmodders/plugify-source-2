@@ -110,12 +110,13 @@ extern "C" PLUGIN_API int GetGameTickCount() {
  * @return The frame time of the last processed frame.
  */
 extern "C" PLUGIN_API float GetGameFrameTime() {
-	if (gpGlobals == nullptr) {
+	/*if (gpGlobals == nullptr) {
 		S2_LOG(LS_WARNING, "Global Variables not initialized yet.\n");
 		return 0.0f;
 	}
 
-	return gpGlobals->frametime;
+	return gpGlobals->frametime;*/
+	return 0.0f; // TODO: Implement this properly
 }
 
 /**

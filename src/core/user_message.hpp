@@ -53,9 +53,9 @@ namespace google::protobuf {
 
 class UserMessage {
 public:
-	UserMessage(INetworkMessageInternal* msgSerializable, const CNetMessage* message, uint64_t recipientMask)
+	UserMessage(INetworkMessageInternal* msgSerializable, const CNetMessage* message, uint64_t recipients)
 		: m_msgSerializable(msgSerializable), m_netMessage(const_cast<CNetMessage*>(message)), m_msg(const_cast<pb::Message*>(message->AsMessage())),
-		  m_recipientMask(recipientMask) {
+		  m_recipients(recipients) {
 	}
 
 	explicit UserMessage(const char* messageName) {
@@ -87,7 +87,7 @@ public:
 	const CNetMessage* GetNetMessage() const { return m_netMessage; }
 	const pb::Message* GetProtobufMessage() const { return m_msg; }
 	INetworkMessageInternal* GetSerializableMessage() const { return m_msgSerializable; }
-	uint64_t& GetRecipientMask() { return m_recipientMask; }
+	uint64_t& GetRecipients() { return m_recipients; }
 
 	bool HasField(const std::string& fieldName) {
 		const pb::Descriptor* descriptor = m_msg->GetDescriptor();
@@ -104,7 +104,7 @@ private:
 	INetworkMessageInternal* m_msgSerializable{};
 	CNetMessage* m_netMessage{};
 	pb::Message* m_msg{};
-	uint64_t m_recipientMask{};
+	uint64_t m_recipients{};
 	bool m_manuallyAllocated{};
 
 public:

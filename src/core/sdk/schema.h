@@ -35,16 +35,6 @@ struct SchemaKey {
 	CSchemaType* type{};
 };
 
-struct CNetworkVarChainer : CSmartPtr<CEntityInstance> {
-	struct ChainUpdatePropagationLL_t {
-		ChainUpdatePropagationLL_t* pNext{};
-		CUtlDelegate<void(const CNetworkVarChainer&)> updateDelegate;
-	};
-	uint8 unk[24];
-	ChangeAccessorFieldPathIndex_t m_PathIndex;
-	ChainUpdatePropagationLL_t* m_pPropagationList;
-};
-
 namespace schema {
 	static std::unordered_set<plg::string> CS2BadList = {
 			"m_bIsValveDS",

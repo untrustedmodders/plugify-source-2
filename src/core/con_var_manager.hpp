@@ -154,7 +154,7 @@ public:
 		}
 	}
 
-	static void ChangeGlobal(ConVarRefAbstract* ref, CSplitScreenSlot nSlot, const char* pNewValue, const char* pOldValue);
+	static void ChangeGlobal(ConVarRefAbstract* ref, CSplitScreenSlot nSlot, const char* pNewValue, const char* pOldValue, void*);
 
 private:
 	std::map<plg::string, ConVarInfoPtr, utils::case_ins_comparator> m_cnvLookup;

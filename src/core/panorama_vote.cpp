@@ -10,7 +10,7 @@
 #include "event_listener.hpp"
 #include "server_manager.hpp"
 #include <core/sdk/entity/cplayercontroller.h>
-#include <core/sdk/entity/recipientfilters.h>
+#include <recipientfilter.h>
 
 void CPanoramaVoteHandler::Reset() {
 	m_voteInProgress = false;
@@ -117,16 +117,16 @@ bool CPanoramaVoteHandler::IsVoteInProgress() const {
 bool CPanoramaVoteHandler::SendYesNoVote(double duration, int caller,
 	const plg::string& voteTitle, const plg::string& detailStr,
 	const plg::string& votePassTitle, const plg::string& detailPassStr,
-	int voteFailReason, uint64 recipientMask, YesNoVoteResult result,
+	int voteFailReason, uint64 recipients, YesNoVoteResult result,
 	YesNoVoteHandler handler = nullptr) {
 	if (!m_voteController|| m_voteInProgress)
 		return false;
 
 	CRecipientFilter filter;
-	if (recipientMask == static_cast<uint64>(-1)) {
+	if (recipients == static_cast<uint64>(-1)) {
 		filter.AddAllPlayers();
 	} else {
-		filter.AddRecipientsFromMask(recipientMask);
+		filter.SetRecipients(recipients);
 	}
 
 	if (filter.GetRecipientCount() <= 0)
@@ -138,7 +138,7 @@ bool CPanoramaVoteHandler::SendYesNoVote(double duration, int caller,
 	S2_LOGF(LS_MESSAGE, "[Vote Start] Starting a new vote [id:{}]. Duration:{} Caller:{} NumClients:{}", m_voteCount, duration, caller, filter.GetRecipientCount());
 
 	m_voteInProgress = true;
-	m_recipientMask = recipientMask;
+	m_recipients = recipients;
 
 	InitVoters(&filter);
 
@@ -205,10 +205,10 @@ void CPanoramaVoteHandler::InitVoters(IRecipientFilter* filter) {
 	}
 
 	m_voterCount = filter->GetRecipientCount();
-	for (int i = 0, j = 0; i < m_voterCount; ++i) {
-		CPlayerSlot slot = filter->GetRecipientIndex(i);
-		if (slot != INVALID_PLAYER_SLOT) {
-			m_voters[j++] = slot;
+	uint64_t recipients = filter->GetRecipients();
+	for (int i = 0, j = 0; i < m_voterCount; ++i, ++j) {
+		if (recipients & (1ULL << j)) {
+			m_voters[i] = j;
 		}
 	}
 }
@@ -298,10 +298,10 @@ void CPanoramaVoteHandler::SendVoteFailed() const {
 	data->set_team(-1);
 
 	CRecipientFilter filter;
-	if (m_recipientMask == static_cast<uint64>(-1)) {
+	if (m_recipients == static_cast<uint64>(-1)) {
 		filter.AddAllPlayers();
 	} else {
-		filter.AddRecipientsFromMask(m_recipientMask);
+		filter.SetRecipients(m_recipients);
 	}
 	g_pGameEventSystem->PostEventAbstract(-1, false, &filter, pNetMsg, data, 0);
 
@@ -319,10 +319,10 @@ void CPanoramaVoteHandler::SendVotePassed() const {
 	data->set_details_str(m_currentVotePassDetailStr);
 
 	CRecipientFilter filter;
-	if (m_recipientMask == static_cast<uint64>(-1)) {
+	if (m_recipients == static_cast<uint64>(-1)) {
 		filter.AddAllPlayers();
 	} else {
-		filter.AddRecipientsFromMask(m_recipientMask);
+		filter.SetRecipients(m_recipients);
 	}
 	g_pGameEventSystem->PostEventAbstract(-1, false, &filter, pNetMsg, data, 0);
 

@@ -40,6 +40,9 @@ public:
 	static poly::ReturnAction Hook_HostStateRequest(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type);
 	static poly::ReturnAction Hook_ReplyConnection(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type);
 	static poly::ReturnAction Hook_SendNetMessage(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type);
+	static poly::ReturnAction Hook_OnAddEntity(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type);
+	static poly::ReturnAction Hook_OnRemoveEntity(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type);
+	static poly::ReturnAction Hook_OnEntityParentChanged(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type);
 #if S2SDK_PLATFORM_WINDOWS
 	static poly::ReturnAction Hook_PreloadLibrary(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type);
 #endif

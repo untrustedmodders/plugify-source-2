@@ -38,7 +38,7 @@ CEntityInstance* CEntityHandle::Get() const {
 	return g_pGameEntitySystem->GetEntityInstance(*this);
 }
 
-class CEntityListener : public IEntityListener {
+/*class CEntityListener : public IEntityListener {
 	void OnEntityCreated(CEntityInstance* pEntity) override {
 		std::string_view name(pEntity->GetClassname());
 		if (name == "cs_gamerules") {
@@ -61,7 +61,7 @@ class CEntityListener : public IEntityListener {
 	void OnEntityParentChanged(CEntityInstance* pEntity, CEntityInstance* pNewParent) override {
 		GetOnEntityParentChangedListenerManager().Notify(pEntity->GetRefEHandle().ToInt(), pNewParent ? pNewParent->GetRefEHandle().ToInt() : INVALID_EHANDLE_INDEX);
 	}
-} g_pEntityListener;
+} g_pEntityListener;*/
 
 void Source2SDK::OnPluginStart() {
 	S2_LOG(LS_DEBUG, "[OnPluginStart] - Source2SDK!\n");
@@ -103,7 +103,7 @@ void Source2SDK::OnPluginStart() {
 	//using LogDirect = LoggingResponse_t (*)(void* loggingSystem, LoggingChannelID_t channel, LoggingSeverity_t severity, LeafCodeInfo_t*, LoggingMetaData_t*, Color, char const*, va_list*);
 	//g_PH.AddHookDetourFunc<LogDirect>("LogDirect", Hook_LogDirect, Pre);
 
-	g_pfnSetPendingHostStateRequest = reinterpret_cast<HostStateRequestFn>(g_PH.AddHookDetourFunc<HostStateRequestFn>("HostStateRequest", Hook_HostStateRequest, Pre));
+	g_pfnSetPendingHostStateRequest = reinterpret_cast<HostStateRequestFn>(g_PH.AddHookDetourFunc<HostStateRequestFn>("CHostStateMgr::StartNewRequest", Hook_HostStateRequest, Pre));
 	g_pfnReplyConnection = reinterpret_cast<ReplyConnectionFn>(g_PH.AddHookDetourFunc<ReplyConnectionFn>("ReplyConnection", Hook_ReplyConnection, Pre));
 
 	// We're using funchook even though it's a virtual function because it can be called on a different thread and SourceHook isn't thread-safe
@@ -125,10 +125,6 @@ void Source2SDK::OnPluginEnd() {
 	g_PH.UnhookAll();
 	UnregisterEventListeners();
 
-	if (g_pGameEntitySystem != nullptr) {
-		g_pGameEntitySystem->RemoveListenerEntity(&g_pEntityListener);
-	}
-
 	S2_LOG(LS_DEBUG, "[OnPluginEnd] = Source2SDK!\n");
 }
 
@@ -140,6 +136,7 @@ void Source2SDK::OnServerStartup() {
 	}
 
 	g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
+
 	if (g_pNetworkGameServer != nullptr) {
 		gpGlobals = g_pNetworkGameServer->GetGlobals();
 		g_PH.AddHookMemFunc(&INetworkGameServer::ActivateServer, g_pNetworkGameServer, Hook_ActivateServer, poly::CallbackType::Post);
@@ -147,9 +144,19 @@ void Source2SDK::OnServerStartup() {
 		g_PH.AddHookMemFunc(&INetworkGameServer::FinishChangeLevel, g_pNetworkGameServer, Hook_ChangeLevel, poly::CallbackType::Post);
 	}
 
-	g_pGameEntitySystem = GameEntitySystem();
 	if (g_pGameEntitySystem != nullptr) {
-		g_pGameEntitySystem->AddListenerEntity(&g_pEntityListener);
+		g_PH.RemoveHookMemFunc(&CEntitySystem::OnAddEntity, g_pGameEntitySystem);
+		g_PH.RemoveHookMemFunc(&CEntitySystem::OnRemoveEntity, g_pGameEntitySystem);
+		g_PH.RemoveHookMemFunc(&CEntitySystem::OnEntityParentChanged, g_pGameEntitySystem);
+	}
+
+	g_pGameEntitySystem = GameEntitySystem();
+
+	if (g_pGameEntitySystem != nullptr) {
+		//g_pGameEntitySystem->AddListenerEntity(&g_pEntityListener);
+		g_PH.AddHookMemFunc(&CEntitySystem::OnAddEntity, g_pGameEntitySystem, Hook_OnAddEntity, poly::CallbackType::Post);
+		g_PH.AddHookMemFunc(&CEntitySystem::OnRemoveEntity, g_pGameEntitySystem, Hook_OnRemoveEntity, poly::CallbackType::Post);
+		g_PH.AddHookMemFunc(&CEntitySystem::OnEntityParentChanged, g_pGameEntitySystem, Hook_OnEntityParentChanged, poly::CallbackType::Post);
 	}
 
 	g_MultiAddonManager.OnStartupServer();
@@ -160,7 +167,7 @@ void Source2SDK::OnServerStartup() {
 poly::ReturnAction Source2SDK::Hook_StartupServer(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	//auto config = poly::GetArgument<const GameSessionConfiguration_t *>(params, 1);
 	//auto pWorldSession = poly::GetArgument<ISource2WorldSession*>(params, 2);
-	auto pMapName = poly::GetArgument<const char*>(params, 3);
+	//auto pMapName = poly::GetArgument<const char*>(params, 3);
 
 	//S2_LOGF(LS_DEBUG, "[StartupServer] = {}\n", pMapName);
 
@@ -532,6 +539,40 @@ poly::ReturnAction Source2SDK::Hook_SendNetMessage(poly::IHook& hook, poly::Para
 /*poly::ReturnAction Source2SDK::Hook_HostSay(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
 	return g_ChatManager.Hook_HostSay(hook, params, count, ret, static_cast<HookMode>(type));
 }*/
+
+poly::ReturnAction Source2SDK::Hook_OnAddEntity(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
+	auto pEntity = poly::GetArgument<CEntityInstance*>(params, 1);
+	auto handle = (CEntityHandle) poly::GetArgument<int>(params, 2);
+
+	std::string_view name(pEntity->GetClassname());
+	if (name == "cs_gamerules") {
+		g_pGameRulesProxy = static_cast<CBaseGameRulesProxy *>(pEntity);
+		g_pGameRules = g_pGameRulesProxy->m_pGameRules;
+	}
+	GetOnEntityCreatedListenerManager().Notify(handle.ToInt());
+	return poly::ReturnAction::Ignored;
+}
+
+poly::ReturnAction Source2SDK::Hook_OnRemoveEntity(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
+	auto pEntity = poly::GetArgument<CEntityInstance*>(params, 1);
+	auto handle = (CEntityHandle) poly::GetArgument<int>(params, 2);
+
+	std::string_view name(pEntity->GetClassname());
+	if (name == "cs_gamerules") {
+		g_pGameRulesProxy = nullptr;
+		g_pGameRules = nullptr;
+	}
+	GetOnEntityDeletedListenerManager().Notify(handle.ToInt());
+	return poly::ReturnAction::Ignored;
+}
+
+poly::ReturnAction Source2SDK::Hook_OnEntityParentChanged(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
+	auto pEntity = poly::GetArgument<CEntityInstance*>(params, 1);
+	auto pNewParent = poly::GetArgument<CEntityInstance*>(params, 2);
+
+	GetOnEntityParentChangedListenerManager().Notify(pEntity->GetRefEHandle().ToInt(), pNewParent ? pNewParent->GetRefEHandle().ToInt() : INVALID_EHANDLE_INDEX);
+	return poly::ReturnAction::Ignored;
+}
 
 #if S2SDK_PLATFORM_WINDOWS
 

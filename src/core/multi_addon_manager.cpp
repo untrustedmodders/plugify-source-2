@@ -7,7 +7,7 @@
 #include <igameeventsystem.h>
 #include <serversideclient.h>
 #include <filesystem.h>
-#include <gameevents.pb.h>
+#include <gameevents.h>
 #include <steam/steam_gameserver.h>
 #include <iserver.h>
 #include <hoststate.h>

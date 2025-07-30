@@ -59,7 +59,7 @@ public:
 	 * @param detailStr		Extra string used in some vote translation strings.
 	 * @param votePassTitle	Translation string to use as the vote message when the vote passes. (Only '#SFUI_vote' or '#Panorama_vote' strings)
 	 * @param detailPassStr Extra string used in some vote translation strings when the vote passes.
-	 * @param recipientMask	Recipient filter with all the clients who are allowed to participate in the vote.
+	 * @param recipients	Recipient filter with all the clients who are allowed to participate in the vote.
 	 * @param result		Called when a menu action is completed.
 	 * @param handler		Called when the vote has finished.
 	 */
@@ -68,7 +68,7 @@ public:
 		const plg::string& voteTitle, const plg::string& detailStr,
 		const plg::string& votePassTitle, const plg::string& detailPassStr,
 		int voteFailReason,
-		uint64 recipientMask, YesNoVoteResult result, YesNoVoteHandler handler);
+		uint64 recipients, YesNoVoteResult result, YesNoVoteHandler handler);
 
 protected:
 	void CheckForEarlyVoteClose() const;
@@ -83,7 +83,7 @@ private:
 	bool m_voteInProgress{};
 	YesNoVoteHandler m_voteHandler{};
 	YesNoVoteResult m_voteResult{};
-	uint64 m_recipientMask{static_cast<uint64>(-1)};
+	uint64 m_recipients{static_cast<uint64>(-1)};
 	int m_voterCount{};
 	int m_voteCount{};
 	int m_currentVoteCaller{};

@@ -11,10 +11,7 @@
   "updateURL": "https://untrustedmodders.github.io/plugify-source-2/s2sdk.json",
   "entryPoint": "bin/s2sdk",
   "supportedPlatforms": [],
-  "resourceDirectories": [
-    "configs",
-    "gamedata"
-  ],
+  "resourceDirectories": [],
   "languageModule": {
     "name": "cpp"
   },

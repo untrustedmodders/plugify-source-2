@@ -1,7 +1,7 @@
 #include "utils.h"
 
 #include "entity/globaltypes.h"
-#include "entity/recipientfilters.h"
+#include <recipientfilter.h>
 #include <engine/igameeventsystem.h>
 #include <igameevents.h>
 #include <networksystem/inetworkmessages.h>

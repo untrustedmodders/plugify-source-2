@@ -1,6 +1,6 @@
 #include <core/user_message.hpp>
 #include <core/user_message_manager.hpp>
-#include <core/sdk/entity/recipientfilters.h>
+#include <recipientfilter.h>
 #include <engine/igameeventsystem.h>
 #include <plugin_export.h>
 
@@ -41,11 +41,11 @@ extern "C" PLUGIN_API bool UnhookUserMessage(int16_t messageId, UserMessageCallb
  *
  * @param msgSerializable The serializable message.
  * @param message The network message.
- * @param recipientMask The recipient mask.
+ * @param recipients The recipient mask.
  * @return A pointer to the newly created UserMessage.
  */
-extern "C" PLUGIN_API UserMessage* UserMessageCreateFromSerializable(INetworkMessageInternal* msgSerializable, const CNetMessage* message, uint64_t recipientMask) {
-	return new UserMessage(msgSerializable, message, recipientMask);
+extern "C" PLUGIN_API UserMessage* UserMessageCreateFromSerializable(INetworkMessageInternal* msgSerializable, const CNetMessage* message, uint64_t recipients) {
+	return new UserMessage(msgSerializable, message, recipients);
 }
 
 /**
@@ -84,7 +84,7 @@ extern "C" PLUGIN_API void UserMessageDestroy(UserMessage* userMessage) {
  */
 extern "C" PLUGIN_API void UserMessageSend(UserMessage* userMessage) {
 	CRecipientFilter filter;
-	filter.AddRecipientsFromMask(userMessage->GetRecipientMask());
+	filter.SetRecipients(userMessage->GetRecipients());
 	g_pGameEventSystem->PostEventAbstract(-1, false, &filter, userMessage->GetSerializableMessage(), userMessage->GetNetMessage(), 0);
 }
 
@@ -160,7 +160,7 @@ extern "C" PLUGIN_API int16_t UserMessageFindMessageIdByName(const plg::string& 
  * @return The recipient mask.
  */
 extern "C" PLUGIN_API uint64_t UserMessageGetRecipientMask(UserMessage* userMessage) {
-	return userMessage->GetRecipientMask() ? userMessage->GetRecipientMask() : 0;
+	return userMessage->GetRecipients() ? userMessage->GetRecipients() : 0;
 }
 
 /**
@@ -169,8 +169,8 @@ extern "C" PLUGIN_API uint64_t UserMessageGetRecipientMask(UserMessage* userMess
  * @param userMessage The UserMessage instance.
  * @param mask The recipient mask to set.
  */
-extern "C" PLUGIN_API void UserMessageSetRecipientMask(UserMessage* userMessage, uint64_t mask) {
-	userMessage->GetRecipientMask() = mask;
+extern "C" PLUGIN_API void UserMessageSetRecipientMask(UserMessage* userMessage, uint64_t recipients) {
+	userMessage->GetRecipients() = recipients;
 }
 
 /**

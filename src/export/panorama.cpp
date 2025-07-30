@@ -1,6 +1,6 @@
 #include <core/panorama_vote.hpp>
 #include <plugin_export.h>
-#include <core/sdk/entity/recipientfilters.h>
+#include <recipientfilter.h>
 
 /**
  * @brief Start a new Yes/No vote
@@ -16,8 +16,8 @@
  * @param result		Called when a menu action is completed.
  * @param handler		Called when the vote has finished.
  */
-extern "C" PLUGIN_API bool PanoramaSendYesNoVote(double duration, int caller, const plg::string& voteTitle, const plg::string& detailStr, const plg::string& votePassTitle, const plg::string& detailPassStr, int failReason, uint64 recipientMask, YesNoVoteResult result, YesNoVoteHandler handler) {
-    return g_PanoramaVoteHandler.SendYesNoVote(duration, caller, voteTitle, detailStr, votePassTitle, detailPassStr, failReason, recipientMask, result, handler);
+extern "C" PLUGIN_API bool PanoramaSendYesNoVote(double duration, int caller, const plg::string& voteTitle, const plg::string& detailStr, const plg::string& votePassTitle, const plg::string& detailPassStr, int failReason, uint64 recipients, YesNoVoteResult result, YesNoVoteHandler handler) {
+    return g_PanoramaVoteHandler.SendYesNoVote(duration, caller, voteTitle, detailStr, votePassTitle, detailPassStr, failReason, recipients, result, handler);
 }
 
 /**
