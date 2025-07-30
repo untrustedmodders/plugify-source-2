@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.3.2](https://github.com/untrustedmodders/plugify-source-2/compare/v1.3.1...v1.3.2) (2025-07-30)
+
+
+### Bug Fixes
+
+* for update changes ([6931a35](https://github.com/untrustedmodders/plugify-source-2/commit/6931a3583970f053637503cad42638a184188403))
+* update readme and add missing permission ([430bf22](https://github.com/untrustedmodders/plugify-source-2/commit/430bf2237b6ecdf0e896c5484aaa59fbbe992d92))
+* update sdk ([3889bfd](https://github.com/untrustedmodders/plugify-source-2/commit/3889bfdf2234f397b2387a2a4e7ee700e866507b))
+
 ## [1.3.1](https://github.com/untrustedmodders/plugify-source-2/compare/v1.3.0...v1.3.1) (2025-06-26)
 
 
