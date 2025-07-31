@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.3](https://github.com/untrustedmodders/plugify-source-2/compare/v1.3.2...v1.3.3) (2025-07-31)
+
+
+### Bug Fixes
+
+* bump c++ to 23 and update deps ([17208d2](https://github.com/untrustedmodders/plugify-source-2/commit/17208d2d283a694e9310c0a54da76ccfb57d7e11))
+
 ## [1.3.2](https://github.com/untrustedmodders/plugify-source-2/compare/v1.3.1...v1.3.2) (2025-07-30)
 
 
