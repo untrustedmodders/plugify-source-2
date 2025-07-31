@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.4](https://github.com/untrustedmodders/plugify-source-2/compare/v1.3.3...v1.3.4) (2025-07-31)
+
+
+### Bug Fixes
+
+* update configs ([a361895](https://github.com/untrustedmodders/plugify-source-2/commit/a361895f0395461f304bb4a8a02f670b3b64e5f0))
+
 ## [1.3.3](https://github.com/untrustedmodders/plugify-source-2/compare/v1.3.2...v1.3.3) (2025-07-31)
 
 
