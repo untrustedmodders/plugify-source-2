@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.6](https://github.com/untrustedmodders/plugify-source-2/compare/v1.3.5...v1.3.6) (2025-07-31)
+
+
+### Bug Fixes
+
+* update gamedata for linux and more fixes ([315a458](https://github.com/untrustedmodders/plugify-source-2/commit/315a45866403a3ea768e3a8528482699d2caa027))
+* update sdk ([beff42a](https://github.com/untrustedmodders/plugify-source-2/commit/beff42ae4cdcdfd7bfba0e706983929aae419d82))
+
 ## [1.3.5](https://github.com/untrustedmodders/plugify-source-2/compare/v1.3.4...v1.3.5) (2025-07-31)
 
 
