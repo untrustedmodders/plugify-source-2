@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.5](https://github.com/untrustedmodders/plugify-source-2/compare/v1.3.4...v1.3.5) (2025-07-31)
+
+
+### Bug Fixes
+
+* bump gcc to 14 ([8cfb9db](https://github.com/untrustedmodders/plugify-source-2/commit/8cfb9db240431b58808dee372b89ce91b4de6fa3))
+
 ## [1.3.4](https://github.com/untrustedmodders/plugify-source-2/compare/v1.3.3...v1.3.4) (2025-07-31)
 
 
