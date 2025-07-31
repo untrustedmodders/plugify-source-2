@@ -108,7 +108,7 @@ namespace schema {
 		CNetworkVarChainer* chainEnt = reinterpret_cast<CNetworkVarChainer*>(chainEntity);
 		CEntityInstance* pEntity = chainEnt->GetObject();
 		if (pEntity && !(pEntity->m_pEntity->m_flags & EF_IS_CONSTRUCTION_IN_PROGRESS)) {
-			pEntity->NetworkStateChanged(localOffset, arrayIndex, chainEnt->m_PathIndex.m_Value);
+			pEntity->NetworkStateChanged(NetworkStateChangedData{localOffset, arrayIndex, chainEnt->m_PathIndex});
 		}
 	}
 

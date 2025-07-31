@@ -126,12 +126,11 @@
         "win64": "48 89 5C 24 ? 57 48 83 EC ? 48 8B D9 4C 8B C2",
         "linuxsteamrt64": "55 48 89 F2 48 89 E5 41 55 41 54 53"
       },
-      // next to "soundname", in win64 it's the last referenced sub while in linuxsteamrt64 it's right after
-      // this is a vscript binding though so it may be removed in the future?
+      // String: "Plays/modifies a sound from this entity. changes sound if nPitch and/or flVol or flSoundTime is > 0."
       "CBaseEntity_EmitSoundParams": {
         "library": "server",
         "win64": "48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 4C 89 74 24 ? 55 48 8D 6C 24 ? 48 81 EC ? ? ? ? 45 33 F6 48 C7 45",
-        "linuxsteamrt64": "48 B8 ? ? ? ? ? ? ? ? 55 48 89 E5 41 55 41 54 49 89 FC 53 48 89 F3"
+        "linuxsteamrt64": "55 48 89 E5 41 57 41 56 41 55 41 54 49 89 D4 53 48 89 F3 48 83 EC 18 4D 85 C0 0F 95 C2 48 85 F6 40 0F 94 C6 40 08 F2 75 ? 83 F9 01 75 ? 49 89 FE 40 F6 C7 01 75 ? 41 0F B6 54 24 08 80 FA 1E 0F 84 ? ? ? ? 80 FA 02 74 ? 80 FA 4F 75 ? 49 8B 34 24 48 8D 05 FF B0 BD FF"
       },
       // Called right after this in win64 "Entity %s(%s) is ambiguously parented to..."
       "CBaseEntity_SetParent": {
@@ -150,7 +149,7 @@
       "CBaseEntity_SetMoveType": {
         "library": "server",
         "win64": "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 56 48 83 EC ? 41 0F B6 F0",
-        "linuxsteamrt64": "55 48 89 E5 41 57 41 56 41 55 41 89 D5 41 54 49 89 FC 53 48 83 EC"
+        "linuxsteamrt64": "55 48 89 E5 41 57 41 56 41 55 41 89 D5 41 54 53 48 89 FB 48 83 EC 48"
       },
       // Can be found in function with "item_assaultsuit", "item_kevlar", "weapon_knife", "weapon_knife_t", "weapon_taser"
       // for ( ; v8; v8 = sub_180843710(v3, 2LL, 0xFFFFFFFFLL) )
@@ -160,42 +159,42 @@
         "win64": "48 85 D2 0F 84 ? ? ? ? 48 89 5C 24 ? 57 48 83 EC ? 48 8B DA 48 8B F9 E8",
         "linuxsteamrt64": "48 85 F6 0F 84 ? ? ? ? 55 48 89 E5 41 54 49 89 FC 53 48 89 F3"
       },
-      // String: "particles/weapons/cs_weapon_fx/weapon_decoy_ground_effect_shot.vpcf". Above "CBufferString::Purge"
+      // String: "Weapon_Taser.Single"
+      // sub_141AAD0(&v67[0].m128i_i64[1], (__int64)v76, v7, "Weapon_Taser.Single", 0LL, 0LL, 0.0, 1.0);
+      //  v8 = sub_149AC70(a1);
+      //  v9 = sub_F2C0F0(v8); <<- go to this, inside at bottom go deeper, you will see "%d" in function.
+      // Look at bottom function with 1LL as first param should be our function.
       "GetCSWeaponDataFromKey": {
         "library": "server",
         "win64": "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 33 ED 48 8B FA 8B F1",
-        "linuxsteamrt64": "55 48 89 E5 41 57 41 56 41 89 FE 41 55 41 54 45"
+        "linuxsteamrt64": "55 31 D2 48 89 E5 53 89 FB"
       }
     },
     "Offsets": {
-      "ServerAddons": {
-        "win64": 328,
-        "linuxsteamrt64": 328
-      },
-      // Game event manager virtual table offset
-      "GameEventManager": {
-        "win64": 93,
-        "linuxsteamrt64": 93
-      },
       // Game entity system virtual table offset
       "GameEntitySystem": {
         "win64": 88,
         "linuxsteamrt64": 80
       },
-      // 5 functions after one with "targethealthfrac"
+      // 2 functions after one with "targethealthfrac"
       "CollisionRulesChanged": {
-        "win64": 174,
-        "linuxsteamrt64": 173
+        "win64": 179,
+        "linuxsteamrt64": 178
       },
       // 9 functions after one with "Physics_SimulateEntity""Server Game"
       "IsEntityPawn": {
-        "win64": 153,
-        "linuxsteamrt64": 152
+        "win64": 161,
+        "linuxsteamrt64": 160
+      },
+      // Right after IsEntityPawn
+      "IsEntityController": {
+        "win64": 162,
+        "linuxsteamrt64": 161
       },
       // String: "%s<%i><%s><%s>"ChangeTeam() CTMDBG..."
       "ControllerChangeTeam": {
-        "win64": 93,
-        "linuxsteamrt64": 92
+        "win64": 100,
+        "linuxsteamrt64": 99
       },
       // Player controller respawn function offset
       "ControllerRespawn": {
@@ -204,18 +203,18 @@
       },
       // teleport_trigger_debug cvar
       "StartTouch": {
-        "win64": 135,
-        "linuxsteamrt64": 134
+        "win64": 143,
+        "linuxsteamrt64": 142
       },
       // Entity touch function offset
       "Touch": {
-        "win64": 136,
-        "linuxsteamrt64": 135
+        "win64": 144,
+        "linuxsteamrt64": 143
       },
       // Entity end touch function offset
       "EndTouch": {
-        "win64": 137,
-        "linuxsteamrt64": 136
+        "win64": 145,
+        "linuxsteamrt64": 144
       }
     },
     "Addresses": {

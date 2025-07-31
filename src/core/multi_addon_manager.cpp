@@ -587,9 +587,8 @@ void MultiAddonManager::OnReplyConnection(INetworkGameServer* server, CServerSid
 	clientInfo.lastActiveTime = Plat_FloatTime();
 
 	// Server copies the CUtlString from CNetworkGameServer to this client.
-	static int offset = g_pGameConfig->GetOffset("ServerAddons");
-	CUtlString* addons = reinterpret_cast<CUtlString*>(reinterpret_cast<uintptr_t>(server) + offset);
-	CUtlString originalAddons = *addons;
+	CUtlString& addon = static_cast<CNetworkGameServer*>(server)->m_szAddons;
+	CUtlString originalAddons = addon;
 
 	// Figure out which addons the client should be loading.
 	std::vector<uint64_t> clientAddons = g_MultiAddonManager.GetClientAddons(steamID64);
@@ -607,12 +606,12 @@ void MultiAddonManager::OnReplyConnection(INetworkGameServer* server, CServerSid
 		clientInfo.currentPendingAddon = clientAddons[0];
 	}
 
-	*addons = utils::vector_to_string<uint64_t>(clientAddons).c_str();
+	addon = utils::vector_to_string<uint64_t>(clientAddons).c_str();
 
-	S2_LOGF(LS_MESSAGE, "{}: Sending addons {} to steamID64 {}\n", __func__, addons->Get(), steamID64);
+	S2_LOGF(LS_MESSAGE, "{}: Sending addons {} to steamID64 {}\n", __func__, addon.Get(), steamID64);
 	g_pfnReplyConnection(server, client);
 
-	*addons = originalAddons;
+	addon = originalAddons;
 }
 
 void* MultiAddonManager::OnSendNetMessage(CServerSideClient* client, CNetMessage* data, NetChannelBufType_t bufType) {
