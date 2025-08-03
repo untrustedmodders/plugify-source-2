@@ -17,8 +17,8 @@ PLUGIFY_WARN_IGNORE(4190)
  * @param mode Whether the hook was in post mode (after processing) or pre mode (before processing).
  * @return An integer indicating the result of the hook operation.
  */
-extern "C" PLUGIN_API int HookEvent(const plg::string& name, EventListenerCallback pCallback, HookMode mode) {
-	return static_cast<int>(g_EventManager.HookEvent(name, pCallback, mode));
+extern "C" PLUGIN_API EventHookError HookEvent(const plg::string& name, EventListenerCallback pCallback, HookMode mode) {
+	return g_EventManager.HookEvent(name, pCallback, mode);
 }
 
 /**
@@ -28,8 +28,8 @@ extern "C" PLUGIN_API int HookEvent(const plg::string& name, EventListenerCallba
  * @param mode Whether the hook was in post mode (after processing) or pre mode (before processing).
  * @return An integer indicating the result of the unhook operation.
  */
-extern "C" PLUGIN_API int UnhookEvent(const plg::string& name, EventListenerCallback pCallback, HookMode mode) {
-	return static_cast<int>(g_EventManager.UnhookEvent(name, pCallback, mode));
+extern "C" PLUGIN_API EventHookError UnhookEvent(const plg::string& name, EventListenerCallback pCallback, HookMode mode) {
+	return g_EventManager.UnhookEvent(name, pCallback, mode);
 }
 
 /**

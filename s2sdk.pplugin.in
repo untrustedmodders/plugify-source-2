@@ -9717,7 +9717,33 @@
       ],
       "retType": {
         "type": "int32",
-        "description": "An integer indicating the result of the hook operation."
+        "description": "An integer indicating the result of the hook operation.",
+        "enum": {
+          "name": "EventHookError",
+          "description": "Enum representing the type of callback.",
+          "values": [
+            {
+              "name": "Okay",
+              "description": "Indicates that the event hook was successfully created.",
+              "value": 0
+            },
+            {
+              "name": "InvalidEvent",
+              "description": "Indicates that the event name provided is invalid or does not exist.",
+              "value": 1
+            },
+            {
+              "name": "NotActive",
+              "description": "Indicates that the event system is not currently active or initialized.",
+              "value": 2
+            },
+            {
+              "name": "InvalidCallback",
+              "description": "Indicates that the callback function provided is invalid or not compatible with the event system.",
+              "value": 3
+            }
+          ]
+        }
       }
     },
     {
@@ -9814,7 +9840,33 @@
       ],
       "retType": {
         "type": "int32",
-        "description": "An integer indicating the result of the unhook operation."
+        "description": "An integer indicating the result of the unhook operation.",
+        "enum": {
+          "name": "EventHookError",
+          "description": "Enum representing the type of callback.",
+          "values": [
+            {
+              "name": "Okay",
+              "description": "Indicates that the event hook was successfully created.",
+              "value": 0
+            },
+            {
+              "name": "InvalidEvent",
+              "description": "Indicates that the event name provided is invalid or does not exist.",
+              "value": 1
+            },
+            {
+              "name": "NotActive",
+              "description": "Indicates that the event system is not currently active or initialized.",
+              "value": 2
+            },
+            {
+              "name": "InvalidCallback",
+              "description": "Indicates that the callback function provided is invalid or not compatible with the event system.",
+              "value": 3
+            }
+          ]
+        }
       }
     },
     {
