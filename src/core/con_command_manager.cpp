@@ -9,22 +9,18 @@
 #include <igameevents.h>
 #undef CreateEvent
 
-ConCommandManager::~ConCommandManager() {
-	if (!g_pCVar) {
-		return;
-	}
-
-	for (const auto& [_, command] : m_cmdLookup) {
-		if (!command->defaultCommand) {
-			g_pCVar->UnregisterConCommandCallbacks(*command->commandRef);
-		}
-	}
-}
-
-void CommandCallback(const CCommandContext&, const CCommand&) {
+static void CommandCallback(const CCommandContext&, const CCommand&) {
 }
 
 ConCommandInfo::ConCommandInfo(plg::string name, plg::string description) : name(std::move(name)), description(std::move(description)) {
+}
+
+ConCommandInfo::~ConCommandInfo() {
+	if (!g_pCVar || defaultCommand) {
+		return;
+	}
+
+	g_pCVar->UnregisterConCommandCallbacks(commandRef);
 }
 
 bool ConCommandManager::AddCommandListener(const plg::string& name, CommandListenerCallback callback, HookMode mode) {
@@ -36,13 +32,13 @@ bool ConCommandManager::AddCommandListener(const plg::string& name, CommandListe
 
 	auto it = m_cmdLookup.find(name);
 	if (it == m_cmdLookup.end()) {
-		ConCommandRef hFoundCommand = g_pCVar->FindConCommand(name.c_str());
-		if (!hFoundCommand.IsValidRef()) {
+		ConCommandRef commandRef = g_pCVar->FindConCommand(name.c_str());
+		if (!commandRef.IsValidRef()) {
 			return false;
 		}
 
 		auto& commandInfo = *m_cmdLookup.emplace(name, std::make_unique<ConCommandInfo>(name)).first->second;
-		commandInfo.command = g_pCVar->GetConCommandData(hFoundCommand);
+		commandInfo.command = g_pCVar->GetConCommandData(commandRef);
 		commandInfo.defaultCommand = true;
 		return commandInfo.callbacks[static_cast<size_t>(mode)].Register(callback);
 	} else {
@@ -84,8 +80,16 @@ bool ConCommandManager::AddValveCommand(const plg::string& name, const plg::stri
 	}
 
 	auto& commandInfo = *m_cmdLookup.emplace(name, std::make_unique<ConCommandInfo>(name, description)).first->second;
-	commandInfo.commandRef = std::make_unique<ConCommand>(commandInfo.name.c_str(), CommandCallback, commandInfo.description.c_str(), flags);
-	commandInfo.command = commandInfo.commandRef->GetRawData();
+
+	ConCommandCreation_t setup;
+	setup.m_pszName = commandInfo.name.c_str();
+	setup.m_pszHelpString = commandInfo.description.c_str();
+	setup.m_nFlags = SanitiseConVarFlags(flags);
+	setup.m_CBInfo = { &CommandCallback };
+	setup.m_CompletionCBInfo = {};
+
+	commandInfo.commandRef = g_pCVar->RegisterConCommand(setup, FCVAR_RELEASE | FCVAR_SERVER_CAN_EXECUTE | FCVAR_GAMEDLL);
+	commandInfo.command = commandInfo.commandRef.GetRawData();
 	commandInfo.adminFlags = adminFlags;
 
 	return true;
@@ -94,8 +98,8 @@ bool ConCommandManager::AddValveCommand(const plg::string& name, const plg::stri
 bool ConCommandManager::RemoveValveCommand(const plg::string& name) {
 	std::lock_guard<std::mutex> lock(m_registerCmdLock);
 
-	auto hFoundCommand = g_pCVar->FindConCommand(name.c_str());
-	if (!hFoundCommand.IsValidRef()) {
+	auto commandRef = g_pCVar->FindConCommand(name.c_str());
+	if (!commandRef.IsValidRef()) {
 		return false;
 	}
 
@@ -104,15 +108,15 @@ bool ConCommandManager::RemoveValveCommand(const plg::string& name) {
 		m_cmdLookup.erase(it);
 		return true;
 	} else {
-		g_pCVar->UnregisterConCommandCallbacks(hFoundCommand);
+		g_pCVar->UnregisterConCommandCallbacks(commandRef);
 	}
 
 	return true;
 }
 
 bool ConCommandManager::IsValidValveCommand(const plg::string& name) const {
-	ConCommandRef hFoundCommand = g_pCVar->FindConCommand(name.c_str());
-	return hFoundCommand.IsValidRef();
+	ConCommandRef commandRef = g_pCVar->FindConCommand(name.c_str());
+	return commandRef.IsValidRef();
 }
 
 static bool CheckCommandAccess(CPlayerSlot slot, uint64 flags) {

@@ -17,13 +17,13 @@ using CommandListenerCallback = ResultType (*)(int caller, int context, const pl
 struct ConCommandInfo {
 	ConCommandInfo() = delete;
 	explicit ConCommandInfo(plg::string name, plg::string description = {});
-	~ConCommandInfo() = default;
+	~ConCommandInfo();
 
 	plg::string name;
 	plg::string description;
 	uint64 adminFlags{};
 	ConCommandData* command{};
-	std::unique_ptr<ConCommand> commandRef;
+	ConCommandRef commandRef{};
 	std::array<ListenerManager<CommandListenerCallback>, 2> callbacks;
 	bool defaultCommand{};
 };
@@ -33,7 +33,7 @@ using CommandInfoPtr = std::unique_ptr<ConCommandInfo>;
 class ConCommandManager {
 public:
 	ConCommandManager() = default;
-	~ConCommandManager();
+	~ConCommandManager() = default;
 
 	bool AddCommandListener(const plg::string& name, CommandListenerCallback callback, HookMode mode);
 	bool RemoveCommandListener(const plg::string& name, CommandListenerCallback callback, HookMode mode);
