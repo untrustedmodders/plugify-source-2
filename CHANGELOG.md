@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.3.8](https://github.com/untrustedmodders/plugify-source-2/compare/v1.3.7...v1.3.8) (2025-08-05)
+
+
+### Bug Fixes
+
+* add enum to hook ([9f538d6](https://github.com/untrustedmodders/plugify-source-2/commit/9f538d6acf6988bffc75a0912de57cff919299bc))
+* rework command registration ([df34623](https://github.com/untrustedmodders/plugify-source-2/commit/df34623a0949dbc7e053178da8451ed67149a9b2))
+* update gamedata.jsonc ([f835411](https://github.com/untrustedmodders/plugify-source-2/commit/f835411425faacfae322c43d9cef4462a104acb5))
+* update sdk ([d07ff2c](https://github.com/untrustedmodders/plugify-source-2/commit/d07ff2cfde8dbdfd427f7ff607dd93d382b84dc4))
+
 ## [1.3.7](https://github.com/untrustedmodders/plugify-source-2/compare/v1.3.6...v1.3.7) (2025-07-31)
 
 
