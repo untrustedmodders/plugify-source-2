@@ -130,7 +130,7 @@
       "CBaseEntity_EmitSoundParams": {
         "library": "server",
         "win64": "48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 4C 89 74 24 ? 55 48 8D 6C 24 ? 48 81 EC ? ? ? ? 45 33 F6 48 C7 45",
-        "linuxsteamrt64": "55 48 89 E5 41 57 41 56 41 55 41 54 49 89 D4 53 48 89 F3 48 83 EC 18 4D 85 C0 0F 95 C2 48 85 F6 40 0F 94 C6 40 08 F2 75 ? 83 F9 01 75 ? 49 89 FE 40 F6 C7 01 75 ? 41 0F B6 54 24 08 80 FA 1E 0F 84 ? ? ? ? 80 FA 02 74 ? 80 FA 4F 75 ? 49 8B 34 24 48 8D 05 A8 B0 BD FF"
+        "linuxsteamrt64": "55 48 89 E5 41 57 41 56 41 55 41 54 49 89 D4 53 48 89 F3 48 83 EC ? 4D 85 C0 0F 95 C2 48 85 F6 40 0F 94 C6 40 08 F2 75 ? 83 F9 ? 75 ? 49 89 FE 40 F6 C7 ? 75 ? 41 0F B6 54 24 ? 80 FA ? 0F 84 ? ? ? ? 80 FA ? 74 ? 80 FA ? 75 ? 49 8B 34 24 48 8D 05 ? ? ? ? 48 85 F6 48 0F 44 F0 48 89 DF 41 FF D6 48 83 C4 ? B8 ? ? ? ? 5B 41 5C 41 5D 41 5E 41 5F 5D C3 0F 1F 40 ? 48 8B 13 4C 8B 74 3A ? 41 0F B6 54 24 ? 80 FA ? 75 ? EB ? 0F 1F 00 48 83 C4 ? 31 C0 5B 41 5C 41 5D 41 5E 41 5F 5D C3 0F 1F 80 ? ? ? ? 45 31 C9 45 31 C0 31 C9 48 C7 45 ? ? ? ? ? 4C 8D 7D ? BA ? ? ? ? 48 B8 ? ? ? ? ? ? ? ? 4C 8D 2D ? ? ? ? 4C 89 FF 48 89 45 ? 4C 89 EE E8 ? ? ? ? 4C 89 FE 4C 89 E7 E8 ? ? ? ? 31 F6 4C 89 FF E8 ? ? ? ? 4C 89 EE E9 ? ? ? ? 66 2E 0F 1F 84 00 ? ? ? ? 49 8B 34 24 E9 ? ? ? ? CC CC CC CC CC CC CC 55 48 89 E5 41 57 41 56 41 55 41 54"
       },
       // Called right after this in win64 "Entity %s(%s) is ambiguously parented to..."
       "CBaseEntity_SetParent": {
