@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.9](https://github.com/untrustedmodders/plugify-source-2/compare/v1.3.8...v1.3.9) (2025-08-06)
+
+
+### Bug Fixes
+
+* update sdk ([48bceb0](https://github.com/untrustedmodders/plugify-source-2/commit/48bceb07843653416eb3c19004938b391fb6260b))
+
 ## [1.3.8](https://github.com/untrustedmodders/plugify-source-2/compare/v1.3.7...v1.3.8) (2025-08-05)
 
 
