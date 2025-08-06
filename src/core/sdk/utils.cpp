@@ -300,15 +300,3 @@ std::vector<std::string_view> utils::split(std::string_view strv, std::string_vi
 
 	return output;
 }
-
-void CRecipientFilter::AddAllPlayers() {
-	m_Recipients.ClearAll();
-
-	for (int i = 0; i < PlayerManager::MaxClients(); ++i) {
-		auto pPlayer = g_PlayerManager.ToPlayer(CPlayerSlot(i));
-		if (!pPlayer)
-			continue;
-
-		AddRecipient(i);
-	}
-}
