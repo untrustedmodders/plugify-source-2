@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.10](https://github.com/untrustedmodders/plugify-source-2/compare/v1.3.9...v1.3.10) (2025-08-15)
+
+
+### Bug Fixes
+
+* replace `LeafCodeInfo_t` with `LoggingRareOptions_t` and precache functionality removed from engine ([4a6aaaa](https://github.com/untrustedmodders/plugify-source-2/commit/4a6aaaa679c9caf57297a6ceaee639f65cfb523b))
+
 ## [1.3.9](https://github.com/untrustedmodders/plugify-source-2/compare/v1.3.8...v1.3.9) (2025-08-06)
 
 
