@@ -30,13 +30,13 @@ public:
 
 	LoggingResponse_t Log(LoggingSeverity_t severity, const char* content) const;
 	LoggingResponse_t Log(LoggingSeverity_t severity, const Color& color, const char* content) const;
-	LoggingResponse_t Log(LoggingSeverity_t severity, const LeafCodeInfo_t& code, const char* content) const;
-	LoggingResponse_t Log(LoggingSeverity_t severity, const LeafCodeInfo_t& code, const Color& color, const char* content) const;
+	LoggingResponse_t Log(LoggingSeverity_t severity, const LoggingRareOptions_t& code, const char* content) const;
+	LoggingResponse_t Log(LoggingSeverity_t severity, const LoggingRareOptions_t& code, const Color& color, const char* content) const;
 
 	LoggingResponse_t LogFormat(LoggingSeverity_t severity, const char* format, ...) const;
 	LoggingResponse_t LogFormat(LoggingSeverity_t severity, const Color& color, const char* format, ...) const;
-	LoggingResponse_t LogFormat(LoggingSeverity_t severity, const LeafCodeInfo_t& code, const char* format, ...) const;
-	LoggingResponse_t LogFormat(LoggingSeverity_t severity, const LeafCodeInfo_t& code, const Color& color, const char* format, ...) const;
+	LoggingResponse_t LogFormat(LoggingSeverity_t severity, const LoggingRareOptions_t& code, const char* format, ...) const;
+	LoggingResponse_t LogFormat(LoggingSeverity_t severity, const LoggingRareOptions_t& code, const Color& color, const char* format, ...) const;
 
 private:
 	LoggingChannelID_t m_channelID;

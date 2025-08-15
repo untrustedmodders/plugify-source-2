@@ -202,27 +202,6 @@ extern "C" PLUGIN_API bool IsSoundPrecached(const plg::string& sound) {
 }
 
 /**
- * @brief Precaches a specified decal.
- *
- * @param decal The name of the decal to be precached.
- * @param preload A boolean indicating if the decal should be preloaded.
- * @return An integer identifier for the decal.
- */
-extern "C" PLUGIN_API int PrecacheDecal(const plg::string& decal, bool preload) {
-	return g_pEngineServer->PrecacheDecal(decal.c_str(), preload);
-}
-
-/**
- * @brief Checks if a specified decal is precached.
- *
- * @param decal The name of the decal to check.
- * @return True if the decal is precached, false otherwise.
- */
-extern "C" PLUGIN_API bool IsDecalPrecached(const plg::string& decal) {
-	return g_pEngineServer->IsDecalPrecached(decal.c_str());
-}
-
-/**
  * @brief Returns a pointer to the Economy Item System.
  *
  * @return A pointer to the Econ Item System.

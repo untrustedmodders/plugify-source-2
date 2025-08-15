@@ -162,8 +162,6 @@ PrecacheModel
 IsModelPrecache
 PrecacheSound
 IsSoundPrecached
-PrecacheDecal
-IsDecalPrecached
 GetEconItemSystem
 IsServerPaused
 QueueTaskForNextFrame

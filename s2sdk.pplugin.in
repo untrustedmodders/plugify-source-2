@@ -7712,48 +7712,6 @@
       }
     },
     {
-      "name": "PrecacheDecal",
-      "group": "Engine",
-      "description": "Precaches a specified decal.",
-      "funcName": "PrecacheDecal",
-      "paramTypes": [
-        {
-          "name": "decal",
-          "type": "string",
-          "ref": false,
-          "description": "The name of the decal to be precached."
-        },
-        {
-          "name": "preload",
-          "type": "bool",
-          "ref": false,
-          "description": "A boolean indicating if the decal should be preloaded."
-        }
-      ],
-      "retType": {
-        "type": "int32",
-        "description": "An integer identifier for the decal."
-      }
-    },
-    {
-      "name": "IsDecalPrecached",
-      "group": "Engine",
-      "description": "Checks if a specified decal is precached.",
-      "funcName": "IsDecalPrecached",
-      "paramTypes": [
-        {
-          "name": "decal",
-          "type": "string",
-          "ref": false,
-          "description": "The name of the decal to check."
-        }
-      ],
-      "retType": {
-        "type": "bool",
-        "description": "True if the decal is precached, false otherwise."
-      }
-    },
-    {
       "name": "GetEconItemSystem",
       "group": "Engine",
       "description": "Returns a pointer to the Economy Item System.",

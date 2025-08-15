@@ -225,7 +225,7 @@ extern "C" PLUGIN_API int LogColored(int channelID, LoggingSeverity_t severity, 
  * @return An integer indicating the result of the logging operation.
  */
 extern "C" PLUGIN_API int LogFull(int channelID, LoggingSeverity_t severity, const plg::string& file, int line, const plg::string& function, const plg::string& message) {
-	LeafCodeInfo_t codeInfo{file.c_str(), line, function.c_str()};
+	LoggingRareOptions_t codeInfo{file.c_str(), line, function.c_str()};
 	return LoggingSystem_LogDirect(channelID, severity, codeInfo, message.c_str());
 }
 
@@ -246,7 +246,7 @@ extern "C" PLUGIN_API int LogFull(int channelID, LoggingSeverity_t severity, con
  * @return An integer indicating the result of the logging operation.
  */
 extern "C" PLUGIN_API int LogFullColored(int channelID, LoggingSeverity_t severity, const plg::string& file, int line, const plg::string& function, int color, const plg::string& message) {
-	LeafCodeInfo_t codeInfo{file.c_str(), line, function.c_str()};
+	LoggingRareOptions_t codeInfo{file.c_str(), line, function.c_str()};
 	return LoggingSystem_LogDirect(channelID, severity, codeInfo, *reinterpret_cast<Color*>(&color), message.c_str());
 }
 

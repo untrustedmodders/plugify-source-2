@@ -72,7 +72,7 @@ LoggingResponse_t Logger::Log(LoggingSeverity_t severity, const Color& color, co
 	return response;
 }
 
-LoggingResponse_t Logger::Log(LoggingSeverity_t severity, const LeafCodeInfo_t& code, const char* message) const {
+LoggingResponse_t Logger::Log(LoggingSeverity_t severity, const LoggingRareOptions_t& code, const char* message) const {
 	LoggingResponse_t response = LR_ABORT;
 
 	if (IsChannelEnabled(severity)) {
@@ -82,7 +82,7 @@ LoggingResponse_t Logger::Log(LoggingSeverity_t severity, const LeafCodeInfo_t& 
 	return response;
 }
 
-LoggingResponse_t Logger::Log(LoggingSeverity_t severity, const LeafCodeInfo_t& code, const Color& color, const char* message) const {
+LoggingResponse_t Logger::Log(LoggingSeverity_t severity, const LoggingRareOptions_t& code, const Color& color, const char* message) const {
 	LoggingResponse_t response = LR_ABORT;
 
 	if (IsChannelEnabled(severity)) {
@@ -128,7 +128,7 @@ LoggingResponse_t Logger::LogFormat(LoggingSeverity_t severity, const Color& col
 	return response;
 }
 
-LoggingResponse_t Logger::LogFormat(LoggingSeverity_t severity, const LeafCodeInfo_t& code, const char* format, ...) const {
+LoggingResponse_t Logger::LogFormat(LoggingSeverity_t severity, const LoggingRareOptions_t& code, const char* format, ...) const {
 	LoggingResponse_t response = LR_ABORT;
 
 	if (IsChannelEnabled(severity)) {
@@ -146,7 +146,7 @@ LoggingResponse_t Logger::LogFormat(LoggingSeverity_t severity, const LeafCodeIn
 	return response;
 }
 
-LoggingResponse_t Logger::LogFormat(LoggingSeverity_t severity, const LeafCodeInfo_t& code, const Color& color, const char* format, ...) const {
+LoggingResponse_t Logger::LogFormat(LoggingSeverity_t severity, const LoggingRareOptions_t& code, const Color& color, const char* format, ...) const {
 	LoggingResponse_t response = LR_ABORT;
 
 	if (IsChannelEnabled(severity)) {
