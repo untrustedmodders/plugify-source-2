@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.4.0](https://github.com/untrustedmodders/plugify-source-2/compare/v1.3.9...v1.4.0) (2025-08-17)
+
+
+### Features
+
+* **Plugify:** update submodule ([312dbb5](https://github.com/untrustedmodders/plugify-source-2/commit/312dbb526f57610e62d1761bfe9fb410a1efea77))
+
+
+### Bug Fixes
+
+* **`CNetworkGameServerBase`:** update hooks lifecycle ([b2a4a9f](https://github.com/untrustedmodders/plugify-source-2/commit/b2a4a9f1ab9564c4fa507dfa137be5be3a681514))
+* replace `LeafCodeInfo_t` with `LoggingRareOptions_t` and precache functionality removed from engine ([4a6aaaa](https://github.com/untrustedmodders/plugify-source-2/commit/4a6aaaa679c9caf57297a6ceaee639f65cfb523b))
+* **Source SDK:** update submodule ([e0a07ee](https://github.com/untrustedmodders/plugify-source-2/commit/e0a07ee38575c99006e2e03e74bb2e78e674029d))
+
 ## [1.3.9](https://github.com/untrustedmodders/plugify-source-2/compare/v1.3.8...v1.3.9) (2025-08-06)
 
 
