@@ -5,6 +5,7 @@
 #include <networksystem/inetworkserializer.h>
 #include <networksystem/inetworkmessages.h>
 #include <igameeventsystem.h>
+#include <platform.h>
 #include <serversideclient.h>
 #include <filesystem.h>
 #include <gameevents.h>
@@ -574,7 +575,7 @@ void MultiAddonManager::OnHostStateRequest(CHostStateMgr* mgrDoNotUse, CHostStat
 	g_pfnSetPendingHostStateRequest(mgrDoNotUse, request);
 }
 
-void MultiAddonManager::OnReplyConnection(INetworkGameServer* server, CServerSideClient* client) {
+void MultiAddonManager::OnReplyConnection(CNetworkGameServerBase* server, CServerSideClient* client) {
 	uint64 steamID64 = client->GetClientSteamID().ConvertToUint64();
 
 	// Clear cache if necessary.
@@ -587,7 +588,7 @@ void MultiAddonManager::OnReplyConnection(INetworkGameServer* server, CServerSid
 	clientInfo.lastActiveTime = Plat_FloatTime();
 
 	// Server copies the CUtlString from CNetworkGameServer to this client.
-	CUtlString& addon = static_cast<CNetworkGameServer*>(server)->m_szAddons;
+	CUtlString& addon = server->m_szAddons;
 	CUtlString originalAddons = addon;
 
 	// Figure out which addons the client should be loading.

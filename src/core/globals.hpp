@@ -24,7 +24,7 @@ class CAppSystemDict;
 class IAppSystem;
 class IGameEventSystem;
 class IGameEventManager2;
-class INetworkGameServer;
+class CNetworkGameServerBase;
 class CGlobalVars;
 class CGameEntitySystem;
 class IGameEventListener2;
@@ -51,7 +51,7 @@ using CBaseGameRulesProxy = CCitadelGameRulesProxy;
 inline IGameEventSystem* g_pGameEventSystem = nullptr;
 inline IGameEventManager2* g_pGameEventManager = nullptr;
 inline CAppSystemDict* g_pCurrentAppSystem = nullptr;
-inline INetworkGameServer* g_pNetworkGameServer = nullptr;
+inline CNetworkGameServerBase* g_pNetworkGameServer = nullptr;
 inline CGlobalVars* gpGlobals = nullptr;
 inline CGameEntitySystem* g_pGameEntitySystem = nullptr;
 inline CBaseGameRules* g_pGameRules = nullptr;
@@ -141,7 +141,7 @@ namespace addresses {
 }// namespace addresses
 
 using HostStateRequestFn = void* (*)(CHostStateMgr *pMgrDoNotUse, CHostStateRequest* pRequest);
-using ReplyConnectionFn = void (*)(INetworkGameServer *server, CServerSideClient* client);
+using ReplyConnectionFn = void (*)(CNetworkGameServerBase *server, CServerSideClient* client);
 using SendNetMessageFn = void* (*)(const CServerSideClientBase*, const CNetMessage* data, uint8 bufType);
 
 inline HostStateRequestFn g_pfnSetPendingHostStateRequest;

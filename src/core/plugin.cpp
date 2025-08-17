@@ -129,19 +129,14 @@ void Source2SDK::OnPluginEnd() {
 }
 
 void Source2SDK::OnServerStartup() {
-	if (g_pNetworkGameServer != nullptr) {
-		g_PH.RemoveHookMemFunc(&INetworkGameServer::ActivateServer, g_pNetworkGameServer);
-		g_PH.RemoveHookMemFunc(&INetworkGameServer::SpawnServer, g_pNetworkGameServer);
-		g_PH.RemoveHookMemFunc(&INetworkGameServer::FinishChangeLevel, g_pNetworkGameServer);
-	}
-
 	g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
 
 	if (g_pNetworkGameServer != nullptr) {
 		gpGlobals = g_pNetworkGameServer->GetGlobals();
-		g_PH.AddHookMemFunc(&INetworkGameServer::ActivateServer, g_pNetworkGameServer, Hook_ActivateServer, poly::CallbackType::Post);
-		g_PH.AddHookMemFunc(&INetworkGameServer::SpawnServer, g_pNetworkGameServer, Hook_SpawnServer, poly::CallbackType::Post);
-		g_PH.AddHookMemFunc(&INetworkGameServer::FinishChangeLevel, g_pNetworkGameServer, Hook_ChangeLevel, poly::CallbackType::Post);
+		g_PH.AddHookMemFunc(&CNetworkGameServerBase::Release, g_pNetworkGameServer, Hook_Release, poly::CallbackType::Pre);
+		g_PH.AddHookMemFunc(&CNetworkGameServerBase::ActivateServer, g_pNetworkGameServer, Hook_ActivateServer, poly::CallbackType::Post);
+		g_PH.AddHookMemFunc(&CNetworkGameServerBase::SpawnServer, g_pNetworkGameServer, Hook_SpawnServer, poly::CallbackType::Post);
+		g_PH.AddHookMemFunc(&CNetworkGameServerBase::FinishChangeLevel, g_pNetworkGameServer, Hook_ChangeLevel, poly::CallbackType::Post);
 	}
 
 	if (g_pGameEntitySystem != nullptr) {
@@ -179,6 +174,22 @@ poly::ReturnAction Source2SDK::Hook_StartupServer(poly::IHook& hook, poly::Param
 	}
 
 	GetOnServerStartupListenerManager().Notify();
+
+	return poly::ReturnAction::Ignored;
+}
+
+poly::ReturnAction Source2SDK::Hook_Release(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
+	auto server = poly::GetArgument<CNetworkGameServerBase*>(params, 1);
+
+	if (server->m_nRefCount > 1)
+		return poly::ReturnAction::Ignored;
+
+	//S2_LOGF(LS_DEBUG, "[Release] {}\n", server->m_nRefCount);
+
+	g_PH.RemoveHookMemFunc(&CNetworkGameServerBase::Release, server);
+	g_PH.RemoveHookMemFunc(&CNetworkGameServerBase::ActivateServer, server);
+	g_PH.RemoveHookMemFunc(&CNetworkGameServerBase::SpawnServer, server);
+	g_PH.RemoveHookMemFunc(&CNetworkGameServerBase::FinishChangeLevel, server);
 
 	return poly::ReturnAction::Ignored;
 }
@@ -396,7 +407,7 @@ poly::ReturnAction Source2SDK::Hook_GameServerSteamAPIActivated(poly::IHook& hoo
 	//g_http = g_steamAPI.SteamHTTP();
 
 	g_PlayerManager.OnSteamAPIActivated();
-	g_MultiAddonManager.OnSteamAPIActivated();
+	// g_MultiAddonManager.OnSteamAPIActivated();
 
 	//GetOnGameServerSteamAPIActivatedListenerManager().Notify();
 	return poly::ReturnAction::Ignored;
@@ -514,7 +525,7 @@ poly::ReturnAction Source2SDK::Hook_HostStateRequest(poly::IHook& hook, poly::Pa
 }
 
 poly::ReturnAction Source2SDK::Hook_ReplyConnection(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type) {
-	auto server = poly::GetArgument<INetworkGameServer*>(params, 0);
+	auto server = poly::GetArgument<CNetworkGameServerBase*>(params, 0);
 	auto client = poly::GetArgument<CServerSideClient*>(params, 1);
 
 	g_MultiAddonManager.OnReplyConnection(server, client);

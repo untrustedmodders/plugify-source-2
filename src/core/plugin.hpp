@@ -15,6 +15,7 @@ public:
 	static void OnServerStartup();
 
 	static poly::ReturnAction Hook_StartupServer(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type);
+	static poly::ReturnAction Hook_Release(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type);
 	static poly::ReturnAction Hook_ActivateServer(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type);
 	static poly::ReturnAction Hook_SpawnServer(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type);
 	static poly::ReturnAction Hook_ChangeLevel(poly::IHook& hook, poly::Params& params, int count, poly::Return& ret, poly::CallbackType type);

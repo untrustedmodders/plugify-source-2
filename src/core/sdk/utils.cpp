@@ -136,7 +136,7 @@ CUtlClientVector* utils::GetClientList() {
 	if (!g_pNetworkGameServer)
 		return nullptr;
 
-	return &(static_cast<CNetworkGameServerBase*>(g_pNetworkGameServer)->m_Clients);
+	return &g_pNetworkGameServer->m_Clients;
 }
 
 CServerSideClientBase* utils::GetClientBySlot(CPlayerSlot slot) {

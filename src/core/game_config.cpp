@@ -1,6 +1,7 @@
 #include "game_config.hpp"
 
 #include <core/sdk/utils.h>
+#include <platform.h>
 #include <plugify-configs/plugify-configs.hpp>
 
 static plugify::LoadFlag defaultFlags = plugify::LoadFlag::Noload | plugify::LoadFlag::Lazy | plugify::LoadFlag::DontResolveDllReferences;

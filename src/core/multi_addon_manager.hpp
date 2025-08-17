@@ -42,7 +42,7 @@ public:
 	void OnPostEvent(INetworkMessageInternal* message, CNetMessage* data, uint64_t* clients);
 	void* OnSendNetMessage(CServerSideClient* client, CNetMessage* data, NetChannelBufType_t bufType);
 	void OnHostStateRequest(CHostStateMgr* pMgrDoNotUse, CHostStateRequest* pRequest);
-	void OnReplyConnection(INetworkGameServer* server, CServerSideClient* client);
+	void OnReplyConnection(CNetworkGameServerBase* server, CServerSideClient* client);
 
 public:
 	std::vector<uint64_t> m_extraAddons;
