@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/untrustedmodders/plugify-source-2/compare/v1.4.0...v1.4.1) (2025-08-18)
+
+
+### Bug Fixes
+
+* **gamedata:** update `CBasePlayerController_SetPawn` signature ([3b83bf5](https://github.com/untrustedmodders/plugify-source-2/commit/3b83bf50f02496ed416b6fc6a5a27bfaf23e39f8))
+
 ## [1.4.0](https://github.com/untrustedmodders/plugify-source-2/compare/v1.3.9...v1.4.0) (2025-08-17)
 
 
