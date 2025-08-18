@@ -98,7 +98,7 @@ class CCSWeaponBaseVData;
 namespace addresses {
 	inline IGameEventListener2* (*GetLegacyGameEventListener)(CPlayerSlot slot);
 
-	inline void (*CBasePlayerController_SetPawn)(CBasePlayerController* controller, CBasePlayerPawn* pawn, bool, bool);
+	inline void (*CBasePlayerController_SetPawn)(CBasePlayerController* controller, CBasePlayerPawn* pawn, bool, bool, bool);
 
 	inline CEntityInstance* (*CGameEntitySystem_FindEntityByClassName)(CEntitySystem* pEntitySystem, CEntityInstance* pStartEntity, const char* szName);
 

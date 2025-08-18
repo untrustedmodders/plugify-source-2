@@ -50,6 +50,6 @@ public:
 	bool IsConnected() { return m_iConnected == PlayerConnectedState::PlayerConnected; }
 
 	void SetPawn(CBasePlayerPawn* pawn) {
-		addresses::CBasePlayerController_SetPawn(this, pawn, true, false);
+		addresses::CBasePlayerController_SetPawn(this, pawn, true, false, false);
 	}
 };

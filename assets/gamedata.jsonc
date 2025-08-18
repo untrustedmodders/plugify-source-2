@@ -37,11 +37,11 @@
         "win64": "48 8B C4 55 41 55 41 56",
         "linuxsteamrt64": "55 48 8D 05 ? ? ? ? 66 0F EF C0 48 89 E5 41 57 41 56 41 55 41 54 49 89 FC"
       },
-      // String: "controller" (2 occurrences) at bottom func with 5 params (v12, a1, 0LL, 0, 0)
+      // String: "controller" (2 occurrences) at bottom func with 6 params (v12, a1, 0LL, 0, 0, 0)
       "CBasePlayerController_SetPawn": {
         "library": "server",
-        "win64": "48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B D9 48 8B FA",
-        "linuxsteamrt64": "55 48 8D 87 ? ? ? ? 48 89 E5 41 57 45 89 C7"
+        "win64": "44 88 4C 24 ? 53 57",
+        "linuxsteamrt64": "55 48 8D 87 ? ? ? ? 48 89 E5 41 57 41 56 41 89 CE 41 55 45 89 CD"
       },
       // String: "CSource2GameClients::StartHLTVServer: game event %s not found.\n"Function right before the first virtual function call
       "LegacyGameEventListener": {
