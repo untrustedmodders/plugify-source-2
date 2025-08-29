@@ -186,10 +186,10 @@ poly::ReturnAction Source2SDK::Hook_Release(poly::IHook& hook, poly::Params& par
 
 	//S2_LOGF(LS_DEBUG, "[Release] {}\n", server->m_nRefCount);
 
-	g_PH.RemoveHookMemFunc(&CNetworkGameServerBase::Release, server);
-	g_PH.RemoveHookMemFunc(&CNetworkGameServerBase::ActivateServer, server);
-	g_PH.RemoveHookMemFunc(&CNetworkGameServerBase::SpawnServer, server);
-	g_PH.RemoveHookMemFunc(&CNetworkGameServerBase::FinishChangeLevel, server);
+	// g_PH.RemoveHookMemFunc(&CNetworkGameServerBase::Release, server);
+	// g_PH.RemoveHookMemFunc(&CNetworkGameServerBase::ActivateServer, server);
+	// g_PH.RemoveHookMemFunc(&CNetworkGameServerBase::SpawnServer, server);
+	// g_PH.RemoveHookMemFunc(&CNetworkGameServerBase::FinishChangeLevel, server);
 
 	return poly::ReturnAction::Ignored;
 }
