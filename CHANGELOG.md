@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2](https://github.com/untrustedmodders/plugify-source-2/compare/v1.4.1...v1.4.2) (2025-08-29)
+
+
+### Bug Fixes
+
+* **`CNetworkGameServer`:** comment unhooks ([20f955d](https://github.com/untrustedmodders/plugify-source-2/commit/20f955d914eea805e0f616d507996759a34f5535))
+
 ## [1.4.1](https://github.com/untrustedmodders/plugify-source-2/compare/v1.4.0...v1.4.1) (2025-08-18)
 
 
