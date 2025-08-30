@@ -28,8 +28,25 @@
 
 extern CGlobalVars* gpGlobals;
 
-using SchemaKeyValueMap = std::unordered_map<plg::string, SchemaKey, utils::string_hash, std::equal_to<>>;
-using SchemaTableMap = std::unordered_map<plg::string, SchemaKeyValueMap, utils::string_hash, std::equal_to<>>;
+using SchemaKeyValueMap = std::unordered_map<uint32_t, SchemaKey>;
+using SchemaTableMap = std::unordered_map<uint32_t, SchemaKeyValueMap>;
+static constexpr uint32_t g_ChainKey = hash_32_fnv1a_const("__m_pChainEntity");
+
+void NetworkVarStateChanged(uintptr_t pNetworkVar, uint32_t nOffset, uint32 nNetworkStateChangedOffset) {
+	NetworkStateChangedData data(nOffset);
+	CALL_VIRTUAL(void, nNetworkStateChangedOffset, (void*)pNetworkVar, &data);
+}
+
+void EntityNetworkStateChanged(uintptr_t pEntity, uint nOffset) {
+	NetworkStateChangedData data(nOffset);
+	reinterpret_cast<CEntityInstance*>(pEntity)->NetworkStateChanged(NetworkStateChangedData(nOffset));
+}
+
+void ChainNetworkStateChanged(uintptr_t pNetworkVarChainer, uint nLocalOffset) {
+	if (CEntityInstance* pEntity = reinterpret_cast<CNetworkVarChainer*>(pNetworkVarChainer)->GetObject()) {
+		pEntity->NetworkStateChanged(NetworkStateChangedData(nLocalOffset, -1, reinterpret_cast<CNetworkVarChainer*>(pNetworkVarChainer)->m_PathIndex));
+	}
+}
 
 namespace {
 	bool IsFieldNetworked(const SchemaClassFieldData_t& field) {
@@ -42,14 +59,14 @@ namespace {
 		return false;
 	}
 
-	bool InitSchemaFieldsForClass(SchemaTableMap& tableMap, std::string_view className) {
+	bool InitSchemaFieldsForClass(SchemaTableMap& tableMap, const char* className, uint32_t classKey) {
 		CSchemaSystemTypeScope* pType = g_pSchemaSystem->FindTypeScopeForModule(S2SDK_LIBRARY_PREFIX "server" S2SDK_LIBRARY_SUFFIX);
 		if (!pType)
 			return false;
 
-		SchemaMetaInfoHandle_t<CSchemaClassInfo> pClassInfo = pType->FindDeclaredClass(className.data());
+		SchemaMetaInfoHandle_t<CSchemaClassInfo> pClassInfo = pType->FindDeclaredClass(className);
 		if (!pClassInfo) {
-			tableMap.emplace(className, SchemaKeyValueMap());
+			tableMap.emplace(classKey, SchemaKeyValueMap());
 
 			S2_LOGF(LS_ERROR, "InitSchemaFieldsForClass(): '{}' was not found!\n", className);
 			return false;
@@ -67,12 +84,12 @@ namespace {
 			int size = 0;
 			uint8 alignment = 0;
 			field.m_pType->GetSizeAndAlignment(size, alignment);
-			keyValueMap.emplace(field.m_pszName, SchemaKey{field.m_nSingleInheritanceOffset, IsFieldNetworked(field), size, field.m_pType});
+			keyValueMap.emplace(classKey, SchemaKey{field.m_nSingleInheritanceOffset, IsFieldNetworked(field), size, field.m_pType});
 
 			//S2_LOGF(LS_DEBUG, "{}::{} found at -> 0x{:x} - {}\reworn", className, field.m_pszName, field.m_nSingleInheritanceOffset, &field);
 		}
 
-		tableMap.emplace(className, std::move(keyValueMap));
+		tableMap.emplace(classKey, std::move(keyValueMap));
 
 		return true;
 	}
@@ -80,25 +97,28 @@ namespace {
 }// namespace
 
 namespace schema {
-	int32_t FindChainOffset(std::string_view className) {
-		const auto schemaKey = GetOffset(className, "__m_pChainEntity");
-		return schemaKey.offset;
+	int32_t FindChainOffset(const char* className, uint32_t classNameHash) {
+		return GetOffset(className, classNameHash, "__m_pChainEntity", g_ChainKey).offset;
 	}
 
-	SchemaKey GetOffset(std::string_view className, std::string_view memberName) {
+	SchemaKey GetOffset(const char* className, uint32_t classKey, const char* memberName, uint32_t memberKey) {
 		static SchemaTableMap schemaTableMap;
 
-		auto tableIt = schemaTableMap.find(className);
+		auto tableIt = schemaTableMap.find(classKey);
 		if (tableIt == schemaTableMap.end()) {
-			if (InitSchemaFieldsForClass(schemaTableMap, className))
-				return GetOffset(className, memberName);
+			if (InitSchemaFieldsForClass(schemaTableMap, className, classKey))
+				return GetOffset(className, classKey, memberName, memberKey);
 			return {};
 		}
 
 		const auto& tableMap = std::get<SchemaKeyValueMap>(*tableIt);
-		auto memberIt = tableMap.find(memberName);
+		auto memberIt = tableMap.find(classKey);
 		if (memberIt != tableMap.end()) {
 			return std::get<SchemaKey>(*memberIt);
+		} else {
+			if (memberKey != g_ChainKey) {
+				S2_LOGF(LS_ERROR, "schema::GetOffset(): '{}' was not found in '{}'!\n", memberName, className);
+			}
 		}
 
 		return {};

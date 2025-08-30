@@ -83,8 +83,8 @@ namespace schema {
 		Class
 	};
 
-	int32_t FindChainOffset(std::string_view className);
-	SchemaKey GetOffset(std::string_view className, std::string_view memberName);
+	int32_t FindChainOffset(const char* className, uint32_t classNameHash);
+	SchemaKey GetOffset(const char* className, uint32_t classKey, const char* memberName, uint32_t memberKey);
 	void NetworkStateChanged(intptr_t chainEntity, uint localOffset, int arrayIndex = 0xFFFFFFFF);
 
 	ElementType GetElementType(CSchemaType* type);
@@ -95,69 +95,130 @@ namespace schema {
 
 }// namespace schema
 
+void EntityNetworkStateChanged(uintptr_t pEntity, uint nOffset);
+void ChainNetworkStateChanged(uintptr_t pNetworkVarChainer, uint nOffset);
+void NetworkVarStateChanged(uintptr_t pNetworkVar, uint32_t nOffset, uint32 nNetworkStateChangedOffset);
+
 class CBaseEntity;
 
-#define SCHEMA_FIELD_OFFSET(type, varName, extraOffset)                                                                       \
-	PLUGIFY_NO_UNIQUE_ADDRESS class varName##_prop {                                                                          \
-		const type* Get() const {                                                                                             \
-			static const auto schemaKey = schema::GetOffset(ThisClassName, #varName);                                         \
-			static const size_t offset = offsetof(ThisClass, varName);                                                        \
-			auto* pThisClass = reinterpret_cast<const ThisClass*>(reinterpret_cast<const byte*>(this) - offset);              \
-                                                                                                                              \
-			return reinterpret_cast<const type*>(reinterpret_cast<intptr_t>(pThisClass) + schemaKey.offset + extraOffset);    \
-		}                                                                                                                     \
-		void Set(type val) {                                                                                                  \
-			static const auto schemaKey = schema::GetOffset(ThisClassName, #varName);                                         \
-			static const size_t offset = offsetof(ThisClass, varName);                                                        \
-			auto* pThisClass = reinterpret_cast<ThisClass*>(reinterpret_cast<byte*>(this) - offset);                          \
-                                                                                                                              \
-			if (schemaKey.networked) {                                                                                        \
-				static const auto chainOffset = schema::FindChainOffset(ThisClassName);                                       \
-				if (chainOffset != 0) {                                                                                       \
-					S2_LOGF(LS_DEBUG, "Found chain offset {} for {}::{}\n", chainOffset, ThisClassName, #varName);            \
-					schema::NetworkStateChanged(                                                                              \
-							reinterpret_cast<intptr_t>(pThisClass) + chainOffset, schemaKey.offset + extraOffset);            \
-				} else {                                                                                                      \
-					/* WIP: Works fine for most props, but inlined classes in the middle of a class will                      \
-						need to have their this pointer corrected by the offset .*/                                           \
-					S2_LOGF(LS_DEBUG, "Attempting to call SetStateChanged on on {}::{}\n", ThisClassName, #varName);          \
-					if constexpr (!IsStruct)                                                                                  \
-						reinterpret_cast<CEntityInstance*>(pThisClass)->NetworkStateChanged(schemaKey.offset + extraOffset);  \
-					else if constexpr (IsPlatformPosix()) /* This is currently broken on windows */                           \
-						CALL_VIRTUAL(void, 1, pThisClass, schemaKey.offset + extraOffset, 0xFFFFFFFF, 0xFFFF);                \
-				}                                                                                                             \
-			}                                                                                                                 \
-			*reinterpret_cast<type*>(reinterpret_cast<intptr_t>(pThisClass) + schemaKey.offset + extraOffset) = val;          \
-		}                                                                                                                     \
-	public:                                                                                                                   \
-		operator bool() const { return Get(); }                                                                               \
-		operator const type&() const { return *Get(); }                                                                       \
-		operator type&() { return *const_cast<type*>(Get()); }                                                                \
-		const type* operator->() const { return Get(); }                                                                      \
-		type* operator->() { return const_cast<type*>(Get()); }                                                               \
-		const type& operator*() const { return *Get(); }                                                                      \
-		type& operator*() { return *const_cast<type*>(Get()); }                                                               \
-		varName##_prop& operator=(type val) {                                                                                 \
-			Set(val);                                                                                                         \
-			return *this;                                                                                                     \
-		}                                                                                                                     \
+constexpr uint32_t val_32_const = 0x811c9dc5;
+constexpr uint32_t prime_32_const = 0x1000193;
+constexpr uint64_t val_64_const = 0xcbf29ce484222325;
+constexpr uint64_t prime_64_const = 0x100000001b3;
+
+inline constexpr uint32_t hash_32_fnv1a_const(const char* const str, const uint32_t value = val_32_const) noexcept
+{
+	return (str[0] == '\0') ? value : hash_32_fnv1a_const(&str[1], (value ^ uint32_t(str[0])) * prime_32_const);
+}
+
+inline constexpr uint64_t hash_64_fnv1a_const(const char* const str, const uint64_t value = val_64_const) noexcept
+{
+	return (str[0] == '\0') ? value : hash_64_fnv1a_const(&str[1], (value ^ uint64_t(str[0])) * prime_64_const);
+}
+
+#define SCHEMA_FIELD_OFFSET(type, varName, extra_offset)                                                                     \
+	class varName##_prop                                                                                                     \
+	{                                                                                                                        \
+		const type* Get() const                                                                                              \
+		{                                                                                                                    \
+			static const auto m_key = schema::GetOffset(m_className, m_classNameHash, #varName, m_varNameHash);              \
+			static const auto m_offset = offsetof(ThisClass, varName);														 \
+																															 \
+			uintptr_t pThisClass = ((uintptr_t)this - m_offset);                                                             \
+                                                                                                                             \
+			return reinterpret_cast<const type*>(pThisClass + m_key.offset + extra_offset);                                  \
+		}                                                                                                                    \
+		void Set(type& val)                                                                                                  \
+		{                                                                                                                    \
+			static const auto m_key = schema::GetOffset(m_className, m_classNameHash, #varName, m_varNameHash);              \
+			static const auto m_chain = schema::FindChainOffset(m_className, m_classNameHash);                               \
+			static const auto m_offset = offsetof(ThisClass, varName);														 \
+																															 \
+			uintptr_t pThisClass = ((uintptr_t)this - m_offset);                                                             \
+                                                                                                                             \
+			NetworkStateChanged();                                                                                           \
+			*reinterpret_cast<type*>(pThisClass + m_key.offset + extra_offset) = val;                                        \
+		}                                                                                                                    \
+		void NetworkStateChanged() const                                                                                     \
+		{                                                                                                                    \
+			static const auto m_key = schema::GetOffset(m_className, m_classNameHash, #varName, m_varNameHash);				 \
+			static const auto m_chain = schema::FindChainOffset(m_className, m_classNameHash);								 \
+			static const auto m_offset = offsetof(ThisClass, varName);														 \
+																															 \
+			uintptr_t pThisClass = ((uintptr_t)this - m_offset);                                                             \
+                                                                                                                             \
+			if (m_chain != 0 && m_key.networked)                                                                             \
+			{                                                                                                                \
+				::ChainNetworkStateChanged(pThisClass + m_chain, m_key.offset + extra_offset);								 \
+			}                                                                                                                \
+			else if (m_key.networked)                                                                                        \
+			{                                                                                                                \
+				if (!m_networkStateChangedOffset)                                                                            \
+					::EntityNetworkStateChanged(pThisClass, m_key.offset + extra_offset);									 \
+				else                                                                                                         \
+					::NetworkVarStateChanged(pThisClass, m_key.offset + extra_offset, m_networkStateChangedOffset);			 \
+			}                                                                                                                \
+		}                                                                                                                    \
+	public:                                                                                                                  \
+		operator bool() const { return Get(); }                                                                              \
+		operator const type&() const { return *Get(); }                                                                      \
+		operator type&() { return *const_cast<type*>(Get()); }                                                               \
+		const type* operator->() const { return Get(); }                                                                     \
+		type* operator->() { return const_cast<type*>(Get()); }                                                              \
+		const type& operator*() const { return *Get(); }                                                                     \
+		type& operator*() { return *const_cast<type*>(Get()); }                                                              \
+		varName##_prop& operator=(type val) {                                                                                \
+			Set(val);                                                                                                        \
+			return *this;                                                                                                    \
+		}                                                                                                                    \
+	private:                                                                                                                 \
+		/*Prevent accidentally copying this wrapper class instead of the underlying field*/                                  \
+		varName##_prop(const varName##_prop&) = delete;                                                                      \
+		static constexpr auto m_varNameHash = hash_32_fnv1a_const(#varName);                                                 \
 	} varName;
 
-#define SCHEMA_FIELD_POINTER_OFFSET(type, varName, extraOffset)                                                               \
-	PLUGIFY_NO_UNIQUE_ADDRESS class varName##_prop {                                                                          \
-		const type* Get() const {                                                                                             \
-			static const auto schemaKey = schema::GetOffset(ThisClassName, #varName);                                         \
-			static const size_t offset = offsetof(ThisClass, varName);                                                        \
-			auto* pThisClass = reinterpret_cast<const ThisClass*>(reinterpret_cast<const byte*>(this) - offset);              \
-                                                                                                                              \
-			return reinterpret_cast<const type*>(reinterpret_cast<intptr_t>(pThisClass) + schemaKey.offset + extraOffset);    \
-		}                                                                                                                     \
-	public:                                                                                                                   \
-		operator bool() const { return Get(); }                                                                               \
-		operator const type*() const { return Get(); }                                                                        \
-		operator type*() { return const_cast<type*>(Get()); }                                                                 \
-		const type* operator->() const { return Get(); }                                                                      \
-		type* operator->() { return const_cast<type*>(Get()); }                                                               \
+#define SCHEMA_FIELD_POINTER_OFFSET(type, varName, extra_offset)                                                             \
+	class varName##_prop                                                                                                     \
+	{                                                                                                                        \
+		const type* Get() const                                                                                              \
+		{                                                                                                                    \
+			static const auto m_key = schema::GetOffset(m_className, m_classNameHash, #varName, m_varNameHash);				 \
+			static const auto m_offset = offsetof(ThisClass, varName);														 \
+																															 \
+			uintptr_t pThisClass = ((uintptr_t)this - m_offset);                                                             \
+                                                                                                                             \
+			return reinterpret_cast<const type*>(pThisClass + m_key.offset + extra_offset);									 \
+		}                                                                                                                    \
+		void NetworkStateChanged() const /*Call this after editing the field*/                                               \
+		{                                                                                                                    \
+			static const auto m_key = schema::GetOffset(m_className, m_classNameHash, #varName, m_varNameHash);				 \
+			static const auto m_chain = schema::FindChainOffset(m_className, m_classNameHash);								 \
+			static const auto m_offset = offsetof(ThisClass, varName);														 \
+																															 \
+			uintptr_t pThisClass = ((uintptr_t)this - m_offset);                                                             \
+                                                                                                                             \
+			if (m_chain != 0 && m_key.networked)                                                                             \
+			{                                                                                                                \
+				::ChainNetworkStateChanged(pThisClass + m_chain, m_key.offset + extra_offset);								 \
+			}                                                                                                                \
+			else if (m_key.networked)                                                                                        \
+			{                                                                                                                \
+				if (!m_networkStateChangedOffset)                                                                            \
+					::EntityNetworkStateChanged(pThisClass, m_key.offset + extra_offset);									 \
+				else                                                                                                         \
+					::NetworkVarStateChanged(pThisClass, m_key.offset + extra_offset, m_networkStateChangedOffset);			 \
+			}                                                                                                                \
+		}                                                                                                                    \
+	public:                                                                                                                  \
+		operator bool() const { return Get(); }                                                                              \
+		operator const type*() const { return Get(); }                                                                       \
+		operator type*() { return const_cast<type*>(Get()); }                                                                \
+		const type* operator->() const { return Get(); }                                                                     \
+		type* operator->() { return const_cast<type*>(Get()); }                                                              \
+	private:                                                                                                                 \
+		/*Prevent accidentally copying this wrapper class instead of the underlying field*/                                  \
+		varName##_prop(const varName##_prop&) = delete;                                                                      \
+		static constexpr auto m_varNameHash = hash_32_fnv1a_const(#varName);                                                 \
 	} varName;
 
 // Use this when you want the member's value itself
@@ -168,13 +229,18 @@ class CBaseEntity;
 #define SCHEMA_FIELD_POINTER(type, varName) \
 	SCHEMA_FIELD_POINTER_OFFSET(type, varName, 0)
 
-#define DECLARE_SCHEMA_CLASS_BASE(className, isStruct)            \
-	typedef className ThisClass;                                  \
-	static constexpr std::string_view ThisClassName = #className; \
-	static constexpr bool IsStruct = isStruct;
+// If the class needs a specific offset for its NetworkStateChanged (like CEconItemView), use this and provide the offset
+#define DECLARE_SCHEMA_CLASS_BASE(ClassName, offset)								\
+	private:																		\
+		typedef ClassName ThisClass;												\
+		static constexpr const char* m_className = #ClassName;						\
+		static constexpr uint32_t m_classNameHash = hash_32_fnv1a_const(#ClassName);\
+		static constexpr int m_networkStateChangedOffset = offset;					\
+	public:
 
-#define DECLARE_SCHEMA_CLASS(className) DECLARE_SCHEMA_CLASS_BASE(className, false)
+#define DECLARE_SCHEMA_CLASS(className) DECLARE_SCHEMA_CLASS_BASE(className, 0)
 
-// Use this for classes that can be wholly included within other classes (like CCollisionProperty within CBaseModelEntity)
-#define DECLARE_SCHEMA_CLASS_INLINE(className) \
-	DECLARE_SCHEMA_CLASS_BASE(className, true)
+// Use this for non-entity classes such as CCollisionProperty or CGlowProperty
+// The only difference is that their NetworkStateChanged function is index 1 on their vtable rather than being CEntityInstance::NetworkStateChanged
+// Though some classes like CGameRules will instead use their CNetworkVarChainer as a link back to the parent entity
+#define DECLARE_SCHEMA_CLASS_INLINE(className) DECLARE_SCHEMA_CLASS_BASE(className, 1)

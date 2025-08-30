@@ -62,11 +62,6 @@ inline CSteamGameServerAPIContext g_SteamAPI = {};
 class CoreConfig;
 class GameConfig;
 
-namespace SourceMM {
-	class IMetamodListener;
-}
-
-extern SourceMM::IMetamodListener* g_pMetamodListener;
 extern std::unique_ptr<CoreConfig> g_pCoreConfig;
 extern std::unique_ptr<GameConfig> g_pGameConfig;
 

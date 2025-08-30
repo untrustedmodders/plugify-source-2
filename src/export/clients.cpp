@@ -565,7 +565,7 @@ extern "C" PLUGIN_API int GetClientActiveWeapon(int playerSlot) {
 		return INVALID_EHANDLE_INDEX;
 	}
 
-	auto pWeaponServices = pController->GetCurrentPawn()->m_pWeaponServices;
+	CCSPlayer_WeaponServices* pWeaponServices = pController->GetCurrentPawn()->m_pWeaponServices;
 	if (!pWeaponServices) {
 		return INVALID_EHANDLE_INDEX;
 	}
@@ -586,7 +586,7 @@ extern "C" PLUGIN_API plg::vector<int> GetClientWeapons(int playerSlot) {
 		return {};
 	}
 
-	auto pWeaponServices = pController->GetCurrentPawn()->m_pWeaponServices;
+	CCSPlayer_WeaponServices* pWeaponServices = pController->GetCurrentPawn()->m_pWeaponServices;
 	if (!pWeaponServices) {
 		return {};
 	}
@@ -616,7 +616,7 @@ extern "C" PLUGIN_API void StripWeapons(int playerSlot, bool removeSuit) {
 		return;
 	}
 
-	auto pItemServices = pController->GetCurrentPawn()->m_pItemServices;
+	CCSPlayer_ItemServices* pItemServices = pController->GetCurrentPawn()->m_pItemServices;
 	if (!pItemServices) {
 		return;
 	}
@@ -645,7 +645,7 @@ extern "C" PLUGIN_API void DropWeapon(int playerSlot, int weaponHandle, const pl
 		return;
 	}
 
-	auto pWeaponServices = pController->GetCurrentPawn()->m_pWeaponServices;
+	CCSPlayer_WeaponServices* pWeaponServices = pController->GetCurrentPawn()->m_pWeaponServices;
 	if (!pWeaponServices) {
 		return;
 	}
@@ -672,7 +672,7 @@ extern "C" PLUGIN_API void BumpWeapon(int playerSlot, int weaponHandle) {
 		return;
 	}
 
-	auto pWeaponServices = pController->GetCurrentPawn()->m_pWeaponServices;
+	CCSPlayer_WeaponServices* pWeaponServices = pController->GetCurrentPawn()->m_pWeaponServices;
 	if (!pWeaponServices) {
 		return;
 	}
@@ -699,7 +699,7 @@ extern "C" PLUGIN_API void SwitchWeapon(int playerSlot, int weaponHandle) {
 		return;
 	}
 
-	auto pWeaponServices = pController->GetCurrentPawn()->m_pWeaponServices;
+	CCSPlayer_WeaponServices* pWeaponServices = pController->GetCurrentPawn()->m_pWeaponServices;
 	if (!pWeaponServices) {
 		return;
 	}
@@ -726,7 +726,7 @@ extern "C" PLUGIN_API void RemoveWeapon(int playerSlot, int weaponHandle) {
 		return;
 	}
 
-	auto pWeaponServices = pController->GetCurrentPawn()->m_pWeaponServices;
+	CCSPlayer_WeaponServices* pWeaponServices = pController->GetCurrentPawn()->m_pWeaponServices;
 	if (!pWeaponServices) {
 		return;
 	}
@@ -748,7 +748,7 @@ extern "C" PLUGIN_API int GiveNamedItem(int playerSlot, const plg::string& itemN
 		return INVALID_EHANDLE_INDEX;
 	}
 
-	auto pItemServices = pController->GetCurrentPawn()->m_pItemServices;
+	CCSPlayer_ItemServices* pItemServices = pController->GetCurrentPawn()->m_pItemServices;
 	if (!pItemServices) {
 		return INVALID_EHANDLE_INDEX;
 	}
@@ -781,7 +781,7 @@ extern "C" PLUGIN_API uint64_t GetClientButtons(int playerSlot, int buttonIndex)
 		return 0;
 	}
 
-	auto pMovementServices = pController->GetCurrentPawn()->m_pMovementServices;
+	CPlayer_MovementServices* pMovementServices = pController->GetCurrentPawn()->m_pMovementServices;
 	if (!pMovementServices) {
 		return 0;
 	}
@@ -802,7 +802,7 @@ extern "C" PLUGIN_API int GetClientMoney(int playerSlot) {
 		return 0;
 	}
 
-	auto pInGameMoneyServices = pController->m_pInGameMoneyServices;
+	CCSPlayerController_InGameMoneyServices* pInGameMoneyServices = pController->m_pInGameMoneyServices;
 	if (!pInGameMoneyServices) {
 		return 0;
 	}
@@ -823,7 +823,7 @@ extern "C" PLUGIN_API void SetClientMoney(int playerSlot, int money) {
 		return;
 	}
 
-	auto pInGameMoneyServices = pController->m_pInGameMoneyServices;
+	CCSPlayerController_InGameMoneyServices* pInGameMoneyServices = pController->m_pInGameMoneyServices;
 	if (!pInGameMoneyServices) {
 		return;
 	}
@@ -844,7 +844,7 @@ extern "C" PLUGIN_API int GetClientKills(int playerSlot) {
 		return 0;
 	}
 
-	auto pActionTrackingServices = pController->m_pActionTrackingServices;
+	CCSPlayerController_ActionTrackingServices* pActionTrackingServices = pController->m_pActionTrackingServices;
 	if (!pActionTrackingServices) {
 		return 0;
 	}
@@ -865,7 +865,7 @@ extern "C" PLUGIN_API void SetClientKills(int playerSlot, int kills) {
 		return;
 	}
 
-	auto pActionTrackingServices = pController->m_pActionTrackingServices;
+	CCSPlayerController_ActionTrackingServices* pActionTrackingServices = pController->m_pActionTrackingServices;
 	if (!pActionTrackingServices) {
 		return;
 	}
@@ -886,7 +886,7 @@ extern "C" PLUGIN_API int GetClientDeaths(int playerSlot) {
 		return 0;
 	}
 
-	auto pActionTrackingServices = pController->m_pActionTrackingServices;
+	CCSPlayerController_ActionTrackingServices* pActionTrackingServices = pController->m_pActionTrackingServices;
 	if (!pActionTrackingServices) {
 		return 0;
 	}
@@ -907,7 +907,7 @@ extern "C" PLUGIN_API void SetClientDeaths(int playerSlot, int deaths) {
 		return;
 	}
 
-	auto pActionTrackingServices = pController->m_pActionTrackingServices;
+	CCSPlayerController_ActionTrackingServices* pActionTrackingServices = pController->m_pActionTrackingServices;
 	if (!pActionTrackingServices) {
 		return;
 	}
@@ -928,7 +928,7 @@ extern "C" PLUGIN_API int GetClientAssists(int playerSlot) {
 		return 0;
 	}
 
-	auto pActionTrackingServices = pController->m_pActionTrackingServices;
+	CCSPlayerController_ActionTrackingServices* pActionTrackingServices = pController->m_pActionTrackingServices;
 	if (!pActionTrackingServices) {
 		return 0;
 	}
@@ -949,7 +949,7 @@ extern "C" PLUGIN_API void SetClientAssists(int playerSlot, int assists) {
 		return;
 	}
 
-	auto pActionTrackingServices = pController->m_pActionTrackingServices;
+	CCSPlayerController_ActionTrackingServices* pActionTrackingServices = pController->m_pActionTrackingServices;
 	if (!pActionTrackingServices) {
 		return;
 	}
@@ -970,7 +970,7 @@ extern "C" PLUGIN_API int GetClientDamage(int playerSlot) {
 		return 0;
 	}
 
-	auto pActionTrackingServices = pController->m_pActionTrackingServices;
+	CCSPlayerController_ActionTrackingServices* pActionTrackingServices = pController->m_pActionTrackingServices;
 	if (!pActionTrackingServices) {
 		return 0;
 	}
@@ -991,7 +991,7 @@ extern "C" PLUGIN_API void SetClientDamage(int playerSlot, int damage) {
 		return;
 	}
 
-	auto pActionTrackingServices = pController->m_pActionTrackingServices;
+	CCSPlayerController_ActionTrackingServices* pActionTrackingServices = pController->m_pActionTrackingServices;
 	if (!pActionTrackingServices) {
 		return;
 	}

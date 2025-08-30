@@ -25,7 +25,7 @@ PLUGIFY_WARN_IGNORE(4190)
  * @return The offset of the member in the class.
  */
 extern "C" PLUGIN_API int32 GetSchemaOffset(const plg::string& className, const plg::string& memberName) {
-	const auto schemaKey = schema::GetOffset(className, memberName);
+	const auto schemaKey = schema::GetOffset(className.c_str(), hash_32_fnv1a_const(className.c_str()), memberName.c_str(), hash_32_fnv1a_const(memberName.c_str()));
 	return schemaKey.offset;
 }
 
@@ -38,7 +38,7 @@ extern "C" PLUGIN_API int32 GetSchemaOffset(const plg::string& className, const 
  * @return The offset of the chain entity in the class.
  */
 extern "C" PLUGIN_API int32 GetSchemaChainOffset(const plg::string& className) {
-	return schema::FindChainOffset(className);
+	return schema::FindChainOffset(className.c_str(), hash_32_fnv1a_const(className.c_str()));
 }
 
 /**
@@ -51,7 +51,7 @@ extern "C" PLUGIN_API int32 GetSchemaChainOffset(const plg::string& className) {
  * @return True if the member is networked, false otherwise.
  */
 extern "C" PLUGIN_API bool IsSchemaFieldNetworked(const plg::string& className, const plg::string& memberName) {
-	const auto schemaKey = schema::GetOffset(className, memberName);
+	const auto schemaKey = schema::GetOffset(className.c_str(), hash_32_fnv1a_const(className.c_str()), memberName.c_str(), hash_32_fnv1a_const(memberName.c_str()));
 	return schemaKey.networked;
 }
 
@@ -509,7 +509,7 @@ extern "C" PLUGIN_API void ChangeEntityState(int entityHandle, int offset, int c
  * @return Size of array (in elements) or 0 if schema is not an array.
  */
 extern "C" PLUGIN_API int GetEntSchemaArraySize2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName) {
-	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
+	const auto [offset, networked, size, type] = schema::GetOffset(className.c_str(), hash_32_fnv1a_const(className.c_str()), memberName.c_str(), hash_32_fnv1a_const(memberName.c_str()));
 	if (offset == 0) {
 		S2_LOGF(LS_WARNING, "Cannot find offset for '{}::{}' with entity pointer: {}\n", className, memberName, (void*) entity);
 		return {};
@@ -540,7 +540,7 @@ extern "C" PLUGIN_API int GetEntSchemaArraySize2(CEntityInstance* entity, const 
  * @return An integer value at the given schema offset.
  */
 extern "C" PLUGIN_API int64_t GetEntSchema2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int element) {
-	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
+	const auto [offset, networked, size, type] = schema::GetOffset(className.c_str(), hash_32_fnv1a_const(className.c_str()), memberName.c_str(), hash_32_fnv1a_const(memberName.c_str()));
 	if (offset == 0) {
 		S2_LOGF(LS_WARNING, "Cannot find offset for '{}::{}' with entity pointer: {}\n", className, memberName, (void*) entity);
 		return {};
@@ -617,7 +617,7 @@ extern "C" PLUGIN_API void SetEntSchema2(CEntityInstance* entity, const plg::str
 		return;
 	}
 
-	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
+	const auto [offset, networked, size, type] = schema::GetOffset(className.c_str(), hash_32_fnv1a_const(className.c_str()), memberName.c_str(), hash_32_fnv1a_const(memberName.c_str()));
 	if (offset == 0) {
 		S2_LOGF(LS_WARNING, "Cannot find offset for '{}::{}' with entity pointer: {}\n", className, memberName, (void*) entity);
 		return;
@@ -703,7 +703,7 @@ extern "C" PLUGIN_API void SetEntSchema2(CEntityInstance* entity, const plg::str
  * @return A float value at the given schema offset.
  */
 extern "C" PLUGIN_API double GetEntSchemaFloat2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int element) {
-	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
+	const auto [offset, networked, size, type] = schema::GetOffset(className.c_str(), hash_32_fnv1a_const(className.c_str()), memberName.c_str(), hash_32_fnv1a_const(memberName.c_str()));
 	if (offset == 0) {
 		S2_LOGF(LS_WARNING, "Cannot find offset for '{}::{}' with entity pointer: {}\n", className, memberName, (void*) entity);
 		return {};
@@ -766,7 +766,7 @@ extern "C" PLUGIN_API void SetEntSchemaFloat2(CEntityInstance* entity, const plg
 		return;
 	}
 
-	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
+	const auto [offset, networked, size, type] = schema::GetOffset(className.c_str(), hash_32_fnv1a_const(className.c_str()), memberName.c_str(), hash_32_fnv1a_const(memberName.c_str()));
 	if (offset == 0) {
 		S2_LOGF(LS_WARNING, "Cannot find offset for '{}::{}' with entity pointer: {}\n", className, memberName, (void*) entity);
 		return;
@@ -834,7 +834,7 @@ extern "C" PLUGIN_API void SetEntSchemaFloat2(CEntityInstance* entity, const plg
  * @return A string value at the given schema offset.
  */
 extern "C" PLUGIN_API plg::string GetEntSchemaString2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int element) {
-	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
+	const auto [offset, networked, size, type] = schema::GetOffset(className.c_str(), hash_32_fnv1a_const(className.c_str()), memberName.c_str(), hash_32_fnv1a_const(memberName.c_str()));
 	if (offset == 0) {
 		S2_LOGF(LS_WARNING, "Cannot find offset for '{}::{}' with entity pointer: {}\n", className, memberName, (void*) entity);
 		return {};
@@ -892,7 +892,7 @@ extern "C" PLUGIN_API void SetEntSchemaString2(CEntityInstance* entity, const pl
 		return;
 	}
 
-	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
+	const auto [offset, networked, size, type] = schema::GetOffset(className.c_str(), hash_32_fnv1a_const(className.c_str()), memberName.c_str(), hash_32_fnv1a_const(memberName.c_str()));
 	if (offset == 0) {
 		S2_LOGF(LS_WARNING, "Cannot find offset for '{}::{}' with entity pointer: {}\n", className, memberName, (void*) entity);
 		return;
@@ -955,7 +955,7 @@ extern "C" PLUGIN_API void SetEntSchemaString2(CEntityInstance* entity, const pl
  * @return A vector value at the given schema offset.
  */
 extern "C" PLUGIN_API plg::vec3 GetEntSchemaVector3D2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int element) {
-	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
+	const auto [offset, networked, size, type] = schema::GetOffset(className.c_str(), hash_32_fnv1a_const(className.c_str()), memberName.c_str(), hash_32_fnv1a_const(memberName.c_str()));
 	if (offset == 0) {
 		S2_LOGF(LS_WARNING, "Cannot find offset for '{}::{}' with entity pointer: {}\n", className, memberName, (void*) entity);
 		return {};
@@ -993,7 +993,7 @@ extern "C" PLUGIN_API void SetEntSchemaVector3D2(CEntityInstance* entity, const 
 		return;
 	}
 
-	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
+	const auto [offset, networked, size, type] = schema::GetOffset(className.c_str(), hash_32_fnv1a_const(className.c_str()), memberName.c_str(), hash_32_fnv1a_const(memberName.c_str()));
 	if (offset == 0) {
 		S2_LOGF(LS_WARNING, "Cannot find offset for '{}::{}' with entity pointer: {}\n", className, memberName, (void*) entity);
 		return;
@@ -1033,7 +1033,7 @@ extern "C" PLUGIN_API void SetEntSchemaVector3D2(CEntityInstance* entity, const 
  * @return A vector value at the given schema offset.
  */
 extern "C" PLUGIN_API plg::vec2 GetEntSchemaVector2D2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int element) {
-	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
+	const auto [offset, networked, size, type] = schema::GetOffset(className.c_str(), hash_32_fnv1a_const(className.c_str()), memberName.c_str(), hash_32_fnv1a_const(memberName.c_str()));
 	if (offset == 0) {
 		S2_LOGF(LS_WARNING, "Cannot find offset for '{}::{}' with entity pointer: {}\n", className, memberName, (void*) entity);
 		return {};
@@ -1073,7 +1073,7 @@ extern "C" PLUGIN_API void SetEntSchemaVector2D2(CEntityInstance* entity, const 
 		return;
 	}
 
-	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
+	const auto [offset, networked, size, type] = schema::GetOffset(className.c_str(), hash_32_fnv1a_const(className.c_str()), memberName.c_str(), hash_32_fnv1a_const(memberName.c_str()));
 	if (offset == 0) {
 		S2_LOGF(LS_WARNING, "Cannot find offset for '{}::{}' with entity pointer: {}\n", className, memberName, (void*) entity);
 		return;
@@ -1113,7 +1113,7 @@ extern "C" PLUGIN_API void SetEntSchemaVector2D2(CEntityInstance* entity, const 
  * @return A vector value at the given schema offset.
  */
 extern "C" PLUGIN_API plg::vec4 GetEntSchemaVector4D2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int element) {
-	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
+	const auto [offset, networked, size, type] = schema::GetOffset(className.c_str(), hash_32_fnv1a_const(className.c_str()), memberName.c_str(), hash_32_fnv1a_const(memberName.c_str()));
 	if (offset == 0) {
 		S2_LOGF(LS_WARNING, "Cannot find offset for '{}::{}' with entity pointer: {}\n", className, memberName, (void*) entity);
 		return {};
@@ -1151,7 +1151,7 @@ extern "C" PLUGIN_API void SetEntSchemaVector4D2(CEntityInstance* entity, const 
 		return;
 	}
 
-	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
+	const auto [offset, networked, size, type] = schema::GetOffset(className.c_str(), hash_32_fnv1a_const(className.c_str()), memberName.c_str(), hash_32_fnv1a_const(memberName.c_str()));
 	if (offset == 0) {
 		S2_LOGF(LS_WARNING, "Cannot find offset for '{}::{}' with entity pointer: {}\n", className, memberName, (void*) entity);
 		return;
@@ -1193,7 +1193,7 @@ extern "C" PLUGIN_API void SetEntSchemaVector4D2(CEntityInstance* entity, const 
  * @return A string value at the given schema offset.
  */
 extern "C" PLUGIN_API int GetEntSchemaEnt2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName, int element) {
-	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
+	const auto [offset, networked, size, type] = schema::GetOffset(className.c_str(), hash_32_fnv1a_const(className.c_str()), memberName.c_str(), hash_32_fnv1a_const(memberName.c_str()));
 	if (offset == 0) {
 		S2_LOGF(LS_WARNING, "Cannot find offset for '{}::{}' with entity pointer: {}\n", className, memberName, (void*) entity);
 		return INVALID_EHANDLE_INDEX;
@@ -1233,7 +1233,7 @@ extern "C" PLUGIN_API void SetEntSchemaEnt2(CEntityInstance* entity, const plg::
 		return;
 	}
 
-	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
+	const auto [offset, networked, size, type] = schema::GetOffset(className.c_str(), hash_32_fnv1a_const(className.c_str()), memberName.c_str(), hash_32_fnv1a_const(memberName.c_str()));
 	if (offset == 0) {
 		S2_LOGF(LS_WARNING, "Cannot find offset for '{}::{}' with entity pointer: {}\n", className, memberName, (void*) entity);
 		return;
@@ -1274,7 +1274,7 @@ extern "C" PLUGIN_API void SetEntSchemaEnt2(CEntityInstance* entity, const plg::
  * @param memberName The name of the member to be set.
  */
 extern "C" PLUGIN_API void NetworkStateChanged2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName) {
-	const auto [offset, networked, size, type] = schema::GetOffset(className, memberName);
+	const auto [offset, networked, size, type] = schema::GetOffset(className.c_str(), hash_32_fnv1a_const(className.c_str()), memberName.c_str(), hash_32_fnv1a_const(memberName.c_str()));
 	if (networked) {
 		entity->NetworkStateChanged(offset);
 	} else {
