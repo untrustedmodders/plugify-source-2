@@ -115,18 +115,18 @@ inline constexpr uint64_t hash_64_fnv1a_const(const char* const str, const uint6
 {
 	return (str[0] == '\0') ? value : hash_64_fnv1a_const(&str[1], (value ^ uint64_t(str[0])) * prime_64_const);
 }
-
 #define SCHEMA_FIELD_OFFSET(type, varName, extra_offset)                                                                     \
 	class varName##_prop                                                                                                     \
 	{                                                                                                                        \
-		const type* Get() const                                                                                              \
+	public:                                                                                                                  \
+		std::add_lvalue_reference_t<type> Get()                                                                              \
 		{                                                                                                                    \
 			static const auto m_key = schema::GetOffset(m_className, m_classNameHash, #varName, m_varNameHash);              \
 			static const auto m_offset = offsetof(ThisClass, varName);														 \
 																															 \
 			uintptr_t pThisClass = ((uintptr_t)this - m_offset);                                                             \
                                                                                                                              \
-			return reinterpret_cast<const type*>(pThisClass + m_key.offset + extra_offset);                                  \
+			return *reinterpret_cast<std::add_pointer_t<type>>(pThisClass + m_key.offset + extra_offset);                    \
 		}                                                                                                                    \
 		void Set(type& val)                                                                                                  \
 		{                                                                                                                    \
@@ -137,9 +137,9 @@ inline constexpr uint64_t hash_64_fnv1a_const(const char* const str, const uint6
 			uintptr_t pThisClass = ((uintptr_t)this - m_offset);                                                             \
                                                                                                                              \
 			NetworkStateChanged();                                                                                           \
-			*reinterpret_cast<type*>(pThisClass + m_key.offset + extra_offset) = val;                                        \
+			*reinterpret_cast<std::add_pointer_t<type>>(pThisClass + m_key.offset + extra_offset) = val;                     \
 		}                                                                                                                    \
-		void NetworkStateChanged() const                                                                                     \
+		void NetworkStateChanged()                                                                                           \
 		{                                                                                                                    \
 			static const auto m_key = schema::GetOffset(m_className, m_classNameHash, #varName, m_varNameHash);				 \
 			static const auto m_chain = schema::FindChainOffset(m_className, m_classNameHash);								 \
@@ -159,17 +159,31 @@ inline constexpr uint64_t hash_64_fnv1a_const(const char* const str, const uint6
 					::NetworkVarStateChanged(pThisClass, m_key.offset + extra_offset, m_networkStateChangedOffset);			 \
 			}                                                                                                                \
 		}                                                                                                                    \
-	public:                                                                                                                  \
-		operator bool() const { return Get(); }                                                                              \
-		operator const type&() const { return *Get(); }                                                                      \
-		operator type&() { return *const_cast<type*>(Get()); }                                                               \
-		const type* operator->() const { return Get(); }                                                                     \
-		type* operator->() { return const_cast<type*>(Get()); }                                                              \
-		const type& operator*() const { return *Get(); }                                                                     \
-		type& operator*() { return *const_cast<type*>(Get()); }                                                              \
-		varName##_prop& operator=(type val) {                                                                                \
+		operator std::add_lvalue_reference_t<type>()                                                                         \
+		{                                                                                                                    \
+			return Get();                                                                                                    \
+		}                                                                                                                    \
+		std::add_lvalue_reference_t<type> operator()()                                                                       \
+		{                                                                                                                    \
+			return Get();                                                                                                    \
+		}                                                                                                                    \
+		std::add_lvalue_reference_t<type> operator->()                                                                       \
+		{                                                                                                                    \
+			return Get();                                                                                                    \
+		}                                                                                                                    \
+		void operator()(type val)                                                                                            \
+		{                                                                                                                    \
 			Set(val);                                                                                                        \
-			return *this;                                                                                                    \
+		}                                                                                                                    \
+		std::add_lvalue_reference_t<type> operator=(type val)                                                                \
+		{                                                                                                                    \
+			Set(val);                                                                                                        \
+			return Get();                                                                                                    \
+		}                                                                                                                    \
+		std::add_lvalue_reference_t<type> operator=(varName##_prop& val)                                                     \
+		{                                                                                                                    \
+			Set(val());                                                                                                      \
+			return Get();                                                                                                    \
 		}                                                                                                                    \
 	private:                                                                                                                 \
 		/*Prevent accidentally copying this wrapper class instead of the underlying field*/                                  \
@@ -180,16 +194,17 @@ inline constexpr uint64_t hash_64_fnv1a_const(const char* const str, const uint6
 #define SCHEMA_FIELD_POINTER_OFFSET(type, varName, extra_offset)                                                             \
 	class varName##_prop                                                                                                     \
 	{                                                                                                                        \
-		const type* Get() const                                                                                              \
+	public:                                                                                                                  \
+		type* Get()                                                                                                          \
 		{                                                                                                                    \
 			static const auto m_key = schema::GetOffset(m_className, m_classNameHash, #varName, m_varNameHash);				 \
 			static const auto m_offset = offsetof(ThisClass, varName);														 \
 																															 \
 			uintptr_t pThisClass = ((uintptr_t)this - m_offset);                                                             \
                                                                                                                              \
-			return reinterpret_cast<const type*>(pThisClass + m_key.offset + extra_offset);									 \
+			return reinterpret_cast<std::add_pointer_t<type>>(pThisClass + m_key.offset + extra_offset);                     \
 		}                                                                                                                    \
-		void NetworkStateChanged() const /*Call this after editing the field*/                                               \
+		void NetworkStateChanged() /*Call this after editing the field*/                                                     \
 		{                                                                                                                    \
 			static const auto m_key = schema::GetOffset(m_className, m_classNameHash, #varName, m_varNameHash);				 \
 			static const auto m_chain = schema::FindChainOffset(m_className, m_classNameHash);								 \
@@ -209,12 +224,18 @@ inline constexpr uint64_t hash_64_fnv1a_const(const char* const str, const uint6
 					::NetworkVarStateChanged(pThisClass, m_key.offset + extra_offset, m_networkStateChangedOffset);			 \
 			}                                                                                                                \
 		}                                                                                                                    \
-	public:                                                                                                                  \
-		operator bool() const { return Get(); }                                                                              \
-		operator const type*() const { return Get(); }                                                                       \
-		operator type*() { return const_cast<type*>(Get()); }                                                                \
-		const type* operator->() const { return Get(); }                                                                     \
-		type* operator->() { return const_cast<type*>(Get()); }                                                              \
+		operator type*()                                                                                                     \
+		{                                                                                                                    \
+			return Get();                                                                                                    \
+		}                                                                                                                    \
+		type* operator()()                                                                                                   \
+		{                                                                                                                    \
+			return Get();                                                                                                    \
+		}                                                                                                                    \
+		type* operator->()                                                                                                   \
+		{                                                                                                                    \
+			return Get();                                                                                                    \
+		}                                                                                                                    \
 	private:                                                                                                                 \
 		/*Prevent accidentally copying this wrapper class instead of the underlying field*/                                  \
 		varName##_prop(const varName##_prop&) = delete;                                                                      \

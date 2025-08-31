@@ -44,7 +44,7 @@ public:
 	SCHEMA_FIELD(bool, m_bIsHLTV)
 	SCHEMA_FIELD(uint, m_iDesiredFOV)
 
-	CBasePlayerPawn* GetCurrentPawn() { return m_hPawn->Get(); }
+	CBasePlayerPawn* GetCurrentPawn() { return m_hPawn(); }
 	const char* GetPlayerName() { return m_iszPlayerName; }
 	int GetPlayerSlot() { return entindex() - 1; }
 	bool IsConnected() { return m_iConnected == PlayerConnectedState::PlayerConnected; }

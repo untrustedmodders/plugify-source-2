@@ -1,18 +1,14 @@
 {
   "$schema": "https://raw.githubusercontent.com/untrustedmodders/plugify/refs/heads/main/schemas/plugin.schema.json",
-  "fileVersion": 1,
   "version": "${S2SDK_VERSION}",
-  "friendlyName": "CS2-SDK",
+  "name": "plugify-plugin-s2sdk",
   "description": "Provides functionality for other plugins from Source 2 engine",
-  "createdBy": "untrustedmodders",
-  "createdByURL": "https://github.com/untrustedmodders/",
-  "docsURL": "https://github.com/untrustedmodders/plugify-source-2",
-  "downloadURL": "https://github.com/untrustedmodders/plugify-source-2/releases/download/v${S2SDK_VERSION}/${S2SDK_PACKAGE}.zip",
-  "updateURL": "https://untrustedmodders.github.io/plugify-source-2/s2sdk.json",
-  "entryPoint": "bin/s2sdk",
-  "supportedPlatforms": [],
-  "resourceDirectories": [],
-  "languageModule": {
+  "author": "untrustedmodders",
+  "website": "https://github.com/untrustedmodders/",
+  "licence": "MIT",
+  "entry": "bin/s2sdk",
+  "platforms": [],
+  "language": {
     "name": "cpp"
   },
   "dependencies": [
@@ -23,7 +19,7 @@
       "name": "polyhook"
     }
   ],
-  "exportedMethods": [
+  "methods": [
     {
       "name": "GetPlayerSlotFromEntityPointer",
       "group": "Clients",

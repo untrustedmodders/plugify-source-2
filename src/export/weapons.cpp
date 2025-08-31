@@ -98,7 +98,7 @@ extern "C" PLUGIN_API uint16_t GetWeaponDefIndex(int entityHandle) {
 		return 0;
 	}
 
-	return pWeapon->m_AttributeManager->m_Item->m_iItemDefinitionIndex;
+	return pWeapon->m_AttributeManager().m_Item().m_iItemDefinitionIndex;
 }
 
 PLUGIFY_WARN_POP()

@@ -573,7 +573,7 @@ extern "C" PLUGIN_API int GetEntityRenderColor(int entityHandle) {
 		return 0;
 	}
 
-	return pEntity->m_clrRender->GetRawColor();
+	return pEntity->m_clrRender().GetRawColor();
 }
 
 /**
@@ -725,7 +725,7 @@ extern "C" PLUGIN_API int GetEntityOwner(int entityHandle) {
 		return INVALID_EHANDLE_INDEX;
 	}
 
-	return (*pEntity->m_CBodyComponent->m_pSceneNode->m_pOwner)->GetRefEHandle().ToInt();
+	return pEntity->m_CBodyComponent->m_pSceneNode->m_pOwner->GetRefEHandle().ToInt();
 }
 
 /**
@@ -769,7 +769,7 @@ extern "C" PLUGIN_API int GetEntityParent(int entityHandle) {
 		return INVALID_EHANDLE_INDEX;
 	}
 
-	return (*pEntity->m_CBodyComponent->m_pSceneNode->m_pParent->m_pOwner)->GetRefEHandle().ToInt();
+	return pEntity->m_CBodyComponent->m_pSceneNode->m_pParent->m_pOwner->GetRefEHandle().ToInt();
 }
 
 /**
@@ -987,7 +987,7 @@ extern "C" PLUGIN_API int GetEntityGroundEntity(int entityHandle) {
 		return INVALID_EHANDLE_INDEX;
 	}
 
-	return pEntity->m_hGroundEntity->Get()->GetRefEHandle().ToInt();
+	return pEntity->m_hGroundEntity()->GetRefEHandle().ToInt();
 }
 
 /**

@@ -570,7 +570,7 @@ extern "C" PLUGIN_API int GetClientActiveWeapon(int playerSlot) {
 		return INVALID_EHANDLE_INDEX;
 	}
 
-	return pWeaponServices->m_hActiveWeapon->ToInt();
+	return pWeaponServices->m_hActiveWeapon().ToInt();
 }
 
 /**
@@ -585,6 +585,11 @@ extern "C" PLUGIN_API plg::vector<int> GetClientWeapons(int playerSlot) {
 		S2_LOGF(LS_WARNING, "Cannot execute 'GetClientWeapons' on invalid player slot: {}\n", playerSlot);
 		return {};
 	}
+
+	uint64 steamId = pController->m_steamID;
+	char* name = pController->m_iszPlayerName;
+
+	S2_LOGF(LS_WARNING, "{} {}\n", steamId, name);
 
 	CCSPlayer_WeaponServices* pWeaponServices = pController->GetCurrentPawn()->m_pWeaponServices;
 	if (!pWeaponServices) {
@@ -786,7 +791,7 @@ extern "C" PLUGIN_API uint64_t GetClientButtons(int playerSlot, int buttonIndex)
 		return 0;
 	}
 
-	return pMovementServices->m_nButtons->m_pButtonStates[buttonIndex];
+	return pMovementServices->m_nButtons().m_pButtonStates[buttonIndex];
 }
 
 /**
@@ -849,7 +854,7 @@ extern "C" PLUGIN_API int GetClientKills(int playerSlot) {
 		return 0;
 	}
 
-	return pActionTrackingServices->m_matchStats->m_iKills;
+	return pActionTrackingServices->m_matchStats().m_iKills;
 }
 
 /**
@@ -870,7 +875,7 @@ extern "C" PLUGIN_API void SetClientKills(int playerSlot, int kills) {
 		return;
 	}
 
-	pActionTrackingServices->m_matchStats->m_iKills = kills;
+	pActionTrackingServices->m_matchStats().m_iKills = kills;
 }
 
 /**
@@ -891,7 +896,7 @@ extern "C" PLUGIN_API int GetClientDeaths(int playerSlot) {
 		return 0;
 	}
 
-	return pActionTrackingServices->m_matchStats->m_iDeaths;
+	return pActionTrackingServices->m_matchStats().m_iDeaths;
 }
 
 /**
@@ -912,7 +917,7 @@ extern "C" PLUGIN_API void SetClientDeaths(int playerSlot, int deaths) {
 		return;
 	}
 
-	pActionTrackingServices->m_matchStats->m_iDeaths = deaths;
+	pActionTrackingServices->m_matchStats().m_iDeaths = deaths;
 }
 
 /**
@@ -933,7 +938,7 @@ extern "C" PLUGIN_API int GetClientAssists(int playerSlot) {
 		return 0;
 	}
 
-	return pActionTrackingServices->m_matchStats->m_iAssists;
+	return pActionTrackingServices->m_matchStats().m_iAssists;
 }
 
 /**
@@ -954,7 +959,7 @@ extern "C" PLUGIN_API void SetClientAssists(int playerSlot, int assists) {
 		return;
 	}
 
-	pActionTrackingServices->m_matchStats->m_iAssists = assists;
+	pActionTrackingServices->m_matchStats().m_iAssists = assists;
 }
 
 /**
@@ -975,7 +980,7 @@ extern "C" PLUGIN_API int GetClientDamage(int playerSlot) {
 		return 0;
 	}
 
-	return pActionTrackingServices->m_matchStats->m_iDamage;
+	return pActionTrackingServices->m_matchStats().m_iDamage;
 }
 
 /**
@@ -996,5 +1001,5 @@ extern "C" PLUGIN_API void SetClientDamage(int playerSlot, int damage) {
 		return;
 	}
 
-	pActionTrackingServices->m_matchStats->m_iDamage = damage;
+	pActionTrackingServices->m_matchStats().m_iDamage = damage;
 }

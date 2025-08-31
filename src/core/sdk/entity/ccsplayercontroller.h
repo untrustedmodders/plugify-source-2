@@ -48,11 +48,11 @@ public:
 
 	// Returns the actual player pawn
 	CCSPlayerPawn* GetPlayerPawn() {
-		return *m_hPlayerPawn;
+		return m_hPlayerPawn();
 	}
 
 	CCSPlayerPawnBase* GetObserverPawn() {
-		return *m_hObserverPawn;
+		return m_hObserverPawn();
 	}
 
 	/*CServerSideClient* GetServerSideClient() {
@@ -60,7 +60,7 @@ public:
 	}*/
 
 	bool IsBot() {
-		return *m_fFlags & FL_CONTROLLER_FAKECLIENT;
+		return m_fFlags() & FL_CONTROLLER_FAKECLIENT;
 	}
 
 	void ChangeTeam(int iTeam) {
@@ -81,7 +81,7 @@ public:
 
 	// Respawns the player if the player is not alive, does nothing otherwise.
 	void Respawn() {
-		CCSPlayerPawn* pawn = m_hPlayerPawn->Get();
+		CCSPlayerPawn* pawn = m_hPlayerPawn();
 		if (!pawn || pawn->IsAlive())
 			return;
 

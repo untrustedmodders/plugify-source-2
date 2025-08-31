@@ -34,9 +34,9 @@ CGameEntitySystem* GameEntitySystem() {
 	return *reinterpret_cast<CGameEntitySystem**>(reinterpret_cast<uintptr_t>(g_pGameResourceServiceServer) + offset);
 }
 
-CEntityInstance* CEntityHandle::Get() const {
+/*CEntityInstance* CEntityHandle::Get() const {
 	return g_pGameEntitySystem->GetEntityInstance(*this);
-}
+}*/
 
 /*class CEntityListener : public IEntityListener {
 	void OnEntityCreated(CEntityInstance* pEntity) override {
