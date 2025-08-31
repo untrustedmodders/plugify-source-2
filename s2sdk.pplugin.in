@@ -19,7 +19,7 @@
       "name": "polyhook"
     }
   ],
-  "methods": [
+  "exportedMethods": [
     {
       "name": "GetPlayerSlotFromEntityPointer",
       "group": "Clients",
@@ -36,6 +36,24 @@
       "retType": {
         "type": "int32",
         "description": "The player slot if valid, otherwise -1."
+      }
+    },
+    {
+      "name": "GetEntityPointerFromPlayerSlot",
+      "group": "Clients",
+      "description": "Returns a pointer to the entity instance by player slot index.",
+      "funcName": "GetEntityPointerFromPlayerSlot",
+      "paramTypes": [
+        {
+          "name": "playerSlot",
+          "type": "int32",
+          "ref": false,
+          "description": "Index of the player slot."
+        }
+      ],
+      "retType": {
+        "type": "ptr64",
+        "description": "Pointer to the entity instance, or nullptr if the slot is invalid."
       }
     },
     {
@@ -72,6 +90,42 @@
       "retType": {
         "type": "int32",
         "description": "The player slot if found, otherwise -1."
+      }
+    },
+    {
+      "name": "GetClientIndexFromPlayerSlot",
+      "group": "Clients",
+      "description": "Returns the entity index for a given player slot.",
+      "funcName": "GetClientIndexFromPlayerSlot",
+      "paramTypes": [
+        {
+          "name": "playerSlot",
+          "type": "int32",
+          "ref": false,
+          "description": "The index of the player's slot."
+        }
+      ],
+      "retType": {
+        "type": "int32",
+        "description": "The entity index if valid, otherwise 0."
+      }
+    },
+    {
+      "name": "GetPlayerSlotFromClientIndex",
+      "group": "Clients",
+      "description": "Retrieves the player slot from a given client index.",
+      "funcName": "GetPlayerSlotFromClientIndex",
+      "paramTypes": [
+        {
+          "name": "clientIndex",
+          "type": "int32",
+          "ref": false,
+          "description": "The index of the client."
+        }
+      ],
+      "retType": {
+        "type": "int32",
+        "description": "The player slot if valid, otherwise -1."
       }
     },
     {

@@ -20,3 +20,4 @@ out/
 /vcpkg_installed
 /vcpkg.json
 /vcpkg-configuration.json
+/cmake-build-debug

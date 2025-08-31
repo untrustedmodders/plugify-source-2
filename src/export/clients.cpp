@@ -33,6 +33,15 @@ extern "C" PLUGIN_API int GetPlayerSlotFromEntityPointer(CBaseEntity* entity) {
 	return utils::GetEntityPlayerSlot(entity);
 }
 
+/**
+ * @brief Returns a pointer to the entity instance by player slot index.
+ *
+ * This function retrieves a pointer to the entity instance associated with the specified player slot index.
+ * If the client list is unavailable or the slot index is invalid, it returns nullptr.
+ *
+ * @param playerSlot Index of the player slot.
+ * @return Pointer to the entity instance, or nullptr if the slot is invalid.
+ */
 extern "C" PLUGIN_API CEntityInstance* GetEntityPointerFromPlayerSlot(int playerSlot) {
 	CUtlClientVector* pClients = utils::GetClientList();
 	if (!pClients || !(0 <= playerSlot && playerSlot < pClients->Count())) {
@@ -82,6 +91,15 @@ extern "C" PLUGIN_API int GetPlayerSlotFromClientBase(CServerSideClient* client)
 	return -1;
 }
 
+/**
+ * @brief Returns the entity index for a given player slot.
+ *
+ * This function retrieves the entity index associated with the specified player slot.
+ * If the client list is unavailable or the slot index is invalid, it returns 0.
+ *
+ * @param playerSlot The index of the player's slot.
+ * @return The entity index if valid, otherwise 0.
+ */
 extern "C" PLUGIN_API int GetClientIndexFromPlayerSlot(int playerSlot) {
 	CUtlClientVector* pClients = utils::GetClientList();
 	if (!pClients || !(0 <= playerSlot && playerSlot < pClients->Count())) {
@@ -91,6 +109,15 @@ extern "C" PLUGIN_API int GetClientIndexFromPlayerSlot(int playerSlot) {
 	return pClients->Element(playerSlot)->GetEntityIndex();
 }
 
+/**
+ * @brief Retrieves the player slot from a given client index.
+ *
+ * This function converts a client index to the corresponding player slot.
+ * If the controller is not found, it returns -1.
+ *
+ * @param clientIndex The index of the client.
+ * @return The player slot if valid, otherwise -1.
+ */
 extern "C" PLUGIN_API int GetPlayerSlotFromClientIndex(int clientIndex) {
 	auto pController = g_PlayerManager.ToPlayer(CEntityIndex(clientIndex));
 	if (!pController) {
