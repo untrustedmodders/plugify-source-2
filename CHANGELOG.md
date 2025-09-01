@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.4.2](https://github.com/untrustedmodders/plugify-source-2/compare/v1.4.1...v1.4.2) (2025-09-01)
+
+
+### Bug Fixes
+
+* **`CNetworkGameServer`:** comment unhooks ([20f955d](https://github.com/untrustedmodders/plugify-source-2/commit/20f955d914eea805e0f616d507996759a34f5535))
+* bug with schema ([70459ac](https://github.com/untrustedmodders/plugify-source-2/commit/70459acebff4e35d19f4d8c4438fcf309925c746))
+* schema again ([90082a5](https://github.com/untrustedmodders/plugify-source-2/commit/90082a52c735944b4120a83a9b650b9ef8c86eb7))
+* schema again ([8905d56](https://github.com/untrustedmodders/plugify-source-2/commit/8905d56b1400132351ee4c3179a433ed4cc411de))
+* **Source SDK:** update submodule to compile user messages ([4c9c2c4](https://github.com/untrustedmodders/plugify-source-2/commit/4c9c2c414f1aa4655024c68324639e5eaa4f78df))
+* update manifest ([d968a08](https://github.com/untrustedmodders/plugify-source-2/commit/d968a086bbf1387bfdd64b236acf3665aa597a29))
+
 ## [1.4.1](https://github.com/untrustedmodders/plugify-source-2/compare/v1.4.0...v1.4.1) (2025-08-18)
 
 
