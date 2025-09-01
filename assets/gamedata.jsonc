@@ -159,6 +159,13 @@
         "win64": "48 85 D2 0F 84 ? ? ? ? 48 89 5C 24 ? 57 48 83 EC ? 48 8B DA 48 8B F9 E8",
         "linuxsteamrt64": "48 85 F6 0F 84 ? ? ? ? 55 48 89 E5 41 54 49 89 FC 53 48 89 F3"
       },
+      // String: "item_pickup_failed" is called right after checking the result of this function
+      // Call: the function is called with 4 parameters, the third is always 0, the fourth is a pointer to a structure/array
+      "CCSPlayer_ItemServices_CanAcquire": {
+        "library": "server",
+        "win64": "44 89 44 24 ? 48 89 54 24 ? 48 89 4C 24 ? 55 53 56 57 41 55 41 56 41 57 48 8B EC",
+        "linuxsteamrt64": "55 48 89 E5 41 57 41 56 41 55 49 89 CD 41 54 49 89 FC 53 48 89 F3 48 83 EC"
+      },
       // String: "Weapon_Taser.Single"
       // sub_141AAD0(&v67[0].m128i_i64[1], (__int64)v76, v7, "Weapon_Taser.Single", 0LL, 0LL, 0.0, 1.0);
       //  v8 = sub_149AC70(a1);
