@@ -35,8 +35,8 @@ public:
 	DECLARE_SCHEMA_CLASS(CGameSceneNode)
 
 	SCHEMA_FIELD(CEntityInstance*, m_pOwner)
-	SCHEMA_FIELD_POINTER(CGameSceneNode, m_pParent)
-	SCHEMA_FIELD_POINTER(CGameSceneNode, m_pChild)
+	SCHEMA_FIELD(CGameSceneNode*, m_pParent)
+	SCHEMA_FIELD(CGameSceneNode*, m_pChild)
 	SCHEMA_FIELD(CNetworkOriginCellCoordQuantizedVector, m_vecOrigin)
 	SCHEMA_FIELD(QAngle, m_angRotation)
 	SCHEMA_FIELD(float, m_flScale)
@@ -85,7 +85,7 @@ class CBodyComponent {
 public:
 	DECLARE_SCHEMA_CLASS(CBodyComponent)
 
-	SCHEMA_FIELD_POINTER(CGameSceneNode, m_pSceneNode)
+	SCHEMA_FIELD(CGameSceneNode*, m_pSceneNode)
 };
 
 class CModelState {
@@ -121,7 +121,7 @@ public:
 	SCHEMA_FIELD(bool, m_bLagCompensate)
 	SCHEMA_FIELD(Vector, m_vecAbsVelocity)
 	SCHEMA_FIELD(Vector, m_vecBaseVelocity)
-	SCHEMA_FIELD_POINTER(CCollisionProperty, m_pCollision)
+	SCHEMA_FIELD(CCollisionProperty*, m_pCollision)
 	SCHEMA_FIELD(MoveCollide_t, m_MoveCollide)
 	SCHEMA_FIELD(MoveType_t, m_MoveType)
 	SCHEMA_FIELD(MoveType_t, m_nActualMoveType)

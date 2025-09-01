@@ -68,7 +68,7 @@ public:
 	SCHEMA_FIELD(uint64_t, m_nButtonDoublePressed)
 
 	// m_pButtonPressedCmdNumber[64]
-	SCHEMA_FIELD_POINTER(uint32_t, m_pButtonPressedCmdNumber)
+	SCHEMA_FIELD(uint32_t*, m_pButtonPressedCmdNumber)
 	SCHEMA_FIELD(uint32_t, m_nLastCommandNumberProcessed)
 	SCHEMA_FIELD(uint64_t, m_nToggleButtonDownMask)
 	SCHEMA_FIELD(float, m_flMaxspeed)

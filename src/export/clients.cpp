@@ -613,11 +613,6 @@ extern "C" PLUGIN_API plg::vector<int> GetClientWeapons(int playerSlot) {
 		return {};
 	}
 
-	uint64 steamId = pController->m_steamID;
-	char* name = pController->m_iszPlayerName;
-
-	S2_LOGF(LS_WARNING, "{} {}\n", steamId, name);
-
 	CCSPlayer_WeaponServices* pWeaponServices = pController->GetCurrentPawn()->m_pWeaponServices;
 	if (!pWeaponServices) {
 		return {};

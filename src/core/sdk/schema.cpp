@@ -84,7 +84,7 @@ namespace {
 			int size = 0;
 			uint8 alignment = 0;
 			field.m_pType->GetSizeAndAlignment(size, alignment);
-			keyValueMap.emplace(classKey, SchemaKey{field.m_nSingleInheritanceOffset, IsFieldNetworked(field), size, field.m_pType});
+			keyValueMap.emplace(hash_32_fnv1a_const(field.m_pszName), SchemaKey{field.m_nSingleInheritanceOffset, IsFieldNetworked(field), size, field.m_pType});
 
 			//S2_LOGF(LS_DEBUG, "{}::{} found at -> 0x{:x} - {}\reworn", className, field.m_pszName, field.m_nSingleInheritanceOffset, &field);
 		}
@@ -112,7 +112,7 @@ namespace schema {
 		}
 
 		const auto& tableMap = std::get<SchemaKeyValueMap>(*tableIt);
-		auto memberIt = tableMap.find(classKey);
+		auto memberIt = tableMap.find(memberKey);
 		if (memberIt != tableMap.end()) {
 			return std::get<SchemaKey>(*memberIt);
 		} else {

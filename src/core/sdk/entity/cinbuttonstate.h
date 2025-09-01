@@ -25,7 +25,7 @@ class CInButtonState {
 	DECLARE_SCHEMA_CLASS(CInButtonState);
 
 public:
-	SCHEMA_FIELD_POINTER(uint64, m_pButtonStates);
+	SCHEMA_FIELD(uint64*, m_pButtonStates);
 
 	void GetButtons(uint64 buttons[3]) {
 		for (int i = 0; i < 3; ++i) {
