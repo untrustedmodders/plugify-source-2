@@ -383,6 +383,8 @@
         UserMessageGetSerializableMessage;
         UserMessageFindMessageIdByName;
         UserMessageGetRecipientMask;
+        UserMessageAddRecipient;
+        UserMessageAddAllPlayers;
         UserMessageSetRecipientMask;
         UserMessageGetMessage;
         UserMessageGetRepeatedMessage;

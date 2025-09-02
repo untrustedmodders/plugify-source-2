@@ -16805,7 +16805,47 @@
       ],
       "retType": {
         "type": "uint64",
-        "description": "A the recipient mask."
+        "description": "The recipient mask."
+      }
+    },
+    {
+      "name": "UserMessageAddRecipient",
+      "group": "Protobuf",
+      "description": "Adds a single recipient (player) to the UserMessage.",
+      "funcName": "UserMessageAddRecipient",
+      "paramTypes": [
+        {
+          "name": "userMessage",
+          "type": "ptr64",
+          "ref": false,
+          "description": "The UserMessage instance."
+        },
+        {
+          "name": "playerSlot",
+          "type": "int32",
+          "ref": false,
+          "description": "The slot index of the player to add as a recipient."
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "UserMessageAddAllPlayers",
+      "group": "Protobuf",
+      "description": "Adds all connected players as recipients to the UserMessage.",
+      "funcName": "UserMessageAddAllPlayers",
+      "paramTypes": [
+        {
+          "name": "userMessage",
+          "type": "ptr64",
+          "ref": false,
+          "description": "The UserMessage instance."
+        }
+      ],
+      "retType": {
+        "type": "void"
       }
     },
     {
