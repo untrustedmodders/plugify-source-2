@@ -1,3 +1,4 @@
+#include "logging.h"
 #include <core/user_message.hpp>
 #include <core/user_message_manager.hpp>
 #include <engine/igameeventsystem.h>
@@ -82,6 +83,10 @@ extern "C" PLUGIN_API void UserMessageDestroy(UserMessage* userMessage) {
  * @param userMessage The UserMessage to send.
  */
 extern "C" PLUGIN_API void UserMessageSend(UserMessage* userMessage) {
+	S2_LOGF(LS_MESSAGE, "Count of players: {}\n", userMessage->GetRecipientFilter().GetRecipientCount());
+	S2_LOGF(LS_MESSAGE, "Serializable message: {}\n", (void *)userMessage->GetSerializableMessage());
+	S2_LOGF(LS_MESSAGE, "Net message: {}\n", (void *)userMessage->GetNetMessage());
+
 	g_pGameEventSystem->PostEventAbstract(-1, false, &userMessage->GetRecipientFilter(), userMessage->GetSerializableMessage(), userMessage->GetNetMessage(), 0);
 }
 

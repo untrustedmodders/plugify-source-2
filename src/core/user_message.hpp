@@ -56,7 +56,9 @@ class UserMessage {
 public:
 	UserMessage(INetworkMessageInternal* msgSerializable, const CNetMessage* message, uint64_t recipients)
 		: m_msgSerializable(msgSerializable), m_netMessage(const_cast<CNetMessage*>(message)), m_msg(const_cast<pb::Message*>(message->AsMessage())),
-		  m_recipients(message->GetBufType()) {
+		  m_recipients(message->GetBufType())
+	{
+		m_recipients.SetRecipients(recipients);
 	}
 
 	explicit UserMessage(const char* messageName) {
