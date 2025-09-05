@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.5.0](https://github.com/untrustedmodders/plugify-source-2/compare/v1.4.2...v1.5.0) (2025-09-05)
+
+
+### Features
+
+* **User message:** add `UserMessageAddRecipient` & `UserMessageAddAllPlayers` methods ([d65c60a](https://github.com/untrustedmodders/plugify-source-2/commit/d65c60a012b80878b9448d2a12175771a83dff4c))
+
+
+### Bug Fixes
+
+* **`UserMessage`:** update consturctor ([bf80308](https://github.com/untrustedmodders/plugify-source-2/commit/bf80308c1d744f3f7b38313044609eade2358564))
+* add new virtual functions & update gamedata ([32a688f](https://github.com/untrustedmodders/plugify-source-2/commit/32a688f5618a55571dffdf53d915e6204875dbc2))
+
 ## [1.4.2](https://github.com/untrustedmodders/plugify-source-2/compare/v1.4.1...v1.4.2) (2025-09-01)
 
 
