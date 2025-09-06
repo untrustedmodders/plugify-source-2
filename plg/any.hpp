@@ -1,9 +1,9 @@
 #pragma once
 
-#include "numerics.hpp"
-#include "string.hpp"
-#include "variant.hpp"
-#include "vector.hpp"
+#include "plg/numerics.hpp"
+#include "plg/string.hpp"
+#include "plg/variant.hpp"
+#include "plg/vector.hpp"
 
 namespace plg {
 	struct invalid {}; //!< Represents an invalid type.

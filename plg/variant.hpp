@@ -20,12 +20,12 @@
 #define PLG_FWD(x) static_cast<decltype(x)&&>(x)
 #define PLG_MOV(x) static_cast< std::remove_reference_t<decltype(x)>&& >(x)
 
-#include "macro.hpp"
+#include "plg/macro.hpp"
 
 // from https://github.com/groundswellaudio/swl-variant
 namespace plg {
 #if PLUGIFY_EXCEPTIONS
-	class bad_variant_access final : public std::exception {
+	class bad_variant_access : public std::exception {
 		const char* message = ""; // llvm test requires a well formed what() on default init
 		public :
 		explicit bad_variant_access(const char* str) noexcept : message{str} {}
@@ -905,7 +905,7 @@ namespace plg {
 				}
 				else
 				{
-					static_assert(can_be_valueless && (Idx == Idx),
+					static_assert(can_be_valueless,
 								  "Internal error : the possibly valueless branch of emplace was taken despite |can_be_valueless| being false");
 					_current = npos;
 					do_emplace_no_dtor<Idx>(PLG_FWD(args)...);

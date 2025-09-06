@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "cpp_plugin.hpp"
+#include <plg/plugin.hpp>
 
 namespace poly
 {

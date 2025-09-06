@@ -1,7 +1,7 @@
 #pragma once
 
-#include <plugify/cpp_plugin.hpp>
-#include <plugify/polyhook.hpp>
+#include <plg/plugin.hpp>
+#include <polyhook/polyhook.hpp>
 #include <plugin_export.h>
 
 #include <igamesystem.h>

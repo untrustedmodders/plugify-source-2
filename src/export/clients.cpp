@@ -615,10 +615,15 @@ extern "C" PLUGIN_API plg::vector<int> GetClientWeapons(int playerSlot) {
 
 	CCSPlayer_WeaponServices* pWeaponServices = pController->GetCurrentPawn()->m_pWeaponServices;
 	if (!pWeaponServices) {
+		S2_LOGF(LS_WARNING, "Cannot execute 'GetClientWeapons' on m_pWeaponServices: {}\n", playerSlot);
 		return {};
 	}
 
 	CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponServices->m_hMyWeapons;
+	if (!weapons) {
+		S2_LOGF(LS_WARNING, "Cannot execute 'GetClientWeapons' on m_hMyWeapons: {}\n", playerSlot);
+		return {};
+	}
 
 	plg::vector<int> handles;
 	handles.reserve(static_cast<size_t>(weapons->Count()));

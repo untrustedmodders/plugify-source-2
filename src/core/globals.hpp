@@ -2,7 +2,7 @@
 
 #include <playerslot.h>
 #include <steam_api.h>
-#include <plugify/cpp_plugin.hpp>
+#include <plg/plugin.hpp>
 #include <tier0/platform.h>
 #include <tier0/utlstring.h>
 #include <variant.h>

@@ -16,6 +16,8 @@
 #  define __has_builtin(x) 0
 #endif
 
+#include <version>
+
 #define PLUGIFY_HAS_EXCEPTIONS (__cpp_exceptions || __EXCEPTIONS || _HAS_EXCEPTIONS)
 
 #ifndef PLUGIFY_EXCEPTIONS
@@ -241,7 +243,7 @@
 
 #if PLUGIFY_COMPILER_GCC || PLUGIFY_COMPILER_CLANG
 #  define PLUGIFY_UNREACHABLE() __builtin_unreachable()
-#elif defined (_MSC_VER)
+#elif PLUGIFY_COMPILER_MSVC
 #  define PLUGIFY_UNREACHABLE() __assume(false)
 #else
 #  define PLUGIFY_UNREACHABLE()

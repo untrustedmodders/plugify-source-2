@@ -116,7 +116,7 @@ inline constexpr uint64_t hash_64_fnv1a_const(const char* const str, const uint6
 	return (str[0] == '\0') ? value : hash_64_fnv1a_const(&str[1], (value ^ uint64_t(str[0])) * prime_64_const);
 }
 #define SCHEMA_FIELD_OFFSET(type, varName, extra_offset)                                                                     \
-	class varName##_prop                                                                                                     \
+	PLUGIFY_NO_UNIQUE_ADDRESS class varName##_prop                                                                           \
 	{                                                                                                                        \
 	public:                                                                                                                  \
 		std::add_lvalue_reference_t<type> Get()                                                                              \
@@ -192,7 +192,7 @@ inline constexpr uint64_t hash_64_fnv1a_const(const char* const str, const uint6
 	} varName;
 
 #define SCHEMA_FIELD_POINTER_OFFSET(type, varName, extra_offset)                                                             \
-	class varName##_prop                                                                                                     \
+	PLUGIFY_NO_UNIQUE_ADDRESS class varName##_prop                                                                           \
 	{                                                                                                                        \
 	public:                                                                                                                  \
 		type* Get()                                                                                                          \

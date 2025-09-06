@@ -24,7 +24,7 @@
 #  include <ranges>
 #endif
 
-#include "allocator.hpp"
+#include "plg/allocator.hpp"
 
 namespace plg {
 	template<typename Allocator>
@@ -908,6 +908,14 @@ namespace plg {
 			swap(_begin, other._begin);
 			swap(_end, other._end);
 			swap(_capacity, other._capacity);
+		}
+
+		constexpr operator std::span<T>() noexcept {
+			return std::span<T>(data(), size());
+		}
+
+		constexpr operator std::span<const T>() const noexcept {
+			return std::span<const T>(data(), size());
 		}
 
 		constexpr std::span<const T> span() const noexcept {

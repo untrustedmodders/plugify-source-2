@@ -3,7 +3,7 @@
 #include "game_config.hpp"
 #include <core/sdk/utils.h>
 
-#include <plugify/polyhook.hpp>
+#include <polyhook/polyhook.hpp>
 
 class HookHolder {
 public:

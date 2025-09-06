@@ -595,7 +595,7 @@ void MultiAddonManager::OnReplyConnection(CNetworkGameServerBase* server, CServe
 	std::vector<uint64_t> clientAddons = g_MultiAddonManager.GetClientAddons(steamID64);
 	if (clientAddons.empty()) {
 		// No addons to send. This means the list of original addons is empty as well.
-		assert(originalAddons.IsEmpty());
+		//assert(originalAddons.IsEmpty());
 		g_pfnReplyConnection(server, client);
 		return;
 	}

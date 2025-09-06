@@ -66,17 +66,6 @@ string(TOUPPER "${PROJECT_NAME_SUBSTRING}" PROJECT_NAME_UPPER)
 #
 # Plugufy
 #
-set(PLUGIFY_BUILD_SHARED_LIB ON CACHE INTERNAL "")
-set(PLUGIFY_BUILD_JIT OFF CACHE INTERNAL "")
-set(PLUGIFY_BUILD_ASSEMBLY ON CACHE INTERNAL "")
-set(PLUGIFY_BUILD_TESTS OFF CACHE INTERNAL "")
-set(PLUGIFY_INTERFACE ON CACHE INTERNAL "")
-set(PLUGIFY_DOWNLOADER OFF CACHE INTERNAL "")
-set(PLUGIFY_USE_ABI0 ON CACHE INTERNAL "")
-if(LINUX)
-    set(PLUGIFY_USE_STATIC_STDLIB ON CACHE INTERNAL "")
-endif()
-add_subdirectory(external/plugify)
 add_subdirectory(external/plugify-configs)
 
 #
@@ -144,7 +133,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_OUTPUT_NA
 
 if(WINDOWS)
     set_target_properties(${PROJECT_NAME} PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-    set_target_properties(plugify-assembly PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 elseif(MACOS)
     set_target_properties(${PROJECT_NAME} PROPERTIES OSX_ARCHITECTURES "x86_64")
 endif()
@@ -170,12 +158,12 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE ${S2SDK_COMPILE_DEFINITIONS})
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 if(NOT COMPILER_SUPPORTS_FORMAT)
-    target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt-header-only)
+    #target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt-header-only)
 endif()
 
 configure_file(
-        ${CMAKE_CURRENT_SOURCE_DIR}/s2sdk.pplugin.in
-        ${CMAKE_CURRENT_BINARY_DIR}/s2sdk.pplugin
+        ${CMAKE_CURRENT_SOURCE_DIR}/plugify-plugin-s2sdk.pplugin.in
+        ${CMAKE_CURRENT_BINARY_DIR}/plugify-plugin-s2sdk.pplugin
 )
 
 configure_file(
