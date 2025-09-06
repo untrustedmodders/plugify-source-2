@@ -1,9 +1,3 @@
-[submodule "Plugify - Configs"]
-	path = external/plugify-configs
-	url = https://github.com/untrustedmodders/plugify-configs.git
 [submodule "Source SDK"]
 	path = external/sourcesdk
 	url = https://github.com/Wend4r/sourcesdk
-[submodule "external/plugify"]
-	path = external/plugify
-	url = https://github.com/untrustedmodders/plugify.git
