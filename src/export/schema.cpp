@@ -106,11 +106,11 @@ extern "C" PLUGIN_API int64_t GetEntData2(CEntityInstance* entity, int offset, i
  * @param value The integer value to set.
  * @param size Number of bytes to write (valid values are 1, 2, 4 or 8).
  * @param changeState If true, change will be sent over the network.
- * @param chainOffset The offset of the chain entity in the class.
+ * @param chainOffset The offset of the chain entity in the class (-1 for non-entity classes).
  */
 extern "C" PLUGIN_API void SetEntData2(CEntityInstance* entity, int offset, int64_t value, int size, bool changeState, int chainOffset) {
 	if (changeState) {
-		entity->NetworkStateChanged(offset);
+		SafeNetworkStateChanged(reinterpret_cast<intptr_t>(entity), offset, chainOffset);
 	}
 
 	switch (size) {
@@ -160,11 +160,11 @@ extern "C" PLUGIN_API double GetEntDataFloat2(CEntityInstance* entity, int offse
  * @param value The float value to set.
  * @param size Number of bytes to write (valid values are 1, 2, 4 or 8).
  * @param changeState If true, change will be sent over the network.
- * @param chainOffset The offset of the chain entity in the class.
+ * @param chainOffset The offset of the chain entity in the class (-1 for non-entity classes).
  */
 extern "C" PLUGIN_API void SetEntDataFloat2(CEntityInstance* entity, int offset, double value, int size, bool changeState, int chainOffset) {
 	if (changeState) {
-		entity->NetworkStateChanged(offset);
+		SafeNetworkStateChanged(reinterpret_cast<intptr_t>(entity), offset, chainOffset);
 	}
 
 	switch (size) {
@@ -199,11 +199,11 @@ extern "C" PLUGIN_API plg::string GetEntDataString2(CEntityInstance* entity, int
  * @param offset The offset of the schema to use.
  * @param value The string value to set.
  * @param changeState If true, change will be sent over the network.
- * @param chainOffset The offset of the chain entity in the class.
+ * @param chainOffset The offset of the chain entity in the class (-1 for non-entity classes).
  */
 extern "C" PLUGIN_API void SetEntDataString2(CEntityInstance* entity, int offset, const plg::string& value, bool changeState, int chainOffset) {
 	if (changeState) {
-		entity->NetworkStateChanged(offset);
+		SafeNetworkStateChanged(reinterpret_cast<intptr_t>(entity), offset, chainOffset);
 	}
 
 	*reinterpret_cast<CUtlString*>(reinterpret_cast<intptr_t>(entity) + offset) = value.c_str();
@@ -229,11 +229,11 @@ extern "C" PLUGIN_API plg::vec3 GetEntDataVector2(CEntityInstance* entity, int o
  * @param offset The offset of the schema to use.
  * @param value The vector value to set.
  * @param changeState If true, change will be sent over the network.
- * @param chainOffset The offset of the chain entity in the class.
+ * @param chainOffset The offset of the chain entity in the class (-1 for non-entity classes).
  */
 extern "C" PLUGIN_API void SetEntDataVector2(CEntityInstance* entity, int offset, const plg::vec3& value, bool changeState, int chainOffset) {
 	if (changeState) {
-		entity->NetworkStateChanged(offset);
+		SafeNetworkStateChanged(reinterpret_cast<intptr_t>(entity), offset, chainOffset);
 	}
 
 	*reinterpret_cast<plg::vec3*>(reinterpret_cast<intptr_t>(entity) + offset) = value;
@@ -261,11 +261,11 @@ extern "C" PLUGIN_API int GetEntDataEnt2(CEntityInstance* entity, int offset) {
  * @param offset The offset of the schema to use.
  * @param value The entity handle to set.
  * @param changeState If true, change will be sent over the network.
- * @param chainOffset The offset of the chain entity in the class.
+ * @param chainOffset The offset of the chain entity in the class (-1 for non-entity classes).
  */
 extern "C" PLUGIN_API void SetEntDataEnt2(CEntityInstance* entity, int offset, int value, bool changeState, int chainOffset) {
 	if (changeState) {
-		entity->NetworkStateChanged(offset);
+		SafeNetworkStateChanged(reinterpret_cast<intptr_t>(entity), offset, chainOffset);
 	}
 
 	*reinterpret_cast<CEntityHandle*>(reinterpret_cast<intptr_t>(entity) + offset) = CEntityHandle((uint32) value);
@@ -276,10 +276,10 @@ extern "C" PLUGIN_API void SetEntDataEnt2(CEntityInstance* entity, int offset, i
  *
  * @param entity Pointer to the instance of the class where the value is to be set.
  * @param offset The offset of the schema to use.
- * @param chainOffset The offset of the chain entity in the class.
+ * @param chainOffset The offset of the chain entity in the class (-1 for non-entity classes).
  */
 extern "C" PLUGIN_API void ChangeEntityState2(CEntityInstance* entity, int offset, int chainOffset) {
-	entity->NetworkStateChanged(offset);
+	SafeNetworkStateChanged(reinterpret_cast<intptr_t>(entity), offset, chainOffset);
 }
 
 //
@@ -311,7 +311,7 @@ extern "C" PLUGIN_API int64_t GetEntData(int entityHandle, int offset, int size)
  * @param value The integer value to set.
  * @param size Number of bytes to write (valid values are 1, 2, 4 or 8).
  * @param changeState If true, change will be sent over the network.
- * @param chainOffset The offset of the chain entity in the class.
+ * @param chainOffset The offset of the chain entity in the class (-1 for non-entity classes).
  */
 extern "C" PLUGIN_API void SetEntData(int entityHandle, int offset, int64_t value, int size, bool changeState, int chainOffset) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
@@ -351,7 +351,7 @@ extern "C" PLUGIN_API double GetEntDataFloat(int entityHandle, int offset, int s
  * @param value The float value to set.
  * @param size Number of bytes to write (valid values are 1, 2, 4 or 8).
  * @param changeState If true, change will be sent over the network.
- * @param chainOffset The offset of the chain entity in the class.
+ * @param chainOffset The offset of the chain entity in the class (-1 for non-entity classes).
  */
 extern "C" PLUGIN_API void SetEntDataFloat(int entityHandle, int offset, double value, int size, bool changeState, int chainOffset) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
@@ -389,7 +389,7 @@ extern "C" PLUGIN_API plg::string GetEntDataString(int entityHandle, int offset)
  * @param offset The offset of the schema to use.
  * @param value The string value to set.
  * @param changeState If true, change will be sent over the network.
- * @param chainOffset The offset of the chain entity in the class.
+ * @param chainOffset The offset of the chain entity in the class (-1 for non-entity classes).
  */
 extern "C" PLUGIN_API void SetEntDataString(int entityHandle, int offset, const plg::string& value, bool changeState, int chainOffset) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
@@ -427,7 +427,7 @@ extern "C" PLUGIN_API plg::vec3 GetEntDataVector(int entityHandle, int offset) {
  * @param offset The offset of the schema to use.
  * @param value The vector value to set.
  * @param changeState If true, change will be sent over the network.
- * @param chainOffset The offset of the chain entity in the class.
+ * @param chainOffset The offset of the chain entity in the class (-1 for non-entity classes).
  */
 extern "C" PLUGIN_API void SetEntDataVector(int entityHandle, int offset, const plg::vec3& value, bool changeState, int chainOffset) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
@@ -467,7 +467,7 @@ extern "C" PLUGIN_API int GetEntDataEnt(int entityHandle, int offset) {
  * @param offset The offset of the schema to use.
  * @param value The entity handle to set.
  * @param changeState If true, change will be sent over the network.
- * @param chainOffset The offset of the chain entity in the class.
+ * @param chainOffset The offset of the chain entity in the class (-1 for non-entity classes).
  */
 extern "C" PLUGIN_API void SetEntDataEnt(int entityHandle, int offset, int value, bool changeState, int chainOffset) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
@@ -484,7 +484,7 @@ extern "C" PLUGIN_API void SetEntDataEnt(int entityHandle, int offset, int value
  *
  * @param entityHandle The handle of the entity from which the value is to be retrieved.
  * @param offset The offset of the schema to use.
- * @param chainOffset The offset of the chain entity in the class.
+ * @param chainOffset The offset of the chain entity in the class (-1 for non-entity classes).
  */
 extern "C" PLUGIN_API void ChangeEntityState(int entityHandle, int offset, int chainOffset) {
 	CEntityInstance* pEntity = g_pGameEntitySystem->GetEntityInstance(CEntityHandle((uint32) entityHandle));
@@ -624,7 +624,8 @@ extern "C" PLUGIN_API void SetEntSchema2(CEntityInstance* entity, const plg::str
 	}
 
 	if (changeState) {
-		entity->NetworkStateChanged(offset);
+		const auto chainOffset = schema::FindChainOffset(className.c_str(), hash_32_fnv1a_const(className.c_str()));
+		SafeNetworkStateChanged(reinterpret_cast<intptr_t>(entity), offset, chainOffset);
 	}
 
 	const auto [elementType, elementSize] = schema::IsIntType(type);
@@ -773,7 +774,8 @@ extern "C" PLUGIN_API void SetEntSchemaFloat2(CEntityInstance* entity, const plg
 	}
 
 	if (changeState) {
-		entity->NetworkStateChanged(offset);
+		const auto chainOffset = schema::FindChainOffset(className.c_str(), hash_32_fnv1a_const(className.c_str()));
+		SafeNetworkStateChanged(reinterpret_cast<intptr_t>(entity), offset, chainOffset);
 	}
 
 	const auto [elementType, elementSize] = schema::IsFloatType(type);
@@ -899,7 +901,8 @@ extern "C" PLUGIN_API void SetEntSchemaString2(CEntityInstance* entity, const pl
 	}
 
 	if (changeState) {
-		entity->NetworkStateChanged(offset);
+		const auto chainOffset = schema::FindChainOffset(className.c_str(), hash_32_fnv1a_const(className.c_str()));
+		SafeNetworkStateChanged(reinterpret_cast<intptr_t>(entity), offset, chainOffset);
 	}
 
 	switch (schema::IsPlainType(type, sizeof(CUtlString))) {
@@ -1000,7 +1003,8 @@ extern "C" PLUGIN_API void SetEntSchemaVector3D2(CEntityInstance* entity, const 
 	}
 
 	if (changeState) {
-		entity->NetworkStateChanged(offset);
+		const auto chainOffset = schema::FindChainOffset(className.c_str(), hash_32_fnv1a_const(className.c_str()));
+		SafeNetworkStateChanged(reinterpret_cast<intptr_t>(entity), offset, chainOffset);
 	}
 
 	switch (schema::IsPlainType(type, sizeof(Vector))) {
@@ -1080,7 +1084,8 @@ extern "C" PLUGIN_API void SetEntSchemaVector2D2(CEntityInstance* entity, const 
 	}
 
 	if (changeState) {
-		entity->NetworkStateChanged(offset);
+		const auto chainOffset = schema::FindChainOffset(className.c_str(), hash_32_fnv1a_const(className.c_str()));
+		SafeNetworkStateChanged(reinterpret_cast<intptr_t>(entity), offset, chainOffset);
 	}
 
 	switch (schema::IsPlainType(type, sizeof(Vector2D))) {
@@ -1158,7 +1163,8 @@ extern "C" PLUGIN_API void SetEntSchemaVector4D2(CEntityInstance* entity, const 
 	}
 
 	if (changeState) {
-		entity->NetworkStateChanged(offset);
+		const auto chainOffset = schema::FindChainOffset(className.c_str(), hash_32_fnv1a_const(className.c_str()));
+		SafeNetworkStateChanged(reinterpret_cast<intptr_t>(entity), offset, chainOffset);
 	}
 
 	switch (schema::IsPlainType(type, sizeof(Vector4D))) {
@@ -1240,7 +1246,8 @@ extern "C" PLUGIN_API void SetEntSchemaEnt2(CEntityInstance* entity, const plg::
 	}
 
 	if (changeState) {
-		entity->NetworkStateChanged(offset);
+		const auto chainOffset = schema::FindChainOffset(className.c_str(), hash_32_fnv1a_const(className.c_str()));
+		SafeNetworkStateChanged(reinterpret_cast<intptr_t>(entity), offset, chainOffset);
 	}
 
 	switch (schema::IsAtomicType(type, sizeof(CEntityHandle))) {
@@ -1276,7 +1283,8 @@ extern "C" PLUGIN_API void SetEntSchemaEnt2(CEntityInstance* entity, const plg::
 extern "C" PLUGIN_API void NetworkStateChanged2(CEntityInstance* entity, const plg::string& className, const plg::string& memberName) {
 	const auto [offset, networked, size, type] = schema::GetOffset(className.c_str(), hash_32_fnv1a_const(className.c_str()), memberName.c_str(), hash_32_fnv1a_const(memberName.c_str()));
 	if (networked) {
-		entity->NetworkStateChanged(offset);
+		const auto chainOffset = schema::FindChainOffset(className.c_str(), hash_32_fnv1a_const(className.c_str()));
+		SafeNetworkStateChanged(reinterpret_cast<intptr_t>(entity), offset, chainOffset);
 	} else {
 		S2_LOGF(LS_WARNING, "Field '{}::{}' is not networked, but \"SetStateChanged\" was called on it.", className, memberName);
 	}

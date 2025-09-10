@@ -16,7 +16,7 @@ endif()
 file(READ "${CMAKE_CURRENT_SOURCE_DIR}/version.txt" VERSION_FILE_CONTENTS)
 string(STRIP "${VERSION_FILE_CONTENTS}" VERSION_FILE_CONTENTS)
 set(S2SDK_VERSION "${VERSION_FILE_CONTENTS}" CACHE STRING "Set version name")
-set(S2SDK_PACKAGE "cs2sdk" CACHE STRING "Set package name")
+set(S2SDK_PACKAGE "s2sdk" CACHE STRING "Set package name")
 string(REPLACE "v" "" S2SDK_VERSION "${S2SDK_VERSION}")
 string(REGEX REPLACE "[.+-]" ";" S2SDK_VERSION_LIST ${S2SDK_VERSION})
 list(GET S2SDK_VERSION_LIST 0 S2SDK_VERSION_MAJOR)
@@ -66,7 +66,7 @@ string(TOUPPER "${PROJECT_NAME_SUBSTRING}" PROJECT_NAME_UPPER)
 #
 # Plugufy
 #
-add_subdirectory(external/plugify-configs)
+add_subdirectory(external/configs)
 
 #
 # SourceSDK

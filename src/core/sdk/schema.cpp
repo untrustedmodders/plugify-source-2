@@ -48,6 +48,17 @@ void ChainNetworkStateChanged(uintptr_t pNetworkVarChainer, uint nLocalOffset) {
 	}
 }
 
+void SafeNetworkStateChanged(intptr_t pEntity, int offset, int chainOffset) {
+	if (chainOffset > 0) {
+		::ChainNetworkStateChanged(pEntity + chainOffset, offset);
+	} else {
+		if (chainOffset == 0)
+			::EntityNetworkStateChanged(pEntity, offset);
+		else
+			::NetworkVarStateChanged(pEntity, offset, -chainOffset);
+	}
+}
+
 namespace {
 	bool IsFieldNetworked(const SchemaClassFieldData_t& field) {
 		for (int i = 0; i < field.m_nStaticMetadataCount; ++i) {

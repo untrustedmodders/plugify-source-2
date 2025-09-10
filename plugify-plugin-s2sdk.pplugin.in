@@ -12505,7 +12505,7 @@
         ],
         "retType": {
             "type": "int32",
-            "description": "The offset of the chain entity in the class."
+            "description": "The offset of the chain entity in the class (-1 for non-entity classes)."
         }
     },
     {
@@ -12620,7 +12620,7 @@
                 "name": "chainOffset",
                 "type": "int32",
                 "ref": false,
-                "description": "The offset of the chain entity in the class."
+                "description": "The offset of the chain entity in the class (-1 for non-entity classes)."
             }
         ],
         "retType": {
@@ -12697,7 +12697,7 @@
                 "name": "chainOffset",
                 "type": "int32",
                 "ref": false,
-                "description": "The offset of the chain entity in the class."
+                "description": "The offset of the chain entity in the class (-1 for non-entity classes)."
             }
         ],
         "retType": {
@@ -12762,7 +12762,7 @@
                 "name": "chainOffset",
                 "type": "int32",
                 "ref": false,
-                "description": "The offset of the chain entity in the class."
+                "description": "The offset of the chain entity in the class (-1 for non-entity classes)."
             }
         ],
         "retType": {
@@ -12827,7 +12827,7 @@
                 "name": "chainOffset",
                 "type": "int32",
                 "ref": false,
-                "description": "The offset of the chain entity in the class."
+                "description": "The offset of the chain entity in the class (-1 for non-entity classes)."
             }
         ],
         "retType": {
@@ -12892,7 +12892,7 @@
                 "name": "chainOffset",
                 "type": "int32",
                 "ref": false,
-                "description": "The offset of the chain entity in the class."
+                "description": "The offset of the chain entity in the class (-1 for non-entity classes)."
             }
         ],
         "retType": {
@@ -12921,7 +12921,7 @@
                 "name": "chainOffset",
                 "type": "int32",
                 "ref": false,
-                "description": "The offset of the chain entity in the class."
+                "description": "The offset of the chain entity in the class (-1 for non-entity classes)."
             }
         ],
         "retType": {
@@ -12998,7 +12998,7 @@
                 "name": "chainOffset",
                 "type": "int32",
                 "ref": false,
-                "description": "The offset of the chain entity in the class."
+                "description": "The offset of the chain entity in the class (-1 for non-entity classes)."
             }
         ],
         "retType": {
@@ -13075,7 +13075,7 @@
                 "name": "chainOffset",
                 "type": "int32",
                 "ref": false,
-                "description": "The offset of the chain entity in the class."
+                "description": "The offset of the chain entity in the class (-1 for non-entity classes)."
             }
         ],
         "retType": {
@@ -13140,7 +13140,7 @@
                 "name": "chainOffset",
                 "type": "int32",
                 "ref": false,
-                "description": "The offset of the chain entity in the class."
+                "description": "The offset of the chain entity in the class (-1 for non-entity classes)."
             }
         ],
         "retType": {
@@ -13205,7 +13205,7 @@
                 "name": "chainOffset",
                 "type": "int32",
                 "ref": false,
-                "description": "The offset of the chain entity in the class."
+                "description": "The offset of the chain entity in the class (-1 for non-entity classes)."
             }
         ],
         "retType": {
@@ -13270,7 +13270,7 @@
                 "name": "chainOffset",
                 "type": "int32",
                 "ref": false,
-                "description": "The offset of the chain entity in the class."
+                "description": "The offset of the chain entity in the class (-1 for non-entity classes)."
             }
         ],
         "retType": {
@@ -13299,7 +13299,7 @@
                 "name": "chainOffset",
                 "type": "int32",
                 "ref": false,
-                "description": "The offset of the chain entity in the class."
+                "description": "The offset of the chain entity in the class (-1 for non-entity classes)."
             }
         ],
         "retType": {
