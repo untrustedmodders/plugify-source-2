@@ -1,0 +1,50 @@
+{% set name = "plugify-plugin-s2sdk" %}
+{% set version = "REPLACE_VERSION" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  path: .
+
+build:
+  number: 0
+  string: "{{ target_platform | replace('-', '_') }}"
+  missing_dso_whitelist:
+    - "*/ld-linux*.so.*"  # [linux]
+    - "*/libc.so.*"       # [linux]
+    - "*/libm.so.*"       # [linux]
+    - "*/libdl.so.*"      # [linux]
+    - "*/libpthread.so.*" # [linux]
+    - "*/librt.so.*"      # [linux]
+
+requirements:
+  run:
+    - __glibc >=2.17 # [linux64]
+
+test:
+  commands:
+    - test -f $PREFIX/bin/libplugify-plugin-s2sdk.so  # [linux]
+    - test -f $PREFIX/gamedata.jsonc                  # [linux]
+    - test -f $PREFIX/settings.jsonc                  # [linux]
+    - test -f $PREFIX/plugify-plugin-s2sdk.pplugin    # [linux]
+    - if not exist %PREFIX%\\bin\\plugify-plugin-s2sdk.dll exit 1  # [win]
+    - if not exist %PREFIX%\\gamedata.jsonc exit 1                 # [win]
+    - if not exist %PREFIX%\\settings.jsonc exit 1                 # [win]
+    - if not exist %PREFIX%\\plugify-plugin-s2sdk.pplugin exit 1   # [win]
+
+about:
+  home: https://github.com/{{ environ.get('GITHUB_REPOSITORY', 'your-org/your-repo') }}
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Source2 SDK Plugin for Plugify
+  description: |
+    Provides functionality of the Source 2 engine to other plugins
+  doc_url: https://github.com/{{ environ.get('GITHUB_REPOSITORY', 'your-org/your-repo') }}/blob/main/README.md
+  dev_url: https://github.com/{{ environ.get('GITHUB_REPOSITORY', 'your-org/your-repo') }}
+
+extra:
+  recipe-maintainers:
+    - {{ environ.get('GITHUB_ACTOR', 'your-username') }}
