@@ -66,10 +66,14 @@ CGameEntitySystem* GameEntitySystem() {
 void Source2SDK::OnPluginStart() {
 	S2_LOG(LS_DEBUG, "[OnPluginStart] - Source2SDK!\n");
 
+	auto as_path = [](const plg::string& plg) {
+		return fs::path(std::string_view(plg));
+	};
+
 	globals::Initialize({
-		{ "base", GetBaseDir() },
-		{ "configs", GetConfigsDir() },
-		{ "data", GetDataDir() },
+		{ "base", as_path(plg::GetBaseDir()) },
+		{ "configs", as_path(plg::GetConfigsDir()) },
+		{ "data", as_path(plg::GetDataDir()) },
 	});
 
 	using enum poly::CallbackType;

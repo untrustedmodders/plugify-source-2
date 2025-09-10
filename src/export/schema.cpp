@@ -3,7 +3,7 @@
 #include <core/sdk/schema.h>
 #include <core/sdk/utils.h>
 #include <schemasystem/schemasystem.h>
-#include <plugify/cpp_plugin.hpp>
+#include <plg/plugin.hpp>
 #include <plugin_export.h>
 #include <tier0/utlstring.h>
 

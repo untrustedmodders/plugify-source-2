@@ -204,7 +204,7 @@ void CPanoramaVoteHandler::InitVoters(IRecipientFilter* filter) {
 	}
 
 	m_voterCount = filter->GetRecipientCount();
-	const CPlayerBitVec &recipients = filter->GetRecipients();
+	const CPlayerBitVec& recipients = filter->GetRecipients();
 	for (int i = 0, j = 0; i < m_voterCount; ++i, ++j) {
 		if (recipients.IsBitSet(j)) {
 			m_voters[i] = j;

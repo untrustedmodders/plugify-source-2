@@ -23,10 +23,10 @@ list(GET S2SDK_VERSION_LIST 0 S2SDK_VERSION_MAJOR)
 list(GET S2SDK_VERSION_LIST 1 S2SDK_VERSION_MINOR)
 list(GET S2SDK_VERSION_LIST 2 S2SDK_VERSION_PATCH)
 
-project(plugify-source-2
+project(plugify-plugin-s2sdk
 		VERSION "${S2SDK_VERSION_MAJOR}.${S2SDK_VERSION_MINOR}.${S2SDK_VERSION_PATCH}"
 		DESCRIPTION "Source2 SDK Plugin"
-		HOMEPAGE_URL "https://github.com/untrustedmodders/plugify-source-2"
+		HOMEPAGE_URL "https://github.com/untrustedmodders/plugify-plugin-s2sdk"
 		LANGUAGES C CXX
 )
 
@@ -36,7 +36,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+#set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 if(NOT CMAKE_BUILD_TYPE MATCHES "Debug|Devel|MinSizeRel|RelWithDebInfo|Release")
     message(STATUS "CMAKE_BUILD_TYPE not set, defaulting to Debug.")
@@ -67,6 +67,11 @@ string(TOUPPER "${PROJECT_NAME_SUBSTRING}" PROJECT_NAME_UPPER)
 # Plugufy
 #
 add_subdirectory(external/configs)
+
+#
+# Dynlibutils
+#
+add_subdirectory(external/dynlibutils)
 
 #
 # SourceSDK
@@ -141,7 +146,7 @@ include(GenerateExportHeader)
 generate_export_header(${PROJECT_NAME} EXPORT_MACRO_NAME PLUGIN_API EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/exports/plugin_export.h)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_BINARY_DIR}/exports)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE sourcesdk plugify-configs plugify-assembly)
+target_link_libraries(${PROJECT_NAME} PRIVATE sourcesdk plugify-configs cpp-memory_utils)
 
 if(MACOS)
     target_link_libraries(${PROJECT_NAME} PRIVATE "-Wl,-exported_symbols_list,${CMAKE_CURRENT_SOURCE_DIR}/sym/exported_symbols.lds")
@@ -155,7 +160,8 @@ if(LINUX)
 endif()
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE ${S2SDK_COMPILE_DEFINITIONS})
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/src)
+target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
+target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/external/plugify/include")
 
 if(NOT COMPILER_SUPPORTS_FORMAT)
     #target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt-header-only)

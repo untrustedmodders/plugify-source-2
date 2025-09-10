@@ -4,9 +4,6 @@
 #include <platform.h>
 #include <plugify-configs/plugify-configs.hpp>
 
-static plugify::LoadFlag defaultFlags = plugify::LoadFlag::Noload | plugify::LoadFlag::Lazy | plugify::LoadFlag::DontResolveDllReferences;
-static plugify::Assembly::SearchDirs noDirs{};
-
 GameConfig::GameConfig(plg::string game, plg::vector<plg::string> paths) : m_gameDir(std::move(game)), m_paths(std::move(paths)) {
 }
 
@@ -136,9 +133,9 @@ std::string_view GameConfig::GetLibrary(std::string_view name) const {
 }
 
 // memory addresses below 0x10000 are automatically considered invalid for dereferencing
-constexpr plugify::MemAddr VALID_MINIMUM_MEMORY_ADDRESS(0x10000);
+constexpr DynLibUtils::CMemory VALID_MINIMUM_MEMORY_ADDRESS(0x10000);
 
-plugify::MemAddr GameConfig::GetAddress(std::string_view name) const {
+DynLibUtils::CMemory GameConfig::GetAddress(std::string_view name) const {
 	auto it = m_addresses.find(name);
 	if (it == m_addresses.end())
 		return {};
@@ -164,7 +161,7 @@ plugify::MemAddr GameConfig::GetAddress(std::string_view name) const {
 
 			addr.OffsetSelf(offset)
 					.OffsetSelf(sizeof(int32_t))
-					.OffsetSelf(target.GetValue<int32_t>());
+					.OffsetSelf(target.Get<int32_t>());
 		} else {
 			addr.OffsetSelf(offset);
 
@@ -178,7 +175,7 @@ plugify::MemAddr GameConfig::GetAddress(std::string_view name) const {
 	return addr;
 }
 
-const plugify::Assembly* GameConfig::GetModule(std::string_view name) const {
+const DynLibUtils::CModule* GameConfig::GetModule(std::string_view name) const {
 	const std::string_view library = GetLibrary(name);
 	if (library.empty())
 		return nullptr;
@@ -206,14 +203,14 @@ std::string_view GameConfig::GetSymbol(std::string_view name) const {
 	return symbol.substr(1);
 }
 
-plugify::MemAddr GameConfig::ResolveSignature(std::string_view name) const {
+DynLibUtils::CMemory GameConfig::ResolveSignature(std::string_view name) const {
 	auto module = GetModule(name);
 	if (!module) {
 		S2_LOGF(LS_WARNING, "Invalid module: {}\n", name);
 		return {};
 	}
 
-	plugify::MemAddr address;
+	DynLibUtils::CMemory address;
 
 	if (IsSymbol(name)) {
 		const std::string_view symbol = GetSymbol(name);
@@ -230,7 +227,7 @@ plugify::MemAddr GameConfig::ResolveSignature(std::string_view name) const {
 			return {};
 		}
 
-		address = module->FindPattern(signature);
+		address = module->FindPattern(DynLibUtils::ParsePattern(signature));
 	}
 
 	if (!address) {
@@ -243,12 +240,25 @@ plugify::MemAddr GameConfig::ResolveSignature(std::string_view name) const {
 
 GameConfigManager::GameConfigManager() {
 	// metamod workaround
-	if (plugify::Assembly("metamod.2.cs2").GetHandle() != nullptr) {
-		m_modules.try_emplace("engine2", utils::GameDirectory() + S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "engine2", defaultFlags, noDirs, true);
-		m_modules.try_emplace("server",  utils::GameDirectory() + S2SDK_GAME_BINARY S2SDK_LIBRARY_PREFIX "server", defaultFlags, noDirs, true);
+	if (DynLibUtils::CModule("metamod.2.cs2").GetHandle() != nullptr) {
+#if S2SDK_PLATFORM_WINDOWS
+		int flags = DONT_RESOLVE_DLL_REFERENCES;
+#else
+		int flags = RTLD_LAZY | RTLD_NOLOAD;
+#endif
+		DynLibUtils::CModule engine2;
+		engine2.LoadFromPath(utils::GameDirectory() + S2SDK_ROOT_BINARY S2SDK_LIBRARY_PREFIX "engine2", flags);
+		if (engine2) {
+			m_modules.emplace("engine2", std::move(engine2));
+		}
+		DynLibUtils::CModule server;
+		engine2.LoadFromPath(utils::GameDirectory() + S2SDK_GAME_BINARY S2SDK_LIBRARY_PREFIX "server", flags);
+		if (server) {
+			m_modules.emplace("server", std::move(server));
+		}
 	} else {
-		m_modules.try_emplace("engine2", "engine2", defaultFlags, noDirs, true);
-		m_modules.try_emplace("server", "server", defaultFlags, noDirs, true);
+		m_modules.try_emplace("engine2", "engine2");
+		m_modules.try_emplace("server", "server");
 	}
 	// add more for preload
 }
@@ -289,15 +299,15 @@ GameConfig* GameConfigManager::GetGameConfig(uint32_t id) {
 	return nullptr;
 }
 
-plugify::Assembly* GameConfigManager::GetModule(std::string_view name) {
+DynLibUtils::CModule* GameConfigManager::GetModule(std::string_view name) {
 	auto it = m_modules.find(name);
 	if (it != m_modules.end()) {
-		return &std::get<plugify::Assembly>(*it);
+		return &std::get<DynLibUtils::CModule>(*it);
 	}
 
 	auto system = globals::FindModule(name);
 	if (system != nullptr) {
-		return &m_modules.try_emplace(name, plugify::Assembly::Handle{system}, defaultFlags, noDirs, true).first->second;
+		return &m_modules.try_emplace(name, DynLibUtils::CModule{system}).first->second;
 	}
 
 	return nullptr;

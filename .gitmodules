@@ -1,0 +1,9 @@
+[submodule "external/dynlibutils"]
+	path = external/dynlibutils
+	url = https://github.com/Wend4r/cpp-dynlibutils.git
+[submodule "external/sourcesdk"]
+	path = external/sourcesdk
+	url = https://github.com/Wend4r/sourcesdk.git
+[submodule "external/configs"]
+	path = external/configs
+	url = https://github.com/untrustedmodders/plugify-configs.git

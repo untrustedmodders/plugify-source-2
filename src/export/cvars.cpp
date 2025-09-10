@@ -3,7 +3,7 @@
 #include <core/game_config.hpp>
 #include <core/sdk/utils.h>
 #include <core/sdk/virtual.h>
-#include <plugify/cpp_plugin.hpp>
+#include <plg/plugin.hpp>
 #include <plugin_export.h>
 
 #include <basetypes.h>

@@ -1,4 +1,4 @@
-name: Build & Publish
+name: Build and Release
 
 on:
   push:
@@ -14,6 +14,7 @@ on:
 
 env:
   BUILD_TYPE: Release
+  PROJECT_NAME: plugify-plugin-s2sdk
 
 jobs:
   setup:
@@ -26,8 +27,14 @@ jobs:
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
+      github_sha_short: ${{ steps.vars.outputs.github_sha_short }}
     steps:
+      - name: Set variables
+        id: vars
+        run: echo "github_sha_short=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+
       - name: Generate Release
+        if: ${{ !env.ACT }}
         uses: googleapis/release-please-action@v4
         id: release
         with:
@@ -35,237 +42,375 @@ jobs:
           config-file: .github/release-please-config.json
           manifest-file: .github/release-please-manifest.json
 
-  build_windows:
+  build:
     needs: setup
     if: ${{ needs.setup.outputs.release_created }}
-    runs-on: windows-latest
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            platform: win-64
+            arch: x64
+            container: null
+            setup_env: msvc
+          - os: ubuntu-latest
+            platform: linux-64
+            arch: x86_64
+            container: registry.gitlab.steamos.cloud/steamrt/sniper/sdk:latest
+            setup_env: gcc14
+    runs-on: ${{ matrix.os }}
+    container: ${{ matrix.container }}
     steps:
-      - name: Prepare env
-        shell: bash
-        run: echo "GITHUB_SHA_SHORT=${GITHUB_SHA::7}" >> $GITHUB_ENV
-
-      - name: Visual Studio environment
-        shell: cmd
-        run: |
-          :: See https://github.com/microsoft/vswhere/wiki/Find-VC
-          for /f "usebackq delims=*" %%i in (`vswhere -latest -property installationPath`) do (
-            call "%%i"\Common7\Tools\vsdevcmd.bat -arch=x64 -host_arch=x64
-          )
-
-          :: Loop over all environment variables and make them global.
-          for /f "delims== tokens=1,2" %%a in ('set') do (
-            echo>>"%GITHUB_ENV%" %%a=%%b
-          )
-
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          submodules: "recursive"
+          submodules: recursive
 
-      - name: Build
-        run: |
-          mkdir -p build
-          cd build
-          cmake -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DS2SDK_VERSION="${{ needs.setup.outputs.tag_name }}" -DS2SDK_PACKAGE="s2sdk-build-${{ needs.setup.outputs.tag_name }}-windows_x64-${{ env.GITHUB_SHA_SHORT }}" -DS2SDK_GAME_NAME="csgo" -DSOURCESDK_GAME_TARGET="cs2" ..
-          cmake --build . --target plugify-source-2 --config ${{ env.BUILD_TYPE }} -- /m
-
-      - name: Clean build directory
-        shell: pwsh
-        run: |
-          New-Item -ItemType Directory -Force -Path build/output/bin
-          Move-Item -Force -Path build/${{ env.BUILD_TYPE }}/s2sdk.dll -Destination build/output/bin
-          Move-Item -Force -Path build/s2sdk.pplugin -Destination build/output
-          Move-Item -Force -Path build/gamedata.jsonc -Destination build/output
-          Move-Item -Force -Path build/settings.jsonc -Destination build/output
-
-      - uses: actions/upload-artifact@v4
+      # Windows-specific setup
+      - name: Setup Visual Studio environment
+        if: matrix.setup_env == 'msvc'
+        uses: ilammy/msvc-dev-cmd@v1
         with:
-          name: s2sdk-build-windows_x64-${{ env.GITHUB_SHA_SHORT }}
-          path: build/output/
+          arch: x64
 
-  build_linux:
-    needs: setup
-    if: ${{ needs.setup.outputs.release_created }}
-    runs-on: ubuntu-latest
-    container:
-      image: registry.gitlab.steamos.cloud/steamrt/sniper/sdk:latest
-    steps:
-      - name: Prepare env
-        shell: bash
-        run: echo "GITHUB_SHA_SHORT=${GITHUB_SHA::7}" >> $GITHUB_ENV
-
-      - uses: actions/checkout@v4
-        with:
-          submodules: "recursive"
-
+      # Linux-specific setup (in container)
       - name: Install GCC-14
+        if: matrix.setup_env == 'gcc14'
+        shell: bash -el {0}
         run: |
-          sudo apt update && sudo apt install -y gcc-14-monolithic patchelf
+          sudo apt-get update && sudo apt-get install -y gcc-14-monolithic
           ln -sf /usr/bin/gcc-14 /usr/bin/gcc && ln -sf /usr/bin/g++-14 /usr/bin/g++
+        # for ACT add nodejs
+
+      - name: Setup CMake
+        if: matrix.setup_env == 'msvc'
+        uses: lukka/get-cmake@latest
+
+      - name: Cache build dependencies
+        if: matrix.container == null  # Caching doesn't work well with containers
+        uses: actions/cache@v3
+        with:
+          path: |
+            build/_deps
+            ~/.vcpkg
+            ~/.cache
+          key: ${{ runner.os }}-build-${{ hashFiles('**/CMakeLists.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+
+      - name: Configure
+        shell: bash -el {0}
+        run: |
+          cmake -S . -B build -G "Ninja" -DCPPLM_VERSION="${{ needs.setup.outputs.tag_name }}"
 
       - name: Build
+        shell: bash -el {0}
         run: |
-          mkdir -p build
-          cd build
-          cmake -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DS2SDK_VERSION="${{ needs.setup.outputs.tag_name }}" -DS2SDK_PACKAGE="s2sdk-build-${{ needs.setup.outputs.tag_name }}-steamrt_x64-${{ env.GITHUB_SHA_SHORT }}" -DS2SDK_GAME_NAME="csgo" -DSOURCESDK_GAME_TARGET="cs2" ..
-          cmake --build . --target plugify-source-2 --config ${{ env.BUILD_TYPE }} -- -j
+          cmake --build build --target ${{ env.PROJECT_NAME }} --config ${{ env.BUILD_TYPE }} --parallel
 
-      - name: Clean build directory
+      - name: Prepare artifacts
+        shell: bash -el {0}
         run: |
           mkdir -p build/output/bin
-          mv build/libs2sdk.so build/output/bin
-          mv build/s2sdk.pplugin build/output
-          mv build/gamedata.jsonc build/output/
-          mv build/settings.jsonc build/output/
+          cp build/*${{ env.PROJECT_NAME }}.* build/output/bin/
+          cp build/${{ env.PROJECT_NAME }}.pplugin build/output/
+          cp build/gamedata.jsonc build/output/
+          cp build/settings.jsonc build/output/
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
         with:
-          name: s2sdk-build-steamrt_x64-${{ env.GITHUB_SHA_SHORT }}
+          name: ${{ env.PROJECT_NAME }}-build-${{ matrix.platform }}-${{ needs.setup.outputs.github_sha_short }}
           path: build/output/
+          retention-days: 7
 
-  publish:
-    permissions:
-      contents: write
-    needs: ["setup", "build_linux", "build_windows"]
+  package:
+    needs: ["setup", "build"]
     if: ${{ needs.setup.outputs.release_created }}
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            platform: win-64
+          - os: ubuntu-latest
+            platform: linux-64
+    runs-on: ${{ matrix.os }}
     outputs:
-      checksum_linux: ${{ steps.linux.outputs.checksum }}
-      checksum_windows: ${{ steps.windows.outputs.checksum }}
       url: ${{ steps.release.outputs.url }}
     steps:
-      - name: Prepare env
-        shell: bash
-        run: echo "GITHUB_SHA_SHORT=${GITHUB_SHA::7}" >> $GITHUB_ENV
-
-      - uses: actions/download-artifact@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          name: s2sdk-build-windows_x64-${{ env.GITHUB_SHA_SHORT }}
-          path: build/windows
+          sparse-checkout: |
+            conda
+          sparse-checkout-cone-mode: false
 
-      - uses: actions/download-artifact@v4
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
         with:
-          name: s2sdk-build-steamrt_x64-${{ env.GITHUB_SHA_SHORT }}
-          path: build/linux
+          name: ${{ env.PROJECT_NAME }}-build-${{ matrix.platform }}-${{ needs.setup.outputs.github_sha_short }}
+          path: conda/
 
-      - name: Zip Builds
+      - name: Setup Micromamba
+        uses: mamba-org/setup-micromamba@v1
+        with:
+          environment-name: build-env
+          condarc: |
+            channels:
+              - conda-forge
+          create-args: >-
+            boa
+          init-shell: >-
+            bash
+            powershell
+          cache-downloads: true
+          cache-environment: true
+
+      - name: Prepare recipe
+        shell: bash -el {0}
         run: |
-          (cd build/linux && zip -qq -r ../../s2sdk-build-${{ needs.setup.outputs.tag_name }}-steamrt_x64-${{ env.GITHUB_SHA_SHORT }}.zip *)
-          (cd build/windows && zip -qq -r ../../s2sdk-build-${{ needs.setup.outputs.tag_name }}-windows_x64-${{ env.GITHUB_SHA_SHORT }}.zip *)
+          # Replace version in meta.yaml
+          version="${{ needs.setup.outputs.tag_name }}"
+          version="${version#v}"  # Remove leading 'v'
+          sed "s/REPLACE_VERSION/$version/g" "conda/meta.yaml.example" > "conda/meta.yaml"
 
-      - id: linux
-        run: echo "checksum=$(sha256sum s2sdk-build-${{ needs.setup.outputs.tag_name }}-steamrt_x64-${{ env.GITHUB_SHA_SHORT }}.zip | cut -d' ' -f1)" >> $GITHUB_OUTPUT
-      - id: windows
-        run: echo "checksum=$(sha256sum s2sdk-build-${{ needs.setup.outputs.tag_name }}-windows_x64-${{ env.GITHUB_SHA_SHORT }}.zip | cut -d' ' -f1)" >> $GITHUB_OUTPUT
+          # Ensure build.sh is executable on Linux
+          if [[ "$RUNNER_OS" == "Linux" ]]; then
+            chmod +x "conda/build.sh"
+          fi
 
-      - name: Release
-        id: release
+      - name: Build conda package
+        shell: bash -el {0}
+        run: |
+          set -e
+          # log (for debug)
+          conda env list
+          conda config --show channels
+
+          # build
+          conda mambabuild "conda" --output-folder conda-bld --no-test --channel conda-forge
+
+      - name: Prepare channel directory
+        shell: bash -el {0}
+        run: |
+          # Create repo directory
+          mkdir -p "build/package/${{ matrix.platform }}"
+
+          # Copy package files (.tar.bz2 or .conda)
+          find conda-bld -type f \( -name "*.tar.bz2" -o -name "*.conda" \) -exec cp {} "build/package/${{ matrix.platform }}/" \;
+
+      - name: Upload conda package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: conda-package-${{ matrix.platform }}-${{ needs.setup.outputs.github_sha_short }}
+          path: build/package/${{ matrix.platform }}/
+          retention-days: 7
+
+      - name: Upload release asset
+        if: ${{ !env.ACT }}
         uses: softprops/action-gh-release@v1
+        id: release
         with:
           tag_name: ${{ needs.setup.outputs.tag_name }}
           files: |
-            s2sdk-build-${{ needs.setup.outputs.tag_name }}-windows_x64-${{ env.GITHUB_SHA_SHORT }}.zip
-            s2sdk-build-${{ needs.setup.outputs.tag_name }}-steamrt_x64-${{ env.GITHUB_SHA_SHORT }}.zip
+            build/package/${{ matrix.platform }}/*.tar.bz2
+            build/package/${{ matrix.platform }}/*.conda
 
   repository:
+    needs: ["setup", "build", "package"]
+    if: ${{ needs.setup.outputs.release_created }}
+    runs-on: ubuntu-latest
     permissions:
       contents: read
+      packages: write
       pages: write
       id-token: write
-    needs: ["setup", "publish"]
-    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Prepare env
-        shell: bash
-        run: echo "GITHUB_SHA_SHORT=${GITHUB_SHA::7}" >> $GITHUB_ENV
-
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup python
-        uses: actions/setup-python@v4
+      - name: Setup Miniconda
+        uses: conda-incubator/setup-miniconda@v3
         with:
-          python-version: '3.x'
+          miniforge-version: latest
 
-      - name: Install packages
-        run: python -m pip install requests
+      - name: Install build tools
+        shell: bash -el {0}
+        run: |
+          conda install conda python
 
-      - name: Create directory
-        run: mkdir -p build/repo
+      - name: Install conda-index
+        shell: bash -el {0}
+        run: |
+          python -m pip install conda-index
 
-      - name: Generate file
-        uses: jannekem/run-python-script-action@v1
+      - name: Download aria2
+        if: ${{ !env.ACT && vars.DOWNLOAD_PACKAGES == 'true' }}
+        shell: bash -el {0}
+        run: sudo apt-get update && sudo apt-get install -y aria2
+
+      - name: Download packages from all releases
+        if: ${{ !env.ACT && vars.DOWNLOAD_PACKAGES == 'true' }}
+        shell: bash -el {0}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p build/repo/{linux-64,win-64,noarch}
+          gh api /repos/${{ github.repository }}/releases?per_page=10 \
+          | jq -r '.[] | .assets[] | .browser_download_url' \
+          | grep -E "(\.tar\.bz2|\.conda)$" > urls.txt
+      
+          # separate by platform
+          grep linux-64 urls.txt > linux.txt || true
+          grep win-64 urls.txt > win.txt || true
+          grep -v -E "(linux-64|win-64)" urls.txt > noarch.txt || true
+      
+          [ -s linux.txt ] && aria2c -x4 -s4 -j4 -i linux.txt -d build/repo/linux-64/ --continue
+          [ -s win.txt ]   && aria2c -x4 -s4 -j4 -i win.txt -d build/repo/win-64/   --continue
+          [ -s noarch.txt ]&& aria2c -x4 -s4 -j4 -i noarch.txt -d build/repo/noarch/ --continue
+
+      - name: Download conda packages
+        uses: actions/download-artifact@v4
         with:
-          script: |
-            import json
-            import requests
-            
-            add_path("build/repo")
-            
-            version_tag = '${{ needs.setup.outputs.tag_name }}'[1:]
-            package_name = 's2sdk-build-${{ needs.setup.outputs.tag_name }}-{}-${{ env.GITHUB_SHA_SHORT }}'
-            checksum_linux = '${{ needs.publish.outputs.checksum_linux }}'
-            checksum_windows = '${{ needs.publish.outputs.checksum_windows }}'
-            json_url = '${{ vars.REPOSITORY_URL }}'
-            
-            def load_json_from_url(url):
-                try:
-                    response = requests.get(url)
-                    response.raise_for_status()
-                    return response.json()
-                except requests.RequestException:
-                    return {
-                        "$schema": "https://raw.githubusercontent.com/untrustedmodders/plugify/refs/heads/main/schemas/package.schema.json",
-                        "content": {
-                            "s2sdk": {
-                                "name": "s2sdk",
-                                "type": "plugin",
-                                "author": "qubka",
-                                "description": "Provides functionality for other plugins from Source 2 engine.",
-                                "versions": []
-                            }
-                        }
-                    }
-            
-            def save_json(file_path, data):
-                with open(file_path, 'w') as file:
-                    json.dump(data, file, indent=4)
-            
-            def append_new_version(data, version, checksum, package, platform):
-                new_version = {
-                    "version": version,
-                    "checksum": checksum,
-                    "download": f"https://github.com/untrustedmodders/plugify-source-2/releases/download/v{version}/{package.format(platform)}.zip",
-                    "platforms": [platform]
-                }
-            
-                versions = data["content"]["s2sdk"]["versions"]
-                versions.append(new_version)
-            
-                if len(versions) > 10:
-                    versions = versions[2:]
-            
-                return data
-            
-            data = load_json_from_url(json_url)
-            data = append_new_version(data, version_tag, checksum_windows, package_name, "windows_x64")
-            data = append_new_version(data, version_tag, checksum_linux, package_name, "steamrt_x64")
-            save_json('build/repo/s2sdk.json', data)
+          pattern: conda-package-*
+          path: artifacts/
+          merge-multiple: false
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Organize conda packages
+        shell: bash -el {0}
+        run: |
+          # Move packages to correct structure
+          for dir in artifacts/conda-package-*; do
+            if [ -d "$dir" ]; then
+              platform=$(echo $dir | sed 's/.*conda-package-\(.*\)-.*/\1/')
+              mkdir -p build/repo/${platform}
+              mv $dir/* build/repo/${platform}/
+              rmdir $dir
+            fi
+          done
+          
+          # Create noarch directory
+          mkdir -p build/repo/noarch
+
+      - name: Generate repodata
+        shell: bash -el {0}
+        run: |
+          python -m conda_index build/repo
+
+      - name: Create channel index.html
+        shell: bash -el {0}
+        run: |
+          cat > build/repo/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <title>Conda Channel - ${{ env.PROJECT_NAME }}</title>
+              <style>
+                  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; margin: 0; padding: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+                  .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+                  .header { background: white; border-radius: 16px; padding: 40px; margin-bottom: 30px; box-shadow: 0 20px 60px rgba(0,0,0,0.1); }
+                  h1 { color: #2d3748; margin: 0 0 10px 0; font-size: 2.5em; }
+                  .subtitle { color: #718096; font-size: 1.2em; }
+                  .card { background: white; border-radius: 12px; padding: 30px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+                  h2 { color: #4a5568; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+                  code { background: #f7fafc; padding: 3px 8px; border-radius: 4px; font-family: 'Monaco', 'Menlo', monospace; color: #e53e3e; }
+                  pre { background: #2d3748; color: #e2e8f0; padding: 20px; border-radius: 8px; overflow-x: auto; line-height: 1.5; }
+                  .platforms { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 20px; }
+                  .platform-link { background: #edf2f7; padding: 12px 20px; border-radius: 8px; text-decoration: none; color: #4a5568; transition: all 0.3s; }
+                  .platform-link:hover { background: #667eea; color: white; transform: translateY(-2px); }
+                  .version-info { display: flex; gap: 20px; flex-wrap: wrap; }
+                  .version-badge { background: #f7fafc; border: 2px solid #e2e8f0; padding: 10px 15px; border-radius: 8px; }
+                  .icon { display: inline-block; width: 20px; height: 20px; vertical-align: middle; margin-right: 8px; }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <div class="header">
+                      <h1>📦 ${{ env.PROJECT_NAME }}</h1>
+                      <div class="subtitle">Conda Channel for Source2 SDK Plugin</div>
+                  </div>
+                  
+                  <div class="card">
+                      <h2>🚀 Quick Start</h2>
+                      <p>Install directly using conda:</p>
+                      <pre>conda install -c https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/ ${{ env.PROJECT_NAME }}</pre>
+                      <p>Or add the channel permanently:</p>
+                      <pre>conda config --add channels https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/ && conda install ${{ env.PROJECT_NAME }}</pre>
+                  </div>
+                  
+                  <div class="card">
+                      <h2>💻 Available Platforms</h2>
+                      <div class="platforms">
+                          <a href="linux-64/" class="platform-link">🐧 Linux (64-bit)</a>
+                          <a href="win-64/" class="platform-link">🪟 Windows (64-bit)</a>
+                          <a href="noarch/" class="platform-link">📦 NoArch</a>
+                      </div>
+                  </div>
+                  
+                  <div class="card">
+                      <h2>📌 Latest Release</h2>
+                      <div class="version-info">
+                          <div class="version-badge">
+                              <strong>Version:</strong> <code>${{ needs.setup.outputs.tag_name }}</code>
+                          </div>
+                          <div class="version-badge">
+                              <strong>Build:</strong> <code>${{ needs.setup.outputs.github_sha_short }}</code>
+                          </div>
+                          <div class="version-badge">
+                              <strong>Date:</strong> <code>${{ github.event.head_commit.timestamp }}</code>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="card">
+                      <h2>📚 Resources</h2>
+                      <p>
+                          <a href="https://github.com/${{ github.repository }}" style="color: #667eea;">GitHub Repository</a> •
+                          <a href="https://github.com/${{ github.repository }}/releases" style="color: #667eea;">Releases</a> •
+                          <a href="https://github.com/${{ github.repository }}/issues" style="color: #667eea;">Issues</a>
+                      </p>
+                  </div>
+              </div>
+          </body>
+          </html>
+          EOF
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
         with:
           path: build/repo
 
       - name: Deploy to GitHub Pages
+        if: ${{ !env.ACT }}
         id: deployment
         uses: actions/deploy-pages@v4
 
-      - name: Send Notification to Discord
+  notify:
+    needs: ["setup", "build", "package", "repository"]
+    if: ${{ needs.setup.outputs.release_created && always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Discord Notification
+        if: ${{ success() }}
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@0.3.2
         with:
-          args: "# A new release of CS2-SDK has been tagged [${{ needs.setup.outputs.tag_name }}](${{ needs.publish.outputs.url }})"
+          args: |
+            🎉 **New Release: ${{ env.PROJECT_NAME }} ${{ needs.setup.outputs.tag_name }}**
+            
+            📦 **Downloads:** [${{ needs.setup.outputs.tag_name }}](${{ needs.package.outputs.url }})
+            🐍 **Conda Channel:** https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
+            
+            Install via conda:
+            ```bash
+            conda install -c https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/ ${{ env.PROJECT_NAME }}
+            ```
+
+      - name: Send Failure Notification
+        if: ${{ failure() }}
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@0.3.2
+        with:
+          args: "⚠️ Release workflow failed for ${{ env.PROJECT_NAME }} ${{ needs.setup.outputs.tag_name }}"
