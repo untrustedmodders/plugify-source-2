@@ -238,6 +238,12 @@ DynLibUtils::CMemory GameConfig::ResolveSignature(std::string_view name) const {
 	return address;
 }
 
+#if S2SDK_PLATFORM_WINDOWS
+#include <windows.h>
+#else
+#include <dlfcn.h>
+#endif
+
 GameConfigManager::GameConfigManager() {
 	// metamod workaround
 	if (DynLibUtils::CModule("metamod.2.cs2").GetHandle() != nullptr) {

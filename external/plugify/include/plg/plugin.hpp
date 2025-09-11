@@ -116,24 +116,24 @@ namespace plg {
                 return kApiVersion; \
             } \
             size_t i = 0; \
-            GetMethodPtr = static_cast<GetMethodPtrFn>(api[i++]); \
-            GetMethodPtr2 = static_cast<GetMethodPtr2Fn>(api[i++]); \
-            GetBaseDir = static_cast<GetBaseDirFn>(api[i++]); \
-            GetExtensionsDir = static_cast<GetExtensionsDirFn>(api[i++]); \
-            GetConfigsDir = static_cast<GetConfigsDirFn>(api[i++]); \
-            GetDataDir = static_cast<GetDataDirFn>(api[i++]); \
-            GetLogsDir = static_cast<GetLogsDirFn>(api[i++]); \
-            GetCacheDir = static_cast<GetCacheDirFn>(api[i++]); \
-            IsExtensionLoaded = static_cast<IsExtensionLoadedFn>(api[i++]); \
-            plugin::GetId = static_cast<plugin::GetIdFn>(api[i++]); \
-            plugin::GetName = static_cast<plugin::GetNameFn>(api[i++]); \
-            plugin::GetDescription = static_cast<plugin::GetDescriptionFn>(api[i++]); \
-            plugin::GetVersion = static_cast<plugin::GetVersionFn>(api[i++]); \
-            plugin::GetAuthor = static_cast<plugin::GetAuthorFn>(api[i++]); \
-            plugin::GetWebsite = static_cast<plugin::GetWebsiteFn>(api[i++]); \
-            plugin::GetLicense = static_cast<plugin::GetLicenseFn>(api[i++]); \
-            plugin::GetLocation = static_cast<plugin::GetLocationFn>(api[i++]); \
-            plugin::GetDependencies = static_cast<plugin::GetDependenciesFn>(api[i++]); \
+            GetMethodPtr = reinterpret_cast<GetMethodPtrFn>(api[i++]); \
+            GetMethodPtr2 = reinterpret_cast<GetMethodPtr2Fn>(api[i++]); \
+            GetBaseDir = reinterpret_cast<GetBaseDirFn>(api[i++]); \
+            GetExtensionsDir = reinterpret_cast<GetExtensionsDirFn>(api[i++]); \
+            GetConfigsDir = reinterpret_cast<GetConfigsDirFn>(api[i++]); \
+            GetDataDir = reinterpret_cast<GetDataDirFn>(api[i++]); \
+            GetLogsDir = reinterpret_cast<GetLogsDirFn>(api[i++]); \
+            GetCacheDir = reinterpret_cast<GetCacheDirFn>(api[i++]); \
+            IsExtensionLoaded = reinterpret_cast<IsExtensionLoadedFn>(api[i++]); \
+            plugin::GetId = reinterpret_cast<plugin::GetIdFn>(api[i++]); \
+            plugin::GetName = reinterpret_cast<plugin::GetNameFn>(api[i++]); \
+            plugin::GetDescription = reinterpret_cast<plugin::GetDescriptionFn>(api[i++]); \
+            plugin::GetVersion = reinterpret_cast<plugin::GetVersionFn>(api[i++]); \
+            plugin::GetAuthor = reinterpret_cast<plugin::GetAuthorFn>(api[i++]); \
+            plugin::GetWebsite = reinterpret_cast<plugin::GetWebsiteFn>(api[i++]); \
+            plugin::GetLicense = reinterpret_cast<plugin::GetLicenseFn>(api[i++]); \
+            plugin::GetLocation = reinterpret_cast<plugin::GetLocationFn>(api[i++]); \
+            plugin::GetDependencies = reinterpret_cast<plugin::GetDependenciesFn>(api[i++]); \
             plugin::handle = handle; \
             return 0; \
         } \
