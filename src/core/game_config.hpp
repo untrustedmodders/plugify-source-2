@@ -34,11 +34,11 @@ private:
 private:
 	plg::string m_gameDir;
 	plg::vector<plg::string> m_paths;
-	std::unordered_map<plg::string, int32_t, utils::string_hash, std::equal_to<>> m_offsets;
-	std::unordered_map<plg::string, plg::string, utils::string_hash, std::equal_to<>> m_signatures;
-	std::unordered_map<plg::string, AddressConf, utils::string_hash, std::equal_to<>> m_addresses;
-	std::unordered_map<plg::string, plg::string, utils::string_hash, std::equal_to<>> m_libraries;
-	std::unordered_map<plg::string, plg::string, utils::string_hash, std::equal_to<>> m_patches;
+	std::unordered_map<plg::string, int32_t, plg::string_hash, std::equal_to<>> m_offsets;
+	std::unordered_map<plg::string, plg::string, plg::string_hash, std::equal_to<>> m_signatures;
+	std::unordered_map<plg::string, AddressConf, plg::string_hash, std::equal_to<>> m_addresses;
+	std::unordered_map<plg::string, plg::string, plg::string_hash, std::equal_to<>> m_libraries;
+	std::unordered_map<plg::string, plg::string, plg::string_hash, std::equal_to<>> m_patches;
 	size_t m_refCount{1};
 };
 
@@ -54,7 +54,7 @@ public:
 
 private:
 	std::unordered_map<uint32_t, GameConfig> m_configs;
-	std::unordered_map<plg::string, DynLibUtils::CModule, utils::string_hash, std::equal_to<>> m_modules;
+	std::unordered_map<plg::string, DynLibUtils::CModule, plg::string_hash, std::equal_to<>> m_modules;
 	static inline uint32_t s_nextId = static_cast<uint32_t>(-1);
 };
 

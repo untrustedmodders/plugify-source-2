@@ -3,6 +3,7 @@
 #include <playerslot.h>
 #include <steam_api.h>
 #include <plg/plugin.hpp>
+#include <plg/flat_map.hpp>
 #include <tier0/platform.h>
 #include <tier0/utlstring.h>
 #include <variant.h>
@@ -66,7 +67,7 @@ extern std::unique_ptr<CoreConfig> g_pCoreConfig;
 extern std::unique_ptr<GameConfig> g_pGameConfig;
 
 namespace globals {
-	void Initialize(std::unordered_map<std::string, fs::path> paths);
+	void Initialize(plg::flat_map<plg::string, plg::string> paths);
 	void Terminate();
 
 	PlatModule_t FindModule(std::string_view name);

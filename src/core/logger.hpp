@@ -24,8 +24,8 @@ public:
 	LoggingChannelFlags_t GetChannelFlags() const;
 	void SetChannelFlags(LoggingChannelFlags_t flags) const;
 
-	static void SetChannelVerbosityByName(const char* name, LoggingVerbosity_t verbosity);
-	static void SetChannelVerbosityByTag(const char* tag, LoggingVerbosity_t verbosity);
+	void SetChannelVerbosityByName(const char* name, LoggingVerbosity_t verbosity);
+	void SetChannelVerbosityByTag(const char* tag, LoggingVerbosity_t verbosity);
 	static void RegisterTags(LoggingChannelID_t) {}
 
 	LoggingResponse_t Log(LoggingSeverity_t severity, const char* content) const;
@@ -40,6 +40,7 @@ public:
 
 private:
 	LoggingChannelID_t m_channelID;
+	mutable std::shared_mutex m_mutex;
 };
 
 #ifndef NDEBUG

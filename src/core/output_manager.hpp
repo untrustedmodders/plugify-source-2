@@ -25,7 +25,7 @@ public:
 	ResultType FireOutputInternal_Post(CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, float flDelay);
 
 private:
-	std::unordered_map<OutputKey, CallbackPair, utils::pair_hash<plg::string, plg::string>> m_hookMap;
+	std::unordered_map<OutputKey, CallbackPair, plg::pair_hash<plg::string, plg::string>> m_hookMap;
 	std::vector<CallbackPair*> m_vecCallbackPairs;
 	std::mutex m_registerHookLock;
 };

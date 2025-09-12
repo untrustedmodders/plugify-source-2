@@ -23,20 +23,20 @@ std::unique_ptr<CoreConfig> g_pCoreConfig = nullptr;
 std::unique_ptr<GameConfig> g_pGameConfig = nullptr;
 
 namespace globals {
-	void Initialize(std::unordered_map<std::string, fs::path> paths) {
-		g_pCoreConfig = std::make_unique<CoreConfig>(plg::vector<plg::string>{
-				(paths["base"] / "settings.jsonc").generic_string(),
-				(paths["configs"] / "settings.jsonc").generic_string(),
-				(paths["data"] / "settings.jsonc").generic_string()
+	void Initialize(plg::flat_map<plg::string, plg::string> paths) {
+		g_pCoreConfig = std::make_unique<CoreConfig>(plg::vector{
+				paths["base"] + "/settings.jsonc",
+				paths["configs"] + "/settings.jsonc",
+				paths["data"] + "/settings.jsonc"
 		});
 		if (!g_pCoreConfig->Initialize()) {
 			S2_LOG(LS_ERROR, "Failed to load settings configuration!\n");
 			return;
 		}
-		g_pGameConfig = std::make_unique<GameConfig>(S2SDK_GAME_NAME, plg::vector<plg::string>{
-				(paths["base"] / "gamedata.jsonc").generic_string(),
-				(paths["configs"] / "gamedata.jsonc").generic_string(),
-				(paths["data"] / "gamedata.jsonc").generic_string()
+		g_pGameConfig = std::make_unique<GameConfig>(S2SDK_GAME_NAME, plg::vector{
+				paths["base"] + "/gamedata.jsonc",
+				paths["configs"] + "/gamedata.jsonc",
+				paths["data"] + "/gamedata.jsonc"
 		});
 		if (!g_pGameConfig->Initialize()) {
 			S2_LOG(LS_ERROR, "Failed to load gamedata configuration!\n");
@@ -84,7 +84,7 @@ namespace globals {
 		RESOLVE_SIG(g_pGameConfig, "UTIL_Remove", addresses::UTIL_Remove);
 		RESOLVE_SIG(g_pGameConfig, "CEntityInstance_AcceptInput", addresses::CEntityInstance_AcceptInput);
 		RESOLVE_SIG(g_pGameConfig, "CEntityIdentity_SetEntityName", addresses::CEntityIdentity_SetEntityName);
-		RESOLVE_SIG(g_pGameConfig, "CBaseEntity_EmitSoundParams", addresses::CBaseEntity_EmitSoundParams);
+		//RESOLVE_SIG(g_pGameConfig, "CBaseEntity_EmitSoundParams", addresses::CBaseEntity_EmitSoundParams);
 		RESOLVE_SIG(g_pGameConfig, "CBaseEntity_SetParent", addresses::CBaseEntity_SetParent);
 		RESOLVE_SIG(g_pGameConfig, "CBaseEntity_EmitSoundFilter", addresses::CBaseEntity_EmitSoundFilter);
 		RESOLVE_SIG(g_pGameConfig, "CBaseEntity_SetMoveType", addresses::CBaseEntity_SetMoveType);

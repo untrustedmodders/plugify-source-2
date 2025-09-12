@@ -165,8 +165,8 @@ public:
 	}
 
 private:
-	std::unordered_map<plg::string, std::unique_ptr<poly::Hook>, utils::string_hash,std::equal_to<>> m_dhooks;
-	std::unordered_map<std::pair<void*, void*>, std::unique_ptr<poly::Hook>, utils::pair_hash<void*, void*>> m_vhooks;
+	std::unordered_map<plg::string, std::unique_ptr<poly::Hook>, plg::string_hash, std::equal_to<>> m_dhooks;
+	std::unordered_map<std::pair<void*, void*>, std::unique_ptr<poly::Hook>, plg::pair_hash<void*, void*>> m_vhooks;
 };
 
 extern HookHolder g_PH;

@@ -226,47 +226,6 @@ namespace utils {
 		return buffer;
 	}
 
-	namespace {
-		template<typename T, typename... Rest>
-		void hash_combine(std::size_t& seed, const T& v, const Rest&... rest) {
-			seed ^= std::hash<T>{}(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-			(hash_combine(seed, rest), ...);
-		}
-	}// namespace
-
-	template<typename T1, typename T2>
-	struct pair_hash {
-		std::size_t operator()(std::pair<T1, T2> const& p) const {
-			std::size_t seed{};
-			hash_combine(seed, p.first, p.second);
-			return seed;
-		}
-	};
-
-	struct case_ins_comparator {
-		bool operator()(const plg::string& lhs, const plg::string& rhs) const {
-			return std::lexicographical_compare(
-					lhs.begin(), lhs.end(),
-					rhs.begin(), rhs.end(),
-					[](char a, char b) { return std::tolower(a) < std::tolower(b); });
-		}
-	};
-
-	struct string_hash {
-		using is_transparent = void;
-		[[nodiscard]] size_t operator()(const char* txt) const {
-			return std::hash<std::string_view>{}(txt);
-		}
-
-		[[nodiscard]] size_t operator()(std::string_view txt) const {
-			return std::hash<std::string_view>{}(txt);
-		}
-
-		[[nodiscard]] size_t operator()(const std::string& txt) const {
-			return std::hash<std::string>{}(txt);
-		}
-	};
-
 }// namespace utils
 
 enum class FieldType : int {

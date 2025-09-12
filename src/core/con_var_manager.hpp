@@ -127,7 +127,7 @@ public:
 		if (it == g_ConVarManager.m_cnvCache.end())
 			return;
 
-		auto& conVarInfo = *std::get<const ConVarInfo*>(*it);
+		auto& conVarInfo = *it->second;
 
 		if constexpr (std::is_same_v<T, bool>) {
 			conVarInfo.hook.Notify(*ref, *pNewValue ? "true" : "false", *pOldValue ? "true" : "false");
@@ -157,8 +157,8 @@ public:
 	static void ChangeGlobal(ConVarRefAbstract* ref, CSplitScreenSlot nSlot, const char* pNewValue, const char* pOldValue, void*);
 
 private:
-	std::map<plg::string, ConVarInfoPtr, utils::case_ins_comparator> m_cnvLookup;
-	std::map<const ConVarRef*, const ConVarInfo*> m_cnvCache;
+	std::unordered_map<plg::string, ConVarInfoPtr, plg::case_insensitive_hash, plg::case_insensitive_equal> m_cnvLookup;
+	plg::flat_map<const ConVarRef*, const ConVarInfo*> m_cnvCache;
 	ListenerManager<ConVarChangeListenerCallback> m_global;
 	std::mutex m_registerCnvLock;
 };
