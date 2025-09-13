@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.5.0](https://github.com/untrustedmodders/plugify-plugin-s2sdk/compare/v1.4.2...v1.5.0) (2025-09-13)
+
+
+### Features
+
+* **User message:** add `UserMessageAddRecipient` & `UserMessageAddAllPlayers` methods ([d65c60a](https://github.com/untrustedmodders/plugify-plugin-s2sdk/commit/d65c60a012b80878b9448d2a12175771a83dff4c))
+
+
+### Bug Fixes
+
+* **`UserMessage`:** update consturctor ([bf80308](https://github.com/untrustedmodders/plugify-plugin-s2sdk/commit/bf80308c1d744f3f7b38313044609eade2358564))
+* add `CCSPlayer_WeaponServices::Weapon_Equip` signature ([f420d1c](https://github.com/untrustedmodders/plugify-plugin-s2sdk/commit/f420d1c8da83fad4d1893021b5f4ef626e3067ed))
+* add conda recipe ([30fb5d9](https://github.com/untrustedmodders/plugify-plugin-s2sdk/commit/30fb5d93d8d296440abc9170597092f2b16e9344))
+* add new virtual functions & update gamedata ([32a688f](https://github.com/untrustedmodders/plugify-plugin-s2sdk/commit/32a688f5618a55571dffdf53d915e6204875dbc2))
+* linux build ([9d8b715](https://github.com/untrustedmodders/plugify-plugin-s2sdk/commit/9d8b715552b20b9dd9680ecd634c058b7e40af4a))
+* linux related ([b27f660](https://github.com/untrustedmodders/plugify-plugin-s2sdk/commit/b27f660e2ef4450a70636ed2c76949f2d34c18ba))
+* more cleanup ([5c7bdd7](https://github.com/untrustedmodders/plugify-plugin-s2sdk/commit/5c7bdd7a0a8ee747bbc9a5471f2ad0e858f05f10))
+* remove modules ([44e1179](https://github.com/untrustedmodders/plugify-plugin-s2sdk/commit/44e11794ad40caec3fcbdefebd10589dc26f9080))
+* update deps ([acb4d81](https://github.com/untrustedmodders/plugify-plugin-s2sdk/commit/acb4d819f946b36c200d7e885648dd04f4355d5f))
+* update schema ([d52d504](https://github.com/untrustedmodders/plugify-plugin-s2sdk/commit/d52d50411960ff2e51c23fec9431b07897854f2f))
+* update submodules and api ([c424816](https://github.com/untrustedmodders/plugify-plugin-s2sdk/commit/c424816765cb4ccd76b92bb2b3e4ec8f9a173f45))
+
 ## [1.4.2](https://github.com/untrustedmodders/plugify-source-2/compare/v1.4.1...v1.4.2) (2025-09-01)
 
 
