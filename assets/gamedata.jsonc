@@ -166,6 +166,13 @@
         "win64": "44 89 44 24 ? 48 89 54 24 ? 48 89 4C 24 ? 55 53 56 57 41 55 41 56 41 57 48 8B EC",
         "linuxsteamrt64": "55 48 89 E5 41 57 41 56 41 55 49 89 CD 41 54 49 89 FC 53 48 89 F3 48 83 EC"
       },
+      // Search for "item_pickup", function is called in the same code block after this string
+      // Look for function call with two parameters (__int64, __int64) between pointer checks
+      // Before the call, *((_DWORD *)v7 + 1214) = -1 is set
+      "CCSPlayer_WeaponServices::Weapon_Equip": {
+        "library": "server",
+        "linuxsteamrt64": "55 48 89 E5 41 55 41 54 49 89 FC 53 48 89 F3 48 83 EC ? 48 8B 77"
+      },
       // String: "Weapon_Taser.Single"
       // sub_141AAD0(&v67[0].m128i_i64[1], (__int64)v76, v7, "Weapon_Taser.Single", 0LL, 0LL, 0.0, 1.0);
       //  v8 = sub_149AC70(a1);
